@@ -30,6 +30,6 @@ R("  html+='<div class=\"rs-xp\">'+hy.xp.map(", "  html+=passRowHtml(R);\n  html
 R("  html+='<div class=\"rs-stats\">슛 '", "  html+=rulesRowHtml();\n  html+='<div class=\"rs-stats\">슛 '")
 R("g.c=true;save.points+=d.pts;const r=grantXp(save.type,d.xp);", "g.c=true;save.points+=d.pts;passAdd(PASS.earn.daily);const r=grantXp(save.type,d.xp);")
 R("hypeToast('+'+d.pts+'P · +'+d.xp+'XP'+(r.to>r.from?' · LEVEL UP!':''));", "hypeToast('+'+d.pts+'P · +'+d.xp+'XP · 🐟+'+PASS.earn.daily+(r.to>r.from?' · LEVEL UP!':''));")
-R("' · 보상 ⭐'+d.pts+'P + '+d.xp+'XP</small></div>'", "' · 보상 ⭐'+d.pts+'P + '+d.xp+'XP + 🐟'+PASS.earn.daily+'</small></div>'")
+R("<small>'+g.p+' / '+d.n+' · 보상 ⭐'+d.pts+'P + '+d.xp+'XP</small></div>'", "<small>'+fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:PASS.earn.daily})+'</small></div>'")
 
 R("window.__PH={doPull,pullOnce,", "window.__PH={doPull,pullOnce,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,")

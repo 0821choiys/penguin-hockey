@@ -38,11 +38,12 @@ park();
  ok(h.boxed&&h.frozen&&h.z<-D&&G.state==='ready','offender sits in the penalty box behind the boards ('+h.x.toFixed(1)+','+h.z.toFixed(1)+')');
  ok(Math.abs(pk.x-(-red().dir*RULE.dotE))<.01&&Math.abs(Math.abs(pk.z)-RULE.dotZ)<.01,'faceoff in the offending team\'s end zone ('+pk.x+','+pk.z+')');
  ok(PH.onIce(blue())===3&&PH.onIce(red())===2&&PH.shortH(red()),'power play: 3 on 2');
- toPlay();const t0=G.rl.box[0].t;run(3);ok(Math.abs(G.rl.box[0].t-(t0-3))<.15,'box clock runs with play ('+t0.toFixed(1)+' → '+G.rl.box[0].t.toFixed(1)+')');
+ toPlay();const t0=G.rl.box[0].t;let pf=0,of=0;for(let i=0;i<180;i++){const st=G.state;step(1/60);if(st==='play'&&G.state==='play')pf++;else of++;}
+ ok(Math.abs(G.rl.box[0].t-(t0-pf/60))<.12,'box clock runs only while play runs ('+t0.toFixed(1)+' → '+G.rl.box[0].t.toFixed(2)+' after '+(pf/60).toFixed(2)+' s of play, '+(of/60).toFixed(2)+' s stopped)');
  for(const p of G.pengs)if(!p.goalie&&!p.boxed){p.x=0;p.z=0;}
  // run the rest of the penalty (calls are switched off so nothing else interrupts)
  const e=G.rl.box[0];e.t=.5;save.set.rules='full';G.rl.delayed=null;
- let n=0;while(h.boxed&&n++<200){step(1/60);}
+ let n=0;while(h.boxed&&n++<1800){step(1/60);}
  ok(!h.boxed&&!h.frozen&&Math.abs(h.z)<D,'penalty over → back on the ice');}
 
 // ---- 3. interference vs a clean check, clean slide ----
@@ -149,10 +150,11 @@ save.set.rules='full';startMatch({mode:'practice',size:1,time:0,diff:'easy'});ru
 startMatch({mode:'challenge',challenge:{kind:'goal',goal:3,size:3,time:60},size:3,time:60,diff:'easy',tag:'c',oppTypes:['basic']});run(4);ok(PH.rulesMode()==='off','challenges: no referee');
 
 // ---- 12. AI-vs-AI soak with rules on: everything finishes, no NaN, no stuck states ----
-{let bad=0,stuck=0,calls=0;for(let m=0;m<2;m++){startMatch({mode:'quick',size:3,time:60,diff:'hard',tag:'q',oppTypes:['basic','fast','macaroni']});
-  let i=0;for(;i<60*360;i++){if(G.player&&!G.ps)PH.setHuman(null);step(1/60);if(G.state==='over'&&G.resultShown)break;}
+{let bad=0,stuck=0,calls=0;const uses={};for(let m=0;m<2;m++){save.type='magellanic';save.squad=['humboldt','african',null];startMatch({mode:'quick',size:3,time:60,diff:'hard',tag:'q',oppTypes:['basic','fast','macaroni']});
+  let i=0;for(;i<60*360;i++){if(G.player&&!G.ps)PH.setHuman(null);step(1/60);for(const p of G.pengs){if(p.goalie)continue;if(p.cd.special>0&&!p.__c){p.__c=1;uses[p.type]=(uses[p.type]||0)+1;}if(p.cd.special<=0)p.__c=0;}if(G.state==='over'&&G.resultShown)break;}
   if(G.state!=='over')stuck++;if(G.pengs.some(p=>!isFinite(p.x)||!isFinite(p.z)))bad++;calls+=G.rl?G.rl.calls.length:0;}
- ok(!bad&&!stuck,'2 AI-vs-AI matches with the referee finish cleanly ('+calls+' calls)');}
+ ok(!bad&&!stuck,'2 AI-vs-AI matches with the referee finish cleanly ('+calls+' calls)');
+ {const n=Object.values(uses).reduce((a,b)=>a+b,0);ok(['magellanic','humboldt','african','basic','fast','macaroni'].filter(k=>uses[k]>0).length>=3&&n>=6,'AI still uses its skills with the referee on ('+n+' casts: '+JSON.stringify(uses)+')');}save.type='basic';save.squad=[null,null,null];}
 
 // ---- 13. save: setting validated, intro flag additive ----
 const load=sv=>JSON.parse(execFileSync('node',['-e',"const PH=require('./harness.js');console.log(JSON.stringify({r:PH.save.set.rules,i:PH.save.rl.intro}));process.exit(0)"],{cwd:__dirname,env:Object.assign({},process.env,{SAVE:JSON.stringify(sv)})}).toString().trim().split('\n').pop());

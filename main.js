@@ -3055,7 +3055,7 @@ function renderGoals(){
   if(gTab==='day'){
     h+=__L('<div class="lbl" style="text-align:center">오늘의 목표 · 완료하면 아래 버튼으로 보상을 받아요 (한 번만 수령)</div>');
     save.goals.list.forEach((g,i)=>{const d=GDEFS[g.id],ok=g.p>=d.n;
-      h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+g.p+' / '+d.n+__L(' · 보상 ⭐')+d.pts+'P + '+d.xp+'XP + 🐟'+PASS.earn.daily+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
+      h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:PASS.earn.daily})+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
     h+=__L('<div class="odds">목표는 하루에 한 번 새로 나와요. 기기 날짜를 되돌리면 갱신되지 않아요')+(info.tamper?__L(' <b>(현재 시계가 되돌려진 것으로 감지됨)</b>'):'')+__L('.<br>오프라인 게임이라 날짜 변경을 완전히 막을 수는 없어서, 보상은 작게 설정했어요.</div>');
   }else if(gTab==='long'){
     h+=__L('<div class="lbl" style="text-align:center">장기 목표 · 천천히 도전해 보세요</div>');
@@ -6034,6 +6034,7 @@ function rulesReset(){
   G.rl={log:[],box:[],delayed:null,off:null,ice:null,src:null,lastT:-9,stop:null,inZ:{blue:false,red:false},tag:null,thaw:false,warn:0,calls:[],
     st:{blue:{pen:0,pp:0,ppg:0,shg:0,ps:0,psg:0},red:{pen:0,pp:0,ppg:0,shg:0,ps:0,psg:0}}};
   G.ps=null;rulesHud(true);refSig(null);
+  const l=$('#late');if(l&&l.textContent)l.textContent='';   // the previous match's last-seconds digit must not linger (it sat off-screen on landscape phones)
 }
 function rulesZoneSync(){const R=G.rl;if(!R)return;const pk=G.puck;for(const k of['blue','red'])R.inZ[k]=pk.x*G.teams[k].dir>RULE.blIn;R.off=null;R.ice=null;R.src=null;R.lastT=pk.lastT;}
 
@@ -6632,7 +6633,7 @@ function passClaimAll(){let n=0,last=null;for(let i=0;i<PASS.tiers;i++)for(const
   if(n){SFX.win();vib([30,30,60]);hypeToast(fmtL(__L('🐟 보상 {n}개를 받았어요'),{n}));$('#ptsN').textContent=save.points;}return n;}
 // season change: everything reached but not taken is handed out, then the new pass (new name) starts at 0
 function passCheck(){
-  const P=save.pass,now=seasonNow();if(P.s===now)return false;
+  const P=save.pass,now=seasonNow();if(P.s===now||P.s>now)return false;   // a clock moved backwards never wipes progress
   if(P.s>0&&P.s<now){let p0=save.points,c=0;
     for(let i=0;i<PASS.tiers;i++)for(const t of['f','g'])if(passCan(t,i)){const r=passClaim(t,i,true,true);if(r&&r.card)c++;}
     P.last={s:P.s,tier:passTier(),p:save.points-p0,c,seen:false};}

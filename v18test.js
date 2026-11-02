@@ -131,7 +131,8 @@ function topSpeed(type,setup){const {me}=scene(type,[]);for(const p of G.pengs)i
  ok(r1>r0+.05,'… shot lab (240 identical shots each): goal rate '+(r0*100).toFixed(0)+'% → '+(r1*100).toFixed(0)+'% when dazzled');}
 
 /* ========== 4. AI uses every new skill ========== */
-{const uses={};const lineups=[[['king','macaroni','royal'],['fiordland','yelloweye','little']],[['african','humboldt','magellanic'],['galapagos','king','macaroni']],[['royal','little','galapagos'],['african','fiordland','yelloweye']]];
+// (this loop drives simulate() directly, without the referee's whistle / faceoff states — the v22 referee is off here; v22test covers skills with it on)
+{const rules0=save.set.rules;save.set.rules='off';const uses={};const lineups=[[['king','macaroni','royal'],['fiordland','yelloweye','little']],[['african','humboldt','magellanic'],['galapagos','king','macaroni']],[['royal','little','galapagos'],['african','fiordland','yelloweye']]];
  let bad=false,maxOut=0;
  for(let r=0;r<2;r++)for(const [a,b] of lineups){save.type=a[0];save.squad=[a[1],a[2],null];startMatch({mode:'quick',size:3,time:0,diff:'normal',oppTypes:b});G.state='play';
    for(const p of G.pengs)p.human=false;G.player=null;G.mine.human=null;
@@ -139,7 +140,7 @@ function topSpeed(type,setup){const {me}=scene(type,[]);for(const p of G.pengs)i
      for(const p of G.pengs){if(p.goalie)continue;if(p.cd.special>0&&!p.__c){p.__c=1;uses[p.type]=(uses[p.type]||0)+1;}if(p.cd.special<=0)p.__c=0;
        if(!isFinite(p.x)||!isFinite(p.z)||!isFinite(p.vx))bad=true;maxOut=Math.max(maxOut,Math.abs(p.x)-24,Math.abs(p.z)-13);}
      if(!isFinite(G.puck.x)||!isFinite(G.puck.vx))bad=true;if(G.state==='goal'){PH.resetPositions();G.state='play';}}}
- ok(NEW18.every(k=>uses[k]>0),'AI uses every new skill in 2-minute AI matches ('+NEW18.map(k=>k+' '+(uses[k]||0)).join(', ')+')');
+ ok(NEW18.every(k=>uses[k]>0),'AI uses every new skill in 2-minute AI matches ('+NEW18.map(k=>k+' '+(uses[k]||0)).join(', ')+')');save.set.rules=rules0;
  ok(!bad&&maxOut<.6,'no NaN, nobody leaves the rink (max '+maxOut.toFixed(2)+'m past the boards)');}
 
 /* ========== 5. personalities ========== */

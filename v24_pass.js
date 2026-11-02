@@ -48,7 +48,7 @@ function passClaimAll(){let n=0,last=null;for(let i=0;i<PASS.tiers;i++)for(const
   if(n){SFX.win();vib([30,30,60]);hypeToast(fmtL('🐟 보상 {n}개를 받았어요',{n}));$('#ptsN').textContent=save.points;}return n;}
 // season change: everything reached but not taken is handed out, then the new pass (new name) starts at 0
 function passCheck(){
-  const P=save.pass,now=seasonNow();if(P.s===now)return false;
+  const P=save.pass,now=seasonNow();if(P.s===now||P.s>now)return false;   // a clock moved backwards never wipes progress
   if(P.s>0&&P.s<now){let p0=save.points,c=0;
     for(let i=0;i<PASS.tiers;i++)for(const t of['f','g'])if(passCan(t,i)){const r=passClaim(t,i,true,true);if(r&&r.card)c++;}
     P.last={s:P.s,tier:passTier(),p:save.points-p0,c,seen:false};}

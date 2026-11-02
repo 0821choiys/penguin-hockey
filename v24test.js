@@ -48,6 +48,7 @@ ok(PH.passCan('f',0)&&PH.passCan('f',2)&&!PH.passCan('f',3)&&!PH.passCan('g',0),
  ok(sn===2&&save.pass.s===2&&save.pass.xp===0&&!save.pass.gold&&save.pass.last&&save.pass.last.tier===10&&save.pass.last.p>0&&save.points>pts0,'new season: tiers 1–10 (free + gold) auto-claimed (⭐'+(save.pass.last&&save.pass.last.p)+'P, '+(save.pass.last&&save.pass.last.c)+' cards), pass reset');
  ok(PH.passName(save.pass.s).includes('빙하 탐험'),'… and the pass is now called '+PH.passName(save.pass.s));
  global.Date=RD;Date.now=real;}
+{reset(1);Object.assign(save.pass,{s:5,xp:777,gold:true});PH.passCheck();ok(save.pass.s===5&&save.pass.xp===777&&save.pass.gold,'device clock moved backwards (saved season 5, now 1): progress is kept, nothing reset');reset();}
 // ---- screen / menu render with the live numbers ----
 {reset();save.pass.xp=737;PH.renderPass();PH.passMenu();ok(true,'pass screen + menu row render without errors');
  const h=PH.howV24();ok(h.includes(PASS.cost+'P')&&h.includes('승리 '+PASS.earn.win)&&h.includes('+'+PASS.earn.daily),'help text uses the same numbers');}

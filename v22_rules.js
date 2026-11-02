@@ -42,6 +42,7 @@ function rulesReset(){
   G.rl={log:[],box:[],delayed:null,off:null,ice:null,src:null,lastT:-9,stop:null,inZ:{blue:false,red:false},tag:null,thaw:false,warn:0,calls:[],
     st:{blue:{pen:0,pp:0,ppg:0,shg:0,ps:0,psg:0},red:{pen:0,pp:0,ppg:0,shg:0,ps:0,psg:0}}};
   G.ps=null;rulesHud(true);refSig(null);
+  const l=$('#late');if(l&&l.textContent)l.textContent='';   // the previous match's last-seconds digit must not linger (it sat off-screen on landscape phones)
 }
 function rulesZoneSync(){const R=G.rl;if(!R)return;const pk=G.puck;for(const k of['blue','red'])R.inZ[k]=pk.x*G.teams[k].dir>RULE.blIn;R.off=null;R.ice=null;R.src=null;R.lastT=pk.lastT;}
 
