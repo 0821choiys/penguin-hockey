@@ -299,6 +299,7 @@ exec(open('v21_rarity.py',encoding='utf-8').read())
 exec(open('v22_rules.py',encoding='utf-8').read())
 exec(open('v23_cast.py',encoding='utf-8').read())
 exec(open('v24_pass.py',encoding='utf-8').read())
+exec(open('v25_cine.py',encoding='utf-8').read())
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 

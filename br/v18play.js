@@ -12,7 +12,7 @@ const fontCss=u=>{const f=[];
   if(/Noto\+Sans\+SC/.test(u))f.push('noto-sans-sc/500.css','noto-sans-sc/700.css','noto-sans-sc/900.css');
   return f.map(x=>{const pkg=x.split('/')[0];return fs.readFileSync(path.join(FS,x),'utf8').replace(/url\(\.\/files\//g,'url(https://fonts.gstatic.com/__fs/'+pkg+'/files/');}).join('\n');};
 const ALL=['basic','balanced','fast','defense','strong','king','macaroni','royal','fiordland','yelloweye','little','african','humboldt','magellanic','galapagos'];
-const SAVE=JSON.stringify({v:10,news18:true,points:900,types:ALL,type:'king',squad:['basic','fast',null],tut:{done:true,asked:true}});
+const SAVE=JSON.stringify({v:10,news18:true,points:900,types:ALL,type:'king',squad:['basic','fast',null],tut:{done:true,asked:true},set:{cine:'off'}});   // skill mechanics only (the v25 cinematic has its own test)
 let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS ':'FAIL ')+m);};
 (async()=>{
   const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--autoplay-policy=no-user-gesture-required'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:VP});

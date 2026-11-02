@@ -73,11 +73,20 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(/1/.test(rs.rules)&&rs.rules.length>0,'result screen shows the referee summary: '+rs.rules);
   await shot('result');
   // ---- the cast banner (your own skill) ----
-  const cb=await E(()=>{const P=window.__PH,G=P.G;P.save.type='strong';P.startMatch({mode:'free',size:2,time:0,diff:'easy',tag:'T',oppTypes:['basic','basic']});G.state='play';for(let i=0;i<20;i++)P.step(1/60);
+  const cb=await E(()=>{const P=window.__PH,G=P.G;P.save.type='strong';P.save.set.cine='off';P.startMatch({mode:'free',size:2,time:0,diff:'easy',tag:'T',oppTypes:['basic','basic']});G.state='play';for(let i=0;i<20;i++)P.step(1/60);
     const p=G.player;p.cd.special=0;G.puck.x=p.x+Math.sin(p.heading)*.9;G.puck.z=p.z+Math.cos(p.heading)*.9;G.carry=p;P.useSpecial(p);const b=document.getElementById('castBan'),r=b.getBoundingClientRect();
     return {on:b.classList.contains('on'),txt:b.textContent,w:r.width,fits:r.left>=-1&&r.right<=innerWidth+1};});
   await wait(250);await shot('castban');
   ok(cb.on&&/KING/.test(cb.txt)&&cb.fits,'emperor skill → banner "'+cb.txt+'" fits the screen ('+Math.round(cb.w)+'px)');
+  // ---- v25: the skill cinematic (default setting): every text block stays on screen ----
+  const cn=await E(()=>{const P=window.__PH,G=P.G;P.save.set.cine='full';P.save.type='humboldt';P.startMatch({mode:'quick',size:2,time:180,diff:'easy',tag:'T',oppTypes:['basic','basic']});G.state='play';G.stateT=0;for(let i=0;i<20;i++)P.step(1/60);
+    const p=G.player;p.cd.special=0;P.useSpecial(p);const el=document.getElementById('cine'),out=[];
+    const chk=(T,sel)=>{let n=0;while(G.cine&&G.cine.t<T&&n++<200)P.step(1/60);document.getAnimations().forEach(a=>{try{if(a.effect&&a.effect.getTiming().iterations!==Infinity)a.finish()}catch(e){}});
+      for(const q of el.querySelectorAll(sel)){const r=q.getBoundingClientRect();if(r.width>0&&(r.left<-1||r.right>innerWidth+1))out.push(T+':'+(q.className||q.tagName)+' '+Math.round(r.left)+'..'+Math.round(r.right));}};
+    chk(1.0,'.cn-txt b,.cn-txt small,.cn-txt em,.cn-skip');const p1=el.className.includes('p1');chk(1.6,'.cn-shout b');
+    const r={on:p1&&!!G.cine&&el.className.includes('p2'),shout:el.querySelector('.cn-shout b').textContent,out};let n=0;n=0;while(G.cine&&n++<400)P.step(1/60);P.save.set.cine='off';return r;});
+  await wait(250);await shot('cine');
+  ok(cn.on&&/HUMBOLDT/.test(cn.shout)&&cn.out.length===0,'skill cinematic: the longest shout "'+cn.shout+'" and the skill title stay on screen'+(cn.out.length?' — off: '+cn.out.join(','):''));
   ok(logs.length===0,'no page errors'+(logs.length?': '+logs.slice(0,4).join(' | '):''));
   console.log('TOTAL '+mode+' '+lang+': '+pass+' passed, '+fail+' failed');await browser.close();process.exit(fail?1:0);
 })().catch(e=>{console.log('CRASH',e.message);process.exit(2);});
