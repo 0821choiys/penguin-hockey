@@ -8,7 +8,8 @@ startMatch({mode:'quick',size:3,time:120,diff:'normal'});run(3.4);
 ok(PH.eventsOn()&&G.evT>30,'events on in quick match, first one after ~35-50 s');
 // seal
 {G.teams.blue.noScore=true;G.teams.red.noScore=true;let g0=0;while(G.state!=='play'&&g0++<600)step(1/60);PH.evStart('seal');const ev=G.ev;const p=G.mine.skaters[1];p.x=ev.x;p.z=0;p.vx=p.vz=0;p.fall=0;p.getup=0;
- let hit=false;for(let i=0;i<60*7&&G.ev;i++){if(!hit&&p.fall<=0&&p.getup<=0){p.x=ev.x;p.z=ev.z+ev.dz*2.2;p.vx=p.vz=0;}step(1/60);if(p.fall>0)hit=true;}
+ let hit=false;for(let i=0;i<60*14&&G.ev;i++){   // (a referee whistle pauses the event, so allow extra time)
+ if(!hit&&p.fall<=0&&p.getup<=0){p.x=ev.x;p.z=ev.z+ev.dz*2.2;p.vx=p.vz=0;}step(1/60);if(p.fall>0)hit=true;}
  ok(hit,'🦭 the seal knocks over a penguin in its path');ok(!G.ev,'seal leaves the rink after its run');}
 // gust
 {let g=0;while(G.state!=='play'&&g++<600)step(1/60);PH.evStart('gust');const ev=G.ev,pk=G.puck;pk.x=0;pk.z=0;pk.vx=pk.vz=0;G.carry=null;for(const q of G.pengs)if(!q.goalie){const d=Math.hypot(q.x,q.z)||1;if(d<9){q.x=q.x/d*10;q.z=q.z/d*10;}q.vx=q.vz=0;}run(.5);

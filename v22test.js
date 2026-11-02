@@ -38,8 +38,8 @@ park();
  ok(h.boxed&&h.frozen&&h.z<-D&&G.state==='ready','offender sits in the penalty box behind the boards ('+h.x.toFixed(1)+','+h.z.toFixed(1)+')');
  ok(Math.abs(pk.x-(-red().dir*RULE.dotE))<.01&&Math.abs(Math.abs(pk.z)-RULE.dotZ)<.01,'faceoff in the offending team\'s end zone ('+pk.x+','+pk.z+')');
  ok(PH.onIce(blue())===3&&PH.onIce(red())===2&&PH.shortH(red()),'power play: 3 on 2');
- toPlay();const t0=G.rl.box[0].t;let pf=0,of=0;for(let i=0;i<180;i++){const st=G.state;step(1/60);if(st==='play'&&G.state==='play')pf++;else of++;}
- ok(Math.abs(G.rl.box[0].t-(t0-pf/60))<.12,'box clock runs only while play runs ('+t0.toFixed(1)+' → '+G.rl.box[0].t.toFixed(2)+' after '+(pf/60).toFixed(2)+' s of play, '+(of/60).toFixed(2)+' s stopped)');
+ toPlay();const t0=G.rl.box[0].t,e0=G.elapsed;let of=0;for(let i=0;i<180;i++){step(1/60);if(G.state!=='play')of++;}const played=G.elapsed-e0;   // game time (hit-stops / slow-motion shorten it)
+ ok(Math.abs(G.rl.box[0].t-(t0-played))<.06,'box clock runs only while play runs ('+t0.toFixed(1)+' → '+G.rl.box[0].t.toFixed(2)+' after '+played.toFixed(2)+' s of play, '+(of/60).toFixed(2)+' s stopped)');
  for(const p of G.pengs)if(!p.goalie&&!p.boxed){p.x=0;p.z=0;}
  // run the rest of the penalty (calls are switched off so nothing else interrupts)
  const e=G.rl.box[0];e.t=.5;save.set.rules='full';G.rl.delayed=null;

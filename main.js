@@ -34,7 +34,7 @@ const TYPES={
 const SPECIALS={surge:__L('큰바다 돌진'),dash:__L('아이스 대시'),slide:__L('펭귄 슬라이드'),flipper:__L('강력한 플리퍼 슛'),icebreak:__L('아이스 브레이크')};
 const STATN={speed:__L('속도'),accel:__L('가속도'),power:__L('퍽 타격력'),turn:__L('방향 전환'),body:__L('몸싸움')};
 const HATS={none:{name:__L('없음'),cost:0},beanie:{name:__L('털모자'),cost:0},headband:{name:__L('머리띠'),cost:20},helmet:{name:__L('하키 헬멧'),cost:40},party:{name:__L('파티 모자'),cost:60},crown:{name:__L('왕관'),cost:120}};
-const TRAILS={ice:{name:__L('눈꽃'),cost:0,col:[.92,.97,1]},sky:{name:__L('하늘빛'),cost:30,col:[.4,.8,1]},pink:{name:__L('핑크'),cost:50,col:[1,.55,.82]},gold:{name:__L('황금'),cost:90,col:[1,.85,.3]},rainbow:{name:__L('무지개'),cost:150,col:null},ps1:{name:__L('오로라 빛'),cost:0,col:[.45,1,.78],pass:1},ps2:{name:__L('빙하 청록'),cost:0,col:[.3,.95,.95],pass:1},ps3:{name:__L('크릴 레드'),cost:0,col:[1,.42,.38],pass:1},ps4:{name:__L('해적 브론즈'),cost:0,col:[.85,.55,.2],pass:1},ps5:{name:__L('은하수 보라'),cost:0,col:[.72,.55,1],pass:1},ps6:{name:__L('왕국 루비'),cost:0,col:[.95,.25,.45],pass:1},ps7:{name:__L('눈보라 은빛'),cost:0,col:[.78,.84,.95],pass:1},ps8:{name:__L('심해 파랑'),cost:0,col:[.15,.45,1],pass:1}};
+const TRAILS={ice:{name:__L('눈꽃'),cost:0,col:[.92,.97,1]},sky:{name:__L('하늘빛'),cost:30,col:[.4,.8,1]},pink:{name:__L('핑크'),cost:50,col:[1,.55,.82]},gold:{name:__L('황금'),cost:90,col:[1,.85,.3]},rainbow:{name:__L('무지개'),cost:150,col:null},ps1:{name:__L('정어리'),cost:0,col:[0.75,0.88,0.98],pass:1},ps2:{name:__L('청어'),cost:0,col:[0.35,0.65,1],pass:1},ps3:{name:__L('광어'),cost:0,col:[0.9,0.78,0.55],pass:1},ps4:{name:__L('넙치'),cost:0,col:[0.72,0.8,0.45],pass:1},ps5:{name:__L('도다리'),cost:0,col:[0.95,0.85,0.7],pass:1},ps6:{name:__L('꽁치'),cost:0,col:[0.55,0.85,0.92],pass:1},ps7:{name:__L('고등어'),cost:0,col:[0.3,0.85,0.7],pass:1},ps8:{name:__L('갈치'),cost:0,col:[0.92,0.95,1],pass:1},ps9:{name:__L('참치'),cost:0,col:[0.95,0.35,0.4],pass:1},ps10:{name:__L('연어'),cost:0,col:[1,0.6,0.45],pass:1},ps11:{name:__L('도루묵'),cost:0,col:[0.85,0.82,0.65],pass:1},ps12:{name:__L('명태'),cost:0,col:[0.78,0.8,0.86],pass:1},ps13:{name:__L('삼치'),cost:0,col:[0.55,0.8,1],pass:1},ps14:{name:__L('전어'),cost:0,col:[1,0.88,0.55],pass:1},ps15:{name:__L('멸치'),cost:0,col:[0.85,0.93,1],pass:1},ps16:{name:__L('방어'),cost:0,col:[1,0.85,0.3],pass:1},ps17:{name:__L('참돔'),cost:0,col:[1,0.45,0.55],pass:1},ps18:{name:__L('우럭'),cost:0,col:[0.6,0.6,0.65],pass:1},ps19:{name:__L('농어'),cost:0,col:[0.6,0.82,0.7],pass:1},ps20:{name:__L('복어'),cost:0,col:[1,0.82,0.4],pass:1},ps21:{name:__L('아귀'),cost:0,col:[0.7,0.55,0.4],pass:1},ps22:{name:__L('가자미'),cost:0,col:[0.85,0.72,0.5],pass:1},ps23:{name:__L('조기'),cost:0,col:[1,0.8,0.2],pass:1},ps24:{name:__L('숭어'),cost:0,col:[0.7,0.78,0.86],pass:1}};
 const DIFF={
   easy:{spd:.88,react:.5,noise:.5,aim:.5,press:.5,shootQ:.24,passP:.25,mistake:.14,slip:.07,range:19,gk:{cap:6,acc:28,react:.6,err:1.3,dive:.05,miss:.3}},
   normal:{spd:.96,react:.3,noise:.3,aim:.3,press:.8,shootQ:.26,passP:.4,mistake:.07,slip:.035,range:26,gk:{cap:7.5,acc:34,react:.42,err:.9,dive:.2,miss:.16}},
@@ -6583,21 +6583,38 @@ function castPost(p,dt,t){
 }
 function v23Frame(dt){castFrame(dt);}
 
-/* ================= v24: Sardine Pass (정어리 패스) — a new name every season ================= */
-// 경기와 오늘의 목표로 정어리(🐟)를 모아 30단계를 올라가요. 무료 칸은 누구나, 골드 칸은 경기로 번 포인트로 열어요 (현금 결제 없음).
+/* ================= v24: fish pass (정어리 패스 → 청어 패스 → 광어 패스 …) — a new fish every season ================= */
+// 경기와 오늘의 목표로 그 시즌의 생선(🐟)을 모아 30단계를 올라가요. 무료 칸은 누구나, 골드 칸은 경기로 번 포인트로 열어요 (현금 결제 없음).
 // Seasons follow the league season (SEASON: 28 days). Every number on screen comes from PASS.
 const PASS={
   tiers:30,per:100,cost:900,dup:150,
   earn:{win:24,draw:16,loss:10,goal:3,goalMax:5,first:30,daily:40},
+  // the pass is named after a fish, a new one every season: 정어리 → 청어 → 광어 → 넙치 → 도다리 → 꽁치 → … (24, then it starts over)
   themes:[
-    {n:__L('오로라'),e:'🌌',c:['#3de8b0','#6a4cff'],t:'ps1'},
-    {n:__L('빙하 탐험'),e:'🧊',c:['#7fe3ff','#2b6bff'],t:'ps2'},
-    {n:__L('크릴 축제'),e:'🦐',c:['#ff9a7a','#e8344f'],t:'ps3'},
-    {n:__L('남극 해적'),e:'🏴‍☠️',c:['#ffcf6b','#9a5a16'],t:'ps4'},
-    {n:__L('별빛 우주'),e:'🚀',c:['#b18cff','#2a1f6b'],t:'ps5'},
-    {n:__L('펭귄 왕국'),e:'👑',c:['#ffd34d','#c41f3a'],t:'ps6'},
-    {n:__L('눈보라 레이스'),e:'🌨️',c:['#e8f6ff','#5f7fae'],t:'ps7'},
-    {n:__L('심해 보물'),e:'🐙',c:['#3da8ff','#0b2a63'],t:'ps8'}
+    {n:__L('정어리'),e:'🐟',c:['#cfe6f5','#3b6e9e'],t:'ps1'},
+    {n:__L('청어'),e:'🐟',c:['#7fc8ff','#1f4f9a'],t:'ps2'},
+    {n:__L('광어'),e:'🐟',c:['#e8d2a6','#7a5a32'],t:'ps3'},
+    {n:__L('넙치'),e:'🐟',c:['#cbd89a','#55652a'],t:'ps4'},
+    {n:__L('도다리'),e:'🐟',c:['#f0dcc0','#8a6a4a'],t:'ps5'},
+    {n:__L('꽁치'),e:'🐟',c:['#bfe8ef','#2c5f74'],t:'ps6'},
+    {n:__L('고등어'),e:'🐟',c:['#7fe0c8','#1d5f6a'],t:'ps7'},
+    {n:__L('갈치'),e:'🐟',c:['#f2f6fa','#7a8ea6'],t:'ps8'},
+    {n:__L('참치'),e:'🐟',c:['#ff8a8a','#1b2c5a'],t:'ps9'},
+    {n:__L('연어'),e:'🐟',c:['#ffb38a','#d4573a'],t:'ps10'},
+    {n:__L('도루묵'),e:'🐟',c:['#e6e0c8','#6a6450'],t:'ps11'},
+    {n:__L('명태'),e:'🐟',c:['#d8dde4','#5a6472'],t:'ps12'},
+    {n:__L('삼치'),e:'🐟',c:['#a8d8ff','#2a5a8a'],t:'ps13'},
+    {n:__L('전어'),e:'🐟',c:['#ffe3a6','#7a6a3a'],t:'ps14'},
+    {n:__L('멸치'),e:'🐟',c:['#e6f4ff','#6f93b8'],t:'ps15'},
+    {n:__L('방어'),e:'🐟',c:['#ffe066','#2a4f8a'],t:'ps16'},
+    {n:__L('참돔'),e:'🐟',c:['#ff9aa8','#c4304a'],t:'ps17'},
+    {n:__L('우럭'),e:'🐟',c:['#b8b8b8','#3a3a42'],t:'ps18'},
+    {n:__L('농어'),e:'🐟',c:['#c8e0d0','#3f6a58'],t:'ps19'},
+    {n:__L('복어'),e:'🐡',c:['#ffe08a','#6a5a2a'],t:'ps20'},
+    {n:__L('아귀'),e:'🐟',c:['#c8a882','#4a3a2a'],t:'ps21'},
+    {n:__L('가자미'),e:'🐟',c:['#e0c8a0','#6a5030'],t:'ps22'},
+    {n:__L('조기'),e:'🐟',c:['#ffd34d','#a8761c'],t:'ps23'},
+    {n:__L('숭어'),e:'🐟',c:['#d0dce6','#4a5f72'],t:'ps24'}
   ],
   // p: points · c: a penguin card of that rarity (0 기본 … 4 전설) · t: the season's exclusive skating trail
   free:[{p:40},{p:40},{c:0},{p:50},{c:1},{p:50},{p:60},{c:0},{p:60},{c:2},{p:60},{p:70},{c:1},{p:70},{c:2},{p:70},{p:80},{c:1},{p:80},{c:3},{p:80},{p:90},{c:2},{p:90},{c:3},{p:90},{p:100},{c:2},{p:100},{c:3}],
@@ -6610,7 +6627,8 @@ function passLoad(S){
   P.last=S.last&&typeof S.last==='object'?{s:n(S.last.s,99999),tier:n(S.last.tier,30),p:n(S.last.p,999999),c:n(S.last.c,99),seen:S.last.seen===true}:null;
 }
 function passTheme(n){const L=PASS.themes;return L[((Math.max(1,n||1)-1)%L.length+L.length)%L.length];}
-function passName(n){const T=passTheme(n);return T.e+' '+fmtL(__L('{n} 정어리 패스'),{n:T.n});}
+function passTitle(n){return fmtL(__L('{n} 패스'),{n:passTheme(n).n});}
+function passName(n){return passTheme(n).e+' '+passTitle(n);}
 function passTier(){return Math.min(PASS.tiers,Math.floor(save.pass.xp/PASS.per));}
 function passBit(i){return 1<<i;}
 function passCan(track,i){const P=save.pass;if(i<0||i>=PASS.tiers||i>=passTier())return false;if(track==='g'&&!P.gold)return false;return !((track==='g'?P.cg:P.cf)&passBit(i));}
@@ -6652,7 +6670,7 @@ function passMatch(win,draw,ms){
 function passRowHtml(R){
   const p=R&&R.pass;if(!p)return '';
   const parts=[fmtL(p.win?__L('승리 {n}'):p.draw?__L('무승부 {n}'):__L('패배 {n}'),{n:p.base})];if(p.goals)parts.push(fmtL(__L('골 {n}×{g}'),{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL(__L('오늘 첫 승리 {f}'),{f:p.first}));
-  return '<div class="rs-pass"><span>🐟 '+fmtL(__L('정어리 +{n}'),{n:p.total})+' <small>('+parts.join(' · ')+')</small></span>'+(p.t1>p.t0?'<span class="rtag">'+fmtL(__L('정어리 패스 {t}단계!'),{t:p.t1})+'</span>':'<small>'+fmtL(__L('정어리 패스 {t}단계'),{t:p.t1})+'</small>')+'</div>';
+  return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.total})+' <small>('+parts.join(' · ')+')</small></span>'+(p.t1>p.t0?'<span class="rtag">'+fmtL(__L('{p} {t}단계!'),{p:passTitle(save.pass.s),t:p.t1})+'</span>':'<small>'+fmtL(__L('{p} {t}단계'),{p:passTitle(save.pass.s),t:p.t1})+'</small>')+'</div>';
 }
 function rulesRowHtml(){
   const R=G.rl;if(!R||!G.mine||rulesMode()==='off')return '';const a=R.st[G.mine.key],b=R.st[G.mine.opp.key];
@@ -6675,12 +6693,12 @@ function renderPass(){
   const el=$('#psBody'),hd=$('#psHead');if(!el||!hd)return;passCheck();
   const P=save.pass,T=passTheme(P.s),tier=passTier(),cur=P.xp-tier*PASS.per,left=seasonLeft(P.s),n=passCount(),E=PASS.earn;
   hd.style.setProperty('--p1',T.c[0]);hd.style.setProperty('--p2',T.c[1]);
-  hd.innerHTML='<i class="ps-e">'+T.e+'</i><div class="ps-h"><b>'+fmtL(__L('{n} 정어리 패스'),{n:T.n})+'</b><small>'+fmtL(__L('시즌 {s} · {d}까지 · {l}일 남음'),{s:P.s,d:seasonDate(P.s),l:left})+'</small></div>';
+  hd.innerHTML='<i class="ps-e">'+T.e+'</i><div class="ps-h"><b>'+passTitle(P.s)+'</b><small>'+fmtL(__L('시즌 {s} · {d}까지 · {l}일 남음'),{s:P.s,d:seasonDate(P.s),l:left})+'</small></div>';
   let h='';
   if(P.last&&!P.last.seen){h+='<div class="ps-last">'+fmtL(__L('지난 시즌 {name}: {t}단계까지 받지 않은 보상을 자동으로 받았어요 (⭐{p}P · 카드 {c}장)'),{name:passName(P.last.s),t:P.last.tier,p:P.last.p,c:P.last.c})+'</div>';P.last.seen=true;persist();}
   h+='<div class="ps-prog"><div class="ps-tier"><small>'+__L('단계')+'</small><b>'+tier+'</b><small>/ '+PASS.tiers+'</small></div><div class="ps-bar">'
     +(tier>=PASS.tiers?'<div class="ps-bt">'+__L('모든 단계를 달성했어요!')+'</div><div class="pbar"><i style="width:100%"></i></div>':'<div class="ps-bt">'+fmtL(__L('다음 단계까지 🐟 {c} / {p}'),{c:cur,p:PASS.per})+'</div><div class="pbar"><i style="width:'+(cur/PASS.per*100).toFixed(1)+'%"></i></div>')
-    +'<small>'+fmtL(__L('이번 시즌 모은 정어리 {x}'),{x:P.xp})+'</small></div></div>';
+    +'<small>'+fmtL(__L('이번 시즌 모은 {f} {x}마리'),{f:T.n,x:P.xp})+'</small></div></div>';
   h+='<div class="ps-acts">'+(P.gold?'<span class="ps-gold on">👑 '+__L('골드 패스 사용 중')+'</span>':'<button class="btn primary ps-gold" id="psBuy">👑 '+fmtL(__L('골드 패스 열기 · {p}P'),{p:PASS.cost})+'</button>')
     +(n?'<button class="btn ps-all" id="psAll">🎁 '+fmtL(__L('보상 {n}개 모두 받기'),{n})+'</button>':'')+'</div>';
   if(!P.gold)h+='<div class="lbl ps-note">'+__L('골드 칸 보상은 지금까지 올라온 단계 것까지 바로 받을 수 있어요 · 현금 결제 없음, 경기로 번 포인트만 사용')+'</div>';
@@ -6692,7 +6710,7 @@ function renderPass(){
   }
   h+='</div>';
   const pools=[0,1,2,3,4].map(g=>fmtL(__L('{g} {n}종'),{g:GRADES[g].n,n:tierTypes(g).length})).join(' · ');
-  h+='<div class="odds ps-info"><b>🐟 '+__L('정어리 얻는 법')+'</b><br>'+fmtL(__L('경기를 끝내면 승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g} (최대 {m}골) · 그날 첫 승리 +{f} · 오늘의 목표 보상을 받을 때마다 +{q}'),{w:E.win,d:E.draw,l:E.loss,g:E.goal,m:E.goalMax,f:E.first,q:E.daily})
+  h+='<div class="odds ps-info"><b>'+T.e+' '+fmtL(__L('{f} 얻는 법'),{f:T.n})+'</b><br>'+fmtL(__L('경기를 끝내면 승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g} (최대 {m}골) · 그날 첫 승리 +{f} · 오늘의 목표 보상을 받을 때마다 +{q}'),{w:E.win,d:E.draw,l:E.loss,g:E.goal,m:E.goalMax,f:E.first,q:E.daily})
     +'<br>'+fmtL(__L('{p}마리마다 1단계 · 모두 {n}단계'),{p:PASS.per,n:PASS.tiers})
     +'<br><b>🎁 '+__L('보상 안내')+'</b><br>'+fmtL(__L('카드 보상은 그 등급 펭귄 중 하나가 같은 확률로 나와요 ({pools}) · 처음 얻은 펭귄은 해금, 이미 있으면 그 등급 카드로 보관 · 시즌 트레일이 이미 있으면 ⭐{d}P'),{pools,d:PASS.dup})
     +'<br>'+fmtL(__L('패스 이름은 시즌마다 바뀌어요. 시즌이 끝나면 받지 않은 보상은 자동으로 받고, 새 패스는 0단계부터 · 다음 시즌: {next}'),{next:passName(P.s+1)})+'</div>';
@@ -6708,14 +6726,16 @@ function passMenu(){
   passCheck();const P=save.pass,T=passTheme(P.s),tier=passTier(),n=passCount();
   const m=$('#menuPass');if(!m)return;
   const sub=$('#psSub'),bd=$('#psBadge');
-  if(sub)sub.textContent=T.n+' · '+fmtL(__L('{t}단계'),{t:tier});
+  const tt=$('#psTitle');if(tt)tt.textContent=passTitle(P.s);
+  if(sub)sub.textContent=fmtL(__L('{t}단계 · D-{d}'),{t:tier,d:seasonLeft(P.s)});
+  const ic=m.querySelector('.ps-ic');if(ic)ic.textContent=T.e;
   if(bd){bd.textContent=n?n:'';bd.style.display=n?'inline-block':'none';}
   m.style.setProperty('--p1',T.c[0]);m.style.setProperty('--p2',T.c[1]);
-  m.setAttribute('aria-label',passName(P.s)+' '+fmtL(__L('{t}단계'),{t:tier})+(n?', '+fmtL(__L('받을 보상 {n}개'),{n}):'')+'. '+__L('정어리 패스 열기'));
+  m.setAttribute('aria-label',passName(P.s)+' '+fmtL(__L('{t}단계'),{t:tier})+(n?', '+fmtL(__L('받을 보상 {n}개'),{n}):'')+'. '+__L('패스 열기'));
 }
-function howV24(){const E=PASS.earn;return fmtL(__L('🐟 <b>정어리 패스</b>: 경기와 오늘의 목표로 정어리를 모아 {n}단계를 올라가요 (승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g}, 그날 첫 승리 +{f}, 목표 보상마다 +{q}). 무료 칸은 누구나, 👑 골드 칸은 {p}P로 열어요. 패스 이름과 시즌 트레일은 시즌마다 바뀌어요.'),{n:PASS.tiers,w:E.win,d:E.draw,l:E.loss,g:E.goal,f:E.first,q:E.daily,p:PASS.cost});}
+function howV24(){const E=PASS.earn,L=PASS.themes;return fmtL(__L('🐟 <b>생선 패스</b>: 시즌마다 패스 이름이 다른 생선으로 바뀌어요 ({list} → … 모두 {n}가지, 그다음 처음부터). 경기와 오늘의 목표로 그 시즌의 생선을 모아 {t}단계를 올라가요 (승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g}, 그날 첫 승리 +{f}, 목표 보상마다 +{q}). 무료 칸은 누구나, 👑 골드 칸은 {p}P로 열어요. 골드 1단계는 그 생선 이름의 시즌 트레일이에요.'),{list:L.slice(0,6).map(x=>x.n).join(' → '),n:L.length,t:PASS.tiers,w:E.win,d:E.draw,l:E.loss,g:E.goal,f:E.first,q:E.daily,p:PASS.cost});}
 // help line (the screen itself is static markup, next to 목표)
-{const b=document.querySelector('.how-v22');if(b){const d=document.createElement('div');d.innerHTML='<h3>'+__L('🐟 정어리 패스')+'</h3>'+howV24();b.appendChild(d);}}
+{const b=document.querySelector('.how-v22');if(b){const d=document.createElement('div');d.innerHTML='<h3>'+__L('🐟 생선 패스')+'</h3>'+howV24();b.appendChild(d);}}
 try{passCheck();}catch(e){}
 
 /* ================= INIT ================= */

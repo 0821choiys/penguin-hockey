@@ -123,7 +123,7 @@ sec('late-game tension');
 freshMatch({time:40,diff:'easy'});
 G.timeLeft=31;run(1.2);ok(G.hype.tl===1,'<= 30s -> tension level 1');
 G.timeLeft=9.5;run(1.1);ok(G.hype.tl===2,'<= 10s -> countdown level 2');
-G.mine.score=0;G.mine.opp.score=0;G.timeLeft=.1;run(.6);ok(G.ot===true&&G.hype.otShown,'tie at 0:00 -> SUDDEN DEATH overtime');
+G.mine.score=0;G.mine.opp.score=0;G.timeLeft=.1;{let k=0;while(!G.ot&&k++<360)step(1/60);run(.3);}ok(G.ot===true&&G.hype.otShown,'tie at 0:00 -> SUDDEN DEATH overtime');   // (the clock also stops while the referee has play stopped)
 freshMatch({time:40,diff:'easy'});G.timeLeft=8;G.slow=null;G.puck.hitT=0;
 const P2=G.puck;P2.x=23.0;P2.z=2.75;P2.vx=20;P2.vz=0;let gotSlow=false;for(let i=0;i<40;i++){step(1/60);if(G.slow&&G.slow.t>0)gotSlow=true;}
 ok(gotSlow,'post hit in the last 10s triggers a short slow-motion');

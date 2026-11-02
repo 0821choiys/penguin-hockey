@@ -7,9 +7,10 @@ const reset=s=>{Object.assign(save.pass,{s:s||PH.seasonNow(),xp:0,gold:false,cf:
 
 // ---- names change every season ----
 const T=PASS.themes;
-ok(PH.seasonNow()===1&&PH.passName(1).includes('오로라 정어리 패스'),'season 1 (now) = '+PH.passName(1));
-ok(new Set([1,2,3,4,5,6,7,8].map(PH.passName)).size===8&&PH.passName(2).includes('빙하 탐험')&&PH.passName(9)===PH.passName(1),'8 different pass names, then the cycle repeats ('+[1,2,3].map(PH.passName).join(' / ')+' …)');
-ok(T.every(t=>PH.TRAILS[t.t]&&PH.TRAILS[t.t].pass),'each season name has its own exclusive trail');
+ok(PH.seasonNow()===1&&PH.passName(1)==='🐟 정어리 패스','season 1 (now) = '+PH.passName(1));
+{const N=PASS.themes.length,names=[];for(let i=1;i<=N;i++)names.push(PH.passName(i));
+ ok(N===24&&new Set(names).size===N&&['정어리','청어','광어','넙치','도다리','꽁치'].every((f,i)=>names[i].includes(f+' 패스'))&&PH.passName(N+1)===PH.passName(1),'a different fish every season: '+names.slice(0,7).join(' → ')+' … ('+N+' fish, then the cycle repeats)');}
+ok(T.every(t=>PH.TRAILS[t.t]&&PH.TRAILS[t.t].pass&&PH.TRAILS[t.t].name===t.n),'each fish has its own exclusive trail, named after it');
 ok(PASS.free.length===PASS.tiers&&PASS.gold.length===PASS.tiers&&PASS.tiers===30,'30 tiers, a free and a gold reward on each');
 ok([...PASS.free,...PASS.gold].every(r=>(r.p>0)+(r.c!=null&&r.c>=0&&r.c<=4)+(r.t===1)===1),'every reward is exactly one of: points / a card of one rarity / the season trail');
 
@@ -46,7 +47,7 @@ ok(PH.passCan('f',0)&&PH.passCan('f',2)&&!PH.passCan('f',3)&&!PH.passCan('g',0),
  class FD extends RD{constructor(...a){if(a.length)super(...a);else super(real()+28*day);}static now(){return real()+28*day;}}global.Date=FD;
  const sn=PH.seasonNow(),pts0=save.points;PH.passCheck();
  ok(sn===2&&save.pass.s===2&&save.pass.xp===0&&!save.pass.gold&&save.pass.last&&save.pass.last.tier===10&&save.pass.last.p>0&&save.points>pts0,'new season: tiers 1–10 (free + gold) auto-claimed (⭐'+(save.pass.last&&save.pass.last.p)+'P, '+(save.pass.last&&save.pass.last.c)+' cards), pass reset');
- ok(PH.passName(save.pass.s).includes('빙하 탐험'),'… and the pass is now called '+PH.passName(save.pass.s));
+ ok(PH.passName(save.pass.s).includes('청어 패스'),'… and the pass is now called '+PH.passName(save.pass.s));
  global.Date=RD;Date.now=real;}
 {reset(1);Object.assign(save.pass,{s:5,xp:777,gold:true});PH.passCheck();ok(save.pass.s===5&&save.pass.xp===777&&save.pass.gold,'device clock moved backwards (saved season 5, now 1): progress is kept, nothing reset');reset();}
 // ---- screen / menu render with the live numbers ----
