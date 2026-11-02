@@ -1,0 +1,23 @@
+/* ===== v16 i18n ===== */
+/* hidden for the few ms between first paint and the static-markup translation (2.5 s safety timeout in the bootstrap) */
+html.i18n-wait body{visibility:hidden}
+/* Chinese and Japanese put no spaces between words: lines must be allowed to break between characters (Korean keeps whole words) */
+html:lang(zh) body,html:lang(ja) body,html:lang(zh) #gauge span,html:lang(ja) #gauge span{word-break:normal;line-break:strict}
+/* the language row: each option is labelled in its own language */
+.setrow.set-lang .seg button{letter-spacing:0}
+/* trial bracket: round names stay on one line (longer in other languages); the opponent name gives way with an ellipsis */
+.rk-br>div>b{white-space:nowrap;flex:none}
+.rk-br>div>small{min-width:0}
+/* squad bench: the "in the squad" pill sits on the art's bottom edge so the penguin's name under it stays readable in every language */
+.pc-new.use{bottom:4.1em}
+/* home tiles (other languages): a long title wraps inside its tile instead of widening its column; Korean keeps its layout */
+html:not(:lang(ko)) #sMenu .hm-cta{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+html:not(:lang(ko)) #sMenu .hm-tile .tx b{flex-wrap:wrap;white-space:normal;row-gap:2px}
+@media (max-height:520px){html:not(:lang(ko)) #sMenu .hm-cta{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr)}}
+/* goals tabs (other languages): a little tighter on phones so four longer labels fit */
+@media (max-width:400px){html:not(:lang(ko)) #gTabs button{padding-left:7px;padding-right:7px}}
+/* pull / fusion results: on phones the buttons wrap onto two rows instead of running off both screen edges */
+.fx-foot{flex-wrap:wrap;padding:0 12px;box-sizing:border-box}
+@media (max-width:560px){.fx-foot{gap:8px}.fx-foot .btn{flex:1 1 40%;min-width:0;max-width:240px;min-height:44px;font-size:16px!important;padding:10px 12px!important}}
+/* game-mode titles split only at spaces (or a marked break), never inside a word; i18nFit() shrinks a word that is still too wide */
+html:not(:lang(ko)) .mode b{overflow-wrap:normal;word-break:keep-all}

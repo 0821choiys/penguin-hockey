@@ -1,0 +1,16 @@
+const chromium=require('@sparticuz/chromium');const puppeteer=require('puppeteer-core');const fs=require('fs'),path=require('path');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));const pre=process.argv[2]||'p1';
+(async()=>{const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:1100,height:640}});
+const page=await browser.newPage();const logs=[];page.on('pageerror',e=>logs.push(e.message));await page.setRequestInterception(true);page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
+await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','fast','strong'],type:'strong',hat:'helmet',squad:['fast','basic',null],tut:{done:true,asked:true}})));
+await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2500);
+await page.evaluate(()=>{window.requestAnimationFrame=()=>0;document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));});await wait(200);
+const R=async(n,setup)=>{await page.evaluate(setup);await page.evaluate(()=>{const P=window.__PH;P.renderer.setSize(1100,640,false);P.camera.aspect=1100/640;P.camera.updateProjectionMatrix();P.renderer.render(P.scene,P.camera);});await wait(120);await page.evaluate(()=>{const P=window.__PH;P.renderer.render(P.scene,P.camera);});await page.screenshot({path:'peng/'+pre+'_'+n+'.png'});};
+await R('match',()=>{const P=window.__PH;P.launch('quick');for(let i=0;i<60*6;i++)P.step(1/60);});
+await R('carry',()=>{const P=window.__PH,G=P.G,p=G.player;G.carry=p;p.x=-4;p.z=1;p.heading=Math.PI/2;for(let i=0;i<40;i++){P.input.x=1;P.input.z=0;P.step(1/60);}const c=P.camera;c.position.set(p.x-2.4,2.4,p.z+4.2);c.lookAt(p.x+.6,.7,p.z);});
+await R('charge',()=>{const P=window.__PH,G=P.G,p=G.player;P.input.x=0;p.charging=true;p.charge=.85;P.animatePenguin(p,1/60,G.t);for(let i=0;i<20;i++){p.charging=true;p.charge=.85;P.animatePenguin(p,1/60,G.t+i/60);}const c=P.camera;c.position.set(p.x-1.2,2.0,p.z+4.4);c.lookAt(p.x+.4,.8,p.z);});
+await R('goalie',()=>{const P=window.__PH,G=P.G,g=G.mine.opp.goalie;const c=P.camera;c.position.set(g.x-4.2,2.4,g.z+3.2);c.lookAt(g.x,.8,g.z);});
+await R('walkcarry',()=>{const P=window.__PH,G=P.G,p=G.player;G.carry=p;p.charging=false;p.vx=1.6;p.vz=0;p.heading=Math.PI/2;p.slideT=0;p.fall=0;p.pose='play';
+  for(let i=0;i<50;i++){p.rx=p.x;p.rz=p.z;P.animatePenguin(p,1/60,G.t+i/60);}G.puck.x=p.x+(p.r+.54);G.puck.z=p.z;P.step(0);const c=P.camera;c.position.set(p.x+1.2,2.1,p.z+3.6);c.lookAt(p.x+.7,.5,p.z);});
+await R('night',()=>{const P=window.__PH;P.setTOD(.9,99);for(let i=0;i<30;i++)P.step(1/60);const G=P.G,g=G.mine.opp.goalie;const c=P.camera;c.position.set(g.x-4.2,2.4,g.z+3.2);c.lookAt(g.x,.8,g.z);});
+console.log(pre,logs.join(' | ')||'no page errors');await browser.close();})();

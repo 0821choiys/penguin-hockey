@@ -1,0 +1,13 @@
+const chromium=require('@sparticuz/chromium');const puppeteer=require('puppeteer-core');const fs=require('fs'),path=require('path');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));const pre=process.argv[2]||'d1';
+(async()=>{const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:1100,height:620}});
+const page=await browser.newPage();const logs=[];page.on('pageerror',e=>logs.push(e.message));await page.setRequestInterception(true);page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
+await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic'],type:'basic',tut:{done:true,asked:true}})));
+await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2600);
+await page.evaluate(()=>{window.requestAnimationFrame=()=>0;document.querySelectorAll('.screen,#hud,nav,#banner,#bannerSub,#combo').forEach(e=>e.style.visibility='hidden');});
+const shot=async(n,fn)=>{await page.evaluate(fn);await page.evaluate(()=>{const P=window.__PH;P.renderer.setSize(1100,620,false);P.camera.aspect=1100/620;P.camera.clearViewOffset();P.camera.updateProjectionMatrix();if(window.__c)window.__c(P.camera);P.renderer.render(P.scene,P.camera);});await wait(120);await page.evaluate(()=>{const P=window.__PH;if(window.__c)window.__c(P.camera);P.renderer.render(P.scene,P.camera);});await page.screenshot({path:'rink/'+pre+'_'+n+'.png'});};
+await shot('goallight',()=>{const P=window.__PH,G=P.G;P.launch('quick');for(let i=0;i<60*4;i++)P.step(1/60);G.todMode='fixed';G.todFixed=.92;P.setTOD(.92,99);for(let i=0;i<10;i++)P.step(1/60);P.setTOD(.92,99);
+  G.state='goal';G.scoredBy=G.teams.blue;G.stateT=9;for(let i=0;i<8;i++)P.step(1/60);window.__c=c=>{c.position.set(17,3.2,7);c.lookAt(26,1.2,0);};});
+await shot('beams',()=>{window.__c=c=>{c.position.set(0,9,34);c.lookAt(0,3,-6);};});
+await shot('select',()=>{const P=window.__PH,G=P.G;G.state='play';G.todMode='fixed';G.todFixed=.1;P.setTOD(.1,99);const b=document.createElement('button');b.dataset.go='sSelect';document.body.appendChild(b);b.click();b.remove();for(let i=0;i<30;i++)P.step(1/60);window.__c=null;});
+console.log(pre,logs.join(' | ')||'no page errors');await browser.close();})();

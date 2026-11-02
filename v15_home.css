@@ -1,0 +1,106 @@
+
+/* ===== v15 home: one button family, only real buttons, 44 px targets ===== */
+.ic svg,.chev svg,.dock i svg,#menuRank svg,#menuGoals svg{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic,.chev{display:grid;place-items:center;font-style:normal;flex:none}
+/* main actions: icon on the left, label + one plain line underneath */
+#sMenu .hm-cta{width:min(460px,92vw);gap:10px}
+#sMenu .hm-cta .hm-b{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:12px;width:100%;min-width:0;margin:0;text-align:left;line-height:1.2;white-space:normal}
+#sMenu .hm-b .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+#sMenu .hm-b .tx b{font-weight:inherit;display:flex;align-items:center;gap:7px;white-space:nowrap}
+#sMenu .hm-b .tx small{display:block;margin:0;font-size:12.5px;line-height:1.3;opacity:.78;white-space:normal}
+#sMenu .hm-b .chev{width:22px;height:22px;opacity:.55}#sMenu .hm-b .chev svg{width:20px;height:20px}
+/* primary: the puck drop */
+#sMenu .hm-cta .hm-quick{grid-column:1/-1;min-height:86px;padding:14px 20px 14px 16px;border-radius:20px;font-size:28px}
+#sMenu .hm-quick .ic{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.5);color:#0b4f8a;box-shadow:inset 0 0 0 2px rgba(255,255,255,.75)}
+#sMenu .hm-quick .ic svg{width:30px;height:30px;stroke-width:2.2}
+#sMenu .hm-quick .tx small{font-size:13.5px;color:#06315a;opacity:.85}
+/* secondary: navy boards with one accent stripe each (tier = gold, market = amber) */
+#sMenu .hm-cta .btn.hm-tile,#sMenu .hm-cta .btn.hm-tile:hover{min-height:68px;padding:10px 12px 10px 14px;border-radius:16px;font-size:18px;color:var(--frost)!important;text-shadow:none!important;
+  background:linear-gradient(180deg,#19426d,#11355a)!important;border:1px solid rgba(160,212,255,.3)!important;box-shadow:inset 4px 0 0 var(--acc),0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.35)!important}
+#sMenu .hm-tile.rkbtn{--acc:#ffc93c;--accbg:rgba(255,201,60,.15)}#sMenu .hm-tile.mkbtn{--acc:#ff9f43;--accbg:rgba(255,159,67,.15)}
+#sMenu .hm-tile .ic{width:40px;height:40px;border-radius:12px;background:var(--accbg);color:var(--acc)}
+#sMenu .hm-tile .ic svg{width:24px;height:24px}
+#sMenu .hm-tile .tx small{color:var(--frost2);opacity:1}
+#sMenu #mkBadge{margin:0;font-size:11px;line-height:17px;padding:0 7px;border-radius:9px;background:#ff6b3d;color:#fff}
+/* tertiary: a plain row into the full mode list */
+#sMenu .hm-cta .btn.hm-row,#sMenu .hm-cta .btn.hm-row:hover{grid-column:1/-1;min-height:50px;padding:6px 10px 6px 14px;border-radius:14px;font-size:17px;color:var(--frost)!important;
+  background:rgba(9,29,52,.94)!important;border:1px solid rgba(160,212,255,.26)!important;box-shadow:0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.3)!important}
+#sMenu .hm-row .ic{width:30px;height:30px;color:var(--ice)}#sMenu .hm-row .ic svg{width:24px;height:24px}
+#sMenu .hm-cta .hm-b:hover{filter:brightness(1.08)}
+#sMenu .hm-cta .hm-b:active{transform:translateY(2px)}
+/* today's goals: one card that opens the goals screen */
+#menuGoals{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:3px;width:min(460px,92vw);min-height:58px;max-width:none;margin:0;padding:9px 10px 9px 14px;
+  border-radius:16px;background:rgba(9,29,52,.94);border:1px solid rgba(160,212,255,.24);box-shadow:0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.3);color:var(--frost);font:inherit;text-align:left;cursor:pointer;touch-action:manipulation}
+#menuGoals:empty{display:none}
+#menuGoals:hover{filter:brightness(1.08)}#menuGoals:active{transform:translateY(2px)}
+#menuGoals:focus-visible,#menuRank:focus-visible{outline:3px solid var(--puck);outline-offset:2px}
+#menuGoals>.ic{grid-row:1/3;width:36px;height:36px;border-radius:11px;background:rgba(98,212,255,.13);color:var(--ice)}#menuGoals>.ic svg{width:22px;height:22px}
+#menuGoals .mg-t{display:flex;align-items:center;gap:10px;min-width:0;font-size:15px}
+#menuGoals .mg-t b{font-weight:inherit;white-space:nowrap}
+#menuGoals .mg-seg{display:inline-flex;gap:3px}
+#menuGoals .mg-seg i{display:block;width:20px;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--ice) var(--w,0%),rgba(160,212,255,.2) var(--w,0%))}
+#menuGoals .mg-seg i.r{background:var(--puck)}#menuGoals .mg-seg i.d{background:#7ee2a8}
+#menuGoals .mg-s{grid-column:2;font-size:12.5px;color:var(--frost2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#menuGoals .mg-c{grid-column:3;grid-row:1/3;display:flex;align-items:center;gap:2px;font-size:13px;color:var(--frost2);white-space:nowrap}
+#menuGoals .mg-c.rdy{color:#2b1a00;background:var(--puck);border-radius:999px;padding:3px 4px 3px 10px;font-weight:700}
+#menuGoals .chev{width:20px;height:20px;opacity:.7}#menuGoals .chev svg{width:18px;height:18px}
+#sMenu #menuStats{font-size:12.5px!important;color:var(--frost2)!important;opacity:1;margin:0!important;padding:4px 12px;border-radius:999px;background:rgba(9,29,52,.82);border:1px solid rgba(160,212,255,.16);text-shadow:none}
+#sMenu #menuStats:empty{display:none}
+/* club + rank: one button at the top left (opens the profile), same height as the points chip */
+#sMenu #menuRank{display:flex;align-items:center;flex-wrap:nowrap;gap:0;min-height:44px;padding:0 4px;margin:0;border-radius:999px;background:var(--night);border:1px solid var(--line);box-shadow:0 4px 14px rgba(2,10,24,.3);
+  color:var(--frost);font:inherit;font-size:13px;line-height:1.2;cursor:pointer;overflow:hidden;max-width:calc(100vw - 190px);touch-action:manipulation}
+#sMenu #menuRank:empty{display:none}
+#sMenu #menuRank>span{display:inline-flex;align-items:center;gap:6px;padding:0 10px;white-space:nowrap;background:none!important;border:0!important;box-shadow:none!important;border-radius:0;font-size:13px;min-width:0}
+#sMenu #menuRank>span+span{border-left:1px solid var(--line)!important}
+#sMenu #menuRank svg{width:16px;height:16px;color:var(--frost2);flex:none}
+#sMenu #menuRank .mr-sub{font-style:normal;color:var(--frost2)}
+#sMenu #menuRank:hover{border-color:rgba(160,212,255,.5)}
+body.menuish .pts{display:flex;align-items:center;gap:4px;min-height:44px;box-sizing:border-box;padding:0 15px}
+/* bottom dock: one icon style, same labels */
+#sMenu .dock button{min-height:56px;color:var(--frost2);gap:4px}
+#sMenu .dock button i{width:26px;height:26px;display:grid;place-items:center;color:var(--frost)}
+#sMenu .dock button i svg{width:24px;height:24px}
+#sMenu .dock button span{font-size:12.5px}
+#sMenu .dock button:hover{background:rgba(160,212,255,.1);color:var(--frost)}
+#sMenu .dock button:focus-visible{outline:3px solid var(--puck);outline-offset:-3px}
+@media (max-width:520px){
+  #sMenu #menuRank{max-width:calc(100vw - 146px)}
+  #sMenu #menuRank .mr-rank,#sMenu #menuRank .mr-sub,#sMenu #menuRank .mr-title{display:none}
+  #sMenu .hm-cta .hm-quick{font-size:25px;min-height:80px}
+  #sMenu .hm-cta .hm-tile{font-size:17px;padding:10px 10px 10px 12px;column-gap:9px}
+  #sMenu .hm-tile .ic{width:34px;height:34px;border-radius:10px}#sMenu .hm-tile .ic svg{width:21px;height:21px}
+  #sMenu .hm-tile .tx small{font-size:12px}
+}
+@media (max-height:520px){
+  #sMenu .hm-cta .hm-quick{grid-column:auto;grid-row:span 2;grid-template-columns:1fr;justify-items:center;text-align:center;row-gap:6px;font-size:23px;padding:10px;min-height:0}
+  #sMenu .hm-quick .tx{align-items:center}#sMenu .hm-quick .ic{width:44px;height:44px}#sMenu .hm-quick .ic svg{width:26px;height:26px}
+  #sMenu .hm-cta .hm-tile{font-size:16px;min-height:56px;padding:6px 8px 6px 10px;column-gap:8px}
+  #sMenu .hm-tile .ic{width:32px;height:32px}#sMenu .hm-tile .ic svg{width:20px;height:20px}
+  #sMenu .hm-tile .tx b{flex-wrap:wrap;white-space:normal;row-gap:2px;font-size:15.5px}
+  #sMenu .hm-cta .btn.hm-row,#sMenu .hm-cta .btn.hm-row:hover{grid-column:2/-1;min-height:44px;font-size:15px}
+  #sMenu .dock button{min-height:44px;flex-direction:row;gap:6px}#sMenu .dock button i{width:22px;height:22px}#sMenu .dock button i svg{width:20px;height:20px}
+}
+/* ===== the screens these buttons open: tabs, footers, scout controls at 44 px ===== */
+#scTabs button,#gTabs button,#mkTabs button,#pfTabs button{min-height:44px;padding-top:0;padding-bottom:0}
+#scTabs,#gTabs,#mkTabs,#pfTabs{max-width:100%;box-sizing:border-box}
+#scBody .btn.small,#scBody .en-chip,#dxQ{min-height:44px;box-sizing:border-box}
+.pfix>.row:last-child .btn,#rBtns .btn,#sMode .col>.btn.small:last-child,#sChal .col>.btn.small:last-child,#sTour #tBack{min-height:44px;min-width:96px}
+.cd-x{width:44px!important;height:44px!important;top:6px!important;right:6px!important}
+details.odds>summary{display:flex;align-items:center;flex-wrap:wrap;gap:2px 8px;min-height:44px;box-sizing:border-box}
+details.odds>summary::after{margin-left:auto}
+/* fast-animation option: a real switch with a full-height label */
+.gb-tog{min-height:44px;padding:0 4px;gap:9px;user-select:none}
+.gb-tog input{-webkit-appearance:none;appearance:none;flex:none;width:42px;height:24px;margin:0;border-radius:12px;background:rgba(160,212,255,.2);border:1px solid var(--line);position:relative;cursor:pointer;transition:background .15s}
+.gb-tog input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#eaf6ff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .15s}
+.gb-tog input:checked{background:var(--blueline);border-color:#9cc7ff}
+.gb-tog input:checked::after{transform:translateX(18px)}
+.gb-tog input:focus-visible{outline:3px solid var(--puck);outline-offset:2px}
+/* pull buttons: same family as the home buttons */
+.gpbtn .btn.gb-b{border-radius:16px;min-height:68px;min-width:0;width:100%;padding:10px 12px;justify-self:stretch}
+.gpbtn .gb-b:not(.primary){background:linear-gradient(180deg,#19426d,#11355a);border:1px solid rgba(160,212,255,.3);box-shadow:inset 0 -3px 0 rgba(255,201,60,.55),0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.35)}
+.gpbtn .gb-b b{font-size:19px}.gpbtn .gb-b small{font-size:12.5px}
+@media (prefers-reduced-motion:reduce){.gb-tog input,.gb-tog input::after{transition:none}#sMenu .hm-cta .hm-b:active,#menuGoals:active{transform:none}}
+/* settings: the code box shrinks to the row instead of pushing 확인 past the panel edge */
+.code-box{min-width:0;max-width:100%}
+#codeIn{flex:1 1 auto;min-width:0;width:min(190px,44vw)}
+#codeGo{flex:none;white-space:nowrap}

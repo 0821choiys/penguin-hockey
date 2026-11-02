@@ -1,0 +1,1 @@
+const PH=require('./harness.js');const {save}=PH;console.log(JSON.stringify({v:save.v,points:save.points,types:save.types,type:save.type,squad:save.squad,titles:save.trial.titles,run:save.trial.run&&save.trial.run.kind+':'+save.trial.run.round,dev:save.dev.got,lvAuk:save.lv.auk}));setTimeout(()=>process.exit(0),900);

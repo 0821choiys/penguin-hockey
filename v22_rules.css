@@ -1,0 +1,25 @@
+
+/* ===== v22: referee calls, power play / penalty box clocks ===== */
+#rlHud{position:absolute;right:calc(env(safe-area-inset-right,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 62px);display:none;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none;max-width:min(58vw,360px)}
+#rlHud.on{display:flex}
+.rl-c{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:3px 10px;font-size:13px;line-height:1.35;color:#eaf6ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;box-shadow:0 4px 12px rgba(2,10,24,.35)}
+.rl-c.blue{border-color:#7fb6ff;box-shadow:inset 3px 0 0 #3d8bff,0 4px 12px rgba(2,10,24,.35)}
+.rl-c.red{border-color:#ff8d99;box-shadow:inset 3px 0 0 #ff4d5e,0 4px 12px rgba(2,10,24,.35)}
+.rl-c.dl{animation:rlPulse 1s ease-in-out infinite}
+.rl-c.warn{border-color:#ffd34d;color:#ffe9a6;background:rgba(60,42,4,.85)}
+.rl-c.ps{border-color:#ffd34d;color:#fff3c4}
+@keyframes rlPulse{50%{filter:brightness(1.35)}}
+#rlCall{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 96px);transform:translateX(-50%);display:none;align-items:center;gap:12px;width:max-content;max-width:min(560px,92vw);background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:9px 16px 10px 12px;box-shadow:0 14px 32px rgba(2,10,24,.5);pointer-events:none;text-align:left}
+#rlCall.on{display:flex;animation:rlIn .28s cubic-bezier(.2,1.4,.4,1)}
+#rlCall.blue{border-color:#7fb6ff;box-shadow:inset 0 -4px 0 #3d8bff,0 14px 32px rgba(2,10,24,.5)}
+#rlCall.red{border-color:#ff8d99;box-shadow:inset 0 -4px 0 #ff4d5e,0 14px 32px rgba(2,10,24,.5)}
+.rc-i{font-style:normal;font-size:32px;line-height:1;flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:repeating-linear-gradient(90deg,#f4f6f8 0 7px,#16181c 7px 14px);box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.rc-t{min-width:0}
+.rc-t b{display:block;font:700 19px 'Fredoka','Jua',sans-serif;color:#fff;letter-spacing:.01em}
+.rc-t span{display:block;font-size:14px;color:#eaf6ff;margin-top:1px}
+.rc-t small{display:block;font-size:12.5px;color:var(--frost2);margin-top:2px}
+@keyframes rlIn{from{transform:translateX(-50%) scale(.82);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+@media (max-width:560px){#rlCall{top:calc(env(safe-area-inset-top,0px) + 86px);padding:7px 12px 8px 9px;gap:9px}.rc-i{width:38px;height:38px;font-size:26px}.rc-t b{font-size:16px}.rc-t span{font-size:12.5px}.rc-t small{font-size:11.5px}
+  #rlHud{top:calc(env(safe-area-inset-top,0px) + 58px)}.rl-c{font-size:12px;padding:2px 8px}}
+@media (prefers-reduced-motion:reduce){#rlCall.on{animation:none}.rl-c.dl{animation:none}}
+body.rm #rlCall.on,body.rm .rl-c.dl{animation:none}

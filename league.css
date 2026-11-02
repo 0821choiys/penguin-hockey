@@ -1,0 +1,54 @@
+/* ===== transfer market / profile / league ===== */
+.lgp{width:min(96vw,760px);max-height:94vh;overflow:auto}
+.up{color:#7dffb0}.dn{color:#ff9a9a}
+.mk-top{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;align-items:center;font-size:14px;margin:4px 0 8px}
+.mk-trend{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px}
+.mk-trend i{font-style:normal;background:rgba(0,0,0,.25);padding:2px 8px;border-radius:10px}
+.mk-trend i.up{color:#ff9a9a}.mk-trend i.dn{color:#8fd0ff}
+.mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:10px}
+.mk-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 8px;border-radius:16px;background:rgba(255,255,255,.1);border:1.5px solid transparent}
+.mk-item.hot{border-color:#ffb347;box-shadow:0 0 16px rgba(255,170,60,.35)}
+.mk-item.sold{opacity:.5}
+.mk-item .btn{width:100%;padding:6px 4px;font-size:14px}
+.mk-meta{font-size:12.5px;opacity:.95}
+.mk-sale{position:absolute;top:-9px;left:50%;transform:translateX(-50%);z-index:4;background:linear-gradient(180deg,#ffb347,#e0620f);color:#fff;font:700 12px 'Fredoka','Jua',sans-serif;padding:2px 10px;border-radius:10px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.mk-sell{display:flex;align-items:center;gap:10px;padding:6px 10px;margin:6px 0;border-radius:14px;background:rgba(255,255,255,.1)}
+.mk-sell .info{flex:1;min-width:0;text-align:left;font-size:14px}
+.mk-log{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:6px 12px;margin:5px 0;border-radius:12px;background:rgba(255,255,255,.08);font-size:14px}
+.mk-log .b,.mk-log .s{font-weight:700;padding:1px 8px;border-radius:8px;font-size:12px}
+.mk-log .b{background:#2f7bff}.mk-log .s{background:#1c9c5a}
+.mk-log small{opacity:.75;white-space:nowrap}
+#mkBadge{display:none;background:#ff7a1a;color:#fff;border-radius:10px;font-size:11px;padding:0 7px;margin-left:6px;vertical-align:middle}
+.btn.mkbtn{background:linear-gradient(180deg,rgba(255,214,110,.95),rgba(230,140,30,.95))!important;color:#3a1d00!important;border-color:#ffe7a8!important;text-shadow:none!important;font-weight:700}
+#menuRank{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px;cursor:pointer}
+#menuRank span{font-size:13px;padding:3px 10px;border-radius:12px;background:rgba(8,28,60,.68);border:1.5px solid rgba(255,226,122,.6);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+#menuRank:empty{display:none}
+.pf-head{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.pf-emb{font-size:58px;line-height:1;width:84px;height:84px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.35),rgba(255,255,255,.08));border:2px solid rgba(255,226,122,.8)}
+.pf-names{display:flex;flex-direction:column;gap:6px;text-align:left;font-size:13px}
+.pf-names input{display:block;margin-top:2px;width:190px;font:inherit;font-size:16px;color:#fff;background:rgba(0,0,0,.28);border:1.5px solid rgba(255,255,255,.45);border-radius:10px;padding:5px 10px}
+.pf-embs{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:8px 0}
+.pf-embs button{font-size:20px;width:36px;height:36px;border-radius:10px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);cursor:pointer}
+.pf-embs button.on{border-color:#ffe27a;background:rgba(255,226,122,.3)}
+.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:6px 0}
+.pf-card{background:rgba(255,255,255,.1);border-radius:14px;padding:8px 10px;text-align:center}
+.pf-card small{display:block;opacity:.85;font-size:12px}
+.pf-card b{display:block;font:700 24px 'Fredoka','Jua',sans-serif;color:var(--gold);margin:2px 0}
+.pf-card b span{font-size:14px;opacity:.7;color:#fff}
+.pf-stats{font-size:14px;margin:8px 0}
+.pf-form{margin-top:6px;display:flex;gap:5px;justify-content:center;align-items:center}
+.pf-form i{font-style:normal;font-weight:700;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.pf-form .fW{background:#1c9c5a}.pf-form .fD{background:#6b7c90}.pf-form .fL{background:#c0304a}
+.lg-sum{text-align:center;font-size:15px;margin:4px 0 8px}
+.lg-list{max-height:min(46vh,340px);overflow:auto;border-radius:14px;background:rgba(0,0,0,.18);padding:4px;position:relative}
+.lg-row{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:10px;font-size:14px}
+.lg-row:nth-child(odd){background:rgba(255,255,255,.05)}
+.lg-row .rk{width:30px;text-align:center;font-weight:700}
+.lg-row .em{width:24px;text-align:center}
+.lg-row .nm{flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-row .vl{white-space:nowrap;font-variant-numeric:tabular-nums}
+.lg-row.top .rk{font-size:17px}
+.lg-row.me{background:rgba(255,226,122,.28)!important;border:1.5px solid #ffe27a;font-weight:700}
+.rs-mgr{font-size:15px;margin:6px 0}
+@media (max-height:520px){.lg-list{max-height:40vh}.pf-emb{width:60px;height:60px;font-size:40px}.pf-card b{font-size:20px}}
+.pu{color:#ff9a9a}.pd{color:#8fd0ff}

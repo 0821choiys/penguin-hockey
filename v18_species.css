@@ -1,0 +1,24 @@
+/* ===== v18: ten more real penguin species ===== */
+/* card detail: skill line + real fact */
+.cd-r .sp-line{font-size:13px;line-height:1.45;color:#ffe9a8;margin:0 0 6px;padding:5px 8px;border-radius:10px;background:rgba(255,201,60,.1);border:1px solid rgba(255,201,60,.3)}
+.cd-r .sp-line b{color:#ffd45c}
+.cd-r .fact-line{font-size:12.5px;line-height:1.5;color:#cfe8ff;margin:6px 0;padding:5px 8px;border-radius:10px;background:rgba(120,190,255,.08);border:1px solid rgba(120,190,255,.22)}
+.cd-r .fact-line b{color:#9fd8ff;font-weight:700;margin-right:2px}
+/* squad screen: skill description under the captain's skill name */
+.sp-d{display:block;font-size:12px;line-height:1.4;color:#d9ecff;opacity:.92;margin:2px 0 4px}
+/* unowned species: a faint silhouette on the card back */
+.pc-sil{width:var(--cw,120px);height:calc(var(--cw,120px)*1.42);border-radius:calc(var(--cw,120px)/9*.95);box-sizing:border-box;position:relative;overflow:hidden;flex:none;
+  background:radial-gradient(circle at 50% 42%,#21558e,#0b2445 72%);box-shadow:inset 0 0 0 calc(var(--cw,120px)/9*.13) #9fc4e4,0 .3em .8em rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center}
+.pc-sil-art{position:absolute;inset:12% 10% 7%;display:flex;align-items:center;justify-content:center}
+.pc-sil-art svg{height:100%;width:auto;max-width:100%;filter:brightness(0) invert(1);opacity:.24}
+.pc-sil b{position:relative;font-size:calc(var(--cw,120px)*.34);color:rgba(234,246,255,.92);text-shadow:0 0 .4em #8fe0ff;font-weight:700}
+/* one-time news */
+.nw-pop{text-align:center}
+.nw-pop h3{font:700 22px 'Fredoka','Jua',sans-serif;color:#ffd45c;margin:2px 36px 6px}
+.nw-pop p{margin:4px 6px 8px;font-size:14px;line-height:1.5;color:#dff1ff}
+.nw-pop .nw-how{font-size:13px;color:var(--frost2,#bcd6ee)}
+.nw-cards{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:6px auto 4px;max-width:352px}   /* 5 + 5 */
+.nw-c{padding:0;border:0;background:none;cursor:pointer;border-radius:10px;transition:transform .15s}
+.nw-c:hover,.nw-c:focus-visible{transform:translateY(-3px)}
+@media (max-width:420px){.nw-cards{gap:4px;max-width:300px}.nw-c{--cw:56px!important}}
+#specInfo{line-height:1.45}

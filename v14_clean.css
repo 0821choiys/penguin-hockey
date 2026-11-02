@@ -1,0 +1,28 @@
+/* ===== v14 tidy pass: nothing pokes out of its box ===== */
+/* Korean words stay whole when a line wraps (no "슬라 / 이드" splits) */
+body{word-break:keep-all;overflow-wrap:break-word}
+/* big panels: fixed title + tabs, scrolling body, fixed footer row; the body fades out where content continues */
+/* the panel always fits the screen (beats the older per-panel 92-94vh caps and inline styles, which could overshoot once the chip gap is added) */
+.panel.pfix{display:flex;flex-direction:column;overflow:hidden!important;max-height:calc(100vh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}
+@supports (height:100dvh){.panel.pfix{max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}}
+.screen.ptsgap .panel.pfix{max-height:calc(100vh - 72px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}
+@supports (height:100dvh){.screen.ptsgap .panel.pfix{max-height:calc(100dvh - 72px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}}
+@media(max-aspect-ratio:1/1){#sSelect .panel.pfix{max-height:58%!important}}
+.pfix>*{flex:0 0 auto}
+.pfix>.pbody{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;margin:0 -12px;padding:4px 12px 14px;scrollbar-width:thin;scrollbar-color:rgba(160,212,255,.35) transparent}
+.pfix>.pbody::-webkit-scrollbar{width:6px}.pfix>.pbody::-webkit-scrollbar-thumb{background:rgba(160,212,255,.32);border-radius:6px}
+.pbody.fd{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 30px),transparent)}
+.pbody.fu{-webkit-mask-image:linear-gradient(180deg,transparent,#000 22px);mask-image:linear-gradient(180deg,transparent,#000 22px)}
+.pbody.fu.fd{-webkit-mask-image:linear-gradient(180deg,transparent,#000 22px,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(180deg,transparent,#000 22px,#000 calc(100% - 30px),transparent)}
+.pfix>.row:last-child,.pfix>#rBtns{margin-top:8px;margin-bottom:0}
+.pfix>.seg{margin-bottom:8px}
+/* the points chip never sits on a panel corner: a screen that would collide keeps room for it above the panel */
+.screen.ptsgap{padding-top:calc(env(safe-area-inset-top,0px) + 58px)}
+/* market: the sale tag sits inside the item, under the card (it used to hang over the top edge) */
+.mk-item>div[style]{order:1}.mk-item>.mk-sale{order:2;position:static;transform:none;margin:-2px 0 0;padding:2px 9px;font-size:11.5px}.mk-item>.mk-meta{order:3}.mk-item>.btn{order:4;margin-top:auto}
+/* special-move button label: whole words, centred */
+#gauge span{word-break:keep-all;overflow-wrap:normal;text-align:center}
+/* the combo pop grows from its left edge so it never slides past the screen edge */
+#combo{transform-origin:left center}
+/* menu nav badge (NEW / count): a small tag beside the icon, inside the bar, instead of a pill covering the icon */
+#goalBadge{left:calc(50% + 7px);right:auto;top:1px;font-size:9.5px;line-height:15px;padding:0 5px;min-width:15px;border-radius:8px;box-shadow:0 0 0 2px #0a1f3a;white-space:nowrap;width:max-content}

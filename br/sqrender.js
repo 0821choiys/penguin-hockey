@@ -1,0 +1,24 @@
+const chromium=require('@sparticuz/chromium');const puppeteer=require('puppeteer-core');const fs=require('fs'),path=require('path');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const mode=process.argv[2]||'pc';
+(async()=>{
+  const touch=mode==='touch';
+  const vp=touch?{width:780,height:360,isMobile:true,hasTouch:true,isLandscape:true}:{width:900,height:560};
+  const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:vp});
+  const page=await browser.newPage();const logs=[];
+  page.on('pageerror',e=>logs.push('PAGEERR '+e.message));
+  page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('ERR_FAILED'))logs.push('CONSOLE '+m.text().slice(0,200));});
+  await page.setRequestInterception(true);
+  page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});else if(u.startsWith('file:'))r.continue();else r.abort();});
+  await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:9,points:700,types:['basic','fast','strong'],type:'fast',squad:['strong','basic',null],lv:{fast:6,strong:3,basic:2},stats:{played:9},tut:{done:true,asked:true}}));});
+  await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2800);
+  const shot=async n=>page.screenshot({path:'shots/'+n+'.jpg',type:'jpeg',quality:75});
+  const E=f=>page.evaluate(f);
+  await shot(mode+'_s_home');
+  await E(()=>document.querySelector('[data-go="sSquad"]').click());await wait(900);
+  await E(()=>{const b=document.querySelector('[data-sqhat="crown"]');b&&b.click();});await wait(300);
+  await E(()=>{const p=document.querySelector('.sqp');p.scrollTop=9999;});await wait(300);await shot(mode+'_s_squad');
+  const st=await E(()=>({hat:window.__PH.save.hat,pts:window.__PH.save.points,showcase:!!window.__PH.G}));
+  console.log(mode+': '+JSON.stringify(st)+' | '+(logs.join(' | ')||'no page errors'));
+  await browser.close();
+})().catch(e=>{console.error('FAIL',mode,e.message);process.exit(1)});

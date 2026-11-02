@@ -1,0 +1,19 @@
+/* ===== 개발자 tier + mythic card ===== */
+.pc.g4{--gc:#ffffff;--c1:#2a1550;--c2:#0b0a1c;--glow:rgba(255,120,240,.85);border-color:transparent;background:linear-gradient(160deg,var(--c1),var(--c2)) padding-box,linear-gradient(90deg,#ff5f6d,#ffc371,#5ff7a0,#4fc3ff,#b26bff,#ff5f6d) border-box;background-size:100% 100%,300% 100%;animation:mythB 3s linear infinite,legGlow 2.2s ease-in-out infinite}
+.pc.g4 .pc-foil{mix-blend-mode:screen;background:linear-gradient(115deg,transparent 20%,rgba(255,110,200,.45) 34%,rgba(110,230,255,.55) 46%,rgba(255,240,140,.5) 58%,transparent 72%)}
+.pc.g4 .pc-ovr{background:linear-gradient(90deg,#ffe27a,#ff9de2,#8ff0ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 .06em .1em rgba(0,0,0,.6))}
+@keyframes mythB{to{background-position:0 0,300% 0}}
+.rk-badge.dev{animation:devB 2.4s linear infinite}
+@keyframes devB{0%{box-shadow:0 0 24px #ff5f6d}33%{box-shadow:0 0 24px #5ff7a0}66%{box-shadow:0 0 24px #4fc3ff}100%{box-shadow:0 0 24px #ff5f6d}}
+.rk-dev{display:flex;gap:12px;align-items:center;justify-content:center;margin:10px 0 2px;padding:10px;border-radius:18px;background:linear-gradient(135deg,rgba(125,249,255,.12),rgba(178,107,255,.16));border:1.5px dashed rgba(125,249,255,.6);text-align:left}
+.rk-dev.got{border-style:solid;border-color:#7df9ff;box-shadow:0 0 20px rgba(125,249,255,.35)}
+.rk-dev small{display:block;font-size:12.5px;opacity:.92;line-height:1.45;margin-top:2px}
+#devFx{position:fixed;inset:0;z-index:92;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;background:radial-gradient(ellipse at 50% 45%,rgba(60,20,120,.95),rgba(3,4,16,.98) 72%);color:#fff;text-align:center;overflow:hidden}
+#devFx.on{display:flex;animation:fxIn .4s both}
+#devFx::before{content:"";position:absolute;width:160vmax;height:160vmax;background:repeating-conic-gradient(from 0deg,rgba(125,249,255,.18) 0 6deg,transparent 6deg 20deg);animation:devRay 14s linear infinite;pointer-events:none}
+@keyframes devRay{to{transform:rotate(360deg)}}
+#devFx h2{position:relative;margin:0;font:700 clamp(24px,5vh,40px) 'Fredoka','Jua',sans-serif;background:linear-gradient(90deg,#ffe27a,#ff9de2,#8ff0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+#devFx p{position:relative;margin:0;font-size:clamp(14px,2.4vh,17px);line-height:1.5}
+#devCard{position:relative;animation:devIn 1s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes devIn{0%{transform:scale(.2) rotateY(540deg);opacity:0}100%{transform:none;opacity:1}}
+#devFx .row{position:relative}

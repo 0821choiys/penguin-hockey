@@ -1,0 +1,63 @@
+/* ===== v17: season league, rink conditions, pass-combo shot ===== */
+/* season line in the tier-game header (tap = jump to the season box) */
+.ss-mini{display:block;margin:4px 0 0;padding:3px 10px;border-radius:999px;border:1px solid rgba(255,201,60,.55);background:rgba(255,201,60,.14);color:#ffe08a;font:700 13px 'Fredoka','Jua',sans-serif;cursor:pointer;text-align:left;max-width:100%;white-space:normal}
+.ss-mini:hover{background:rgba(255,201,60,.24)}
+/* season box on the tier-game screen */
+.rk-season{margin:10px 0 0;scroll-margin-top:8px;padding:10px 12px;border-radius:16px;background:linear-gradient(180deg,rgba(255,201,60,.13),rgba(255,201,60,.04));border:1px solid rgba(255,201,60,.45);text-align:left}
+.rk-season .ss-top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:2px 10px;margin-bottom:6px}
+.rk-season .ss-top b{font:700 18px 'Fredoka','Jua',sans-serif;color:#ffd45c}
+.rk-season .ss-top span{font-size:13px;color:var(--frost2)}
+.rk-season .ss-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rk-season .ss-cell{background:rgba(4,16,32,.38);border:1px solid var(--line);border-radius:12px;padding:6px 8px;text-align:center;min-width:0}
+.rk-season .ss-cell small{display:block;font-size:12px;color:var(--frost2);line-height:1.35}
+.rk-season .ss-cell small.ok{color:#7dffb0}
+.rk-season .ss-cell b{display:block;font:700 16px 'Fredoka','Jua',sans-serif;margin:2px 0;overflow-wrap:anywhere}
+.rk-season .ss-cell b.dim{color:var(--frost2);opacity:.8}
+.rk-season .ss-tbl{margin-top:8px}
+.ss-rows{display:grid;gap:3px;margin:4px 0 8px}
+.ss-rows>div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 8px;border-radius:8px;background:rgba(0,0,0,.18)}
+.ss-rows>div.cur{background:rgba(255,212,92,.2);box-shadow:inset 0 0 0 1px rgba(255,212,92,.6)}
+.ss-rows>div span{white-space:nowrap}
+.ss-rows>div b{font-weight:700;color:#ffe9a0;text-align:right}
+.rk-season .ss-hist{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;margin-top:6px;font-size:12.5px}
+.rk-season .ss-hist span{padding:2px 8px;border-radius:999px;background:rgba(4,16,32,.45);border:1px solid var(--line)}
+@media (max-width:520px){.rk-season .ss-row{grid-template-columns:1fr 1fr}.rk-season .ss-row .ss-cell:last-child{grid-column:1/-1}}
+/* home: season badge on the tier tile */
+#sMenu #ssBadge{display:none;margin:0;font-size:11px;line-height:17px;padding:0 6px;max-width:100%;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;border-radius:9px;background:rgba(255,201,60,.18);color:#ffe08a;border:1px solid rgba(255,201,60,.55);font-weight:700;white-space:nowrap}
+#sMenu #ssBadge.hot{background:#ffc93c;color:#3a2600;border-color:#ffc93c}
+/* narrow phones: the badge drops under the title instead of being cut off by the next tile */
+#sMenu .hm-tile.rkbtn .tx b{flex-wrap:wrap;white-space:normal;row-gap:3px}
+/* season-end summary */
+.ss-pop{text-align:center}
+.ss-pop h3{font:700 24px 'Fredoka','Jua',sans-serif;color:#ffd45c;margin:2px 36px 8px}
+.ss-pbadge{width:78px;height:78px;margin:4px auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:42px;background:radial-gradient(circle,rgba(255,255,255,.35),rgba(0,0,0,.2));border:3px solid var(--tc);box-shadow:0 0 26px var(--tc)}
+.ss-pt small,.ss-prew small{display:block;font-size:12.5px;color:var(--frost2)}
+.ss-pt b{display:block;font:700 22px 'Fredoka','Jua',sans-serif}
+.ss-prec{margin:6px 0;font-size:14px}
+.ss-prew{margin:8px auto;padding:8px 10px;border-radius:14px;background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.5);max-width:300px}
+.ss-prew>b{display:block;font:700 26px 'Fredoka','Jua',sans-serif;color:#ffe27a}
+.ss-pcard{margin:6px auto 2px;display:inline-block}
+.ss-pmiss{margin:8px 0;font-size:14px;color:#ffc2a8}
+.ss-pnext{margin-top:6px;font-size:14px;color:#cfeaff}
+/* rink conditions: chip (top right), intro card under the countdown, screen tint, pause note, tournament note */
+#condTag{position:absolute;right:calc(env(safe-area-inset-right,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 60px);display:none;pointer-events:auto;cursor:pointer;font:700 14px 'Fredoka','Jua',sans-serif;color:#eaf6ff;background:var(--panel);border:1.5px solid var(--panel-b);border-radius:999px;padding:5px 11px;min-height:32px;white-space:nowrap;backdrop-filter:blur(8px);touch-action:manipulation}
+#condTag.on{display:block}
+body:not(.ingame) #condTag{display:none}
+#condCard{position:absolute;left:50%;top:calc(30% + clamp(80px,19vw,215px));transform:translate(-50%,10px);width:max-content;max-width:min(92vw,520px);box-sizing:border-box;text-align:center;padding:10px 18px 12px;border-radius:18px;background:rgba(6,24,48,.88);border:1.5px solid rgba(160,220,255,.6);box-shadow:0 12px 30px rgba(0,10,30,.5);opacity:0;pointer-events:none;transition:opacity .35s,transform .35s}
+#condCard.on{opacity:1;transform:translate(-50%,0)}
+#condCard small{display:block;font-size:12px;letter-spacing:.12em;color:#9fd8ff}
+#condCard b{display:block;font:700 clamp(22px,4.6vw,34px) 'Fredoka','Jua',sans-serif;color:#fff;margin:2px 0 4px}
+#condCard span{display:block;font-size:clamp(13px,2.4vw,16px);line-height:1.45;color:#dff1ff}
+body.rm #condCard{transition:none}
+/* landscape phones: the countdown fills the middle, so the card sits at the bottom edge, compact */
+@media (max-height:520px){#condCard{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);padding:6px 14px 8px;max-width:min(58vw,500px)}#condCard small{font-size:11px}#condCard b{font-size:19px;margin:0 0 2px}#condCard span{font-size:12.5px;line-height:1.35}}
+#condFx{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s}
+body.ingame[data-cond="blizzard"] #condFx{opacity:1;background:radial-gradient(ellipse 75% 70% at 50% 55%,rgba(255,255,255,0) 38%,rgba(226,238,252,.4) 76%,rgba(236,244,255,.66) 100%)}
+body.ingame[data-cond="night"] #condFx{opacity:1;background:radial-gradient(ellipse 75% 70% at 50% 55%,rgba(0,0,0,0) 30%,rgba(2,6,22,.62) 100%)}
+body.ingame[data-cond="thin"] #condFx{opacity:1;box-shadow:inset 0 0 70px rgba(120,210,255,.32)}
+#pauseCond{margin:0 auto 4px;padding:8px 12px;border-radius:14px;background:rgba(4,16,32,.45);border:1px solid var(--line);text-align:center;max-width:340px;box-sizing:border-box}
+#pauseCond small{display:block;font-size:12px;color:var(--frost2)}
+#pauseCond b{display:block;font-size:17px;margin:2px 0}
+#pauseCond span{display:block;font-size:13px;line-height:1.45;color:#cfeaff}
+.tour-cond{margin-top:8px;font-size:16px;color:#bfe6ff}
+.tour-cond small{display:block;font-size:13px;line-height:1.45;color:var(--frost2)}
