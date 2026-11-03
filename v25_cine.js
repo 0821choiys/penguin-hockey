@@ -17,13 +17,13 @@ function cineMode(){const m=save.set.cine;return m==='short'||m==='off'?m:'full'
 function cineOk(p){return !!(p&&p.human&&G.view==='game'&&G.state==='play'&&!G.paused&&!save.set.motion&&cineMode()!=='off'&&G.cfg&&G.cfg.mode!=='demo'&&CAST[p.type]&&p.cast&&!p.cast.whiff);}
 // keep the cinematic camera inside the rink (rounded rectangle) so the boards never block the shot
 function cineInside(x,z,m){const ax=Math.abs(x),az=Math.abs(z);if(ax>W-m||az>D-m)return false;if(ax>W-CR&&az>D-CR)return Math.hypot(ax-(W-CR),az-(D-CR))<CR-m;return true;}
-function cineNear(p){const s=(p.pg&&p.pg.root.scale.x)||1,h=1.73*s;   // penguin height ≈ 1.73 m × scale (measured in the browser)
-  return{s,h,near:(innerWidth<innerHeight?3.15:2.9)*h,far:(innerWidth<innerHeight?5.4:4.4)*h};}
+function cineNear(p){const s=(p.pg&&p.pg.root.scale.x)||1,h=1.73*s,sc=(typeof SIGCAM!=='undefined'&&SIGCAM[p.type])||{},d=sc.d||1;   // penguin height ≈ 1.73 m × scale (measured in the browser)
+  return{s,h,sc,a:(innerWidth<innerHeight&&sc.ta!=null?sc.ta:sc.a)||0,near:(innerWidth<innerHeight?4.1:2.9)*h*d,far:(innerWidth<innerHeight?6.4:4.4)*h*Math.max(1,d*.9)};}   // portrait: farther, so props beside / above the penguin stay in the narrow frame
 // the ground positions the camera passes through for a given base angle / orbit direction
 function cineShots(p,a,sd){const {near,far}=cineNear(p),x=p.rx,z=p.rz,at=(o,d)=>[x+Math.sin(a+sd*o)*d,z+Math.cos(a+sd*o)*d];
   return[at(.55,near*1.05),at(.1,near),at(-.3,near*.92),at(-.3,near*.74),at(0,far*.6),at(.25,far)];}
 function cineAngle(p){
-  const a0=p.heading;let best=null,bm=-1e9;
+  const a0=p.heading+cineNear(p).a;let best=null,bm=-1e9;   // v26: start from the angle that shows the species' centre-piece
   for(const o of[0,.35,-.35,.7,-.7,1.05,-1.05,1.45,-1.45,1.9,-1.9,2.4,-2.4,Math.PI])for(const sd of[1,-1]){
     const pts=cineShots(p,a0+o,sd);if(pts.every(q=>cineInside(q[0],q[1],.7)))return{a:a0+o,sd};
     // nothing fully inside (deep in a corner): keep the angle whose worst point sticks out least
@@ -138,12 +138,12 @@ function cineCam(){
   const c=G.cine;if(!c||!c.p)return false;
   const p=c.p,P=c.P,t=c.t,sd=c.sd,W_=innerWidth,H_=innerHeight;
   let a,dist,y,ly,fov=c.fov,off=0,void_=0;const ez3=u=>1-Math.pow(1-u,3),sm=u=>u*u*(3-2*u);
-  const {h,near,far}=cineNear(p),hy=.52*h,OF=W_<H_?.11:.1;
-  if(t<P.band){const u=t/P.band;a=c.a+sd*.55;dist=near*1.05;y=.36*h;ly=hy;off=OF*ez3(u);void_=ez3(u);}
-  else if(t<P.impact){const u=(t-P.band)/(P.impact-P.band),e=sm(u);a=c.a+sd*lerp(.55,-.3,e);dist=lerp(near*1.05,near*.92,e);y=lerp(.36,.46,e)*h;ly=hy;fov=lerp(c.fov,c.fov-5,e);off=OF;void_=1;}
+  const {h,near,far,sc}=cineNear(p),hy=(sc.ly||.52)*h,OF=W_<H_?.11:.1,yA=(sc.y||0)*h;
+  if(t<P.band){const u=t/P.band;a=c.a+sd*.55;dist=near*1.05;y=.36*h+yA;ly=hy;off=OF*ez3(u);void_=ez3(u);}
+  else if(t<P.impact){const u=(t-P.band)/(P.impact-P.band),e=sm(u);a=c.a+sd*lerp(.55,-.3,e);dist=lerp(near*1.05,near*.92,e);y=lerp(.36,.46,e)*h+yA;ly=hy;fov=lerp(c.fov,c.fov-5,e);off=OF;void_=1;}
   else{const k=t-P.impact,pi=k<.09;   // .09 s punch-in, then the pull-out
     const u=pi?0:ez3(Math.min(1,(k-.09)/Math.max(.2,P.out-P.impact-.09)));
-    a=c.a+sd*lerp(-.3,.25,u);dist=pi?near*.74:lerp(near*.74,far,u);y=pi?.46*h:lerp(.46*h,1.6*h,u);ly=lerp(hy,.45*h,u);fov=pi?c.fov-10:lerp(c.fov+6,c.fov,u);
+    a=c.a+sd*lerp(-.3,.25,u);dist=pi?near*.74:lerp(near*.74,far,u);y=(pi?.46*h:lerp(.46*h,1.6*h,u))+yA;ly=lerp(hy,.45*h,u);fov=pi?c.fov-10:lerp(c.fov+6,c.fov,u);
     off=OF*(pi?1:Math.max(0,1-u*3));void_=pi?1:Math.max(0,1-u*2.2);}
   let px=p.rx+Math.sin(a)*dist,pz=p.rz+Math.cos(a)*dist;
   if(t<P.band){   // whip-in from wherever the game camera was
@@ -156,10 +156,11 @@ function cineCam(){
   if(camera.fov!==fov){camera.fov=fov;camera.updateProjectionMatrix();}
   // shift the picture up a little while the portrait band covers the bottom (keeps the penguin clear of it)
   if(off>.002)camera.setViewOffset(W_,H_,0,H_*off,W_,H_);else camera.clearViewOffset();
+  void_*=sc.v==null?1:sc.v;   // v26: a big centre-piece (the auk's wave) keeps more of the arena visible
   c.void=void_;
   if(void_>0&&scene.fog){   // setTOD rewrites fog + sky every frame, so this needs no restore
     if(!c.fogC){c.fogC=new T.Color(0x060b1e).lerp(new T.Color(CAST[p.type].c[1]),.3);}
-    scene.fog.color.lerp(c.fogC,void_);scene.fog.density=lerp(scene.fog.density,.075,void_);
+    scene.fog.color.lerp(c.fogC,void_);scene.fog.density=lerp(scene.fog.density,.6/(near+5),void_);   // the penguin (and its centre-piece) stay clear, the arena behind dissolves
     for(const k of['topC','midC','horC'])skyU[k].value.lerp(c.fogC,void_*.92);
   }
   return true;

@@ -17,7 +17,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
 (async()=>{
   const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--autoplay-policy=no-user-gesture-required'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:VP});
   const page=await browser.newPage();const logs=[];
-  page.on('pageerror',e=>logs.push('PAGEERR '+e.message));page.on('console',m=>{if(m.type()==='error')logs.push('CONSOLE '+m.text());});
+  page.on('pageerror',e=>logs.push('PAGEERR '+e.message));page.on('console',async m=>{if(m.type()!=='error')return;let t=m.text();try{if(/JSHandle/.test(t))t=await m.args()[0].evaluate(e=>String(e&&e.stack||e));}catch(e){}logs.push('CONSOLE '+t.slice(0,400));});
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();
     if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync(path.join(__dirname,'node_modules/three/build/three.min.js'))});

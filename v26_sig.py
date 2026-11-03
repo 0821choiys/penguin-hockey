@@ -1,0 +1,10 @@
+# v26: signature props & effects per species (modelled sceptre / crown / trumpet, a real wave, ice crystals, …) + cinematic framing
+R("/* ================= INIT ================= */", rd('v26_sig.js') + "\n/* ================= INIT ================= */")
+RIN('castProps', "  P.cx=cx;return cx;", "  sigProps(p,cx);P.cx=cx;return cx;")
+RIN('castPost', "  if(c.t>=c.dur){p.cast=null;", "  sigFrame(p,c,dt,t);\n  if(c.t>=c.dur){sigEnd(p,c);p.cast=null;")
+RIN('castPost', "const s=cx.sun;s.visible=u<.98;", "const s=cx.sun;s.visible=u<.98&&!cx.sun3;")
+RIN('castStart', "  p.cast={k:p.type", "  if(p.cast)sigEnd(p,p.cast);\n  p.cast={k:p.type")
+R("function v23Frame(dt){castFrame(dt);}", "function v23Frame(dt){castFrame(dt);sgWorld(dt);}")
+R("window.__PH={doPull,pullOnce,", "window.__PH={doPull,pullOnce,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,")
+RIN('castPost', "tr.scale.setScalar(1+.08*Math.sin(t*30)*(u>.2?1:0));", "tr.scale.setScalar((tr.userData.s||1)*(1+.05*Math.sin(t*30)*(u>.2?1:0)));")
+RIN('castPost', "cr.position.y=1.9+Math.sin(t*6)*.03", "cr.position.y=1.6+Math.sin(t*6)*.02")
