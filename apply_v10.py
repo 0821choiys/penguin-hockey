@@ -302,6 +302,7 @@ exec(open('v24_pass.py',encoding='utf-8').read())
 exec(open('v25_cine.py',encoding='utf-8').read())
 exec(open('v26_sig.py',encoding='utf-8').read())
 exec(open('v27_pro.py',encoding='utf-8').read())
+exec(open('v28_app.py',encoding='utf-8').read())
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 

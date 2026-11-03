@@ -21,7 +21,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 ```
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
-`v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -30,13 +30,21 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `python3 tools/missing.py` lists missing keys.
 - The build also writes `main.js`, `loader.js`, `i18n.js` used by the Node test harness.
 
+## Android app (Play Store build) — see `android-app.md`
+- `android/` (Gradle, Java): full-screen WebView loading the built HTML from assets (copied at build time from `penguin-hockey-improved.html`),
+  Play Billing for `pro_pass`, back button, pause, save mirror + Auto Backup. Game side: `v28_app.js` (`PHAndroid` web-message bridge → `PHBilling`).
+- `cd android && ./gradlew assembleDebug bundleRelease testDebugUnitTest lintDebug` (needs `local.properties` with `sdk.dir`; release is signed
+  only when `android/keystore.properties` exists — never commit keys). `applicationId` is permanent after the first upload.
+- Maven Central sometimes answers 429 through the proxy: use `--max-workers=1` and retry after a pause.
+
 ## Tests
 - Unit suites (Node, mocked THREE): `bash runsuites.sh` (≈ 15 min). Single suite: `node v22test.js`.
 - `tools/rulesim.js`: AI-vs-AI matches with the referee — calls per match, goals, stoppage time (`N=6 RULES=full|fouls|off node tools/rulesim.js`).
 - Real browser (SwiftShader WebGL): `cd br && npm ci` once, then e.g.
   `node homeverify.js pc`, `node langswitch.js`, `node v17ui.js tall en`, `node v18play.js pc`, `node v19gfx.js pc`, `node offline.js pc`,
   `node i18nscan.js tall ja`, `node v23cast.js pc all` (skill animations + referee), `node v24ui.js tall ko` (pass / rules UI),
-  `node v25cine.js pc|tall|wide all` (skill cinematic frame by frame; CSS animations are seeked to the scene time).
+  `node v25cine.js pc|tall|wide all` (skill cinematic frame by frame; CSS animations are seeked to the scene time),
+  `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
 
 ## Weekly self-critique (every Monday)

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">企鹅冰球</string>
+    <string name="no_webview">本游戏需要 Android System WebView，请在 Play 商店中更新。</string>
+</resources>

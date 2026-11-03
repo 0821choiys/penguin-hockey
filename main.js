@@ -78,7 +78,7 @@ const enhCost=lv=>20+15*lv;
 const RM0=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const DEF_SET={cine:'full',rules:'full',cond:true,size:3,time:180,diff:'normal',tod:'auto',aurora:true,sound:true,quality:'ultra',assist:true,arena:'auto',vol:'mid',vib:true,shake:RM0?'low':'on',flash:true,motion:RM0,items:true,events:true,fastFx:false,stick:true,lang:I18N.lang};
 const save={v:10,chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0},pay:{tok:[],last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
-const persist=()=>{try{localStorage.setItem('penguinHockey.v1',JSON.stringify(save))}catch(e){if(!persist.warned){persist.warned=true;console.warn('save failed',e);setTimeout(()=>{try{flashMsg(__L('저장하지 못했어요 (저장 공간·비공개 모드). 플레이는 계속할 수 있어요'));}catch(_){}},50);}}};
+const persist=()=>{try{localStorage.setItem('penguinHockey.v1',JSON.stringify(save));if(window.__phMirror)window.__phMirror();}catch(e){if(!persist.warned){persist.warned=true;console.warn('save failed',e);setTimeout(()=>{try{flashMsg(__L('저장하지 못했어요 (저장 공간·비공개 모드). 플레이는 계속할 수 있어요'));}catch(_){}},50);}}};
 // load + validate + migrate old (v1) data; nothing valid is ever dropped
 function loadSave(){
   let s=null;try{s=JSON.parse(localStorage.getItem('penguinHockey.v1')||'null');}catch(e){s=null;}
@@ -7257,7 +7257,7 @@ async function proBuy(){
       if(tok){ok=proGrant(tok)||passProOn();await proConsume(tok);}
       try{await res.complete(ok?'success':'fail');}catch(e){}
     }
-  }catch(e){const m=String(e&&e.name||e);if(!/Abort|cancel/i.test(m))flashMsg('💎 '+__L('결제를 끝내지 못했어요. 잠시 후 다시 해 주세요'));}
+  }catch(e){const m=String(e&&e.name||e);if(m==='Pending')flashMsg('💎 '+__L('결제 승인을 기다리고 있어요. 승인되면 프로 패스가 열려요'));else if(!/Abort|cancel/i.test(m))flashMsg('💎 '+__L('결제를 끝내지 못했어요. 잠시 후 다시 해 주세요'));}
   BILL.busy=false;try{if(G.ui==='sPass')renderPass();passMenu();}catch(e){}
   return ok;
 }
@@ -7277,12 +7277,92 @@ function proNoteHtml(){
 setTimeout(()=>{billInit();},0);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(BILL.kind==='native'||BILL.kind==='play'))proRestore().catch(()=>{});});
 
+/* ================= v28: Android app shell (Play Store build) ================= */
+// The Android app (android/) loads this file from its assets and injects `window.PHAndroid` — a WebView web-message
+// listener (androidx.webkit addWebMessageListener, allowed only for the app's own origin). Messages are JSON:
+//   game → app  {id,op,arg}            op: price · buy · consume · list (Google Play Billing), vib, save, exit
+//   app → game  {id,ok,data|err,name}  replies;  {ev:'purchase'} when Play reports a purchase while the game runs
+// From that the game builds `window.PHBilling` (the contract v27 already uses), so the Pro Pass works in the app.
+// The app also calls phBack() for the Android back button, phPause()/phResume() when it goes to the background.
+// In a plain browser PHAndroid does not exist and nothing here changes how the game runs.
+const APP={on:false,seq:0,cb:{},backT:0,mirT:0};
+function appPost(o){try{window.PHAndroid.postMessage(JSON.stringify(o));return true;}catch(e){return false;}}
+function appCall(op,arg){
+  return new Promise((res,rej)=>{const id=++APP.seq;APP.cb[id]={res,rej};
+    if(!appPost({id,op,arg})){delete APP.cb[id];rej(new Error('bridge'));}});
+}
+function appMsg(raw){
+  let m;try{m=JSON.parse(typeof raw==='string'?raw:raw&&raw.data);}catch(e){return;}
+  if(!m)return;
+  if(m.ev==='purchase'){try{proRestore().catch(()=>{});}catch(e){}return;}
+  const c=APP.cb[m.id];if(!c)return;delete APP.cb[m.id];
+  if(m.ok)c.res(m.data);else{const er=new Error(m.err||'error');er.name=m.name||'Error';c.rej(er);}
+}
+// the save is mirrored to the app's own storage (Android Auto Backup keeps it across reinstall / new phone)
+function appMirror(now){
+  if(!APP.on)return;const t=Date.now();
+  if(!now&&t-APP.mirT<4000){clearTimeout(appMirror.t);appMirror.t=setTimeout(()=>appMirror(true),4000-(t-APP.mirT));return;}
+  APP.mirT=t;clearTimeout(appMirror.t);
+  try{appPost({op:'save',arg:{save:localStorage.getItem('penguinHockey.v1')||'',lang:localStorage.getItem('penguinHockey.lang')||''}});}catch(e){}
+}
+function appInit(){
+  const P=window.PHAndroid;if(!P||typeof P.postMessage!=='function')return false;
+  APP.on=true;
+  if('onmessage' in P||!P.addEventListener)P.onmessage=appMsg;else P.addEventListener('message',appMsg);
+  window.PHBilling={price:sku=>appCall('price',sku),buy:sku=>appCall('buy',sku),consume:tok=>appCall('consume',tok),list:()=>appCall('list')};
+  try{Object.defineProperty(navigator,'vibrate',{configurable:true,value:p=>{appPost({op:'vib',arg:Array.isArray(p)?p.map(x=>Math.max(0,Math.min(1000,x|0))):[Math.max(0,Math.min(1000,p|0))]});return true;}});}catch(e){}
+  try{document.documentElement.classList.add('in-app');}catch(e){}
+  window.__phMirror=()=>appMirror(false);
+  return true;
+}
+// ---- Android back button: close the top overlay → leave the screen → pause the match; on the home screen a second press within 2 s exits ----
+function appVis(e){if(!e)return false;const cs=getComputedStyle(e);return cs.display!=='none'&&cs.visibility!=='hidden'&&e.getClientRects().length>0;}   // not opacity: dialogs fade in
+const APP_OV=['#cfmDlg','#cardDlg','#enhFx','#packFx','#fuseFx','#devFx','#tutAsk','#vsFx'];
+const APP_OVBTN=['[data-cf="0"]','[data-ef="close"]','.cd-x','#pkOk','#fzOk','#devOk','#tutNo','#pkSkip','#fzSkip'];
+function appOverlay(){
+  for(const id of APP_OV){const e=document.querySelector(id);if(e&&e.classList.contains('on')&&appVis(e))return e;}
+  return null;
+}
+function phBack(){
+  try{
+    const ov=appOverlay();
+    if(ov){for(const s of APP_OVBTN){const b=ov.querySelector(s);if(b&&appVis(b)&&!b.disabled){b.click();return 'ok';}}return 'ok';}   // mid-animation: swallow
+    if(G.cine){cineSkip();return 'ok';}
+    if(G.view==='game'&&G.state!=='over'){
+      togglePause();return 'ok';   // playing → pause menu; pause menu → back to the match
+    }
+    const ui=G.ui;
+    if(ui==='sResult'){SFX.ui();toMenu();return 'ok';}
+    if(ui==='sTour'){const b=$('#tBack');if(b){b.click();return 'ok';}}
+    if(ui&&ui!=='sMenu'){
+      const sc=document.getElementById(ui),bs=sc?[...sc.querySelectorAll('button[data-go]')].filter(appVis):[];
+      const b=bs[bs.length-1];
+      if(b){b.click();return 'ok';}
+      SFX.ui();goScreen('sMenu');return 'ok';
+    }
+    const now=Date.now();
+    if(now-APP.backT<2000){APP.backT=0;appMirror(true);return 'exit';}
+    APP.backT=now;flashMsg(__L(__L('한 번 더 누르면 게임을 끝내요')));return 'ok';
+  }catch(e){return 'ok';}
+}
+function phPause(){
+  try{if(G.view==='game'&&!G.paused&&G.state!=='over')togglePause();}catch(e){}
+  try{SFX.suspend();}catch(e){}
+  appMirror(true);
+}
+function phResume(){
+  try{SFX.resume();}catch(e){}
+  try{if(BILL.kind==='native')proRestore().catch(()=>{});}catch(e){}
+}
+window.phBack=phBack;window.phPause=phPause;window.phResume=phResume;   // the app calls these by name (evaluateJavascript)
+appInit();
+
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

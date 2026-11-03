@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ペンギンホッケー</string>
+    <string name="no_webview">このゲームには Android System WebView が必要です。Play ストアで更新してください。</string>
+</resources>
