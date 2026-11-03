@@ -15,6 +15,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c){pass++;console.log('ok   '+m);}else{fai
       if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
       if(u.startsWith('file:'))return r.continue();r.abort();});
     if(prefs)await page.evaluateOnNewDocument(p=>{if(!sessionStorage.getItem('__seeded')){localStorage.clear();for(const k in p)localStorage.setItem(k,p[k]);sessionStorage.setItem('__seeded','1');}},prefs);
+    page.setDefaultNavigationTimeout(90000);   // software WebGL: a reload under load can take longer than 30 s
     page.logs=logs;return page;};
   const html='file://'+path.resolve(__dirname,process.env.HTML||'../penguin-hockey-improved.html');
   const st=p=>p.evaluate(()=>({lang:I18N.lang,html:document.documentElement.lang,set:__PH.save.set.lang,lk:localStorage.getItem('penguinHockey.lang'),

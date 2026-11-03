@@ -6,7 +6,9 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 ## Standing rules from the owner (always apply)
 - 실제 브라우저에서 실행할 수 없는 테스트는 통과했다고 주장하지 말고, 실행하지 못한 항목과 이유를 명시한다.
 - 일부 함수나 CSS만 제공하고 사용자가 직접 합치게 하지 않는다 — always deliver the complete built HTML file.
-- No real-money payment anywhere (passes, scouting, market use in-game points only).
+- Real money only for the 💎 Pro Pass (owner's decision 2026-11-03): 8,900원, one Google Play purchase per fish-pass season, no auto-renewal
+  (product `pro_pass`, consumable; see `sardine-pass.md`). Everything else (scouting, market, hats, trails) stays in-game points only.
+  Paid random rewards must show their odds on screen.
 - Every probability / number shown on screen must equal the code that decides it (tests check this).
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
@@ -19,7 +21,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 ```
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
-`v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.

@@ -44,15 +44,17 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   await wait(300);await shot('pass');
   const st=await E(()=>{const P=window.__PH;return {tier:P.passTier(),can:P.passCount(),head:document.getElementById('psHead').textContent,cells:document.querySelectorAll('.ps-cell').length,rdy:document.querySelectorAll('.ps-cell.rdy').length,
     wide:document.querySelector('#sPass .panel').scrollWidth<=innerWidth+1};});
-  ok(st.cells===60&&st.rdy===st.can&&st.tier===6,'30 tiers × free/gold shown, '+st.rdy+' glowing = claimable ('+st.head+')');
+  ok(st.cells===90&&st.rdy===st.can&&st.tier===6,'30 tiers × free / gold / Pro shown, '+st.rdy+' glowing = claimable ('+st.head+')');
   ok(st.wide,'pass panel fits the screen width (track scrolls inside)');
   const p0=await E(()=>window.__PH.save.points);await tap('.ps-cell.f.rdy');
   const p1=await E(()=>({pts:window.__PH.save.points,can:window.__PH.passCount(),cf:window.__PH.save.pass.cf}));
   ok(p1.can===st.can-1&&(p1.pts>p0||p1.cf!==1),'tap a glowing reward → claimed ('+st.can+' → '+p1.can+', points '+p0+' → '+p1.pts+')');
-  await tap('#psBuy');const g1=await E(()=>({gold:window.__PH.save.pass.gold,txt:(document.getElementById('psBuy')||{}).textContent||''}));
-  ok(!g1.gold&&/900/.test(g1.txt),'first tap on Gold asks to confirm ("'+g1.txt+'")');
-  await tap('#psBuy');const g2=await E(()=>({gold:window.__PH.save.pass.gold,pts:window.__PH.save.points,can:window.__PH.passCount()}));
-  ok(g2.gold&&g2.pts===p1.pts-900,'second tap buys the Gold Pass for 900P ('+p1.pts+' → '+g2.pts+'), '+g2.can+' rewards now claimable');
+  await tap('#psBuy');const g1=await E(()=>({pro:window.__PH.passProOn(),gold:window.__PH.passGoldOn(),pts:window.__PH.save.points,txt:(document.getElementById('psBuy')||{}).textContent||'',dis:(document.getElementById('psBuy')||{}).getAttribute('aria-disabled'),msg:document.getElementById('msg').textContent}));
+  ok(!g1.pro&&!g1.gold&&g1.pts===p1.pts&&g1.dis==='true'&&/8,900/.test(g1.txt),'plain browser: 💎 Pro Pass button shows the price ("'+g1.txt+'") but buys nothing ("'+g1.msg+'"), no points spent');
+  // the Android app's billing bridge (mocked here: Play is not reachable in this test browser)
+  await E(()=>{let n=0;window.PHBilling={price:async()=>({value:'8900',currency:'KRW'}),buy:async()=>({token:'ui-'+(++n)}),consume:async()=>{},list:async()=>[]};return window.__PH.billInit();});await wait(300);
+  await tap('#psBuy');await wait(300);const g2=await E(()=>({pro:window.__PH.passProOn(),pts:window.__PH.save.points,can:window.__PH.passCount(),on:!!document.querySelector('.ps-gold.on.pro')}));
+  ok(g2.pro&&g2.on&&g2.pts===p1.pts,'with the store bridge: tap → Pro Pass for this season, no points spent, '+g2.can+' rewards now claimable');
   await shot('pass_gold');
   if(await E(()=>!!document.getElementById('psAll')))await tap('#psAll');
   ok(await E(()=>window.__PH.passCount()===0),'"모두 받기" claims everything');
@@ -69,7 +71,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   const rs=await E(()=>{const P=window.__PH,G=P.G;P.save.set.rules='full';P.startMatch({mode:'quick',size:3,time:60,diff:'easy',tag:'Q',oppTypes:['basic','fast','strong']});
     G.state='play';G.stateT=0;for(let i=0;i<30;i++)P.step(1/60);G.mine.score=2;G.mine.opp.score=1;G.rl.st[G.mine.opp.key].pen=1;G.rl.st[G.mine.key].ppg=1;
     P.endMatch();for(let i=0;i<200;i++)P.step(1/60);const el=document.getElementById('sResult');return {on:el&&el.classList.contains('on'),pass:(document.querySelector('.rs-pass')||{}).textContent||'',rules:[...document.querySelectorAll('.rs-stats')].map(e=>e.textContent).join(' | ')};});
-  ok(rs.on&&/\+60/.test(rs.pass),'result screen shows the sardines: '+rs.pass);
+  ok(rs.on&&/\+75/.test(rs.pass)&&/(프로|Pro|プロ|专业) \+15/.test(rs.pass),'result screen shows the sardines with the Pro bonus (60 + 25% = 75): '+rs.pass);
   ok(/1/.test(rs.rules)&&rs.rules.length>0,'result screen shows the referee summary: '+rs.rules);
   await shot('result');
   // ---- the cast banner (your own skill) ----

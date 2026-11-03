@@ -234,3 +234,17 @@ function sigFrame(p,c,dt,t){
 }
 function sigEnd(p,c){const cx=p.pg&&p.pg.cx;if(cx){if(cx.flames)cx.flames.visible=false;if(cx.beamL)cx.beamL.visible=cx.beamR.visible=false;if(cx.sun3)cx.sun3.visible=false;}
   for(const kk of['wave','rugO','vort','rose'])if(c&&c[kk]){c[kk].life=0;c[kk].m.visible=false;}}
+// pre-compile every effect material once after start-up, so the first skill of a match does not stutter while shaders compile
+function sigWarm(){
+  try{
+    if(!renderer||!renderer.compile)return;const M=sgMat(),geo=new T.BoxGeometry(.01,.01,.01),g=new T.Group(),add=m=>g.add(new T.Mesh(geo,m));
+    [M.gold,M.goldD,M.ruby,M.saph,M.pearl,M.velvet,M.ermine,M.ice,M.stone,M.leaf].forEach(add);add(sgAdd(0xffffff,1));
+    g.add(sgWaveMake());add(new T.MeshStandardMaterial({map:sgTex('carpet'),roughness:.9,metalness:0,polygonOffset:true,polygonOffsetFactor:-4}));
+    add(new T.MeshStandardMaterial({map:sgTex('banner'),side:T.DoubleSide,roughness:.75,metalness:0}));
+    add(new T.MeshBasicMaterial({map:sgTex('flow'),transparent:true,blending:T.AdditiveBlending,depthWrite:false,fog:false}));
+    add(new T.MeshBasicMaterial({map:sgTex('wing2'),transparent:true,side:T.DoubleSide,depthWrite:false}));
+    g.add(new T.Sprite(new T.SpriteMaterial({map:sgTex('rays'),transparent:true,depthWrite:false,blending:T.AdditiveBlending,fog:false})));
+    g.position.set(0,-40,0);scene.add(g);renderer.compile(scene,camera);scene.remove(g);
+  }catch(e){}
+}
+setTimeout(sigWarm,1200);

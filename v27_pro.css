@@ -1,0 +1,10 @@
+
+/* ===== v27: Pro Pass ===== */
+.ps-gold.ps-pro{background:linear-gradient(100deg,#7a4cff,#2fa6ff 55%,#3de8b0);color:#fff;border:0;font-weight:800;box-shadow:0 6px 18px rgba(80,90,255,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.ps-gold.ps-pro[aria-disabled="true"]{filter:saturate(.45) brightness(.8);cursor:default}
+.ps-gold.on.pro{background:linear-gradient(100deg,#b69bff,#7fd6ff);color:#14103a}
+.ps-pronote{line-height:1.5}
+.ps-cell.x{background:linear-gradient(180deg,rgba(140,110,255,.28),rgba(10,31,58,.92));border-color:rgba(160,140,255,.6)}
+.ps-cell.x.none{background:transparent;border:1.5px dashed rgba(160,140,255,.18);opacity:.5}
+.ps-lab{justify-content:space-around}
+#sMenu .hm-pass.pro .ps-ic{box-shadow:0 0 0 2px #b69bff,0 0 12px rgba(150,120,255,.8)}

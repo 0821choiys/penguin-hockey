@@ -34,7 +34,7 @@ const TYPES={
 const SPECIALS={surge:__L('큰바다 돌진'),dash:__L('아이스 대시'),slide:__L('펭귄 슬라이드'),flipper:__L('강력한 플리퍼 슛'),icebreak:__L('아이스 브레이크')};
 const STATN={speed:__L('속도'),accel:__L('가속도'),power:__L('퍽 타격력'),turn:__L('방향 전환'),body:__L('몸싸움')};
 const HATS={none:{name:__L('없음'),cost:0},beanie:{name:__L('털모자'),cost:0},headband:{name:__L('머리띠'),cost:20},helmet:{name:__L('하키 헬멧'),cost:40},party:{name:__L('파티 모자'),cost:60},crown:{name:__L('왕관'),cost:120}};
-const TRAILS={ice:{name:__L('눈꽃'),cost:0,col:[.92,.97,1]},sky:{name:__L('하늘빛'),cost:30,col:[.4,.8,1]},pink:{name:__L('핑크'),cost:50,col:[1,.55,.82]},gold:{name:__L('황금'),cost:90,col:[1,.85,.3]},rainbow:{name:__L('무지개'),cost:150,col:null},ps1:{name:__L('정어리'),cost:0,col:[0.75,0.88,0.98],pass:1},ps2:{name:__L('청어'),cost:0,col:[0.35,0.65,1],pass:1},ps3:{name:__L('광어'),cost:0,col:[0.9,0.78,0.55],pass:1},ps4:{name:__L('넙치'),cost:0,col:[0.72,0.8,0.45],pass:1},ps5:{name:__L('도다리'),cost:0,col:[0.95,0.85,0.7],pass:1},ps6:{name:__L('꽁치'),cost:0,col:[0.55,0.85,0.92],pass:1},ps7:{name:__L('고등어'),cost:0,col:[0.3,0.85,0.7],pass:1},ps8:{name:__L('갈치'),cost:0,col:[0.92,0.95,1],pass:1},ps9:{name:__L('참치'),cost:0,col:[0.95,0.35,0.4],pass:1},ps10:{name:__L('연어'),cost:0,col:[1,0.6,0.45],pass:1},ps11:{name:__L('도루묵'),cost:0,col:[0.85,0.82,0.65],pass:1},ps12:{name:__L('명태'),cost:0,col:[0.78,0.8,0.86],pass:1},ps13:{name:__L('삼치'),cost:0,col:[0.55,0.8,1],pass:1},ps14:{name:__L('전어'),cost:0,col:[1,0.88,0.55],pass:1},ps15:{name:__L('멸치'),cost:0,col:[0.85,0.93,1],pass:1},ps16:{name:__L('방어'),cost:0,col:[1,0.85,0.3],pass:1},ps17:{name:__L('참돔'),cost:0,col:[1,0.45,0.55],pass:1},ps18:{name:__L('우럭'),cost:0,col:[0.6,0.6,0.65],pass:1},ps19:{name:__L('농어'),cost:0,col:[0.6,0.82,0.7],pass:1},ps20:{name:__L('복어'),cost:0,col:[1,0.82,0.4],pass:1},ps21:{name:__L('아귀'),cost:0,col:[0.7,0.55,0.4],pass:1},ps22:{name:__L('가자미'),cost:0,col:[0.85,0.72,0.5],pass:1},ps23:{name:__L('조기'),cost:0,col:[1,0.8,0.2],pass:1},ps24:{name:__L('숭어'),cost:0,col:[0.7,0.78,0.86],pass:1}};
+const TRAILS={ice:{name:__L('눈꽃'),cost:0,col:[.92,.97,1]},sky:{name:__L('하늘빛'),cost:30,col:[.4,.8,1]},pink:{name:__L('핑크'),cost:50,col:[1,.55,.82]},gold:{name:__L('황금'),cost:90,col:[1,.85,.3]},rainbow:{name:__L('무지개'),cost:150,col:null},ps1:{name:__L('정어리'),cost:0,col:[0.75,0.88,0.98],pass:1},ps2:{name:__L('청어'),cost:0,col:[0.35,0.65,1],pass:1},ps3:{name:__L('광어'),cost:0,col:[0.9,0.78,0.55],pass:1},ps4:{name:__L('넙치'),cost:0,col:[0.72,0.8,0.45],pass:1},ps5:{name:__L('도다리'),cost:0,col:[0.95,0.85,0.7],pass:1},ps6:{name:__L('꽁치'),cost:0,col:[0.55,0.85,0.92],pass:1},ps7:{name:__L('고등어'),cost:0,col:[0.3,0.85,0.7],pass:1},ps8:{name:__L('갈치'),cost:0,col:[0.92,0.95,1],pass:1},ps9:{name:__L('참치'),cost:0,col:[0.95,0.35,0.4],pass:1},ps10:{name:__L('연어'),cost:0,col:[1,0.6,0.45],pass:1},ps11:{name:__L('도루묵'),cost:0,col:[0.85,0.82,0.65],pass:1},ps12:{name:__L('명태'),cost:0,col:[0.78,0.8,0.86],pass:1},ps13:{name:__L('삼치'),cost:0,col:[0.55,0.8,1],pass:1},ps14:{name:__L('전어'),cost:0,col:[1,0.88,0.55],pass:1},ps15:{name:__L('멸치'),cost:0,col:[0.85,0.93,1],pass:1},ps16:{name:__L('방어'),cost:0,col:[1,0.85,0.3],pass:1},ps17:{name:__L('참돔'),cost:0,col:[1,0.45,0.55],pass:1},ps18:{name:__L('우럭'),cost:0,col:[0.6,0.6,0.65],pass:1},ps19:{name:__L('농어'),cost:0,col:[0.6,0.82,0.7],pass:1},ps20:{name:__L('복어'),cost:0,col:[1,0.82,0.4],pass:1},ps21:{name:__L('아귀'),cost:0,col:[0.7,0.55,0.4],pass:1},ps22:{name:__L('가자미'),cost:0,col:[0.85,0.72,0.5],pass:1},ps23:{name:__L('조기'),cost:0,col:[1,0.8,0.2],pass:1},ps24:{name:__L('숭어'),cost:0,col:[0.7,0.78,0.86],pass:1},pro:{name:__L('프로 오로라'),cost:0,col:[0.72,0.55,1],pass:1}};
 const DIFF={
   easy:{spd:.88,react:.5,noise:.5,aim:.5,press:.5,shootQ:.24,passP:.25,mistake:.14,slip:.07,range:19,gk:{cap:6,acc:28,react:.6,err:1.3,dive:.05,miss:.3}},
   normal:{spd:.96,react:.3,noise:.3,aim:.3,press:.8,shootQ:.26,passP:.4,mistake:.07,slip:.035,range:26,gk:{cap:7.5,acc:34,react:.42,err:.9,dive:.2,miss:.16}},
@@ -77,7 +77,7 @@ const BRK={max:5,need:[3,6,10,15,24],val:[1,2,3,5,8],cost:[60,120,200,320,500],s
 const enhCost=lv=>20+15*lv;
 const RM0=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const DEF_SET={cine:'full',rules:'full',cond:true,size:3,time:180,diff:'normal',tod:'auto',aurora:true,sound:true,quality:'ultra',assist:true,arena:'auto',vol:'mid',vib:true,shake:RM0?'low':'on',flash:true,motion:RM0,items:true,events:true,fastFx:false,stick:true,lang:I18N.lang};
-const save={v:10,chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
+const save={v:10,chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0},pay:{tok:[],last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
 const persist=()=>{try{localStorage.setItem('penguinHockey.v1',JSON.stringify(save))}catch(e){if(!persist.warned){persist.warned=true;console.warn('save failed',e);setTimeout(()=>{try{flashMsg(__L('저장하지 못했어요 (저장 공간·비공개 모드). 플레이는 계속할 수 있어요'));}catch(_){}},50);}}};
 // load + validate + migrate old (v1) data; nothing valid is ever dropped
 function loadSave(){
@@ -190,6 +190,7 @@ function loadSave(){
   if(s.season&&typeof s.season==='object')seasonLoad(s.season);
   if(s.rl&&typeof s.rl==='object')save.rl.intro=s.rl.intro?1:0;
   if(s.pass&&typeof s.pass==='object')passLoad(s.pass);
+  if(s.pay&&typeof s.pay==='object'){if(Array.isArray(s.pay.tok))save.pay.tok=s.pay.tok.filter(x=>typeof x==='string'&&x.length<600).slice(-30);if(s.pay.last&&typeof s.pay.last==='object')save.pay.last={s:Math.max(0,Math.floor(+s.pay.last.s||0)),t:Math.max(0,+s.pay.last.t||0)};}
   save.news18=s.news18===true;
   if(s.v!==10)persist();
 }
@@ -2987,7 +2988,7 @@ function claimGoal(i){
   goalsEnsure();const g=save.goals.list[i];if(!g)return;const d=GDEFS[g.id];
   if(g.c||g.p<d.n){return;}
   g.c=true;save.points+=d.pts;passAdd(PASS.earn.daily);const r=grantXp(save.type,d.xp);save.cum.dailyDone++;persist();SFX.win();vib([30,30,60]);
-  hypeToast('+'+d.pts+'P · +'+d.xp+'XP · 🐟+'+PASS.earn.daily+(r.to>r.from?' · LEVEL UP!':''));$('#ptsN').textContent=save.points;renderGoals();hypeMenuRefresh();
+  hypeToast('+'+d.pts+'P · +'+d.xp+'XP · 🐟+'+passGain(PASS.earn.daily)+(r.to>r.from?' · LEVEL UP!':''));$('#ptsN').textContent=save.points;renderGoals();hypeMenuRefresh();
 }
 function claimLong(id){
   const L=LDEFS.find(x=>x.id===id);if(!L||save.long[id]||L.prog()<L.n)return;
@@ -3065,7 +3066,7 @@ function renderGoals(){
   if(gTab==='day'){
     h+=__L('<div class="lbl" style="text-align:center">오늘의 목표 · 완료하면 아래 버튼으로 보상을 받아요 (한 번만 수령)</div>');
     save.goals.list.forEach((g,i)=>{const d=GDEFS[g.id],ok=g.p>=d.n;
-      h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:PASS.earn.daily})+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
+      h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:passGain(PASS.earn.daily)})+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
     h+=__L('<div class="odds">목표는 하루에 한 번 새로 나와요. 기기 날짜를 되돌리면 갱신되지 않아요')+(info.tamper?__L(' <b>(현재 시계가 되돌려진 것으로 감지됨)</b>'):'')+__L('.<br>오프라인 게임이라 날짜 변경을 완전히 막을 수는 없어서, 보상은 작게 설정했어요.</div>');
   }else if(gTab==='long'){
     h+=__L('<div class="lbl" style="text-align:center">장기 목표 · 천천히 도전해 보세요</div>');
@@ -6597,10 +6598,10 @@ function castPost(p,dt,t){
 function v23Frame(dt){castFrame(dt);sgWorld(dt);}
 
 /* ================= v24: fish pass (정어리 패스 → 청어 패스 → 광어 패스 …) — a new fish every season ================= */
-// 경기와 오늘의 목표로 그 시즌의 생선(🐟)을 모아 30단계를 올라가요. 무료 칸은 누구나, 골드 칸은 경기로 번 포인트로 열어요 (현금 결제 없음).
+// 경기와 오늘의 목표로 그 시즌의 생선(🐟)을 모아 30단계를 올라가요. 무료 칸은 누구나, 골드 칸 · 프로 칸은 프로 패스(v27, 시즌마다 1회 결제)로 열어요.
 // Seasons follow the league season (SEASON: 28 days). Every number on screen comes from PASS.
 const PASS={
-  tiers:30,per:100,cost:900,dup:150,
+  tiers:30,per:100,dup:150,
   earn:{win:24,draw:16,loss:10,goal:3,goalMax:5,first:30,daily:40},
   // the pass is named after a fish, a new one every season: 정어리 → 청어 → 광어 → 넙치 → 도다리 → 꽁치 → … (24, then it starts over)
   themes:[
@@ -6633,10 +6634,16 @@ const PASS={
   free:[{p:40},{p:40},{c:0},{p:50},{c:1},{p:50},{p:60},{c:0},{p:60},{c:2},{p:60},{p:70},{c:1},{p:70},{c:2},{p:70},{p:80},{c:1},{p:80},{c:3},{p:80},{p:90},{c:2},{p:90},{c:3},{p:90},{p:100},{c:2},{p:100},{c:3}],
   gold:[{t:1},{p:80},{c:1},{p:90},{c:2},{p:100},{c:1},{p:100},{c:2},{c:3},{p:110},{c:2},{p:110},{c:2},{c:3},{p:120},{c:2},{p:120},{c:3},{c:4},{p:130},{c:2},{p:130},{c:3},{c:3},{p:140},{c:3},{p:150},{c:3},{c:4}]
 };
+// v27 💎 Pro Pass — the only real-money item: bought once per pass season through Google Play (no auto-renewal).
+// It opens the whole gold track, the Pro track below it, and +bonus fish. Price shown = Play's price for the product, or `price` (KRW) when Play gives none.
+const PRO={price:8900,cur:'KRW',sku:'pro_pass',bonus:.25,
+  track:(()=>{const a=new Array(30).fill(null);a[0]={tp:'pro'};a[4]={p:150};a[9]={h:'crown'};a[14]={p:200};a[19]={p:250};a[24]={p:300};a[29]={p:500};return a;})()};
+var BILL={kind:'',price:'',busy:false,err:'',svc:null};   // var: read by help text that runs at load, before v27 sets it up
 // called from loadSave() (hoisted, runs before this module's constants exist): literals only
 function passLoad(S){
   const P=save.pass,n=(v,max)=>Number.isFinite(+v)?Math.max(0,Math.min(max,Math.floor(+v))):0;
   P.s=n(S.s,99999);P.xp=n(S.xp,3000);P.gold=S.gold===true;P.cf=n(S.cf,0x3fffffff)&0x3fffffff;P.cg=n(S.cg,0x3fffffff)&0x3fffffff;P.fw=n(S.fw,9999999);
+  P.pro=n(S.pro,99999);P.cx=n(S.cx,0x3fffffff)&0x3fffffff;   // v27: the season the Pro Pass was bought for · claimed Pro-track cells
   P.last=S.last&&typeof S.last==='object'?{s:n(S.last.s,99999),tier:n(S.last.tier,30),p:n(S.last.p,999999),c:n(S.last.c,99),seen:S.last.seen===true}:null;
 }
 function passTheme(n){const L=PASS.themes;return L[((Math.max(1,n||1)-1)%L.length+L.length)%L.length];}
@@ -6644,45 +6651,52 @@ function passTitle(n){return fmtL(__L('{n} 패스'),{n:passTheme(n).n});}
 function passName(n){return passTheme(n).e+' '+passTitle(n);}
 function passTier(){return Math.min(PASS.tiers,Math.floor(save.pass.xp/PASS.per));}
 function passBit(i){return 1<<i;}
-function passCan(track,i){const P=save.pass;if(i<0||i>=PASS.tiers||i>=passTier())return false;if(track==='g'&&!P.gold)return false;return !((track==='g'?P.cg:P.cf)&passBit(i));}
-function passCount(){let n=0;for(let i=0;i<PASS.tiers;i++){if(passCan('f',i))n++;if(passCan('g',i))n++;}return n;}
+function passProOn(){const P=save.pass;return P.pro>0&&P.pro===P.s;}
+function passGoldOn(){return save.pass.gold||passProOn();}   // gold opened with points before v27 stays open for that season
+const passBits=t=>t==='g'?'cg':t==='x'?'cx':'cf';
+function passReward(t,i){return t==='g'?PASS.gold[i]:t==='x'?PRO.track[i]:PASS.free[i];}
+function passCan(track,i){const P=save.pass;if(i<0||i>=PASS.tiers||i>=passTier())return false;if(track==='g'&&!passGoldOn())return false;if(track==='x'&&(!passProOn()||!PRO.track[i]))return false;return !(P[passBits(track)]&passBit(i));}
+function passCount(){let n=0;for(let i=0;i<PASS.tiers;i++)for(const t of['f','g','x'])if(passCan(t,i))n++;return n;}
 function passGrant(R,quiet){   // → {txt, card}
   const P=save.pass;
   if(R.p){save.points+=R.p;return{txt:'⭐'+R.p+'P'};}
   if(R.c!=null){const c=grantTier(R.c);return{txt:fmtL(__L('{g} 카드 · {n}'),{g:GRADES[c.g].n,n:TYPES[c.k].name})+(c.isNew?' 🎉':''),card:c};}
   if(R.t){const k=passTheme(P.s).t;if(save.trails.includes(k)){save.points+=PASS.dup;return{txt:fmtL(__L('트레일은 이미 있어서 ⭐{p}P'),{p:PASS.dup})};}save.trails.push(k);return{txt:fmtL(__L('시즌 트레일 「{n}」'),{n:TRAILS[k].name})};}
+  if(R.tp){if(save.trails.includes(R.tp)){save.points+=PASS.dup;return{txt:fmtL(__L('트레일은 이미 있어서 ⭐{p}P'),{p:PASS.dup})};}save.trails.push(R.tp);return{txt:fmtL(__L('프로 트레일 「{n}」'),{n:TRAILS[R.tp].name})};}
+  if(R.h){if(save.hats.includes(R.h)){save.points+=PASS.dup;return{txt:fmtL(__L('모자는 이미 있어서 ⭐{p}P'),{p:PASS.dup})};}save.hats.push(R.h);return{txt:fmtL(__L('모자 「{n}」'),{n:HATS[R.h].name})};}
   return{txt:''};
 }
 function passClaim(track,i,quiet,settling){
-  if(!settling)passCheck();if(!passCan(track,i))return null;const P=save.pass,R=(track==='g'?PASS.gold:PASS.free)[i];
-  if(track==='g')P.cg|=passBit(i);else P.cf|=passBit(i);
+  if(!settling)passCheck();if(!passCan(track,i))return null;const P=save.pass,R=passReward(track,i);
+  P[passBits(track)]|=passBit(i);
   const r=passGrant(R);persist();
   if(!quiet){SFX.win();vib([20,30,40]);hypeToast(fmtL(__L('🐟 {t}단계 · {r}'),{t:i+1,r:r.txt}));$('#ptsN').textContent=save.points;}
   return r;
 }
-function passClaimAll(){let n=0,last=null;for(let i=0;i<PASS.tiers;i++)for(const t of['f','g'])if(passCan(t,i)){last=passClaim(t,i,true);n++;}
+function passClaimAll(){let n=0,last=null;for(let i=0;i<PASS.tiers;i++)for(const t of['f','g','x'])if(passCan(t,i)){last=passClaim(t,i,true);n++;}
   if(n){SFX.win();vib([30,30,60]);hypeToast(fmtL(__L('🐟 보상 {n}개를 받았어요'),{n}));$('#ptsN').textContent=save.points;}return n;}
 // season change: everything reached but not taken is handed out, then the new pass (new name) starts at 0
 function passCheck(){
   const P=save.pass,now=seasonNow();if(P.s===now||P.s>now)return false;   // a clock moved backwards never wipes progress
   if(P.s>0&&P.s<now){let p0=save.points,c=0;
-    for(let i=0;i<PASS.tiers;i++)for(const t of['f','g'])if(passCan(t,i)){const r=passClaim(t,i,true,true);if(r&&r.card)c++;}
+    for(let i=0;i<PASS.tiers;i++)for(const t of['f','g','x'])if(passCan(t,i)){const r=passClaim(t,i,true,true);if(r&&r.card)c++;}
     P.last={s:P.s,tier:passTier(),p:save.points-p0,c,seen:false};}
-  P.s=now;P.xp=0;P.gold=false;P.cf=0;P.cg=0;persist();return true;
+  P.s=now;P.xp=0;P.gold=false;P.cf=0;P.cg=0;P.cx=0;persist();return true;
 }
+function passGain(n){return passProOn()?Math.round(n*(1+PRO.bonus)):n;}   // 프로 패스: 생선 +PRO.bonus
 function passAdd(n){
-  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier();P.xp=Math.min(PASS.tiers*PASS.per,P.xp+n);const t1=passTier();persist();
-  return{n,t0,t1};
+  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier(),g=passGain(n);P.xp=Math.min(PASS.tiers*PASS.per,P.xp+g);const t1=passTier();persist();
+  return{n:g,base:n,bonus:g-n,t0,t1};
 }
 function passMatch(win,draw,ms){
   const E=PASS.earn,P=save.pass,base=win?E.win:draw?E.draw:E.loss,goals=Math.min(ms,E.goalMax)*E.goal,dn=dayNum();
   let first=0;if(win&&P.fw!==dn){first=E.first;P.fw=dn;}
-  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier()};
-  return{base,goals,ms:Math.min(ms,E.goalMax),first,total:base+goals+first,t0:r.t0,t1:r.t1,win,draw};
+  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier(),bonus:0};
+  return{base,goals,ms:Math.min(ms,E.goalMax),first,pro:r.bonus||0,total:base+goals+first+(r.bonus||0),t0:r.t0,t1:r.t1,win,draw};
 }
 function passRowHtml(R){
   const p=R&&R.pass;if(!p)return '';
-  const parts=[fmtL(p.win?__L('승리 {n}'):p.draw?__L('무승부 {n}'):__L('패배 {n}'),{n:p.base})];if(p.goals)parts.push(fmtL(__L('골 {n}×{g}'),{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL(__L('오늘 첫 승리 {f}'),{f:p.first}));
+  const parts=[fmtL(p.win?__L('승리 {n}'):p.draw?__L('무승부 {n}'):__L('패배 {n}'),{n:p.base})];if(p.goals)parts.push(fmtL(__L('골 {n}×{g}'),{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL(__L('오늘 첫 승리 {f}'),{f:p.first}));if(p.pro)parts.push(fmtL(__L('프로 +{b}'),{b:p.pro}));
   return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.total})+' <small>('+parts.join(' · ')+')</small></span>'+(p.t1>p.t0?'<span class="rtag">'+fmtL(__L('{p} {t}단계!'),{p:passTitle(save.pass.s),t:p.t1})+'</span>':'<small>'+fmtL(__L('{p} {t}단계'),{p:passTitle(save.pass.s),t:p.t1})+'</small>')+'</div>';
 }
 function rulesRowHtml(){
@@ -6694,14 +6708,11 @@ function passRewTxt(R,track){
   if(R.p)return '<b>⭐'+R.p+'</b><small>P</small>';
   if(R.c!=null)return '<b class="rar-t g'+R.c+'">'+GRADES[R.c].n+'</b><small>'+__L('카드')+'</small>';
   if(R.t){const k=passTheme(save.pass.s).t;return '<b>✨</b><small>'+TRAILS[k].name+'</small>';}
+  if(R.tp)return '<b>✨</b><small>'+TRAILS[R.tp].name+'</small>';
+  if(R.h)return '<b>🎩</b><small>'+HATS[R.h].name+'</small>';
   return '';
 }
-function passBuy(btn){
-  passCheck();const P=save.pass;if(P.gold)return false;
-  if(save.points<PASS.cost){lackMsg(PASS.cost);return false;}
-  if(btn&&!btn.dataset.sure){btn.dataset.sure='1';btn.textContent=fmtL(__L('한 번 더 누르면 {p}P를 써요'),{p:PASS.cost});setTimeout(()=>{if(btn.isConnected){delete btn.dataset.sure;renderPass();}},3200);return false;}
-  save.points-=PASS.cost;P.gold=true;persist();SFX.champ();vib([40,40,90]);hypeToast('👑 '+__L('골드 패스를 열었어요!'));$('#ptsN').textContent=save.points;renderPass();return true;
-}
+function passBuy(){return proBuy();}   // v27: the gold track is no longer sold for points — it comes with the Pro Pass
 function renderPass(){
   const el=$('#psBody'),hd=$('#psHead');if(!el||!hd)return;passCheck();
   const P=save.pass,T=passTheme(P.s),tier=passTier(),cur=P.xp-tier*PASS.per,left=seasonLeft(P.s),n=passCount(),E=PASS.earn;
@@ -6712,26 +6723,26 @@ function renderPass(){
   h+='<div class="ps-prog"><div class="ps-tier"><small>'+__L('단계')+'</small><b>'+tier+'</b><small>/ '+PASS.tiers+'</small></div><div class="ps-bar">'
     +(tier>=PASS.tiers?'<div class="ps-bt">'+__L('모든 단계를 달성했어요!')+'</div><div class="pbar"><i style="width:100%"></i></div>':'<div class="ps-bt">'+fmtL(__L('다음 단계까지 🐟 {c} / {p}'),{c:cur,p:PASS.per})+'</div><div class="pbar"><i style="width:'+(cur/PASS.per*100).toFixed(1)+'%"></i></div>')
     +'<small>'+fmtL(__L('이번 시즌 모은 {f} {x}마리'),{f:T.n,x:P.xp})+'</small></div></div>';
-  h+='<div class="ps-acts">'+(P.gold?'<span class="ps-gold on">👑 '+__L('골드 패스 사용 중')+'</span>':'<button class="btn primary ps-gold" id="psBuy">👑 '+fmtL(__L('골드 패스 열기 · {p}P'),{p:PASS.cost})+'</button>')
+  h+='<div class="ps-acts">'+proBtnHtml()
     +(n?'<button class="btn ps-all" id="psAll">🎁 '+fmtL(__L('보상 {n}개 모두 받기'),{n})+'</button>':'')+'</div>';
-  if(!P.gold)h+='<div class="lbl ps-note">'+__L('골드 칸 보상은 지금까지 올라온 단계 것까지 바로 받을 수 있어요 · 현금 결제 없음, 경기로 번 포인트만 사용')+'</div>';
-  h+='<div class="ps-track" id="psTrack"><div class="ps-lab"><span>'+__L('무료')+'</span><span></span><span>👑 '+__L('골드')+'</span></div>';
+  h+=proNoteHtml();
+  h+='<div class="ps-track" id="psTrack"><div class="ps-lab"><span>'+__L('무료')+'</span><span></span><span>👑 '+__L('골드')+'</span><span>💎 '+__L('프로')+'</span></div>';
   for(let i=0;i<PASS.tiers;i++){
-    const reached=i<tier,cell=(t,R)=>{const got=((t==='g'?P.cg:P.cf)&passBit(i))!==0,can=passCan(t,i),gl=t==='g'&&!P.gold;
-      return '<button class="ps-cell '+(t==='g'?'g':'f')+(got?' got':can?' rdy':reached?(gl?' gl':''):' lock')+'" data-pc="'+t+i+'"'+(can?'':' tabindex="-1"')+' aria-label="'+fmtL(__L('{t}단계 {k} {s}'),{t:i+1,k:t==='g'?__L('골드'):__L('무료'),s:got?__L('받음'):can?__L('받기'):''})+'">'+passRewTxt(R,t)+(got?'<i class="ps-ok">✔</i>':gl&&reached?'<i class="ps-ok">🔒</i>':'')+'</button>';};
-    h+='<div class="ps-col'+(i===tier?' cur':reached?' done':'')+'">'+cell('f',PASS.free[i])+'<div class="ps-num">'+(i+1)+'</div>'+cell('g',PASS.gold[i])+'</div>';
+    const reached=i<tier,cell=(t,R)=>{if(!R)return '<div class="ps-cell x none"></div>';const got=(P[passBits(t)]&passBit(i))!==0,can=passCan(t,i),gl=(t==='g'&&!passGoldOn())||(t==='x'&&!passProOn());
+      return '<button class="ps-cell '+t+(got?' got':can?' rdy':reached?(gl?' gl':''):' lock')+'" data-pc="'+t+i+'"'+(can?'':' tabindex="-1"')+' aria-label="'+fmtL(__L('{t}단계 {k} {s}'),{t:i+1,k:t==='g'?__L('골드'):t==='x'?__L('프로'):__L('무료'),s:got?__L('받음'):can?__L('받기'):''})+'">'+passRewTxt(R,t)+(got?'<i class="ps-ok">✔</i>':gl&&reached?'<i class="ps-ok">🔒</i>':'')+'</button>';};
+    h+='<div class="ps-col'+(i===tier?' cur':reached?' done':'')+'">'+cell('f',PASS.free[i])+'<div class="ps-num">'+(i+1)+'</div>'+cell('g',PASS.gold[i])+cell('x',PRO.track[i])+'</div>';
   }
   h+='</div>';
-  const pools=[0,1,2,3,4].map(g=>fmtL(__L('{g} {n}종'),{g:GRADES[g].n,n:tierTypes(g).length})).join(' · ');
+  const pools=[0,1,2,3,4].map(g=>{const k=tierTypes(g).length;return fmtL(__L('{g} {n}종 각 {p}%'),{g:GRADES[g].n,n:k,p:k?+(100/k).toFixed(2):0});}).join(' · ');
   h+='<div class="odds ps-info"><b>'+T.e+' '+fmtL(__L('{f} 얻는 법'),{f:T.n})+'</b><br>'+fmtL(__L('경기를 끝내면 승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g} (최대 {m}골) · 그날 첫 승리 +{f} · 오늘의 목표 보상을 받을 때마다 +{q}'),{w:E.win,d:E.draw,l:E.loss,g:E.goal,m:E.goalMax,f:E.first,q:E.daily})
     +'<br>'+fmtL(__L('{p}마리마다 1단계 · 모두 {n}단계'),{p:PASS.per,n:PASS.tiers})
     +'<br><b>🎁 '+__L('보상 안내')+'</b><br>'+fmtL(__L('카드 보상은 그 등급 펭귄 중 하나가 같은 확률로 나와요 ({pools}) · 처음 얻은 펭귄은 해금, 이미 있으면 그 등급 카드로 보관 · 시즌 트레일이 이미 있으면 ⭐{d}P'),{pools,d:PASS.dup})
     +'<br>'+fmtL(__L('패스 이름은 시즌마다 바뀌어요. 시즌이 끝나면 받지 않은 보상은 자동으로 받고, 새 패스는 0단계부터 · 다음 시즌: {next}'),{next:passName(P.s+1)})+'</div>';
   el.innerHTML=h;
-  const b=$('#psBuy');if(b)b.onclick=()=>passBuy(b);
+  const b=$('#psBuy');if(b)b.onclick=()=>proBuy();
   const a=$('#psAll');if(a)a.onclick=()=>{passClaimAll();renderPass();hypeMenuRefresh();};
   el.querySelectorAll('[data-pc]').forEach(c=>{c.onclick=()=>{const t=c.dataset.pc[0],i=+c.dataset.pc.slice(1);if(passCan(t,i)){passClaim(t,i);renderPass();hypeMenuRefresh();}
-    else if(t==='g'&&!save.pass.gold&&i<passTier())flashMsg('👑 '+__L('골드 패스를 열면 받을 수 있어요'));else if(i>=passTier())flashMsg(fmtL(__L('🐟 {t}단계에 도달하면 받을 수 있어요'),{t:i+1}));};});
+    else if((t==='g'&&!passGoldOn()||t==='x'&&!passProOn())&&i<passTier())flashMsg('💎 '+__L('프로 패스를 사면 받을 수 있어요'));else if(i>=passTier())flashMsg(fmtL(__L('🐟 {t}단계에 도달하면 받을 수 있어요'),{t:i+1}));};});
   const tr=$('#psTrack');if(tr){const col=tr.querySelectorAll('.ps-col')[Math.max(0,Math.min(PASS.tiers-1,tier)-2)];if(col)tr.scrollLeft=col.offsetLeft-tr.offsetLeft;}
   $('#ptsN').textContent=save.points;
 }
@@ -6740,13 +6751,13 @@ function passMenu(){
   const m=$('#menuPass');if(!m)return;
   const sub=$('#psSub'),bd=$('#psBadge');
   const tt=$('#psTitle');if(tt)tt.textContent=passTitle(P.s);
-  if(sub)sub.textContent=fmtL(__L('{t}단계 · D-{d}'),{t:tier,d:seasonLeft(P.s)});
+  if(sub)sub.textContent=fmtL(__L('{t}단계 · D-{d}'),{t:tier,d:seasonLeft(P.s)})+(passProOn()?' · PRO':'');m.classList.toggle('pro',passProOn());
   const ic=m.querySelector('.ps-ic');if(ic)ic.textContent=T.e;
   if(bd){bd.textContent=n?n:'';bd.style.display=n?'inline-block':'none';}
   m.style.setProperty('--p1',T.c[0]);m.style.setProperty('--p2',T.c[1]);
   m.setAttribute('aria-label',passName(P.s)+' '+fmtL(__L('{t}단계'),{t:tier})+(n?', '+fmtL(__L('받을 보상 {n}개'),{n}):'')+'. '+__L('패스 열기'));
 }
-function howV24(){const E=PASS.earn,L=PASS.themes;return fmtL(__L('🐟 <b>생선 패스</b>: 시즌마다 패스 이름이 다른 생선으로 바뀌어요 ({list} → … 모두 {n}가지, 그다음 처음부터). 경기와 오늘의 목표로 그 시즌의 생선을 모아 {t}단계를 올라가요 (승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g}, 그날 첫 승리 +{f}, 목표 보상마다 +{q}). 무료 칸은 누구나, 👑 골드 칸은 {p}P로 열어요. 골드 1단계는 그 생선 이름의 시즌 트레일이에요.'),{list:L.slice(0,6).map(x=>x.n).join(' → '),n:L.length,t:PASS.tiers,w:E.win,d:E.draw,l:E.loss,g:E.goal,f:E.first,q:E.daily,p:PASS.cost});}
+function howV24(){const E=PASS.earn,L=PASS.themes;return fmtL(__L('🐟 <b>생선 패스</b>: 시즌마다 패스 이름이 다른 생선으로 바뀌어요 ({list} → … 모두 {n}가지, 그다음 처음부터). 경기와 오늘의 목표로 그 시즌의 생선을 모아 {t}단계를 올라가요 (승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g}, 그날 첫 승리 +{f}, 목표 보상마다 +{q}). 무료 칸은 누구나 받아요. 💎 프로 패스({price}, 그 시즌 한 번 결제, 자동 갱신 없음)를 사면 👑 골드 칸 전체와 💎 프로 칸이 열리고 생선을 {b}% 더 모아요. 골드 1단계는 그 생선 이름의 시즌 트레일이에요.'),{list:L.slice(0,6).map(x=>x.n).join(' → '),n:L.length,t:PASS.tiers,w:E.win,d:E.draw,l:E.loss,g:E.goal,f:E.first,q:E.daily,price:proPriceTxt(),b:Math.round(PRO.bonus*100)});}
 // help line (the screen itself is static markup, next to 목표)
 {const b=document.querySelector('.how-v22');if(b){const d=document.createElement('div');d.innerHTML='<h3>'+__L('🐟 생선 패스')+'</h3>'+howV24();b.appendChild(d);}}
 try{passCheck();}catch(e){}
@@ -7174,13 +7185,104 @@ function sigFrame(p,c,dt,t){
 }
 function sigEnd(p,c){const cx=p.pg&&p.pg.cx;if(cx){if(cx.flames)cx.flames.visible=false;if(cx.beamL)cx.beamL.visible=cx.beamR.visible=false;if(cx.sun3)cx.sun3.visible=false;}
   for(const kk of['wave','rugO','vort','rose'])if(c&&c[kk]){c[kk].life=0;c[kk].m.visible=false;}}
+// pre-compile every effect material once after start-up, so the first skill of a match does not stutter while shaders compile
+function sigWarm(){
+  try{
+    if(!renderer||!renderer.compile)return;const M=sgMat(),geo=new T.BoxGeometry(.01,.01,.01),g=new T.Group(),add=m=>g.add(new T.Mesh(geo,m));
+    [M.gold,M.goldD,M.ruby,M.saph,M.pearl,M.velvet,M.ermine,M.ice,M.stone,M.leaf].forEach(add);add(sgAdd(0xffffff,1));
+    g.add(sgWaveMake());add(new T.MeshStandardMaterial({map:sgTex('carpet'),roughness:.9,metalness:0,polygonOffset:true,polygonOffsetFactor:-4}));
+    add(new T.MeshStandardMaterial({map:sgTex('banner'),side:T.DoubleSide,roughness:.75,metalness:0}));
+    add(new T.MeshBasicMaterial({map:sgTex('flow'),transparent:true,blending:T.AdditiveBlending,depthWrite:false,fog:false}));
+    add(new T.MeshBasicMaterial({map:sgTex('wing2'),transparent:true,side:T.DoubleSide,depthWrite:false}));
+    g.add(new T.Sprite(new T.SpriteMaterial({map:sgTex('rays'),transparent:true,depthWrite:false,blending:T.AdditiveBlending,fog:false})));
+    g.position.set(0,-40,0);scene.add(g);renderer.compile(scene,camera);scene.remove(g);
+  }catch(e){}
+}
+setTimeout(sigWarm,1200);
+
+/* ================= v27: 💎 Pro Pass — Google Play billing ================= */
+// One purchase per pass season (a consumable Play product `pro_pass`, no auto-renewal). Two ways to reach Google Play:
+//  · Trusted Web Activity: the Digital Goods API + Payment Request (`https://play.google.com/billing`)
+//  · the Android wrapper app: a JS bridge `window.PHBilling` {price(sku)→Promise<{value,currency}|string>, buy(sku)→Promise<{token}>,
+//    consume(token)→Promise, list()→Promise<[{sku,token}]>} implemented with Play Billing Library on the native side.
+// Anywhere else (a plain browser) the button explains that it can only be bought in the Play Store app — nothing is ever granted without Play.
+// A purchase token is granted once (save.pay.tok), then consumed so the pass can be bought again next season; unconsumed purchases are restored at start.
+function proFmt(v,cur){try{return new Intl.NumberFormat(I18N.loc||'ko-KR',{style:'currency',currency:cur||PRO.cur,maximumFractionDigits:cur==='KRW'||!cur?0:2}).format(+v);}catch(e){return (+v).toLocaleString()+' '+(cur||PRO.cur);}}
+function proPriceTxt(){return (BILL&&BILL.price)||proFmt(PRO.price,PRO.cur);}
+async function billInit(){
+  BILL.err='';
+  try{
+    if(window.PHBilling&&typeof window.PHBilling.buy==='function'){BILL.kind='native';
+      try{const p=await window.PHBilling.price(PRO.sku);if(p)BILL.price=typeof p==='string'?p:proFmt(p.value,p.currency);}catch(e){}}
+    else if('getDigitalGoodsService' in window&&window.PaymentRequest){
+      BILL.svc=await window.getDigitalGoodsService('https://play.google.com/billing');BILL.kind=BILL.svc?'play':'none';
+      if(BILL.svc){try{const d=await BILL.svc.getDetails([PRO.sku]);if(d&&d[0]&&d[0].price)BILL.price=proFmt(d[0].price.value,d[0].price.currency);}catch(e){}}}
+    else BILL.kind='none';
+    await proRestore();
+  }catch(e){BILL.kind=BILL.kind||'none';BILL.err=String(e&&e.message||e);}
+  try{if(G.ui==='sPass')renderPass();passMenu();}catch(e){}
+}
+async function proList(){
+  if(BILL.kind==='native')return ((await window.PHBilling.list())||[]).map(x=>({sku:x.sku,token:x.token}));
+  if(BILL.kind==='play')return ((await BILL.svc.listPurchases())||[]).map(x=>({sku:x.itemId,token:x.purchaseToken}));
+  return [];
+}
+async function proConsume(tok){try{if(BILL.kind==='native')await window.PHBilling.consume(tok);else if(BILL.kind==='play')await BILL.svc.consume(tok);}catch(e){}}
+// grant the current season's Pro Pass for one purchase token (idempotent)
+function proGrant(tok){
+  if(!tok||typeof tok!=='string')return false;const PY=save.pay;if(PY.tok.includes(tok))return false;
+  passCheck();const P=save.pass;PY.tok.push(tok);if(PY.tok.length>30)PY.tok.splice(0,PY.tok.length-30);
+  const was=passProOn();P.pro=P.s;PY.last={s:P.s,t:Date.now()};persist();
+  if(!was){SFX.champ();vib([40,40,90]);hypeToast('💎 '+fmtL(__L('{p} 프로 패스를 열었어요!'),{p:passTitle(P.s)}));}
+  try{if(G.ui==='sPass')renderPass();passMenu();}catch(e){}
+  return true;
+}
+async function proRestore(){
+  if(BILL.kind!=='native'&&BILL.kind!=='play')return 0;let n=0;
+  for(const p of await proList())if(p.sku===PRO.sku&&p.token){if(proGrant(p.token))n++;await proConsume(p.token);}
+  return n;
+}
+async function proBuy(){
+  passCheck();
+  if(passProOn()){flashMsg('💎 '+__L('이번 시즌 프로 패스를 이미 갖고 있어요'));return false;}
+  if(BILL.busy)return false;
+  if(BILL.kind!=='native'&&BILL.kind!=='play'){flashMsg('💎 '+__L('프로 패스는 Play 스토어 앱에서 살 수 있어요'));return false;}
+  BILL.busy=true;try{if(G.ui==='sPass')renderPass();}catch(e){}
+  let ok=false;
+  try{
+    if(BILL.kind==='native'){const r=await window.PHBilling.buy(PRO.sku);if(r&&r.token){ok=proGrant(r.token)||passProOn();await proConsume(r.token);}}
+    else{
+      const req=new PaymentRequest([{supportedMethods:'https://play.google.com/billing',data:{sku:PRO.sku}}],{total:{label:'Total',amount:{currency:PRO.cur,value:'0'}}});
+      const res=await req.show();const tok=res&&res.details&&res.details.purchaseToken;
+      if(tok){ok=proGrant(tok)||passProOn();await proConsume(tok);}
+      try{await res.complete(ok?'success':'fail');}catch(e){}
+    }
+  }catch(e){const m=String(e&&e.name||e);if(!/Abort|cancel/i.test(m))flashMsg('💎 '+__L('결제를 끝내지 못했어요. 잠시 후 다시 해 주세요'));}
+  BILL.busy=false;try{if(G.ui==='sPass')renderPass();passMenu();}catch(e){}
+  return ok;
+}
+function proBtnHtml(){
+  if(passProOn())return '<span class="ps-gold on pro">💎 '+__L('프로 패스 사용 중')+'</span>';
+  const can=BILL.kind==='native'||BILL.kind==='play';
+  return (save.pass.gold?'<span class="ps-gold on">👑 '+__L('골드 칸 열림')+'</span>':'')
+    +'<button class="btn primary ps-gold ps-pro" id="psBuy"'+(can&&!BILL.busy?'':' aria-disabled="true"')+'>💎 '+fmtL(__L('프로 패스 · {p}'),{p:proPriceTxt()})+(BILL.busy?' …':'')+'</button>';
+}
+function proNoteHtml(){
+  if(passProOn())return '<div class="lbl ps-note">'+fmtL(__L('💎 프로: 👑 골드 칸 전체 + 💎 프로 칸 + 생선 {b}% 더 · {f} 패스 시즌이 끝날 때까지'),{b:Math.round(PRO.bonus*100),f:passTheme(save.pass.s).n})+'</div>';
+  const can=BILL.kind==='native'||BILL.kind==='play',l=seasonLeft(save.pass.s);
+  return '<div class="lbl ps-note ps-pronote">'+fmtL(__L('💎 프로 패스 {p}: 👑 골드 칸 전체 + 💎 프로 칸(프로 트레일 · 모자 · 포인트) + 생선 {b}% 더 · 지금까지 올라온 단계 보상도 바로 받아요'),{p:proPriceTxt(),b:Math.round(PRO.bonus*100)})
+    +'<br>'+fmtL(__L('이번 {f} 패스 시즌에만 유효 (남은 {l}일) · 한 번 결제, 자동 갱신 없음 · 결제는 Google Play로 처리돼요 · 보상을 받은 뒤에는 청약철회가 제한될 수 있고, 환불은 Google Play 환불 정책을 따라요'),{f:passTheme(save.pass.s).n,l})
+    +(can?'':'<br><b>'+__L('Play 스토어 앱에서만 살 수 있어요 (이 브라우저에서는 결제할 수 없어요)')+'</b>')+'</div>';
+}
+setTimeout(()=>{billInit();},0);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(BILL.kind==='native'||BILL.kind==='play'))proRestore().catch(()=>{});});
 
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

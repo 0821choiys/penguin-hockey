@@ -3,7 +3,7 @@ const {execFileSync}=require('child_process');
 const errs=[];console.error=(...a)=>errs.push(String(a[0]&&a[0].stack||a[0]).slice(0,300));
 const PH=require('./harness.js');const {save,G,PASS,GRADES,RAR,TYPES}=PH;
 let fails=0,passes=0;const ok=(c,m)=>{if(c)passes++;else fails++;console.log((c?'PASS ':'FAIL ')+m);};
-const reset=s=>{Object.assign(save.pass,{s:s||PH.seasonNow(),xp:0,gold:false,cf:0,cg:0,fw:0,last:null});};
+const reset=s=>{Object.assign(save.pass,{s:s||PH.seasonNow(),xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0});};
 
 // ---- names change every season ----
 const T=PASS.themes;
@@ -33,8 +33,8 @@ ok(PH.passCan('f',0)&&PH.passCan('f',2)&&!PH.passCan('f',3)&&!PH.passCan('g',0),
  ok(PH.passClaim('f',5)===null&&PH.passClaim('g',1)===null,'cannot claim an unreached tier or a gold reward without the Gold Pass');
  const t0=save.types.length,cc0=JSON.stringify(save.cc);const c=PH.passClaim('f',2);
  ok(c&&c.card&&c.card.g===0&&RAR[c.card.k]===0&&(save.types.length>t0||JSON.stringify(save.cc)!==cc0),'tier 3 free = a 기본 card that really lands in the collection ('+c.card.k+')');}
-{save.points=100;PH.passBuy();ok(!save.pass.gold&&save.points===100,'not enough points: the Gold Pass stays locked, nothing charged');
- save.points=2000;PH.passBuy();ok(save.pass.gold&&save.points===2000-PASS.cost,'Gold Pass bought with in-game points ('+PASS.cost+'P)');
+{save.points=2000;PH.passBuy();ok(!save.pass.gold&&!PH.passGoldOn()&&save.points===2000,'v27: the gold track is no longer sold for points (nothing charged, still locked)');
+ PH.proGrant('v24-test-token');ok(PH.passGoldOn()&&PH.passProOn()&&save.points===2000,'💎 Pro Pass (Google Play purchase) opens the gold track, no points spent');
  const k=PH.passTheme(save.pass.s).t;save.trails=save.trails.filter(x=>x!==k);const r=PH.passClaim('g',0);ok(r&&save.trails.includes(k),'gold tier 1 = the season trail ('+PH.TRAILS[k].name+')');
  save.pass.cg&=~1;const p0=save.points;PH.passClaim('g',0);ok(save.points===p0+PASS.dup,'trail already owned → ⭐'+PASS.dup+'P instead');
  const n=PH.passCount();const got=PH.passClaimAll();ok(got===n&&PH.passCount()===0,'claim all: '+n+' rewards (retroactive gold included)');}
@@ -52,7 +52,7 @@ ok(PH.passCan('f',0)&&PH.passCan('f',2)&&!PH.passCan('f',3)&&!PH.passCan('g',0),
 {reset(1);Object.assign(save.pass,{s:5,xp:777,gold:true});PH.passCheck();ok(save.pass.s===5&&save.pass.xp===777&&save.pass.gold,'device clock moved backwards (saved season 5, now 1): progress is kept, nothing reset');reset();}
 // ---- screen / menu render with the live numbers ----
 {reset();save.pass.xp=737;PH.renderPass();PH.passMenu();ok(true,'pass screen + menu row render without errors');
- const h=PH.howV24();ok(h.includes(PASS.cost+'P')&&h.includes('승리 '+PASS.earn.win)&&h.includes('+'+PASS.earn.daily),'help text uses the same numbers');}
+ const h=PH.howV24();ok(h.includes(PH.proPriceTxt())&&h.includes('승리 '+PASS.earn.win)&&h.includes('+'+PASS.earn.daily),'help text uses the same numbers');}
 // ---- season trails are never for sale ----
 ok(Object.keys(PH.TRAILS).filter(k=>PH.TRAILS[k].pass).every(k=>PH.TRAILS[k].cost===0),'season trails have no price (pass only)');
 

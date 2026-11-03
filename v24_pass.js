@@ -1,8 +1,8 @@
 /* ================= v24: fish pass (정어리 패스 → 청어 패스 → 광어 패스 …) — a new fish every season ================= */
-// 경기와 오늘의 목표로 그 시즌의 생선(🐟)을 모아 30단계를 올라가요. 무료 칸은 누구나, 골드 칸은 경기로 번 포인트로 열어요 (현금 결제 없음).
+// 경기와 오늘의 목표로 그 시즌의 생선(🐟)을 모아 30단계를 올라가요. 무료 칸은 누구나, 골드 칸 · 프로 칸은 프로 패스(v27, 시즌마다 1회 결제)로 열어요.
 // Seasons follow the league season (SEASON: 28 days). Every number on screen comes from PASS.
 const PASS={
-  tiers:30,per:100,cost:900,dup:150,
+  tiers:30,per:100,dup:150,
   earn:{win:24,draw:16,loss:10,goal:3,goalMax:5,first:30,daily:40},
   // the pass is named after a fish, a new one every season: 정어리 → 청어 → 광어 → 넙치 → 도다리 → 꽁치 → … (24, then it starts over)
   themes:[
@@ -35,10 +35,16 @@ const PASS={
   free:[{p:40},{p:40},{c:0},{p:50},{c:1},{p:50},{p:60},{c:0},{p:60},{c:2},{p:60},{p:70},{c:1},{p:70},{c:2},{p:70},{p:80},{c:1},{p:80},{c:3},{p:80},{p:90},{c:2},{p:90},{c:3},{p:90},{p:100},{c:2},{p:100},{c:3}],
   gold:[{t:1},{p:80},{c:1},{p:90},{c:2},{p:100},{c:1},{p:100},{c:2},{c:3},{p:110},{c:2},{p:110},{c:2},{c:3},{p:120},{c:2},{p:120},{c:3},{c:4},{p:130},{c:2},{p:130},{c:3},{c:3},{p:140},{c:3},{p:150},{c:3},{c:4}]
 };
+// v27 💎 Pro Pass — the only real-money item: bought once per pass season through Google Play (no auto-renewal).
+// It opens the whole gold track, the Pro track below it, and +bonus fish. Price shown = Play's price for the product, or `price` (KRW) when Play gives none.
+const PRO={price:8900,cur:'KRW',sku:'pro_pass',bonus:.25,
+  track:(()=>{const a=new Array(30).fill(null);a[0]={tp:'pro'};a[4]={p:150};a[9]={h:'crown'};a[14]={p:200};a[19]={p:250};a[24]={p:300};a[29]={p:500};return a;})()};
+var BILL={kind:'',price:'',busy:false,err:'',svc:null};   // var: read by help text that runs at load, before v27 sets it up
 // called from loadSave() (hoisted, runs before this module's constants exist): literals only
 function passLoad(S){
   const P=save.pass,n=(v,max)=>Number.isFinite(+v)?Math.max(0,Math.min(max,Math.floor(+v))):0;
   P.s=n(S.s,99999);P.xp=n(S.xp,3000);P.gold=S.gold===true;P.cf=n(S.cf,0x3fffffff)&0x3fffffff;P.cg=n(S.cg,0x3fffffff)&0x3fffffff;P.fw=n(S.fw,9999999);
+  P.pro=n(S.pro,99999);P.cx=n(S.cx,0x3fffffff)&0x3fffffff;   // v27: the season the Pro Pass was bought for · claimed Pro-track cells
   P.last=S.last&&typeof S.last==='object'?{s:n(S.last.s,99999),tier:n(S.last.tier,30),p:n(S.last.p,999999),c:n(S.last.c,99),seen:S.last.seen===true}:null;
 }
 function passTheme(n){const L=PASS.themes;return L[((Math.max(1,n||1)-1)%L.length+L.length)%L.length];}
@@ -46,45 +52,52 @@ function passTitle(n){return fmtL('{n} 패스',{n:passTheme(n).n});}
 function passName(n){return passTheme(n).e+' '+passTitle(n);}
 function passTier(){return Math.min(PASS.tiers,Math.floor(save.pass.xp/PASS.per));}
 function passBit(i){return 1<<i;}
-function passCan(track,i){const P=save.pass;if(i<0||i>=PASS.tiers||i>=passTier())return false;if(track==='g'&&!P.gold)return false;return !((track==='g'?P.cg:P.cf)&passBit(i));}
-function passCount(){let n=0;for(let i=0;i<PASS.tiers;i++){if(passCan('f',i))n++;if(passCan('g',i))n++;}return n;}
+function passProOn(){const P=save.pass;return P.pro>0&&P.pro===P.s;}
+function passGoldOn(){return save.pass.gold||passProOn();}   // gold opened with points before v27 stays open for that season
+const passBits=t=>t==='g'?'cg':t==='x'?'cx':'cf';
+function passReward(t,i){return t==='g'?PASS.gold[i]:t==='x'?PRO.track[i]:PASS.free[i];}
+function passCan(track,i){const P=save.pass;if(i<0||i>=PASS.tiers||i>=passTier())return false;if(track==='g'&&!passGoldOn())return false;if(track==='x'&&(!passProOn()||!PRO.track[i]))return false;return !(P[passBits(track)]&passBit(i));}
+function passCount(){let n=0;for(let i=0;i<PASS.tiers;i++)for(const t of['f','g','x'])if(passCan(t,i))n++;return n;}
 function passGrant(R,quiet){   // → {txt, card}
   const P=save.pass;
   if(R.p){save.points+=R.p;return{txt:'⭐'+R.p+'P'};}
   if(R.c!=null){const c=grantTier(R.c);return{txt:fmtL('{g} 카드 · {n}',{g:GRADES[c.g].n,n:TYPES[c.k].name})+(c.isNew?' 🎉':''),card:c};}
   if(R.t){const k=passTheme(P.s).t;if(save.trails.includes(k)){save.points+=PASS.dup;return{txt:fmtL('트레일은 이미 있어서 ⭐{p}P',{p:PASS.dup})};}save.trails.push(k);return{txt:fmtL('시즌 트레일 「{n}」',{n:TRAILS[k].name})};}
+  if(R.tp){if(save.trails.includes(R.tp)){save.points+=PASS.dup;return{txt:fmtL('트레일은 이미 있어서 ⭐{p}P',{p:PASS.dup})};}save.trails.push(R.tp);return{txt:fmtL('프로 트레일 「{n}」',{n:TRAILS[R.tp].name})};}
+  if(R.h){if(save.hats.includes(R.h)){save.points+=PASS.dup;return{txt:fmtL('모자는 이미 있어서 ⭐{p}P',{p:PASS.dup})};}save.hats.push(R.h);return{txt:fmtL('모자 「{n}」',{n:HATS[R.h].name})};}
   return{txt:''};
 }
 function passClaim(track,i,quiet,settling){
-  if(!settling)passCheck();if(!passCan(track,i))return null;const P=save.pass,R=(track==='g'?PASS.gold:PASS.free)[i];
-  if(track==='g')P.cg|=passBit(i);else P.cf|=passBit(i);
+  if(!settling)passCheck();if(!passCan(track,i))return null;const P=save.pass,R=passReward(track,i);
+  P[passBits(track)]|=passBit(i);
   const r=passGrant(R);persist();
   if(!quiet){SFX.win();vib([20,30,40]);hypeToast(fmtL('🐟 {t}단계 · {r}',{t:i+1,r:r.txt}));$('#ptsN').textContent=save.points;}
   return r;
 }
-function passClaimAll(){let n=0,last=null;for(let i=0;i<PASS.tiers;i++)for(const t of['f','g'])if(passCan(t,i)){last=passClaim(t,i,true);n++;}
+function passClaimAll(){let n=0,last=null;for(let i=0;i<PASS.tiers;i++)for(const t of['f','g','x'])if(passCan(t,i)){last=passClaim(t,i,true);n++;}
   if(n){SFX.win();vib([30,30,60]);hypeToast(fmtL('🐟 보상 {n}개를 받았어요',{n}));$('#ptsN').textContent=save.points;}return n;}
 // season change: everything reached but not taken is handed out, then the new pass (new name) starts at 0
 function passCheck(){
   const P=save.pass,now=seasonNow();if(P.s===now||P.s>now)return false;   // a clock moved backwards never wipes progress
   if(P.s>0&&P.s<now){let p0=save.points,c=0;
-    for(let i=0;i<PASS.tiers;i++)for(const t of['f','g'])if(passCan(t,i)){const r=passClaim(t,i,true,true);if(r&&r.card)c++;}
+    for(let i=0;i<PASS.tiers;i++)for(const t of['f','g','x'])if(passCan(t,i)){const r=passClaim(t,i,true,true);if(r&&r.card)c++;}
     P.last={s:P.s,tier:passTier(),p:save.points-p0,c,seen:false};}
-  P.s=now;P.xp=0;P.gold=false;P.cf=0;P.cg=0;persist();return true;
+  P.s=now;P.xp=0;P.gold=false;P.cf=0;P.cg=0;P.cx=0;persist();return true;
 }
+function passGain(n){return passProOn()?Math.round(n*(1+PRO.bonus)):n;}   // 프로 패스: 생선 +PRO.bonus
 function passAdd(n){
-  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier();P.xp=Math.min(PASS.tiers*PASS.per,P.xp+n);const t1=passTier();persist();
-  return{n,t0,t1};
+  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier(),g=passGain(n);P.xp=Math.min(PASS.tiers*PASS.per,P.xp+g);const t1=passTier();persist();
+  return{n:g,base:n,bonus:g-n,t0,t1};
 }
 function passMatch(win,draw,ms){
   const E=PASS.earn,P=save.pass,base=win?E.win:draw?E.draw:E.loss,goals=Math.min(ms,E.goalMax)*E.goal,dn=dayNum();
   let first=0;if(win&&P.fw!==dn){first=E.first;P.fw=dn;}
-  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier()};
-  return{base,goals,ms:Math.min(ms,E.goalMax),first,total:base+goals+first,t0:r.t0,t1:r.t1,win,draw};
+  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier(),bonus:0};
+  return{base,goals,ms:Math.min(ms,E.goalMax),first,pro:r.bonus||0,total:base+goals+first+(r.bonus||0),t0:r.t0,t1:r.t1,win,draw};
 }
 function passRowHtml(R){
   const p=R&&R.pass;if(!p)return '';
-  const parts=[fmtL(p.win?'승리 {n}':p.draw?'무승부 {n}':'패배 {n}',{n:p.base})];if(p.goals)parts.push(fmtL('골 {n}×{g}',{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL('오늘 첫 승리 {f}',{f:p.first}));
+  const parts=[fmtL(p.win?'승리 {n}':p.draw?'무승부 {n}':'패배 {n}',{n:p.base})];if(p.goals)parts.push(fmtL('골 {n}×{g}',{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL('오늘 첫 승리 {f}',{f:p.first}));if(p.pro)parts.push(fmtL('프로 +{b}',{b:p.pro}));
   return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.total})+' <small>('+parts.join(' · ')+')</small></span>'+(p.t1>p.t0?'<span class="rtag">'+fmtL('{p} {t}단계!',{p:passTitle(save.pass.s),t:p.t1})+'</span>':'<small>'+fmtL('{p} {t}단계',{p:passTitle(save.pass.s),t:p.t1})+'</small>')+'</div>';
 }
 function rulesRowHtml(){
@@ -96,14 +109,11 @@ function passRewTxt(R,track){
   if(R.p)return '<b>⭐'+R.p+'</b><small>P</small>';
   if(R.c!=null)return '<b class="rar-t g'+R.c+'">'+GRADES[R.c].n+'</b><small>'+'카드'+'</small>';
   if(R.t){const k=passTheme(save.pass.s).t;return '<b>✨</b><small>'+TRAILS[k].name+'</small>';}
+  if(R.tp)return '<b>✨</b><small>'+TRAILS[R.tp].name+'</small>';
+  if(R.h)return '<b>🎩</b><small>'+HATS[R.h].name+'</small>';
   return '';
 }
-function passBuy(btn){
-  passCheck();const P=save.pass;if(P.gold)return false;
-  if(save.points<PASS.cost){lackMsg(PASS.cost);return false;}
-  if(btn&&!btn.dataset.sure){btn.dataset.sure='1';btn.textContent=fmtL('한 번 더 누르면 {p}P를 써요',{p:PASS.cost});setTimeout(()=>{if(btn.isConnected){delete btn.dataset.sure;renderPass();}},3200);return false;}
-  save.points-=PASS.cost;P.gold=true;persist();SFX.champ();vib([40,40,90]);hypeToast('👑 '+'골드 패스를 열었어요!');$('#ptsN').textContent=save.points;renderPass();return true;
-}
+function passBuy(){return proBuy();}   // v27: the gold track is no longer sold for points — it comes with the Pro Pass
 function renderPass(){
   const el=$('#psBody'),hd=$('#psHead');if(!el||!hd)return;passCheck();
   const P=save.pass,T=passTheme(P.s),tier=passTier(),cur=P.xp-tier*PASS.per,left=seasonLeft(P.s),n=passCount(),E=PASS.earn;
@@ -114,26 +124,26 @@ function renderPass(){
   h+='<div class="ps-prog"><div class="ps-tier"><small>'+'단계'+'</small><b>'+tier+'</b><small>/ '+PASS.tiers+'</small></div><div class="ps-bar">'
     +(tier>=PASS.tiers?'<div class="ps-bt">'+'모든 단계를 달성했어요!'+'</div><div class="pbar"><i style="width:100%"></i></div>':'<div class="ps-bt">'+fmtL('다음 단계까지 🐟 {c} / {p}',{c:cur,p:PASS.per})+'</div><div class="pbar"><i style="width:'+(cur/PASS.per*100).toFixed(1)+'%"></i></div>')
     +'<small>'+fmtL('이번 시즌 모은 {f} {x}마리',{f:T.n,x:P.xp})+'</small></div></div>';
-  h+='<div class="ps-acts">'+(P.gold?'<span class="ps-gold on">👑 '+'골드 패스 사용 중'+'</span>':'<button class="btn primary ps-gold" id="psBuy">👑 '+fmtL('골드 패스 열기 · {p}P',{p:PASS.cost})+'</button>')
+  h+='<div class="ps-acts">'+proBtnHtml()
     +(n?'<button class="btn ps-all" id="psAll">🎁 '+fmtL('보상 {n}개 모두 받기',{n})+'</button>':'')+'</div>';
-  if(!P.gold)h+='<div class="lbl ps-note">'+'골드 칸 보상은 지금까지 올라온 단계 것까지 바로 받을 수 있어요 · 현금 결제 없음, 경기로 번 포인트만 사용'+'</div>';
-  h+='<div class="ps-track" id="psTrack"><div class="ps-lab"><span>'+'무료'+'</span><span></span><span>👑 '+'골드'+'</span></div>';
+  h+=proNoteHtml();
+  h+='<div class="ps-track" id="psTrack"><div class="ps-lab"><span>'+'무료'+'</span><span></span><span>👑 '+'골드'+'</span><span>💎 '+'프로'+'</span></div>';
   for(let i=0;i<PASS.tiers;i++){
-    const reached=i<tier,cell=(t,R)=>{const got=((t==='g'?P.cg:P.cf)&passBit(i))!==0,can=passCan(t,i),gl=t==='g'&&!P.gold;
-      return '<button class="ps-cell '+(t==='g'?'g':'f')+(got?' got':can?' rdy':reached?(gl?' gl':''):' lock')+'" data-pc="'+t+i+'"'+(can?'':' tabindex="-1"')+' aria-label="'+fmtL('{t}단계 {k} {s}',{t:i+1,k:t==='g'?'골드':'무료',s:got?'받음':can?'받기':''})+'">'+passRewTxt(R,t)+(got?'<i class="ps-ok">✔</i>':gl&&reached?'<i class="ps-ok">🔒</i>':'')+'</button>';};
-    h+='<div class="ps-col'+(i===tier?' cur':reached?' done':'')+'">'+cell('f',PASS.free[i])+'<div class="ps-num">'+(i+1)+'</div>'+cell('g',PASS.gold[i])+'</div>';
+    const reached=i<tier,cell=(t,R)=>{if(!R)return '<div class="ps-cell x none"></div>';const got=(P[passBits(t)]&passBit(i))!==0,can=passCan(t,i),gl=(t==='g'&&!passGoldOn())||(t==='x'&&!passProOn());
+      return '<button class="ps-cell '+t+(got?' got':can?' rdy':reached?(gl?' gl':''):' lock')+'" data-pc="'+t+i+'"'+(can?'':' tabindex="-1"')+' aria-label="'+fmtL('{t}단계 {k} {s}',{t:i+1,k:t==='g'?'골드':t==='x'?'프로':'무료',s:got?'받음':can?'받기':''})+'">'+passRewTxt(R,t)+(got?'<i class="ps-ok">✔</i>':gl&&reached?'<i class="ps-ok">🔒</i>':'')+'</button>';};
+    h+='<div class="ps-col'+(i===tier?' cur':reached?' done':'')+'">'+cell('f',PASS.free[i])+'<div class="ps-num">'+(i+1)+'</div>'+cell('g',PASS.gold[i])+cell('x',PRO.track[i])+'</div>';
   }
   h+='</div>';
-  const pools=[0,1,2,3,4].map(g=>fmtL('{g} {n}종',{g:GRADES[g].n,n:tierTypes(g).length})).join(' · ');
+  const pools=[0,1,2,3,4].map(g=>{const k=tierTypes(g).length;return fmtL('{g} {n}종 각 {p}%',{g:GRADES[g].n,n:k,p:k?+(100/k).toFixed(2):0});}).join(' · ');
   h+='<div class="odds ps-info"><b>'+T.e+' '+fmtL('{f} 얻는 법',{f:T.n})+'</b><br>'+fmtL('경기를 끝내면 승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g} (최대 {m}골) · 그날 첫 승리 +{f} · 오늘의 목표 보상을 받을 때마다 +{q}',{w:E.win,d:E.draw,l:E.loss,g:E.goal,m:E.goalMax,f:E.first,q:E.daily})
     +'<br>'+fmtL('{p}마리마다 1단계 · 모두 {n}단계',{p:PASS.per,n:PASS.tiers})
     +'<br><b>🎁 '+'보상 안내'+'</b><br>'+fmtL('카드 보상은 그 등급 펭귄 중 하나가 같은 확률로 나와요 ({pools}) · 처음 얻은 펭귄은 해금, 이미 있으면 그 등급 카드로 보관 · 시즌 트레일이 이미 있으면 ⭐{d}P',{pools,d:PASS.dup})
     +'<br>'+fmtL('패스 이름은 시즌마다 바뀌어요. 시즌이 끝나면 받지 않은 보상은 자동으로 받고, 새 패스는 0단계부터 · 다음 시즌: {next}',{next:passName(P.s+1)})+'</div>';
   el.innerHTML=h;
-  const b=$('#psBuy');if(b)b.onclick=()=>passBuy(b);
+  const b=$('#psBuy');if(b)b.onclick=()=>proBuy();
   const a=$('#psAll');if(a)a.onclick=()=>{passClaimAll();renderPass();hypeMenuRefresh();};
   el.querySelectorAll('[data-pc]').forEach(c=>{c.onclick=()=>{const t=c.dataset.pc[0],i=+c.dataset.pc.slice(1);if(passCan(t,i)){passClaim(t,i);renderPass();hypeMenuRefresh();}
-    else if(t==='g'&&!save.pass.gold&&i<passTier())flashMsg('👑 '+'골드 패스를 열면 받을 수 있어요');else if(i>=passTier())flashMsg(fmtL('🐟 {t}단계에 도달하면 받을 수 있어요',{t:i+1}));};});
+    else if((t==='g'&&!passGoldOn()||t==='x'&&!passProOn())&&i<passTier())flashMsg('💎 '+'프로 패스를 사면 받을 수 있어요');else if(i>=passTier())flashMsg(fmtL('🐟 {t}단계에 도달하면 받을 수 있어요',{t:i+1}));};});
   const tr=$('#psTrack');if(tr){const col=tr.querySelectorAll('.ps-col')[Math.max(0,Math.min(PASS.tiers-1,tier)-2)];if(col)tr.scrollLeft=col.offsetLeft-tr.offsetLeft;}
   $('#ptsN').textContent=save.points;
 }
@@ -142,13 +152,13 @@ function passMenu(){
   const m=$('#menuPass');if(!m)return;
   const sub=$('#psSub'),bd=$('#psBadge');
   const tt=$('#psTitle');if(tt)tt.textContent=passTitle(P.s);
-  if(sub)sub.textContent=fmtL('{t}단계 · D-{d}',{t:tier,d:seasonLeft(P.s)});
+  if(sub)sub.textContent=fmtL('{t}단계 · D-{d}',{t:tier,d:seasonLeft(P.s)})+(passProOn()?' · PRO':'');m.classList.toggle('pro',passProOn());
   const ic=m.querySelector('.ps-ic');if(ic)ic.textContent=T.e;
   if(bd){bd.textContent=n?n:'';bd.style.display=n?'inline-block':'none';}
   m.style.setProperty('--p1',T.c[0]);m.style.setProperty('--p2',T.c[1]);
   m.setAttribute('aria-label',passName(P.s)+' '+fmtL('{t}단계',{t:tier})+(n?', '+fmtL('받을 보상 {n}개',{n}):'')+'. '+'패스 열기');
 }
-function howV24(){const E=PASS.earn,L=PASS.themes;return fmtL('🐟 <b>생선 패스</b>: 시즌마다 패스 이름이 다른 생선으로 바뀌어요 ({list} → … 모두 {n}가지, 그다음 처음부터). 경기와 오늘의 목표로 그 시즌의 생선을 모아 {t}단계를 올라가요 (승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g}, 그날 첫 승리 +{f}, 목표 보상마다 +{q}). 무료 칸은 누구나, 👑 골드 칸은 {p}P로 열어요. 골드 1단계는 그 생선 이름의 시즌 트레일이에요.',{list:L.slice(0,6).map(x=>x.n).join(' → '),n:L.length,t:PASS.tiers,w:E.win,d:E.draw,l:E.loss,g:E.goal,f:E.first,q:E.daily,p:PASS.cost});}
+function howV24(){const E=PASS.earn,L=PASS.themes;return fmtL('🐟 <b>생선 패스</b>: 시즌마다 패스 이름이 다른 생선으로 바뀌어요 ({list} → … 모두 {n}가지, 그다음 처음부터). 경기와 오늘의 목표로 그 시즌의 생선을 모아 {t}단계를 올라가요 (승리 {w} · 무승부 {d} · 패배 {l}, 골마다 +{g}, 그날 첫 승리 +{f}, 목표 보상마다 +{q}). 무료 칸은 누구나 받아요. 💎 프로 패스({price}, 그 시즌 한 번 결제, 자동 갱신 없음)를 사면 👑 골드 칸 전체와 💎 프로 칸이 열리고 생선을 {b}% 더 모아요. 골드 1단계는 그 생선 이름의 시즌 트레일이에요.',{list:L.slice(0,6).map(x=>x.n).join(' → '),n:L.length,t:PASS.tiers,w:E.win,d:E.draw,l:E.loss,g:E.goal,f:E.first,q:E.daily,price:proPriceTxt(),b:Math.round(PRO.bonus*100)});}
 // help line (the screen itself is static markup, next to 목표)
 {const b=document.querySelector('.how-v22');if(b){const d=document.createElement('div');d.innerHTML='<h3>'+'🐟 생선 패스'+'</h3>'+howV24();b.appendChild(d);}}
 try{passCheck();}catch(e){}
