@@ -54,6 +54,7 @@ val bundleGame by tasks.registering(Exec::class) {
     val assets = layout.projectDirectory.dir("src/main/assets").asFile
     val fontsource = rootProject.file("../br/node_modules/@fontsource")
     inputs.file(game)
+    inputs.file(rootProject.file("tools/bundle_fonts.py"))
     outputs.dir(assets)
     commandLine("python3", rootProject.file("tools/bundle_fonts.py").absolutePath,
         game.absolutePath, fontsource.absolutePath, assets.absolutePath)
