@@ -5,6 +5,6 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
-app/src/main/assets/index.html
 .idea/
 *.iml
+app/src/main/assets/

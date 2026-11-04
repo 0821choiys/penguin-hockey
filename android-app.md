@@ -12,8 +12,17 @@ Play 스토어용 앱은 `android/`에 있어요. 게임 HTML 하나를 앱 안�
   (activity 1.13 / core 1.19는 compileSdk 37 + AGP 9가 필요해서 아직 안 올렸어요.)
 - **게임 파일:** 빌드할 때 저장소 최상위의 `penguin-hockey-improved.html`이 `assets/index.html`로 복사돼요. 그러니 먼저 `python3 apply_v10.py`.
 - **주소:** `https://appassets.androidplatform.net/assets/index.html` (WebViewAssetLoader). https 주소라 localStorage 저장이 그대로 동작해요.
-  다른 주소의 링크는 게임 안이 아니라 바깥 브라우저로 열려요. 글꼴은 지금처럼 Google Fonts에서 받고, 오프라인이면 기본 글꼴로 보여요.
+  다른 주소의 링크는 게임 안이 아니라 바깥 브라우저로 열려요. 글꼴은 앱 안에 넣어 두어서 구글 글꼴 서버에 요청하지 않아요. 아래 '글꼴' 항목을 보세요.
 - **권한:** 인터넷, 진동. Play Billing 라이브러리가 BILLING · 네트워크 상태 권한을 더해요.
+
+## 글꼴 (구글 글꼴 요청 없음)
+- 앱 사본(`app/src/main/assets/index.html`)은 빌드할 때 `tools/bundle_fonts.py`가 만들어요. 저장소의 웹용 HTML은 그대로예요.
+- **앱에 들어간 글꼴:** Fredoka(500·700)와 Jua(400, 한글 포함) WOFF2 파일 — 약 1.1 MB.
+- **앱에 안 넣은 글꼴:** M PLUS Rounded 1c(일본어, 원본 42 MB)와 Noto Sans SC(중국어, 원본 74 MB). 이 두 글꼴은 용량 때문에 뺐어요.
+  대신 CSS의 시스템 글꼴 순서에 따라 기기에 들어 있는 일본어·중국어 글꼴이 쓰여요. 그래서 일본어·중국어 화면의 글자 모양이 웹 버전과 조금 달라요.
+- 빌드 스크립트는 구글 글꼴 주소가 하나라도 남으면 실패해요. 앱 사본에 구글 주소가 있는지 APK에서 0건으로 확인했어요.
+- 글꼴 원본은 `br/node_modules/@fontsource`에서 읽어요(`cd br && npm ci` 필요).
+- 확인: `node br/appfonts.js ko|ja|zh` — 외부 요청 0건, Fredoka·Jua가 번들에서 로드됨 (ko·ja·zh 각 4/4 통과).
 
 ## 게임 ↔ 앱 연결 (`PHAndroid`)
 - 앱이 `addWebMessageListener`로 `window.PHAndroid`를 넣어요. **앱 자신의 주소에서만** 쓸 수 있어요.
