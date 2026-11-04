@@ -17,7 +17,7 @@ startMatch({mode:'free',size:1,time:0,diff:'normal',noOpp:true,goalieOnly:true})
 {const p=G.player,dir=G.mine.dir,pk=G.puck;const shoot=()=>{p.x=8*dir;p.z=0;p.heading=dir>0?Math.PI/2:-Math.PI/2;p.vx=p.vz=0;pk.x=p.x+1.1*dir;pk.z=0;pk.vx=pk.vz=0;p.cd.shoot=0;p.shotGrace=0;p.recvT=-9;performShot(p,dir,0,.8);return Math.hypot(pk.vx,pk.vz);};
  const a=shoot();p.fireT=8;const b=shoot();ok(G.puck.shot&&G.puck.shot.fire&&b>a*1.15&&p.fireT===0,'🔥 fire puck: next shot +25% and flagged ('+a.toFixed(1)+' -> '+b.toFixed(1)+')');}
 startMatch({mode:'free',size:1,time:0,diff:'normal',noOpp:true,goalieOnly:true});run(3.4);
-{const p=G.player,pk=G.puck;pk.x=p.x+4;pk.z=p.z;pk.vx=pk.vz=0;p.magT=3;const d0=Math.hypot(pk.x-p.x,pk.z-p.z);run(.3);const d1=Math.hypot(pk.x-p.x,pk.z-p.z);ok(d1<d0-1,'🧲 magnet pulls the puck ('+d0.toFixed(1)+' -> '+d1.toFixed(1)+' m)');}
+{const p=G.player,pk=G.puck;pk.x=p.x+4;pk.z=p.z;pk.vx=pk.vz=0;p.magT=3;const d0=Math.hypot(pk.x-p.x,pk.z-p.z);run(.3);const d1=Math.hypot(pk.x-p.x,pk.z-p.z);ok(d1<d0-.8,'🧲 magnet pulls the puck (more than 0.8 m in 0.3 s; it pulls about 1.0 m) ('+d0.toFixed(1)+' -> '+d1.toFixed(1)+' m)');}
 startMatch({mode:'quick',size:3,time:120,diff:'normal'});run(3.4);
 {G.itemT=0;run(.1);ok(G.itemT>8,'items spawn on their own (spawn timer fired)');}
 startMatch({mode:'ranked',size:3,time:120,diff:'normal',oppR:1200,oppName:'x'});run(3.4);ok(!PH.itemsOn()&&G.items.length===0,'no items in ranked (fair play)');

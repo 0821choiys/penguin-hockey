@@ -186,7 +186,7 @@ function castPost(p,dt,t){
   }else if(k==='fiordland'){
     if(Math.random()<dt*30){const a=c.t*8+rnd(TAU),r=rnd(.8,1.3);cxSprite('leaf',x+Math.cos(a)*r,rnd(.3,1.7),z+Math.sin(a)*r,-Math.sin(a)*2,rnd(.3,1),Math.cos(a)*2,rnd(.6,.9),rnd(.3,.45));}
   }else if(k==='yelloweye'){
-    if(P.head)P.head.rotation.y=clamp(angDiff(Math.atan2(p.team.dir*W-x,-z),p.heading),-.7,.7);
+    if(P.head)P.head.rotation.y=clamp(angDiff(p.heading,Math.atan2(p.team.dir*W-x,-z)),-.7,.7);   // angDiff(from,to): look at the goal
     if(once('hit',.15))for(let i=0;i<8;i++)cxSprite('star',x+fx*.4+rnd(-.3,.3),rnd(1.3,1.7),z+fz*.4+rnd(-.3,.3),rnd(-1.2,1.2),rnd(.4,1.4),rnd(-1.2,1.2),.6,.35,0xffe14d);
   }else if(k==='little'){
     if(Math.random()<dt*30)cxSprite('star',x+rnd(-.5,.5),rnd(.5,1.8)+(p.hopT>0?.6:0),z+rnd(-.5,.5),rnd(-.6,.6),rnd(.2,1),rnd(-.6,.6),rnd(.5,.8),rnd(.25,.4),0x9fe4ff);

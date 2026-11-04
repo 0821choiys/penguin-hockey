@@ -82,7 +82,7 @@ const persist=()=>{try{localStorage.setItem('penguinHockey.v1',JSON.stringify(sa
 // load + validate + migrate old (v1) data; nothing valid is ever dropped
 function loadSave(){
   let s=null;try{s=JSON.parse(localStorage.getItem('penguinHockey.v1')||'null');}catch(e){s=null;}
-  if(!s||typeof s!=='object'){if(window.matchMedia&&matchMedia('(pointer: coarse)').matches)save.set.quality='high';save.gfx19=true;return;}
+  if(!s||typeof s!=='object'){save.gfx19=true;return;}
   const num=(v,d)=>Number.isFinite(+v)?+v:d;
   const keep=(src,valid,base)=>{const out=base.slice();if(Array.isArray(src))for(const k of src)if(typeof k==='string'&&Object.prototype.hasOwnProperty.call(valid,k)&&!out.includes(k))out.push(k);return out;};
   save.points=Math.max(0,Math.floor(num(s.points,save.points)));
@@ -2082,7 +2082,7 @@ function setTOD(t,dt){
   const sc=pick3(SKYK.sunC,T_),si=pickN(SKYK.sunI,T_),hs=pick3(SKYK.hemiS,T_),hi=pickN(SKYK.hemiI,T_),el=pickN(SKYK.el,T_);
   sun.color.setRGB(sc[0],sc[1],sc[2]);sun.intensity=si*(1-wxI*.2);hemi.color.setRGB(hs[0],hs[1],hs[2]);hemi.groundColor.setRGB(hor[0]*.6,hor[1]*.6,hor[2]*.7);hemi.intensity=hi;
   sunDir.set(-.45*Math.cos(el),Math.sin(el),-.85*Math.cos(el)).normalize();
-  sun.position.set(G.cam.x+sunDir.x*100,sunDir.y*100,G.cam.z+sunDir.z*100);sun.target.position.set(G.cam.x,0,G.cam.z);
+  shFit();
   sunSpr.position.copy(camera.position).addScaledVector(sunDir,900);sunSpr.material.opacity=1-smooth(.55,.85,T_);sunSpr.material.color.setRGB(sc[0],sc[1],sc[2]);
   moonSpr.position.copy(camera.position).addScaledVector(sunDir,900);moonSpr.material.opacity=smooth(.7,.95,T_);
   starMat.opacity=smooth(.55,.9,T_);stars.position.copy(camera.position);sky.position.copy(camera.position);
@@ -2397,7 +2397,7 @@ function renderSettings(){
 function applyQuality(){
   const low=save.set.quality==='low';
   renderer.setPixelRatio((low?1:Math.min(devicePixelRatio||1,2))*perf.scale);
-  const sz=low?1024:2048;if(sun.shadow.mapSize.x!==sz){sun.shadow.mapSize.set(sz,sz);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
+  const sz=shMapSize();if(sun.shadow.mapSize.x!==sz){sun.shadow.mapSize.set(sz,sz);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
   resize();rinkQuality();gfxApply();
 }
 function resize(){
@@ -4586,7 +4586,7 @@ const PK_KNIT=pkTex(64,(x,N)=>{
     for(const s of[-1,1]){const g=x.createLinearGradient(cx,cy,cx+s*N/8,cy+N/8);g.addColorStop(0,'#b4b4b4');g.addColorStop(1,'#5c5c5c');x.fillStyle=g;x.beginPath();x.ellipse(cx+s*N/17,cy+N/16,N/19,N/11,s*.6,0,TAU);x.fill();}}
 });
 // --- parametric surface (u around, v up) with seam / pole normal fixes ---
-function pkSurf(U,V,fn,colFn,ru,rv,poles){
+function pkSurf(U,V,fn,colFn,ru,rv,poles){U=pkS(U);V=pkS(V);
   const n=(U+1)*(V+1),pos=new Float32Array(n*3),uv=new Float32Array(n*2),col=colFn?new Float32Array(n*3):null,idx=[],p=[0,0,0],c=[1,1,1];let k=0;
   for(let j=0;j<=V;j++)for(let i=0;i<=U;i++){const u=i/U,v=j/V;fn(u,v,p);pos[k*3]=p[0];pos[k*3+1]=p[1];pos[k*3+2]=p[2];uv[k*2]=u*(ru||1);uv[k*2+1]=v*(rv||1);
     if(col){colFn(u,v,p,c);col[k*3]=c[0];col[k*3+1]=c[1];col[k*3+2]=c[2];}k++;}
@@ -4650,11 +4650,11 @@ function pkCol(ty,th,y,o){
 }
 const pkGeoC={};
 const pkLo=()=>save.set.quality==='low';
-function pkBodyGeo(key){const lo=pkLo(),ck='b'+key+lo;if(pkGeoC[ck])return pkGeoC[ck];
+function pkBodyGeo(key){const lo=pkLo(),ck=(pkHi()?'U':'')+'b'+key+lo;if(pkGeoC[ck])return pkGeoC[ck];
   const ty=TYPES[key],w=PK_SHAPE[key]||1;
   return pkGeoC[ck]=pkSurf(lo?28:52,lo?26:46,(u,v,p)=>{const q=PK_BC.getPointAt(v),th=u*TAU,r=Math.max(q.x,.0005)*pkBodyK(th,q.y)*w;p[0]=r*Math.sin(th);p[1]=q.y;p[2]=r*Math.cos(th);},
     (u,v,p,c)=>pkCol(ty,Math.atan2(p[0],p[2]),p[1],c),12,9,[true,true]);}
-function pkHeadGeo(key){const lo=pkLo(),ck='h'+key+lo;if(pkGeoC[ck])return pkGeoC[ck];
+function pkHeadGeo(key){const lo=pkLo(),ck=(pkHi()?'U':'')+'h'+key+lo;if(pkGeoC[ck])return pkGeoC[ck];
   const ty=TYPES[key];
   return pkGeoC[ck]=pkSurf(lo?24:44,lo?16:28,(u,v,p)=>{const q=PK_HC.getPointAt(v),th=u*TAU,r=Math.max(q.x,.0005)*pkHeadK(th,q.y);p[0]=r*Math.sin(th);p[1]=q.y;p[2]=r*Math.cos(th);},
     (u,v,p,c)=>pkCol(ty,Math.atan2(p[0],p[2]),p[1],c),10,5,[false,true]);}
@@ -4691,30 +4691,30 @@ function pkJerseyMat(teamKey,num){const lo=pkLo(),k='j'+teamKey+num+lo;if(pkMatC
   const t=new T.CanvasTexture(c);t.anisotropy=Math.min(4,maxAniso||1);
   return pkMatC[k]=rimify(new T.MeshStandardMaterial({map:t,roughness:.82,side:T.DoubleSide}),.9);
 }
-function pkJerseyGeo(key){const lo=pkLo(),ck='j'+key+lo;if(pkGeoC[ck])return pkGeoC[ck];const w=PK_SHAPE[key]||1;
+function pkJerseyGeo(key){const lo=pkLo(),ck=(pkHi()?'U':'')+'j'+key+lo;if(pkGeoC[ck])return pkGeoC[ck];const w=PK_SHAPE[key]||1;
   return pkGeoC[ck]=pkSurf(lo?28:48,lo?8:14,(u,v,p)=>{const th=u*TAU,c=Math.cos(th),yT=.875-.075*c,y=lerp(.4,yT,v),
     r=pkBodyR(y)*pkBodyK(th,y)*w+.03+.016*(1-smooth(0,.14,v))+.006*Math.sin(th*9)*(1-smooth(0,.3,v));p[0]=r*Math.sin(th);p[1]=y;p[2]=r*Math.cos(th);},null,1,1);}
 // --- scarf (knitted, striped) ---
-function pkScarfGeo(teamKey){const ck='s'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];
-  const tc=new T.Color(TEAM[teamKey].color),R0=pkBodyR(1.155)+.012,g=new T.TorusGeometry(R0,.062,10,44);g.rotateX(Math.PI/2);g.translate(0,1.155,0);
+function pkScarfGeo(teamKey){const ck=(pkHi()?'U':'')+'s'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];
+  const tc=new T.Color(TEAM[teamKey].color),R0=pkBodyR(1.155)+.012,g=new T.TorusGeometry(R0,.062,pkS(10),pkS(44));g.rotateX(Math.PI/2);g.translate(0,1.155,0);
   const p=g.attributes.position,col=new Float32Array(p.count*3);
   for(let i=0;i<p.count;i++){const ph=Math.atan2(p.getZ(i),p.getX(i)),f=(((ph/TAU*14)%1)+1)%1,wh=f<.2?1:0;col[i*3]=lerp(tc.r,.96,wh);col[i*3+1]=lerp(tc.g,.97,wh);col[i*3+2]=lerp(tc.b,.98,wh);}
   g.setAttribute('color',new T.BufferAttribute(col,3));return pkGeoC[ck]=g;}
-function pkScarfTailGeo(teamKey){const ck='st'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];
+function pkScarfTailGeo(teamKey){const ck=(pkHi()?'U':'')+'st'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];
   const tc=pkRGB(TEAM[teamKey].color),wh=[.96,.97,.98],list=[];
   for(const [len,ox,rz] of[[.44,0,0],[.36,.075,.14]]){
     const n=Math.round(len/.075);for(let i=0;i<n;i++){const b=new T.BoxGeometry(.13,len/n+.002,.032);b.translate(ox,-(i+.5)*len/n,0);b.rotateZ(rz);list.push([b,i%2?wh:tc]);}
-    for(let f=0;f<5;f++){const c=new T.CylinderGeometry(.008,.008,.07,4);c.translate(ox-.05+f*.025,-len-.035,0);c.rotateZ(rz);list.push([c,tc]);}
+    for(let f=0;f<5;f++){const c=new T.CylinderGeometry(.008,.008,.07,pkS(4));c.translate(ox-.05+f*.025,-len-.035,0);c.rotateZ(rz);list.push([c,tc]);}
   }
   return pkGeoC[ck]=pkMerge(list);}
 // --- eyes: glossy sclera, species iris, pupil, double catch-light ---
-function pkEyeGeos(key){const ck='e'+key;if(pkGeoC[ck])return pkGeoC[ck];
+function pkEyeGeos(key){const ck=(pkHi()?'U':'')+'e'+key;if(pkGeoC[ck])return pkGeoC[ck];
   const pt=TYPES[key].patch,big=pt==='adelie'?1.24:pt==='auk'?.82:1,iris=pkRGB(PK18EYE[pt]||(pt==='rock'?0xd0182a:pt==='auk'?0x1a1410:0x2a1a12));
-  const sc=new T.SphereGeometry(1,20,14);sc.scale(.085*big,.085*big,.05);
-  const ir=new T.SphereGeometry(1,18,12);ir.scale(.056,.056,.024);ir.translate(0,0,.03);
-  const pu=new T.SphereGeometry(1,14,10);pu.scale(.031,.031,.016);pu.translate(0,0,.043);
-  const h1=new T.SphereGeometry(1,8,6);h1.scale(.016,.016,.008);h1.translate(.02,.024,.056);
-  const h2=new T.SphereGeometry(1,8,6);h2.scale(.008,.008,.005);h2.translate(-.017,-.018,.055);
+  const sc=new T.SphereGeometry(1,pkS(20),pkS(14));sc.scale(.085*big,.085*big,.05);
+  const ir=new T.SphereGeometry(1,pkS(18),pkS(12));ir.scale(.056,.056,.024);ir.translate(0,0,.03);
+  const pu=new T.SphereGeometry(1,pkS(14),pkS(10));pu.scale(.031,.031,.016);pu.translate(0,0,.043);
+  const h1=new T.SphereGeometry(1,pkS(8),pkS(6));h1.scale(.016,.016,.008);h1.translate(.02,.024,.056);
+  const h2=new T.SphereGeometry(1,pkS(8),pkS(6));h2.scale(.008,.008,.005);h2.translate(-.017,-.018,.055);
   return pkGeoC[ck]={sclera:pkMerge([[sc,[.97,.975,.99]]]),iris:pkMerge([[ir,iris],[pu,[.01,.01,.012]]]),hl:pkMerge([[h1,null],[h2,null]])};}
 // --- beaks: curved upper + lower mandible (the lower one can open), species colours ---
 function pkBeakGeo(L,W,H,droop,hook,colFn,lower){
@@ -4738,11 +4738,11 @@ function pkBeakSpec(ty){
   const wrap=(f,lower)=>(t,y,x,c)=>{f(t,y,x,c);if(inside(y,lower)&&t<.95){c[0]=lerp(c[0],mouth[0],.85);c[1]=lerp(c[1],mouth[1],.85);c[2]=lerp(c[2],mouth[2],.85);}};
   S.upW=wrap(S.up,false);S.loW=wrap(S.lo,true);return S;
 }
-function pkBeak(key){const ck='k'+key;if(pkGeoC[ck])return pkGeoC[ck];const S=pkBeakSpec(TYPES[key]);
+function pkBeak(key){const ck=(pkHi()?'U':'')+'k'+key;if(pkGeoC[ck])return pkGeoC[ck];const S=pkBeakSpec(TYPES[key]);
   return pkGeoC[ck]={S,up:pkBeakGeo(S.L,S.W,S.H,S.droop,S.hook,S.upW,false),lo:pkBeakGeo(S.L*.86,S.W*.86,S.H*.62,S.droop*.8,0,S.loW,true)};}
 // --- flippers: tapered paddles, black outside, white inside with a black rim, team wristband ---
-function pkFlipperGeo(side,teamKey,dk){const lo=pkLo(),ck='f'+side+teamKey+lo+(dk?dk.join():'');if(pkGeoC[ck])return pkGeoC[ck];
-  const g=new T.SphereGeometry(1,lo?12:18,lo?10:16),p=g.attributes.position,col=new Float32Array(p.count*3),tc=new T.Color(TEAM[teamKey].color);
+function pkFlipperGeo(side,teamKey,dk){const lo=pkLo(),ck=(pkHi()?'U':'')+'f'+side+teamKey+lo+(dk?dk.join():'');if(pkGeoC[ck])return pkGeoC[ck];
+  const g=new T.SphereGeometry(1,pkS(lo?12:18),pkS(lo?10:16)),p=g.attributes.position,col=new Float32Array(p.count*3),tc=new T.Color(TEAM[teamKey].color);
   const L=.45,W=.21,Th=.078;
   for(let i=0;i<p.count;i++){const nx=p.getX(i),ny=p.getY(i),nz=p.getZ(i),s=(1-ny)/2;
     const wf=Math.pow(Math.max(0,Math.sin(Math.PI*(.12+.88*s))),.55)*(1-.25*s),tf=1-.55*s,band=smooth(.13,.16,s)*(1-smooth(.21,.24,s)),puff=1+.14*band;
@@ -4752,28 +4752,28 @@ function pkFlipperGeo(side,teamKey,dk){const lo=pkLo(),ck='f'+side+teamKey+lo+(d
     col[i*3]=r;col[i*3+1]=gg;col[i*3+2]=b;}
   g.setAttribute('color',new T.BufferAttribute(col,3));g.computeVertexNormals();return pkGeoC[ck]=g;}
 // --- webbed feet with toes and claws ---
-function pkFootGeo(key){const ck='ft'+key;if(pkGeoC[ck])return pkGeoC[ck];
+function pkFootGeo(key){const ck=(pkHi()?'U':'')+'ft'+key;if(pkGeoC[ck])return pkGeoC[ck];
   const ty=TYPES[key],col=pkRGB(ty.patch==='auk'?0x2b3440:(ty.foot||0xff8c1c)),claw=[.1,.09,.09],list=[];
-  const sole=new T.SphereGeometry(1,14,10);sole.scale(.13,.045,.16);sole.translate(0,0,.03);list.push([sole,col]);
-  const web=new T.SphereGeometry(1,12,6);web.scale(.16,.022,.12);web.translate(0,-.012,.16);list.push([web,col]);
-  for(const a of[-.42,0,.42]){const toe=new T.SphereGeometry(1,10,8);toe.scale(.045,.036,.13);toe.translate(0,0,.11);toe.rotateY(a);toe.translate(0,0,.07);list.push([toe,col]);
-    const cl=new T.ConeGeometry(.017,.05,6);cl.rotateX(Math.PI/2);cl.translate(0,-.006,.255);cl.rotateY(a);cl.translate(0,0,.07);list.push([cl,claw]);}
+  const sole=new T.SphereGeometry(1,pkS(14),pkS(10));sole.scale(.13,.045,.16);sole.translate(0,0,.03);list.push([sole,col]);
+  const web=new T.SphereGeometry(1,pkS(12),pkS(6));web.scale(.16,.022,.12);web.translate(0,-.012,.16);list.push([web,col]);
+  for(const a of[-.42,0,.42]){const toe=new T.SphereGeometry(1,pkS(10),pkS(8));toe.scale(.045,.036,.13);toe.translate(0,0,.11);toe.rotateY(a);toe.translate(0,0,.07);list.push([toe,col]);
+    const cl=new T.ConeGeometry(.017,.05,pkS(6));cl.rotateX(Math.PI/2);cl.translate(0,-.006,.255);cl.rotateY(a);cl.translate(0,0,.07);list.push([cl,claw]);}
   return pkGeoC[ck]=pkMerge(list);}
 // --- tail: a fan of stiff feathers ---
-function pkTailGeo(tl,dk){const ck='tl'+tl+(dk?dk.join():'');if(pkGeoC[ck])return pkGeoC[ck];const list=[];
-  for(let i=-2;i<=2;i++){const c=new T.ConeGeometry(.045,.3*tl,6);c.scale(1,1,.35);c.rotateX(-Math.PI/2);c.translate(0,0,-.15*tl);c.rotateY(i*.17);list.push([c,dk||[.035,.04,.058]]);}
+function pkTailGeo(tl,dk){const ck=(pkHi()?'U':'')+'tl'+tl+(dk?dk.join():'');if(pkGeoC[ck])return pkGeoC[ck];const list=[];
+  for(let i=-2;i<=2;i++){const c=new T.ConeGeometry(.045,.3*tl,pkS(6));c.scale(1,1,.35);c.rotateX(-Math.PI/2);c.translate(0,0,-.15*tl);c.rotateY(i*.17);list.push([c,dk||[.035,.04,.058]]);}
   return pkGeoC[ck]=pkMerge(list);}
 // --- rockhopper crest: yellow plumes rooted on the head above the eyes and swept back along it, plus a short black crown tuft that lies
 // flat instead of spikes standing up; a hat flattens the crest, so with a hat nothing pokes out from under the brim ---
 function pkCrestGeo(){const ck='cr2';if(pkGeoC[ck])return pkGeoC[ck];const list=[],yel=pkRGB(0xffd21a),blk=[.035,.04,.058],up=new T.Vector3(0,1,0),q=new T.Quaternion();
-  const feather=(b,dir,len,r,flat,col)=>{const c=new T.ConeGeometry(r,len,6);c.scale(1,1,flat);c.translate(0,len/2,0);q.setFromUnitVectors(up,dir.normalize());c.applyMatrix4(new T.Matrix4().makeRotationFromQuaternion(q));c.translate(b.x,b.y,b.z);list.push([c,col]);};
+  const feather=(b,dir,len,r,flat,col)=>{const c=new T.ConeGeometry(r,len,pkS(6));c.scale(1,1,flat);c.translate(0,len/2,0);q.setFromUnitVectors(up,dir.normalize());c.applyMatrix4(new T.Matrix4().makeRotationFromQuaternion(q));c.translate(b.x,b.y,b.z);list.push([c,col]);};
   for(const s of[-1,1])for(let i=0;i<5;i++){const th=s*(.5+.07*i),b=pkHeadPt(th,1.565+.008*i,-.004),
       tan=new T.Vector3(Math.cos(th),0,-Math.sin(th)).multiplyScalar(s),nrm=new T.Vector3(Math.sin(th),0,Math.cos(th));
     feather(b,tan.addScaledVector(nrm,.45+.06*i).add(new T.Vector3(0,-.1-.05*i,0)),.15+.015*i,.014,.6,yel);}
   for(let i=0;i<5;i++){const x=(i-2)*.045,k=Math.abs(i-2);feather(new T.Vector3(x,1.69-.01*k,.02-.02*k),new T.Vector3(x*.8,.3,-1),.12+.018*(2-k),.022,.5,blk);}
   return pkGeoC[ck]=pkMerge(list);}
 // --- hockey stick (+ goalie stick with a paddle) ---
-function pkStickGeo(teamKey,goalie){const ck='sk'+teamKey+goalie;if(pkGeoC[ck])return pkGeoC[ck];
+function pkStickGeo(teamKey,goalie){const ck=(pkHi()?'U':'')+'sk'+teamKey+goalie;if(pkGeoC[ck])return pkGeoC[ck];
   const L=goalie?1.03:1.2,tc=pkRGB(TEAM[teamKey].color),list=[],shaft=[.13,.14,.17],tape=[.05,.05,.06],wht=[.95,.96,.97];
   const seg=(z0,z1,w,h,col)=>{const b=new T.BoxGeometry(w,h,z1-z0);b.translate(0,0,(z0+z1)/2);list.push([b,col]);};
   seg(0,.1,.05,.04,wht);seg(.1,L*.3,.042,.03,shaft);seg(L*.3,L*.48,.043,.031,tc);seg(L*.48,L*.52,.043,.031,wht);seg(L*.52,L,.042,.03,shaft);
@@ -4783,19 +4783,19 @@ function pkStickGeo(teamKey,goalie){const ck='sk'+teamKey+goalie;if(pkGeoC[ck])r
   return pkGeoC[ck]=pkMerge(list);}
 // --- improved hats (beanie, helmet + goalie cage); others keep their original pieces ---
 function pkBeanie(tc){const g=new T.Group(),m=pkKnitMat(tc,[14,5]);
-  const cap=new T.Mesh(new T.SphereGeometry(.39,32,16,0,TAU,0,Math.PI*.5),m);cap.scale.y=.7;cap.position.y=1.565;cap.castShadow=true;g.add(cap);
-  const cuff=new T.Mesh(new T.TorusGeometry(.385,.062,12,44),pkKnitMat(0xf2f5f9,[40,3]));cuff.rotation.x=Math.PI/2;cuff.position.y=1.57;g.add(cuff);
+  const cap=new T.Mesh(new T.SphereGeometry(.39,pkS(32),pkS(16),0,TAU,0,Math.PI*.5),m);cap.scale.y=.7;cap.position.y=1.565;cap.castShadow=true;g.add(cap);
+  const cuff=new T.Mesh(new T.TorusGeometry(.385,.062,pkS(12),pkS(44)),pkKnitMat(0xf2f5f9,[40,3]));cuff.rotation.x=Math.PI/2;cuff.position.y=1.57;g.add(cuff);
   const pg=new T.IcosahedronGeometry(.11,2),pp=pg.attributes.position;for(let i=0;i<pp.count;i++){const x=pp.getX(i),y=pp.getY(i),z=pp.getZ(i),k=1+(pkHash(x*41+z*7,y*37+z*13)-.5)*.32;pp.setXYZ(i,x*k,y*k,z*k);}pg.computeVertexNormals();
   const pom=new T.Mesh(pg,pkMatC.pom||(pkMatC.pom=rimify(new T.MeshStandardMaterial({color:0xf6f8fb,roughness:1}),1.2)));pom.position.y=1.86;pom.castShadow=true;g.add(pom);
   return g;}
 function pkCageGeo(){if(pkGeoC.cage)return pkGeoC.cage;const list=[],c=[.86,.89,.93],R=.44;
-  for(const y of[1.255,1.505]){const t=new T.TorusGeometry(R,.011,5,20,1.9);t.rotateX(Math.PI/2);t.rotateY(.95-Math.PI/2);t.translate(0,y,0);list.push([t,c]);}
-  for(const a of[-.66,-.28,.28,.66]){const cy=new T.CylinderGeometry(.011,.011,.27,5);cy.translate(R*Math.sin(a),1.38,R*Math.cos(a));list.push([cy,c]);}
+  for(const y of[1.255,1.505]){const t=new T.TorusGeometry(R,.011,pkS(5),pkS(20),1.9);t.rotateX(Math.PI/2);t.rotateY(.95-Math.PI/2);t.translate(0,y,0);list.push([t,c]);}
+  for(const a of[-.66,-.28,.28,.66]){const cy=new T.CylinderGeometry(.011,.011,.27,pkS(5));cy.translate(R*Math.sin(a),1.38,R*Math.cos(a));list.push([cy,c]);}
   return pkGeoC.cage=pkMerge(list);}
 function pkHelmet(tc,goalie){const g=new T.Group(),k='hm'+tc,m=pkMatC[k]||(pkMatC[k]=rimify(new T.MeshStandardMaterial({color:tc,roughness:.22,metalness:.25}),.9));
-  const shell=new T.Mesh(new T.SphereGeometry(.405,32,16,0,TAU,0,Math.PI*.53),m);shell.scale.y=.76;shell.position.y=1.545;shell.castShadow=true;g.add(shell);
-  const st=new T.Mesh(new T.TorusGeometry(.405,.022,8,40,Math.PI),MAT.white);st.position.y=1.545;st.scale.y=.76;st.rotation.y=Math.PI/2;g.add(st);
-  const rim=new T.Mesh(new T.TorusGeometry(.398,.02,6,40),MAT.dark);rim.rotation.x=Math.PI/2;rim.position.y=1.535;g.add(rim);
+  const shell=new T.Mesh(new T.SphereGeometry(.405,pkS(32),pkS(16),0,TAU,0,Math.PI*.53),m);shell.scale.y=.76;shell.position.y=1.545;shell.castShadow=true;g.add(shell);
+  const st=new T.Mesh(new T.TorusGeometry(.405,.022,pkS(8),pkS(40),Math.PI),MAT.white);st.position.y=1.545;st.scale.y=.76;st.rotation.y=Math.PI/2;g.add(st);
+  const rim=new T.Mesh(new T.TorusGeometry(.398,.02,pkS(6),pkS(40)),MAT.dark);rim.rotation.x=Math.PI/2;rim.position.y=1.535;g.add(rim);
   for(const s of[-1,1]){const ear=new T.Mesh(sph(12),MAT.dark);ear.scale.set(.06,.11,.12);ear.position.set(s*.375,1.44,0);g.add(ear);}
   if(goalie)g.add(new T.Mesh(pkCageGeo(),PK_MAT.metal));
   return g;}
@@ -4806,16 +4806,16 @@ function pkRoundBox(w,h,d,r,seg){const g=new T.BoxGeometry(w,h,d,seg||4,seg||6,s
     if(l>1e-6)p.setXYZ(i,qx+nx/l*r,qy+ny/l*r,qz+nz/l*r);}
   g.computeVertexNormals();return g;}
 // --- goalie gear: leg pads, blocker, catching glove ---
-function pkPadsGeo(teamKey){const ck='pd'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];const tc=pkRGB(TEAM[teamKey].color),wh=[.94,.95,.97],list=[];
+function pkPadsGeo(teamKey){const ck=(pkHi()?'U':'')+'pd'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];const tc=pkRGB(TEAM[teamKey].color),wh=[.94,.95,.97],list=[];
   for(const s of[-1,1]){const z=pkBodyR(.27)*pkBodyK(0,.27)+.04;const b=pkRoundBox(.21,.5,.11,.04);b.translate(s*.17,.27,z);list.push([b,wh]);
     for(const y of[.15,.36]){const st=pkRoundBox(.218,.055,.118,.02,3);st.translate(s*.17,y,z);list.push([st,tc]);}
     const kn=pkRoundBox(.2,.11,.135,.04,3);kn.translate(s*.17,.5,z+.01);list.push([kn,tc]);}
   return pkGeoC[ck]=pkMerge(list);}
-function pkBlockerGeo(teamKey){const ck='bk'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];const tc=pkRGB(TEAM[teamKey].color);
+function pkBlockerGeo(teamKey){const ck=(pkHi()?'U':'')+'bk'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];const tc=pkRGB(TEAM[teamKey].color);
   const b=pkRoundBox(.05,.26,.2,.02,3);b.translate(.02,-.4,.02);const r=pkRoundBox(.058,.2,.14,.015,3);r.translate(.02,-.4,.02);
   return pkGeoC[ck]=pkMerge([[b,[.95,.96,.97]],[r,tc]]);}
-function pkGloveGeo(teamKey){const ck='gv'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];const tc=pkRGB(TEAM[teamKey].color);
-  const m=new T.SphereGeometry(1,14,10);m.scale(.09,.15,.16);m.translate(-.03,-.42,.04);const cu=new T.TorusGeometry(.085,.02,6,16);cu.rotateX(Math.PI/2);cu.translate(-.02,-.3,.02);
+function pkGloveGeo(teamKey){const ck=(pkHi()?'U':'')+'gv'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];const tc=pkRGB(TEAM[teamKey].color);
+  const m=new T.SphereGeometry(1,pkS(14),pkS(10));m.scale(.09,.15,.16);m.translate(-.03,-.42,.04);const cu=new T.TorusGeometry(.085,.02,pkS(6),pkS(16));cu.rotateX(Math.PI/2);cu.translate(-.02,-.3,.02);
   return pkGeoC[ck]=pkMerge([[m,tc],[cu,[.95,.96,.97]]]);}
 // --- jersey numbers stay with the species, never clash inside a team ---
 function pkNum(tm,typeKey,isGoalie){
@@ -6297,7 +6297,7 @@ function refFrame(dt){
   const pk=G.puck,R=G.rl||{};let tx,tz,face=null;
   if(G.state==='stop'&&R.stop&&R.stop.d){const d=R.stop.d;tx=clamp((d.x!==undefined?d.x:pk.x)+3,-W+4,W-4);tz=-(D-2.6);face=0;}
   else if(G.state==='ready'&&r.fo){tx=r.fo.x+.4;tz=r.fo.z-1.7;face=0;}
-  else{r.fo=null;const off=pk.z<-6?7:5;tx=clamp(pk.rx+(pk.rx<0?off:-off),-W+4,W-4);tz=-(D-1.4);}
+  else{r.fo=null;const off=pk.z<-6?7:5;r.side=pk.rx<-2.5?1:pk.rx>2.5?-1:(r.side||1);tx=clamp(pk.rx+r.side*off,-W+4,W-4);tz=-(D-1.4);}   // switch sides only once the puck is clearly over
   if(r.sig==='drop'&&G.state==='play'&&r.sigT>.4)r.sig=null;
   if((r.sig==='wash'||r.sig==='point')&&r.sigT>1.8)r.sig=null;
   if(r.sig==='up'&&!(R.delayed||R.off||R.ice))r.sig=null;
@@ -6305,13 +6305,16 @@ function refFrame(dt){
   const dx=tx-r.x,dz=tz-r.z,dd=Math.hypot(dx,dz),vmax=G.state==='play'?8:11,v=Math.min(vmax,dd*2.2);
   if(dd>.05){r.x+=dx/dd*v*dt;r.z+=dz/dd*v*dt;}
   r.v+=(v-r.v)*Math.min(1,dt*5);
-  const want=face!==null?face:(v>1.2?Math.atan2(dx,dz):Math.atan2(pk.rx-r.x,pk.rz-r.z));
-  r.h+=angDiff(want,r.h)*Math.min(1,dt*6);
+  // a referee skates sideways / backward watching the play; only a long sprint turns him toward the run (with hysteresis)
+  if(dd>4&&v>5)r.run=Math.min(1,(r.run||0)+dt*3);else if(dd<2||v<3)r.run=Math.max(0,(r.run||0)-dt*3);
+  const toPk=Math.atan2(pk.rx-r.x,pk.rz-r.z);
+  const want=face!==null?face:((r.run||0)>.5?Math.atan2(dx,dz):toPk);
+  {const d=angDiff(r.h,want)*Math.min(1,dt*5),mx=dt*6.5;r.h+=clamp(d,-mx,mx);}   // angDiff(from,to); at most ~370°/s, eased
   const P=r.pg,sf=clamp(r.v/6,0,1);r.ph+=dt*(4+r.v*1.4);
   P.root.position.set(r.x,0,r.z);P.root.rotation.y=r.h;
   P.piv.rotation.x=.18*sf;P.piv.rotation.z=Math.sin(r.ph)*.1*sf;
   P.footL.rotation.x=Math.sin(r.ph)*.6*sf;P.footR.rotation.x=-Math.sin(r.ph)*.6*sf;
-  if(P.head){const ya=clamp(angDiff(Math.atan2(pk.rx-r.x,pk.rz-r.z),r.h)*.6,-.7,.7);P.head.rotation.set(-.05,face!==null?0:ya,0,'YXZ');}
+  if(P.head){const ya=clamp(angDiff(r.h,toPk)*.6,-.7,.7);P.head.rotation.set(-.05,face!==null?0:ya,0,'YXZ');}
   // signals (NHL style): arm up = delayed call, slap the leg = tripping, crossed arms = interference / icing,
   // crossed above the head = penalty shot, sweeping arms = wash-out, point = goal, low arm = faceoff drop
   const t=G.t,s=r.sig;let lx=Math.sin(r.ph+Math.PI)*.35*sf,lz=-.28,rx=Math.sin(r.ph)*.35*sf,rz=.28;
@@ -6574,7 +6577,7 @@ function castPost(p,dt,t){
   }else if(k==='fiordland'){
     if(Math.random()<dt*30){const a=c.t*8+rnd(TAU),r=rnd(.8,1.3);cxSprite('leaf',x+Math.cos(a)*r,rnd(.3,1.7),z+Math.sin(a)*r,-Math.sin(a)*2,rnd(.3,1),Math.cos(a)*2,rnd(.6,.9),rnd(.3,.45));}
   }else if(k==='yelloweye'){
-    if(P.head)P.head.rotation.y=clamp(angDiff(Math.atan2(p.team.dir*W-x,-z),p.heading),-.7,.7);
+    if(P.head)P.head.rotation.y=clamp(angDiff(p.heading,Math.atan2(p.team.dir*W-x,-z)),-.7,.7);   // angDiff(from,to): look at the goal
     if(once('hit',.15))for(let i=0;i<8;i++)cxSprite('star',x+fx*.4+rnd(-.3,.3),rnd(1.3,1.7),z+fz*.4+rnd(-.3,.3),rnd(-1.2,1.2),rnd(.4,1.4),rnd(-1.2,1.2),.6,.35,0xffe14d);
   }else if(k==='little'){
     if(Math.random()<dt*30)cxSprite('star',x+rnd(-.5,.5),rnd(.5,1.8)+(p.hopT>0?.6:0),z+rnd(-.5,.5),rnd(-.6,.6),rnd(.2,1),rnd(-.6,.6),rnd(.5,.8),rnd(.25,.4),0x9fe4ff);
@@ -7357,12 +7360,78 @@ function phResume(){
 window.phBack=phBack;window.phPause=phPause;window.phResume=phResume;   // the app calls these by name (evaluateJavascript)
 appInit();
 
+/* ================= v29: graphics spec up — sharper shadows, smoother penguins ================= */
+// Shadows: the sun's shadow camera used to cover a fixed 80×64 m square around the camera with one 2048² map (≈4 cm per
+// shadow texel: blocky, blotchy edges). Now the map is 4096² on 최고 / 3072² on 높음 / 1024² on 절전 (capped by the GPU), and
+// the shadow camera covers only what the camera sees of the rink, boards, benches and spectator rows:
+//  · the view's ground footprint (screen rays → y=0 and y=top of the box, clamped to the box) seen from the sun,
+//  · a square of one of a few fixed sizes (so texels keep their size while the camera pans: no shimmering),
+//    grown at once when needed, shrunk only after ~0.5 s; its centre snapped to whole texels,
+//  · depth range from the whole box, so everything that can throw a shadow into the view still does.
+const SH_BOX={x:W+9.6,z:D+9.4,y:5.5};   // spectators stand up to |x|≈W+8.5, |z|≈D+8.3; skill props reach ~5 m up
+const SH_LV=[16,22,30,40,54,72,96];
+function shMapSize(){
+  const q=save.set.quality,mx=(renderer.capabilities&&renderer.capabilities.maxTextureSize)||4096;
+  let z=q==='low'?1024:q==='ultra'?4096:3072;
+  if(typeof perf!=='undefined'&&perf.scale<.85)z=Math.max(1024,z/2);   // the device is struggling (auto step-down): half the shadow map too
+  return Math.min(mx,z);
+}
+function shState(){return shState.s||(shState.s={key:'',inv:new T.Matrix4(),v:new T.Vector3(),d:new T.Vector3(),o:new T.Vector3(),
+  full:null,L:0,shrink:0,texel:0,size:0,cx:0,cy:0});}
+function shFoot(S){   // light-space bbox of the visible part of the box, or null
+  const v=S.v,d=S.d,o=S.o,inv=S.inv;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,n=0;
+  camera.updateMatrixWorld();o.setFromMatrixPosition(camera.matrixWorld);
+  for(let i=0;i<=4;i++)for(let j=0;j<=4;j++){
+    d.set(i/2-1,j/2-1,.5).unproject(camera).sub(o).normalize();
+    for(const py of[0,SH_BOX.y]){
+      let t;if(d.y<-1e-4)t=(py-o.y)/d.y;else t=-1;
+      if(!(t>0))t=160;   // looking above the horizon: go out to the far edge of the box
+      v.copy(o).addScaledVector(d,Math.min(t,160));
+      v.x=clamp(v.x,-SH_BOX.x,SH_BOX.x);v.z=clamp(v.z,-SH_BOX.z,SH_BOX.z);v.y=py;
+      v.applyMatrix4(inv);x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);n++;}
+  }
+  return n?{x0,x1,y0,y1}:null;
+}
+function shFit(){
+  const S=shState(),c=sun.shadow.camera,ms=sun.shadow.mapSize.x;
+  sun.target.position.set(0,0,0);sun.position.copy(sunDir).multiplyScalar(100);
+  const key=sunDir.x.toFixed(3)+','+sunDir.y.toFixed(3)+','+sunDir.z.toFixed(3);
+  if(key!==S.key){   // the sun moved: new light orientation, whole-box extents and depth range
+    S.key=key;c.position.copy(sun.position);c.lookAt(sun.target.position);c.updateMatrixWorld(true);S.inv.copy(c.matrixWorldInverse);
+    const v=S.v;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
+    for(const x of[-SH_BOX.x,SH_BOX.x])for(const y of[0,SH_BOX.y])for(const z of[-SH_BOX.z,SH_BOX.z]){
+      v.set(x,y,z).applyMatrix4(S.inv);x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);z0=Math.min(z0,v.z);z1=Math.max(z1,v.z);}
+    S.full={x0,x1,y0,y1};c.near=Math.max(.5,-z1-8);c.far=-z0+8;S.L=0;
+  }
+  const F=S.full,fullSz=Math.max(F.x1-F.x0,F.y1-F.y0)+1;
+  let b=G.view==='game'?shFoot(S):null;if(!b)b=F;
+  const need=Math.max(b.x1-b.x0,b.y1-b.y0)*1.08+1.5;
+  let L=SH_LV.find(l=>l>=need)||fullSz;L=Math.min(L,fullSz);
+  if(L>S.L||!S.L){S.L=L;S.shrink=0;}else if(L<S.L){if(++S.shrink>30){S.L=L;S.shrink=0;}}else S.shrink=0;
+  const size=S.L,tx=size/ms;
+  // centre on the view, kept inside the box where possible, snapped to whole texels
+  let cx=(b.x0+b.x1)/2,cy=(b.y0+b.y1)/2;
+  if(size<F.x1-F.x0)cx=clamp(cx,F.x0+size/2,F.x1-size/2);else cx=(F.x0+F.x1)/2;
+  if(size<F.y1-F.y0)cy=clamp(cy,F.y0+size/2,F.y1-size/2);else cy=(F.y0+F.y1)/2;
+  cx=Math.round(cx/tx)*tx;cy=Math.round(cy/tx)*tx;
+  if(size!==S.size||cx!==S.cx||cy!==S.cy){S.size=size;S.cx=cx;S.cy=cy;
+    c.left=cx-size/2;c.right=cx+size/2;c.bottom=cy-size/2;c.top=cy+size/2;c.updateProjectionMatrix();}
+  S.texel=tx;
+  // finer texels need less push: about 1.5 texels along the normal, a tiny depth bias
+  sun.shadow.normalBias=Math.max(.008,tx*1.5);sun.shadow.bias=-.0003;
+}
+
+// Smoother penguins on 최고: every curved part of the penguin model (body, head, sweater, scarf, hats, beak, eyes, feet …)
+// gets about 1.6× the segments. Geometry is cached per quality, so 높음 / 절전 keep their current meshes.
+function pkHi(){return save.set.quality==='ultra';}
+function pkS(n){return pkHi()?Math.max(n+2,Math.round(n*1.6)):n;}
+
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

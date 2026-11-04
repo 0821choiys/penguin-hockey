@@ -33,7 +33,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   const touch=mode!=='pc';
   const st=await E(()=>{const P=window.__PH,r=P.renderer;return {q:P.save.set.quality,f:P.save.gfx19,gl2:r.capabilities.isWebGL2,coarse:matchMedia('(pointer: coarse)').matches};});
   if(mode==='pc')ok(st.q==='ultra'&&st.f===true,'old save on 높음 opens on 최고 (migrated once): '+st.q);
-  else ok(st.q===(st.coarse?'high':'ultra'),'first start on this device: '+st.q+(st.coarse?' (touch-first pointer → 높음)':' (pointer is not coarse in this emulation → PC default 최고)'));
+  else ok(st.q==='ultra','first start on this device: '+st.q+' (v29: phones and tablets start on 최고 too; the automatic step-down lowers it on a slow device)');
   ok(st.gl2===!GL1,'WebGL'+(st.gl2?'2':'1')+' context'+(GL1?' (forced)':''));
   // a quick match driven frame by frame
   await E(()=>{const P=window.__PH;P.save.set.quality='ultra';P.GFX.drop=0;P.applyQuality();P.save.set.cond=false;P.save.set.events=false;P.save.set.items=false;

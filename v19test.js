@@ -32,7 +32,7 @@ const base={v:10,points:300,types:['basic'],type:'basic',tut:{done:true,asked:tr
 // 2. defaults for a first start
 {const pc=probe(null,'[s.set.quality,s.gfx19]'),ph=probe(null,'[s.set.quality,s.gfx19]',{COARSE:'1'});
  ok(pc[0]==='ultra'&&pc[1]===true,'first start on PC: 최고 ('+pc.join(',')+')');
- ok(ph[0]==='high'&&ph[1]===true,'first start on a phone / tablet: 높음 (was 절약) ('+ph.join(',')+')');}
+ ok(ph[0]==='ultra'&&ph[1]===true,'first start on a phone / tablet: 최고 (v29; was 높음) ('+ph.join(',')+')');}
 // 3. existing saves
 {const q=(set,extra)=>probe(Object.assign({},base,{set},extra||{}),'[s.set.quality,s.gfx19]');
  const a=q({quality:'high'});ok(a[0]==='ultra'&&a[1]===true,'old save on 높음 (the previous top tier) moves up to 최고 once ('+a.join(',')+')');

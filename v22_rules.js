@@ -294,7 +294,7 @@ function refFrame(dt){
   const pk=G.puck,R=G.rl||{};let tx,tz,face=null;
   if(G.state==='stop'&&R.stop&&R.stop.d){const d=R.stop.d;tx=clamp((d.x!==undefined?d.x:pk.x)+3,-W+4,W-4);tz=-(D-2.6);face=0;}
   else if(G.state==='ready'&&r.fo){tx=r.fo.x+.4;tz=r.fo.z-1.7;face=0;}
-  else{r.fo=null;const off=pk.z<-6?7:5;tx=clamp(pk.rx+(pk.rx<0?off:-off),-W+4,W-4);tz=-(D-1.4);}
+  else{r.fo=null;const off=pk.z<-6?7:5;r.side=pk.rx<-2.5?1:pk.rx>2.5?-1:(r.side||1);tx=clamp(pk.rx+r.side*off,-W+4,W-4);tz=-(D-1.4);}   // switch sides only once the puck is clearly over
   if(r.sig==='drop'&&G.state==='play'&&r.sigT>.4)r.sig=null;
   if((r.sig==='wash'||r.sig==='point')&&r.sigT>1.8)r.sig=null;
   if(r.sig==='up'&&!(R.delayed||R.off||R.ice))r.sig=null;
@@ -302,13 +302,16 @@ function refFrame(dt){
   const dx=tx-r.x,dz=tz-r.z,dd=Math.hypot(dx,dz),vmax=G.state==='play'?8:11,v=Math.min(vmax,dd*2.2);
   if(dd>.05){r.x+=dx/dd*v*dt;r.z+=dz/dd*v*dt;}
   r.v+=(v-r.v)*Math.min(1,dt*5);
-  const want=face!==null?face:(v>1.2?Math.atan2(dx,dz):Math.atan2(pk.rx-r.x,pk.rz-r.z));
-  r.h+=angDiff(want,r.h)*Math.min(1,dt*6);
+  // a referee skates sideways / backward watching the play; only a long sprint turns him toward the run (with hysteresis)
+  if(dd>4&&v>5)r.run=Math.min(1,(r.run||0)+dt*3);else if(dd<2||v<3)r.run=Math.max(0,(r.run||0)-dt*3);
+  const toPk=Math.atan2(pk.rx-r.x,pk.rz-r.z);
+  const want=face!==null?face:((r.run||0)>.5?Math.atan2(dx,dz):toPk);
+  {const d=angDiff(r.h,want)*Math.min(1,dt*5),mx=dt*6.5;r.h+=clamp(d,-mx,mx);}   // angDiff(from,to); at most ~370°/s, eased
   const P=r.pg,sf=clamp(r.v/6,0,1);r.ph+=dt*(4+r.v*1.4);
   P.root.position.set(r.x,0,r.z);P.root.rotation.y=r.h;
   P.piv.rotation.x=.18*sf;P.piv.rotation.z=Math.sin(r.ph)*.1*sf;
   P.footL.rotation.x=Math.sin(r.ph)*.6*sf;P.footR.rotation.x=-Math.sin(r.ph)*.6*sf;
-  if(P.head){const ya=clamp(angDiff(Math.atan2(pk.rx-r.x,pk.rz-r.z),r.h)*.6,-.7,.7);P.head.rotation.set(-.05,face!==null?0:ya,0,'YXZ');}
+  if(P.head){const ya=clamp(angDiff(r.h,toPk)*.6,-.7,.7);P.head.rotation.set(-.05,face!==null?0:ya,0,'YXZ');}
   // signals (NHL style): arm up = delayed call, slap the leg = tripping, crossed arms = interference / icing,
   // crossed above the head = penalty shot, sweeping arms = wash-out, point = goal, low arm = faceoff drop
   const t=G.t,s=r.sig;let lx=Math.sin(r.ph+Math.PI)*.35*sf,lz=-.28,rx=Math.sin(r.ph)*.35*sf,rz=.28;

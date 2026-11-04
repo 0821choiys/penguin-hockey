@@ -21,7 +21,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 ```
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
-`v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -39,12 +39,14 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 
 ## Tests
 - Unit suites (Node, mocked THREE): `bash runsuites.sh` (≈ 15 min). Single suite: `node v22test.js`.
+- `tools/refsim.js`: how much the referee turns (°/s, direction reversals) in AI-vs-AI matches.
 - `tools/rulesim.js`: AI-vs-AI matches with the referee — calls per match, goals, stoppage time (`N=6 RULES=full|fouls|off node tools/rulesim.js`).
 - Real browser (SwiftShader WebGL): `cd br && npm ci` once, then e.g.
   `node homeverify.js pc`, `node langswitch.js`, `node v17ui.js tall en`, `node v18play.js pc`, `node v19gfx.js pc`, `node offline.js pc`,
   `node i18nscan.js tall ja`, `node v23cast.js pc all` (skill animations + referee), `node v24ui.js tall ko` (pass / rules UI),
   `node v25cine.js pc|tall|wide all` (skill cinematic frame by frame; CSS animations are seeked to the scene time),
-  `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
+  `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
+  `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
 
 ## Weekly self-critique (every Monday)
@@ -57,4 +59,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
-`rarity-v21.md`, `sardine-pass.md`, `skill-cast.md` (also kept in the claude.ai project).
+`rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md` (also kept in the claude.ai project).
