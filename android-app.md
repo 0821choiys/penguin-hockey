@@ -15,14 +15,16 @@ Play 스토어용 앱은 `android/`에 있어요. 게임 HTML 하나를 앱 안�
   다른 주소의 링크는 게임 안이 아니라 바깥 브라우저로 열려요. 글꼴은 앱 안에 넣어 두어서 구글 글꼴 서버에 요청하지 않아요. 아래 '글꼴' 항목을 보세요.
 - **권한:** 인터넷, 진동. Play Billing 라이브러리가 BILLING · 네트워크 상태 권한을 더해요.
 
-## 글꼴 (구글 글꼴 요청 없음)
-- 앱 사본(`app/src/main/assets/index.html`)은 빌드할 때 `tools/bundle_fonts.py`가 만들어요. 저장소의 웹용 HTML은 그대로예요.
-- **앱에 들어간 글꼴:** Fredoka(500·700)와 Jua(400, 한글 포함) WOFF2 파일 — 약 1.1 MB.
-- **앱에 안 넣은 글꼴:** M PLUS Rounded 1c(일본어, 원본 42 MB)와 Noto Sans SC(중국어, 원본 74 MB). 이 두 글꼴은 용량 때문에 뺐어요.
-  대신 CSS의 시스템 글꼴 순서에 따라 기기에 들어 있는 일본어·중국어 글꼴이 쓰여요. 그래서 일본어·중국어 화면의 글자 모양이 웹 버전과 조금 달라요.
-- 빌드 스크립트는 구글 글꼴 주소가 하나라도 남으면 실패해요. 앱 사본에 구글 주소가 있는지 APK에서 0건으로 확인했어요.
+## 글꼴 (구글 글꼴 요청 없음, 오프라인에서도 같은 모양)
+- 앱 사본(`app/src/main/assets/index.html`)은 빌드할 때 `tools/bundle_fonts.py`가 만들어요. 저장소의 웹용 HTML은 그대로 Google Fonts를 써요.
+- 웹 버전이 쓰는 글꼴을 모두 WOFF2로 앱 안에 넣었어요(Google이 보내는 것과 같은 fontsource 파일, 774개).
+  - `fonts/fonts.css`: Fredoka 500·700, Jua 400(한글 포함) — 항상
+  - `fonts/mplus.css`: M PLUS Rounded 1c 500·700·800 — 일본어일 때만 불러와요
+  - `fonts/notosc.css`: Noto Sans SC 500·700·900 — 중국어일 때만 불러와요
+- 앱 크기: APK 약 15MB, AAB 약 15MB(글꼴 포함). 화면에 필요한 글자 구간 파일만 그때그때 읽어요.
+- 빌드 스크립트는 구글 글꼴 주소가 하나라도 남으면 실패해요. APK 안의 구글 주소는 0건으로 확인했어요.
 - 글꼴 원본은 `br/node_modules/@fontsource`에서 읽어요(`cd br && npm ci` 필요).
-- 확인: `node br/appfonts.js ko|ja|zh` — 외부 요청 0건, Fredoka·Jua가 번들에서 로드됨 (ko·ja·zh 각 4/4 통과).
+- 확인: `node br/appfonts.js ko|ja|zh` — 외부 요청 0건, 각 언어의 글꼴이 번들에서 로드됨 (ko 5/5, ja 6/6, zh 6/6).
 
 ## 게임 ↔ 앱 연결 (`PHAndroid`)
 - 앱이 `addWebMessageListener`로 `window.PHAndroid`를 넣어요. **앱 자신의 주소에서만** 쓸 수 있어요.
