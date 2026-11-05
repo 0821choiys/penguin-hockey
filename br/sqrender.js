@@ -10,7 +10,7 @@ const mode=process.argv[2]||'pc';
   page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('ERR_FAILED'))logs.push('CONSOLE '+m.text().slice(0,200));});
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});else if(u.startsWith('file:'))r.continue();else r.abort();});
-  await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:9,points:700,types:['basic','fast','strong'],type:'fast',squad:['strong','basic',null],lv:{fast:6,strong:3,basic:2},stats:{played:9},tut:{done:true,asked:true}}));});
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:9,points:700,types:['basic','fast','strong'],type:'fast',squad:['strong','basic',null],lv:{fast:6,strong:3,basic:2},stats:{played:9},tut:{done:true,asked:true}}));});
   await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2800);
   const shot=async n=>page.screenshot({path:'shots/'+n+'.jpg',type:'jpeg',quality:75});
   const E=f=>page.evaluate(f);

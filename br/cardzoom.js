@@ -16,7 +16,7 @@ const SAVE=JSON.stringify({v:10,points:1840,types:['basic','fast','strong','defe
     if(u.startsWith('https://fonts.googleapis.com/'))return r.respond({status:200,contentType:'text/css',body:fontCss(decodeURIComponent(u))});
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(s=>localStorage.setItem('penguinHockey.v1',s),SAVE);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>localStorage.setItem('penguinHockey.v1',s),SAVE);
   await page.goto('file://'+path.resolve(__dirname,'../penguin-hockey-improved.html')+'?lang='+lang,{waitUntil:'load'});await wait(2600);
   await page.evaluate(()=>document.fonts.ready);
   await page.evaluate(()=>{const b=document.createElement('button');b.dataset.go='sSquad';document.body.appendChild(b);b.click();b.remove();});await wait(1800);await page.evaluate(()=>{try{document.getAnimations().forEach(a=>{try{if(a.effect&&a.effect.getTiming().iterations!==Infinity)a.finish()}catch(e){}})}catch(e){}});await wait(300);

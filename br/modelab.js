@@ -5,7 +5,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));const OUT=path.join(__dirname,'s
 (async()=>{const b=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:900,height:600}});
   const p=await b.newPage();const logs=[];p.on('pageerror',e=>logs.push(e.message));
   await p.setRequestInterception(true);p.on('request',r=>{const u=r.url();if(u.startsWith('file:'))return r.continue();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync(path.join(__dirname,'node_modules/three/build/three.min.js'))});r.abort();});
-  await p.evaluateOnNewDocument(()=>{window.requestAnimationFrame=()=>0;localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,news18:true,tut:{done:true,asked:true},set:{quality:'high',tod:'day'}}));});
+  await p.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await p.evaluateOnNewDocument(()=>{window.requestAnimationFrame=()=>0;localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,news18:true,tut:{done:true,asked:true},set:{quality:'high',tod:'day'}}));});
   await p.goto('file://'+path.resolve(__dirname,'../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2500);
   for(const q of['high','ultra']){
     await p.evaluate(q=>{const P=window.__PH,T=window.THREE;P.save.set.quality=q;P.applyQuality();

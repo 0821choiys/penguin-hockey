@@ -25,7 +25,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
     if(u.startsWith('https://fonts.googleapis.com/'))return r.respond({status:200,contentType:'text/css',body:fontCss(decodeURIComponent(u))});
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(s=>{window.requestAnimationFrame=()=>0;localStorage.setItem('penguinHockey.v1',s);let seed=4242;Math.random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};},SAVE);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>{window.requestAnimationFrame=()=>0;localStorage.setItem('penguinHockey.v1',s);let seed=4242;Math.random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};},SAVE);
   await page.goto('file://'+path.resolve(__dirname,'../penguin-hockey-improved.html')+'?lang='+lang,{waitUntil:'load'});await wait(2600);
   const E=(f,...a)=>page.evaluate(f,...a);
   await E(()=>{window.requestAnimationFrame=()=>0;});
@@ -59,6 +59,13 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(ps.c0L>=ps.labR-1,'pass: tier 1 is not hidden under the track labels ('+Math.round(ps.c0L)+' ≥ '+Math.round(ps.labR)+')');
   if(land)ok(ps.trB<=ps.vh&&ps.doneB<=ps.vh,'pass: reward track and 완료 visible without scrolling');
   await page.screenshot({path:path.join(OUT,mode+'_'+lang+'_pass.jpg'),type:'jpeg',quality:82});
+  // result screen: title on top (above the scrolling list), buttons on screen
+  const rs=await E(()=>{const P=window.__PH,G=P.G;P.startMatch({mode:'quick',size:3,time:60,diff:'easy',tag:'Q',oppTypes:['basic','fast','strong']});
+    G.state='play';G.stateT=0;for(let i=0;i<20;i++)P.step(1/60);G.mine.score=1;G.mine.opp.score=0;P.endMatch();for(let i=0;i<200;i++)P.step(1/60);
+    const r=s=>{const e=document.querySelector(s);return e?e.getBoundingClientRect():null;},t=r('#rTitle'),b=r('#sResult .pbody'),k=r('#rBtns');
+    return {t:t&&[t.top,t.bottom],b:b&&[b.top,b.bottom],k:k&&[k.top,k.bottom],vh:innerHeight};});
+  ok(rs.t&&rs.b&&rs.t[1]<=rs.b[0]+1&&rs.k&&rs.k[1]<=rs.vh&&rs.k[0]>=0,'result: title above the list, buttons on screen (title '+rs.t.map(Math.round)+' list '+rs.b.map(Math.round)+' buttons '+rs.k.map(Math.round)+')');
+  await E(()=>window.__PH.toMenu());
   const lz=await E(()=>{const f=window.__PH.landZoom;return [f(.46),f(1),f(1.33),f(1.6),f(2.16)].map(x=>+x.toFixed(3));});
   ok(lz[0]===1&&lz[1]===1&&lz[2]>1.13&&lz[3]===1&&lz[4]===1,'match camera: backs off only between aspect 1 and 1.6 ('+lz.join(', ')+')');
   ok(logs.length===0,'no page errors'+(logs.length?': '+logs.slice(0,3).join(' | '):''));

@@ -2,7 +2,7 @@ const chromium=require('@sparticuz/chromium');const puppeteer=require('puppeteer
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:390,height:844,isMobile:true}});
 const page=await browser.newPage();await page.setRequestInterception(true);page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
-await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','fast'],type:'fast',tut:{done:true,asked:true},scout:{pity:23}})));
+await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','fast'],type:'fast',tut:{done:true,asked:true},scout:{pity:23}})));
 await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2500);
 console.log(await page.evaluate(async()=>{const b=document.createElement('button');b.dataset.go='sScout';document.body.appendChild(b);b.click();b.remove();await new Promise(r=>setTimeout(r,500));
  const R=s=>{const e=document.querySelector(s);if(!e)return s+' none';const r=e.getBoundingClientRect(),c=getComputedStyle(e);return s+' x'+(r.left|0)+' w'+(r.width|0)+' disp:'+c.display+' box:'+c.boxSizing+' sw:'+e.scrollWidth;};

@@ -1,0 +1,11 @@
+/* v32: penguin growth stories */
+.bd-row{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13px;margin:6px 0 2px;opacity:.95}
+.bd-ic{font-size:16px}
+.bd-new{margin:6px auto;max-width:440px;padding:9px 12px 8px;border-radius:12px;text-align:left;
+  background:linear-gradient(135deg,rgba(90,160,255,.22),rgba(150,110,255,.18));border:1px solid rgba(150,190,255,.45);animation:bdIn .5s ease-out both}
+.bd-new b{font-size:13.5px}.bd-new p{margin:4px 0 2px;font-size:13px;line-height:1.45}.bd-new small{color:#ffe27a;font-weight:700}
+.bd-nick{margin-top:4px;font-weight:800;color:#ffd96a;font-size:13.5px}
+@keyframes bdIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.bd-card{margin:8px 0;padding:8px 10px;border-radius:10px;background:rgba(90,150,255,.12);border:1px solid rgba(140,190,255,.3);text-align:left}
+.bd-h{font-weight:800;font-size:13.5px}.bd-h small{font-weight:600;opacity:.75;margin-left:4px}
+.bd-ch{margin:5px 0 0;font-size:12.5px;line-height:1.45}.bd-ch.lock{opacity:.6}

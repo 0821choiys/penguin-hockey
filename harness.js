@@ -23,7 +23,7 @@ function mk(){
 }
 const store={};
 global.window=global;global.__NOFX=true;
-global.localStorage={getItem:k=>store[k]===undefined?null:store[k],setItem:(k,v)=>{store[k]=String(v)}};
+global.localStorage={getItem:k=>store[k]===undefined?null:store[k],setItem:(k,v)=>{store[k]=String(v)},removeItem:k=>{delete store[k];}};
 if(process.env.SAVE)store['penguinHockey.v1']=process.env.SAVE;
 global.THREE=mk();
 global.matchMedia=q=>({matches:!!(process.env.COARSE&&/coarse/.test(String(q)))});   // COARSE=1: a phone / tablet (touch-first pointer)

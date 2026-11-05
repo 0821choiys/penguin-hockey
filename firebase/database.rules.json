@@ -1,0 +1,22 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('host').val() === auth.uid || data.child('guest').val() === auth.uid || (data.child('t').val() < now - 3600000))",
+        ".validate": "$code.matches(/^[A-Z2-9]{6}$/)",
+        "guest": { ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || data.val() === auth.uid || root.child('rooms').child($code).child('host').val() === auth.uid)" },
+        "guestInfo": { ".write": "auth != null && (root.child('rooms').child($code).child('guest').val() === auth.uid || newData.parent().child('guest').val() === auth.uid)" }
+      }
+    },
+    "saves": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['data', 't']) && newData.child('data').isString() && newData.child('data').val().length < 600000"
+      }
+    }
+  }
+}

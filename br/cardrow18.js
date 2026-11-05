@@ -7,7 +7,7 @@ const OUT=process.argv[2]||'peng/cards_new.png',LANG=process.argv[3]||'ko';
   const page=await browser.newPage();const logs=[];page.on('pageerror',e=>logs.push('PAGEERR '+e.message));
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(l=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic'],type:'basic',tut:{done:true,asked:true},news18:true,set:{lang:l}})),LANG);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(l=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic'],type:'basic',tut:{done:true,asked:true},news18:true,set:{lang:l}})),LANG);
   await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2500);
   await page.evaluate(()=>{window.requestAnimationFrame=()=>0;window.__PH.renderer.render=()=>{};});
   await page.evaluate(()=>{const P=window.__PH,d=document.createElement('div');

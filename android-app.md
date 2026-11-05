@@ -87,3 +87,12 @@ node tools/savestore-check.js         # SaveStoreTest가 만든 복원 스크립
 - `android/app/src/test/.../SaveStoreTest.java` (JVM) + `android/tools/savestore-check.js`: 저장 복사 파일과 복원 스크립트.
 - **확인 못 한 것:** 실제 휴대폰/에뮬레이터 실행(이 작업 환경에는 KVM이 없어 에뮬레이터를 못 돌려요), 실제 Google Play 결제
   (Play Console에 앱과 `pro_pass` 상품이 등록되고 테스트 트랙에 올라가야 동작), 자동 백업 복원, 기기별 노치 · 회전.
+
+## Google 로그인 (2026-11-05, v35)
+- `GoogleAuth.java`: Credential Manager로 Google 계정 선택 창을 띄우고 Google ID 토큰을 게임에 넘겨요(op `gsignin` {cid} → {idToken,email,name}, `gsignout`).
+  앱은 토큰을 저장하지 않아요. Firebase 교환과 클라우드 저장은 게임(`v35_acct.js`)이 해요.
+- 의존성: `androidx.credentials:credentials` · `credentials-play-services-auth` 1.5.0, `com.google.android.libraries.identity.googleid:googleid` 1.1.1.
+  R8 keep 규칙은 `proguard-rules.pro`에 있어요.
+- 필요한 것: Firebase에 Android 앱을 등록하고 **앱 서명 키 SHA-1 + 업로드 키 SHA-1**을 넣어야 해요. 없으면 로그인이 실패해요.
+  자세한 순서는 `online-account.md`에 있어요.
+- `tools/bundle_fonts.py`의 검사를 `fonts.googleapis`로 좁혔어요(로그인 API 주소 identitytoolkit / securetoken.googleapis.com은 글꼴이 아니에요).

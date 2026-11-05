@@ -7,7 +7,7 @@ const OUT=process.argv[2]||'peng/cards18.png',HTML=process.argv[3]||'../penguin-
   const page=await browser.newPage();const logs=[];page.on('pageerror',e=>logs.push('PAGEERR '+e.message));
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(l=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','fast','king','little','african'],type:'basic',tut:{done:true,asked:true},news18:true,set:{lang:l}})),process.env.PH_LANG||'ko');
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(l=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','fast','king','little','african'],type:'basic',tut:{done:true,asked:true},news18:true,set:{lang:l}})),process.env.PH_LANG||'ko');
   await page.goto('file://'+path.resolve(HTML),{waitUntil:'load'});await wait(2500);
   await page.evaluate(()=>{window.requestAnimationFrame=()=>0;const P=window.__PH;P.renderer.render=()=>{};});
   await page.evaluate(()=>{

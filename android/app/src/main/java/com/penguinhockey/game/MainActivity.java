@@ -62,6 +62,7 @@ public class MainActivity extends ComponentActivity {
     private JavaScriptReplyProxy reply;
     private BillingBridge billing;
     private SaveStore saves;
+    private GoogleAuth gauth;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -98,6 +99,7 @@ public class MainActivity extends ComponentActivity {
         saves = new SaveStore(getFilesDir());
         setupWebView();
         billing = new BillingBridge(this, () -> send(event("purchase")));
+        gauth = new GoogleAuth(this);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -217,6 +219,8 @@ public class MainActivity extends ComponentActivity {
                 if (a != null) saves.write(a.optString("save", ""), a.optString("lang", ""));
                 break;
             }
+            case "gsignin": gauth.signIn(m.optJSONObject("arg"), cb); break;
+            case "gsignout": gauth.signOut(cb); break;
             case "exit": finish(); break;
             default: cb.err("Error", "unknown op " + op);
         }

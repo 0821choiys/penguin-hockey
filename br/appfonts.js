@@ -13,7 +13,7 @@ srv.listen(0,'127.0.0.1',async()=>{const port=srv.address().port;
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=new URL(r.url());if(u.hostname==='127.0.0.1'||u.protocol==='data:')return r.continue();external.push(u.href);r.abort();});
   page.on('pageerror',e=>errs.push(e.message));
-  await page.evaluateOnNewDocument(l=>{localStorage.setItem('penguinHockey.lang',l);window.requestAnimationFrame=()=>0;},lang);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(l=>{localStorage.setItem('penguinHockey.lang',l);window.requestAnimationFrame=()=>0;},lang);
   await page.goto('http://127.0.0.1:'+port+'/index.html?lang='+lang,{waitUntil:'load'});await wait(2500);
   const cjk=lang==='ja'?'M PLUS Rounded 1c':lang==='zh'?'Noto Sans SC':null;const f=await page.evaluate(async cjk=>{await document.fonts.ready;const out={};for(const n of ['Fredoka','Jua'].concat(cjk?[cjk]:[])){const faces=[...document.fonts].filter(x=>x.family.replace(/"/g,'')===n);out[n]={faces:faces.length,loaded:faces.filter(x=>x.status==='loaded').length};}return out;},cjk);
   ok(external.length===0,'no request to any other host (googleapis / gstatic / CDN): '+(external.length?external.slice(0,3).join(' '):'none'));

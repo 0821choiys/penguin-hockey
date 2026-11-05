@@ -18,7 +18,7 @@ const SAVE=JSON.stringify({v:10,points:1840,types:['basic','fast','strong','defe
     if(u.startsWith('https://fonts.googleapis.com/'))return r.respond({status:200,contentType:'text/css',body:fontCss()});
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(s=>{localStorage.setItem('penguinHockey.v1',s);},process.env.SAVE||SAVE);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>{localStorage.setItem('penguinHockey.v1',s);},process.env.SAVE||SAVE);
   await page.goto('file://'+path.resolve(process.env.HTML||'../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2500);
   await page.evaluate(()=>document.fonts.ready);
   const E=(f,...a)=>page.evaluate(f,...a);

@@ -25,8 +25,8 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
     if(u.startsWith('https://fonts.googleapis.com/'))return r.respond({status:200,contentType:'text/css',body:fontCss(decodeURIComponent(u))});
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
-  if(GL1)await page.evaluateOnNewDocument(()=>{const g=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(t,o){if(t==='webgl2')return null;return g.call(this,t,o);};});
-  await page.evaluateOnNewDocument(s=>{if(!sessionStorage.getItem('__seeded')){if(s)localStorage.setItem('penguinHockey.v1',s);else localStorage.removeItem('penguinHockey.v1');sessionStorage.setItem('__seeded','1');}},SAVE);
+  if(GL1)await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>{const g=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(t,o){if(t==='webgl2')return null;return g.call(this,t,o);};});
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>{if(!sessionStorage.getItem('__seeded')){if(s)localStorage.setItem('penguinHockey.v1',s);else localStorage.removeItem('penguinHockey.v1');sessionStorage.setItem('__seeded','1');}},SAVE);
   await page.goto('file://'+path.resolve(__dirname,'../penguin-hockey-improved.html')+'?lang='+lang,{waitUntil:'load'});await wait(2600);
   const E=(f,...a)=>page.evaluate(f,...a);
   await E(()=>{window.requestAnimationFrame=()=>0;});await wait(200);   // frames are driven by the test from here on

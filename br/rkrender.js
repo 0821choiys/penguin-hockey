@@ -11,7 +11,7 @@ const mode=process.argv[2]||'pc';
   page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('ERR_FAILED'))logs.push('CONSOLE '+m.text().slice(0,200));});
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});else if(u.startsWith('file:'))r.continue();else r.abort();});
-  await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:8,points:900,types:['basic','fast','strong'],type:'fast',lv:{fast:6,strong:3,basic:2},stats:{played:14,wins:9,goals:30},tut:{done:true,asked:true},
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:8,points:900,types:['basic','fast','strong'],type:'fast',lv:{fast:6,strong:3,basic:2},stats:{played:14,wins:9,goals:30},tut:{done:true,asked:true},
     profile:{name:'최감독',club:'부천 펭귄스',emb:'🦭',city:'부천',since:Date.now()-5*864e5,seed:4242},
     mgr:{r:1185,games:14,w:9,d:1,l:4,best:1210,form:['W','W','L','D','W'],hist:[]},
     trial:{day:0,ts:0,used:{city:1,nat:0},run:{kind:'city',round:1,opp:['부천 아이스 FC','부천 블리자드','부천 오로라 (우승 후보)'],city:'부천'},titles:{city:0,nat:0},first:{city:false,nat:false}}}));});

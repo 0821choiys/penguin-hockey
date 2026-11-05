@@ -4,7 +4,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));const pre=process.argv[2]||'c0',
 fs.mkdirSync('audit',{recursive:true});
 (async()=>{const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:900,height:600}});
 const page=await browser.newPage();const logs=[];page.on('pageerror',e=>logs.push(e.message));await page.setRequestInterception(true);page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
-await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','balanced'],type:'balanced',hat:'none',tut:{done:true,asked:true}})));
+await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','balanced'],type:'balanced',hat:'none',tut:{done:true,asked:true}})));
 await page.goto('file://'+path.resolve(html),{waitUntil:'load'});await wait(2600);
 await page.evaluate(()=>{window.requestAnimationFrame=()=>0;});await page.screenshot();
 await page.evaluate(()=>{const P=window.__PH;P.save.hat='none';P.save.type='balanced';const b=document.createElement('button');b.dataset.go='sSelect';document.body.appendChild(b);b.click();b.remove();

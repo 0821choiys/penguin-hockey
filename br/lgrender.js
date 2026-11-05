@@ -12,7 +12,7 @@ const mode=process.argv[2]||'pc';
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});else if(u.startsWith('file:'))r.continue();else r.abort();});
   // returning player: skip the first-run tutorial prompt, give some progress
-  await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:7,points:1800,types:['basic','fast','strong'],type:'fast',lv:{fast:6,strong:3,basic:2},cards:{basic:[4,1,0,0],fast:[2,0,0,0],strong:[0,1,1,0]},stats:{played:9,wins:6,goals:21},tut:{done:true,asked:true},
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:7,points:1800,types:['basic','fast','strong'],type:'fast',lv:{fast:6,strong:3,basic:2},cards:{basic:[4,1,0,0],fast:[2,0,0,0],strong:[0,1,1,0]},stats:{played:9,wins:6,goals:21},tut:{done:true,asked:true},
     mgr:{r:1185,games:9,w:6,d:1,l:2,best:1210,form:['W','W','L','D','W'],hist:[{d:23,r:1185,l:'빠른 경기',ts:Date.now()-3600e3},{d:-14,r:1162,l:'토너먼트 2R',ts:Date.now()-7200e3}]}}));});
   await page.goto('file://'+path.resolve('../penguin-hockey-improved.html'),{waitUntil:'load'});await wait(2800);
   const shot=async n=>page.screenshot({path:'shots/'+n+'.jpg',type:'jpeg',quality:72});

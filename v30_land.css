@@ -24,6 +24,9 @@
   .panel.pfix>.row:last-child{grid-column:3;grid-row:1;margin:0 112px 0 0!important;width:auto!important;gap:6px;flex-wrap:nowrap}
   .panel.pfix>.row:last-child .btn{min-height:38px!important;height:38px;padding-top:0!important;padding-bottom:0!important}
   .panel.pfix>.pbody{grid-row:2;align-self:stretch}
+  /* result: the big title shares the top row with the buttons (it is a div, not an h2, so it needs its own place) */
+  #sResult .panel.pfix>#rTitle{grid-column:1 / 3;grid-row:1;margin:0!important;padding:0 0 0 8px!important;text-align:left!important;
+    font-size:28px!important;line-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   .pfix>.pbody{padding-bottom:8px!important}
 
   /* ---- settings: two columns ---- */
@@ -55,6 +58,13 @@
   #sMode .modes{gap:8px!important}
   #sMode .mode{min-height:0!important;height:auto!important;padding-top:8px!important;padding-bottom:8px!important}
   #sMode .mode.rk{padding-top:6px!important;padding-bottom:6px!important}
+  /* 8 cards (with 친구 대전): two rows of four, icon on the left, so 뒤로 stays on screen */
+  #sMode .modes:has(>[data-mode]){display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px!important}
+  #sMode .modes:has(>[data-mode])>.mode{display:grid!important;grid-template-columns:30px minmax(0,1fr);grid-template-rows:auto auto;column-gap:6px;
+    align-items:center;text-align:left!important;padding:6px 8px!important;width:auto!important;max-width:none!important;margin:0!important}
+  #sMode .modes:has(>[data-mode])>.mode>i{grid-row:1 / 3;font-size:24px!important;margin:0!important;line-height:1}
+  #sMode .modes:has(>[data-mode])>.mode>b{margin:0!important;font-size:15px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #sMode .modes:has(>[data-mode])>.mode>span{margin:0!important;font-size:11px!important;line-height:1.25}
 
   /* ---- in a match: the combo / hint banners take less of the short screen ---- */
   /* CSS zoom also divides the element's own offsets, so its top is scaled back to the old place (50 % of the screen) */

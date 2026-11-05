@@ -17,7 +17,7 @@ const PORTRAIT=scen==='touchP',LAND=scen==='touchL';
       const send=()=>r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});
       if(threeMode==='slow')setTimeout(send,9000);else send();return;}
     if(u.startsWith('file:'))r.continue();else r.abort();});
-  if(process.env.SAVE)await page.evaluateOnNewDocument(s=>{localStorage.setItem('penguinHockey.v1',s);},process.env.SAVE);
+  if(process.env.SAVE)await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>{localStorage.setItem('penguinHockey.v1',s);},process.env.SAVE);
   if(scen.startsWith('load')){page.goto('file://'+path.resolve(process.env.HTML||'../penguin-hockey-improved.html'),{timeout:0}).catch(()=>{});await wait(300);}else await page.goto('file://'+path.resolve(process.env.HTML||'../penguin-hockey-improved.html'),{waitUntil:scen.startsWith('load')?'domcontentloaded':'load'});
   const shot=async n=>page.screenshot({path:'shots/v10_'+n+'.jpg',type:'jpeg',quality:72});
   const E=(f,...a)=>page.evaluate(f,...a);

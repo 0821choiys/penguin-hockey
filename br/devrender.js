@@ -8,7 +8,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
   page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('ERR_FAILED'))logs.push('CONSOLE '+m.text().slice(0,200));});
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});else if(u.startsWith('file:'))r.continue();else r.abort();});
-  await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:9,points:5000,types:['basic','fast','strong','auk'],type:'auk',lv:{fast:6,strong:3,basic:2,auk:10},stats:{played:80,wins:60,goals:200},tut:{done:true,asked:true},
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>{localStorage.setItem('penguinHockey.v1',JSON.stringify({v:9,points:5000,types:['basic','fast','strong','auk'],type:'auk',lv:{fast:6,strong:3,basic:2,auk:10},stats:{played:80,wins:60,goals:200},tut:{done:true,asked:true},
     profile:{name:'최감독',club:'부천 펭귄스',emb:'🦭',city:'부천',since:Date.now()-40*864e5,seed:4242},dev:{got:true,ts:Date.now()},
     mgr:{r:2134,games:80,w:60,d:5,l:15,best:2150,form:['W','W','W','D','W'],hist:[]},
     trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:2,nat:1,world:1},first:{city:true,nat:true,world:true},cityName:'부천'}}));});

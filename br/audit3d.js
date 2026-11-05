@@ -16,7 +16,7 @@ fs.mkdirSync('audit',{recursive:true});
     if(u.startsWith('https://fonts.googleapis.com/'))return r.respond({status:200,contentType:'text/css',body:fontCss()});
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:900,types:['basic','fast','strong','defense'],type:'fast',tut:{done:true,asked:true},stats:{played:5,wins:3,goals:9}})));
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:900,types:['basic','fast','strong','defense'],type:'fast',tut:{done:true,asked:true},stats:{played:5,wins:3,goals:9}})));
   await page.goto('file://'+path.resolve(html),{waitUntil:'load'});await wait(2500);
   await page.evaluate(()=>document.fonts.ready);
   const E=(f,...a)=>page.evaluate(f,...a);

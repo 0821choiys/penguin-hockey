@@ -58,7 +58,7 @@ def main():
                        lambda m: "'" + cjk[m.group(1)] + "'", html)
     if n1 != 1 or n2 != 2:
         sys.exit("font links not found as expected (head=%d, cjk=%d)" % (n1, n2))
-    if re.search(r"googleapis|gstatic", html):
+    if re.search(r"fonts\.googleapis|gstatic", html):   # (identitytoolkit / securetoken .googleapis.com are the sign-in API, not fonts)
         sys.exit("a Google font URL is still in the app build")
     open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(html)
     print("app build: fonts bundled (%d files), no Google font URLs" % len(os.listdir(files_out)))

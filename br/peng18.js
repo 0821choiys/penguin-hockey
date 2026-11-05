@@ -12,7 +12,7 @@ const LINEUP=process.env.LINEUP==='1';
   const page=await browser.newPage();const logs=[];page.on('pageerror',e=>logs.push('PAGEERR '+e.message));page.on('console',m=>{if(m.type()==='error'&&!/Failed to load resource|vibrate/.test(m.text()))logs.push('CONSOLE '+m.text().slice(0,200));});
   await page.setRequestInterception(true);
   page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(q=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic'],type:'basic',tut:{done:true,asked:true},news18:true,set:{quality:q,lang:'ko'}})),process.env.Q||'high');
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(q=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic'],type:'basic',tut:{done:true,asked:true},news18:true,set:{quality:q,lang:'ko'}})),process.env.Q||'high');
   await page.goto('file://'+path.resolve(HTML),{waitUntil:'load'});await wait(2600);
   await page.evaluate(()=>{window.requestAnimationFrame=()=>0;});await wait(300);
   await page.evaluate((W,H)=>{

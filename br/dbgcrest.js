@@ -2,7 +2,7 @@ const chromium=require('@sparticuz/chromium');const puppeteer=require('puppeteer
 const wait=ms=>new Promise(r=>setTimeout(r,ms));const html=process.argv[2];
 (async()=>{const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:600,height:400}});
 const page=await browser.newPage();await page.setRequestInterception(true);page.on('request',r=>{const u=r.url();if(u.includes('three.min.js'))return r.respond({status:200,contentType:'application/javascript',body:fs.readFileSync('/home/claude/work/br/node_modules/three/build/three.min.js')});if(u.startsWith('file:'))return r.continue();r.abort();});
-await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','balanced'],type:'balanced',hat:'none',tut:{done:true,asked:true}})));
+await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>localStorage.setItem('penguinHockey.v1',JSON.stringify({v:10,points:500,types:['basic','balanced'],type:'balanced',hat:'none',tut:{done:true,asked:true}})));
 await page.goto('file://'+html,{waitUntil:'load'});await wait(2500);
 console.log(await page.evaluate(()=>{window.requestAnimationFrame=()=>0;const P=window.__PH;P.save.hat='none';P.save.type='balanced';
   const pg=P.buildPenguin({key:'blue',dir:1},'balanced',false,'none');const out=[];const T=window.THREE;

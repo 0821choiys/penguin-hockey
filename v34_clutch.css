@@ -1,0 +1,13 @@
+/* v34: comeback drama */
+#chaseFx{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:0;transition:opacity .5s;
+  background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(255,40,60,.16) 78%,rgba(255,20,40,.42) 100%)}
+#chaseFx.on{opacity:1}
+#chaseFx.beat{animation:chBeat .5s ease-out}
+#chaseFx.fast{background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(255,40,60,.2) 75%,rgba(255,20,40,.5) 100%)}
+@keyframes chBeat{0%{filter:brightness(1.9) saturate(1.3)}35%{filter:brightness(1.15)}100%{filter:none}}
+body.chase #clock{color:#ff8a8a!important;text-shadow:0 0 14px rgba(255,60,80,.8)}
+#banner.cb{color:#fff6c2;text-shadow:0 5px 0 #d08a00,0 10px 0 #8a5200,0 18px 30px rgba(60,30,0,.8),0 0 60px rgba(255,200,60,1),0 0 140px rgba(255,140,40,.85)}
+body.cbhit #gflash{animation-duration:1.1s}
+body.cbhit #board{animation:cbBoard 1.2s ease-out}
+@keyframes cbBoard{0%,100%{box-shadow:none}25%{box-shadow:0 0 0 3px rgba(255,210,80,.9),0 0 40px rgba(255,190,60,.9)}}
+@media (prefers-reduced-motion:reduce){#chaseFx.beat{animation:none}body.cbhit #board{animation:none}}

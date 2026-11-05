@@ -40,9 +40,9 @@ const HAN=`window.__han=()=>{const out=[];const w=document.createTreeWalker(docu
     if(u.startsWith('https://fonts.googleapis.com/'))return r.respond({status:200,contentType:'text/css',body:fontCss(decodeURIComponent(u))});
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
-  await page.evaluateOnNewDocument(s=>{if(!sessionStorage.getItem('__seeded')){localStorage.setItem('penguinHockey.v1',s);sessionStorage.setItem('__seeded','1');}},process.env.SAVE||SAVE);
-  await page.evaluateOnNewDocument('window.__scan=()=>{'+scanSrc+'};');
-  await page.evaluateOnNewDocument(HAN);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>{if(!sessionStorage.getItem('__seeded')){localStorage.setItem('penguinHockey.v1',s);sessionStorage.setItem('__seeded','1');}},process.env.SAVE||SAVE);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument('window.__scan=()=>{'+scanSrc+'};');
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(HAN);
   const html=path.resolve(__dirname,process.env.HTML||'../penguin-hockey-improved.html');
   await page.goto('file://'+html+'?lang='+lang,{waitUntil:'load'});await wait(2600);
   await page.evaluate(()=>document.fonts.ready);

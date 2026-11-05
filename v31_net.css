@@ -1,0 +1,17 @@
+/* v31: 친구 대전 screen */
+#sFriend .pbody{display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 6px 14px;text-align:center}
+.fr-big{font-size:20px;padding:14px 26px;min-width:220px}
+.fr-or{opacity:.8;font-size:13px;margin-top:4px}
+.fr-join{display:flex;gap:8px;align-items:center;justify-content:center}
+.fr-join input{width:150px;font:700 24px/1.2 'Fredoka','Jua',system-ui,sans-serif;letter-spacing:4px;text-align:center;text-transform:uppercase;padding:9px 10px;
+  border-radius:12px;border:2px solid rgba(140,200,255,.55);background:rgba(8,24,46,.75);color:#fff;outline:none}
+.fr-join input:focus{border-color:#7fd0ff;box-shadow:0 0 0 3px rgba(127,208,255,.25)}
+.fr-note{font-size:12px;opacity:.75;max-width:420px;line-height:1.45}
+.fr-msg{font-size:16px;font-weight:700;margin-top:10px}
+.fr-err{background:rgba(255,80,90,.18);border:1px solid rgba(255,120,130,.5);border-radius:10px;padding:8px 12px;font-size:13px;max-width:420px}
+.fr-lbl{font-size:14px;opacity:.9}
+.fr-code{font:800 46px/1 'Fredoka','Jua',system-ui,sans-serif;letter-spacing:8px;padding:10px 18px 12px;border-radius:16px;
+  background:linear-gradient(180deg,rgba(80,170,255,.25),rgba(40,90,180,.25));border:2px solid rgba(140,200,255,.6);text-shadow:0 2px 0 rgba(0,0,0,.35);user-select:all}
+.fr-wait{display:flex;align-items:center;gap:8px;font-size:15px}
+.fr-dot{width:10px;height:10px;border-radius:50%;background:#7fd0ff;animation:frPulse 1s ease-in-out infinite}
+@keyframes frPulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}

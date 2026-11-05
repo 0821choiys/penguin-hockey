@@ -34,7 +34,7 @@ const TYPES={
 const SPECIALS={surge:__L('큰바다 돌진'),dash:__L('아이스 대시'),slide:__L('펭귄 슬라이드'),flipper:__L('강력한 플리퍼 슛'),icebreak:__L('아이스 브레이크')};
 const STATN={speed:__L('속도'),accel:__L('가속도'),power:__L('퍽 타격력'),turn:__L('방향 전환'),body:__L('몸싸움')};
 const HATS={none:{name:__L('없음'),cost:0},beanie:{name:__L('털모자'),cost:0},headband:{name:__L('머리띠'),cost:20},helmet:{name:__L('하키 헬멧'),cost:40},party:{name:__L('파티 모자'),cost:60},crown:{name:__L('왕관'),cost:120}};
-const TRAILS={ice:{name:__L('눈꽃'),cost:0,col:[.92,.97,1]},sky:{name:__L('하늘빛'),cost:30,col:[.4,.8,1]},pink:{name:__L('핑크'),cost:50,col:[1,.55,.82]},gold:{name:__L('황금'),cost:90,col:[1,.85,.3]},rainbow:{name:__L('무지개'),cost:150,col:null},ps1:{name:__L('정어리'),cost:0,col:[0.75,0.88,0.98],pass:1},ps2:{name:__L('청어'),cost:0,col:[0.35,0.65,1],pass:1},ps3:{name:__L('광어'),cost:0,col:[0.9,0.78,0.55],pass:1},ps4:{name:__L('넙치'),cost:0,col:[0.72,0.8,0.45],pass:1},ps5:{name:__L('도다리'),cost:0,col:[0.95,0.85,0.7],pass:1},ps6:{name:__L('꽁치'),cost:0,col:[0.55,0.85,0.92],pass:1},ps7:{name:__L('고등어'),cost:0,col:[0.3,0.85,0.7],pass:1},ps8:{name:__L('갈치'),cost:0,col:[0.92,0.95,1],pass:1},ps9:{name:__L('참치'),cost:0,col:[0.95,0.35,0.4],pass:1},ps10:{name:__L('연어'),cost:0,col:[1,0.6,0.45],pass:1},ps11:{name:__L('도루묵'),cost:0,col:[0.85,0.82,0.65],pass:1},ps12:{name:__L('명태'),cost:0,col:[0.78,0.8,0.86],pass:1},ps13:{name:__L('삼치'),cost:0,col:[0.55,0.8,1],pass:1},ps14:{name:__L('전어'),cost:0,col:[1,0.88,0.55],pass:1},ps15:{name:__L('멸치'),cost:0,col:[0.85,0.93,1],pass:1},ps16:{name:__L('방어'),cost:0,col:[1,0.85,0.3],pass:1},ps17:{name:__L('참돔'),cost:0,col:[1,0.45,0.55],pass:1},ps18:{name:__L('우럭'),cost:0,col:[0.6,0.6,0.65],pass:1},ps19:{name:__L('농어'),cost:0,col:[0.6,0.82,0.7],pass:1},ps20:{name:__L('복어'),cost:0,col:[1,0.82,0.4],pass:1},ps21:{name:__L('아귀'),cost:0,col:[0.7,0.55,0.4],pass:1},ps22:{name:__L('가자미'),cost:0,col:[0.85,0.72,0.5],pass:1},ps23:{name:__L('조기'),cost:0,col:[1,0.8,0.2],pass:1},ps24:{name:__L('숭어'),cost:0,col:[0.7,0.78,0.86],pass:1},pro:{name:__L('프로 오로라'),cost:0,col:[0.72,0.55,1],pass:1}};
+const TRAILS={ice:{name:__L('눈꽃'),cost:0,col:[.92,.97,1]},sky:{name:__L('하늘빛'),cost:30,col:[.4,.8,1]},pink:{name:__L('핑크'),cost:50,col:[1,.55,.82]},gold:{name:__L('황금'),cost:90,col:[1,.85,.3]},rainbow:{name:__L('무지개'),cost:150,col:null},dly:{name:__L('출석 오로라'),cost:0,col:[0.55,1,0.82],pass:1},ps1:{name:__L('정어리'),cost:0,col:[0.75,0.88,0.98],pass:1},ps2:{name:__L('청어'),cost:0,col:[0.35,0.65,1],pass:1},ps3:{name:__L('광어'),cost:0,col:[0.9,0.78,0.55],pass:1},ps4:{name:__L('넙치'),cost:0,col:[0.72,0.8,0.45],pass:1},ps5:{name:__L('도다리'),cost:0,col:[0.95,0.85,0.7],pass:1},ps6:{name:__L('꽁치'),cost:0,col:[0.55,0.85,0.92],pass:1},ps7:{name:__L('고등어'),cost:0,col:[0.3,0.85,0.7],pass:1},ps8:{name:__L('갈치'),cost:0,col:[0.92,0.95,1],pass:1},ps9:{name:__L('참치'),cost:0,col:[0.95,0.35,0.4],pass:1},ps10:{name:__L('연어'),cost:0,col:[1,0.6,0.45],pass:1},ps11:{name:__L('도루묵'),cost:0,col:[0.85,0.82,0.65],pass:1},ps12:{name:__L('명태'),cost:0,col:[0.78,0.8,0.86],pass:1},ps13:{name:__L('삼치'),cost:0,col:[0.55,0.8,1],pass:1},ps14:{name:__L('전어'),cost:0,col:[1,0.88,0.55],pass:1},ps15:{name:__L('멸치'),cost:0,col:[0.85,0.93,1],pass:1},ps16:{name:__L('방어'),cost:0,col:[1,0.85,0.3],pass:1},ps17:{name:__L('참돔'),cost:0,col:[1,0.45,0.55],pass:1},ps18:{name:__L('우럭'),cost:0,col:[0.6,0.6,0.65],pass:1},ps19:{name:__L('농어'),cost:0,col:[0.6,0.82,0.7],pass:1},ps20:{name:__L('복어'),cost:0,col:[1,0.82,0.4],pass:1},ps21:{name:__L('아귀'),cost:0,col:[0.7,0.55,0.4],pass:1},ps22:{name:__L('가자미'),cost:0,col:[0.85,0.72,0.5],pass:1},ps23:{name:__L('조기'),cost:0,col:[1,0.8,0.2],pass:1},ps24:{name:__L('숭어'),cost:0,col:[0.7,0.78,0.86],pass:1},pro:{name:__L('프로 오로라'),cost:0,col:[0.72,0.55,1],pass:1}};
 const DIFF={
   easy:{spd:.88,react:.5,noise:.5,aim:.5,press:.5,shootQ:.24,passP:.25,mistake:.14,slip:.07,range:19,gk:{cap:6,acc:28,react:.6,err:1.3,dive:.05,miss:.3}},
   normal:{spd:.96,react:.3,noise:.3,aim:.3,press:.8,shootQ:.26,passP:.4,mistake:.07,slip:.035,range:26,gk:{cap:7.5,acc:34,react:.42,err:.9,dive:.2,miss:.16}},
@@ -77,8 +77,8 @@ const BRK={max:5,need:[3,6,10,15,24],val:[1,2,3,5,8],cost:[60,120,200,320,500],s
 const enhCost=lv=>20+15*lv;
 const RM0=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const DEF_SET={cine:'full',rules:'full',cond:true,size:3,time:180,diff:'normal',tod:'auto',aurora:true,sound:true,quality:'ultra',assist:true,arena:'auto',vol:'mid',vib:true,shake:RM0?'low':'on',flash:true,motion:RM0,items:true,events:true,fastFx:false,stick:true,lang:I18N.lang};
-const save={v:10,chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0},pay:{tok:[],last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
-const persist=()=>{try{localStorage.setItem('penguinHockey.v1',JSON.stringify(save));if(window.__phMirror)window.__phMirror();}catch(e){if(!persist.warned){persist.warned=true;console.warn('save failed',e);setTimeout(()=>{try{flashMsg(__L('저장하지 못했어요 (저장 공간·비공개 모드). 플레이는 계속할 수 있어요'));}catch(_){}},50);}}};
+const save={v:10,login:{d:0,last:0,cyc:0,tot:0},bond:{},chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0},pay:{tok:[],last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
+const persist=()=>{if(window.__phHold)return;try{localStorage.setItem('penguinHockey.v1',JSON.stringify(save));if(window.__phMirror)window.__phMirror();if(window.__phCloud)window.__phCloud();}catch(e){if(!persist.warned){persist.warned=true;console.warn('save failed',e);setTimeout(()=>{try{flashMsg(__L('저장하지 못했어요 (저장 공간·비공개 모드). 플레이는 계속할 수 있어요'));}catch(_){}},50);}}};
 // load + validate + migrate old (v1) data; nothing valid is ever dropped
 function loadSave(){
   let s=null;try{s=JSON.parse(localStorage.getItem('penguinHockey.v1')||'null');}catch(e){s=null;}
@@ -190,6 +190,8 @@ function loadSave(){
   if(s.season&&typeof s.season==='object')seasonLoad(s.season);
   if(s.rl&&typeof s.rl==='object')save.rl.intro=s.rl.intro?1:0;
   if(s.pass&&typeof s.pass==='object')passLoad(s.pass);
+  if(s.login&&typeof s.login==='object'){const q=s.login;save.login={d:Math.max(0,Math.min(6,q.d|0)),last:Math.max(0,q.last|0),cyc:Math.max(0,q.cyc|0),tot:Math.max(0,q.tot|0)};}
+  if(s.bond&&typeof s.bond==='object')for(const k of Object.keys(s.bond)){const b=s.bond[k];if(b&&typeof b==='object'&&/^[a-z]{2,12}$/.test(k))save.bond[k]={g:Math.max(0,b.g|0),w:Math.max(0,b.w|0),gl:Math.max(0,b.gl|0),lv:Math.max(0,Math.min(4,b.lv|0))};}
   if(s.pay&&typeof s.pay==='object'){if(Array.isArray(s.pay.tok))save.pay.tok=s.pay.tok.filter(x=>typeof x==='string'&&x.length<600).slice(-30);if(s.pay.last&&typeof s.pay.last==='object')save.pay.last={s:Math.max(0,Math.floor(+s.pay.last.s||0)),t:Math.max(0,+s.pay.last.t||0)};}
   save.news18=s.news18===true;
   if(s.v!==10)persist();
@@ -1008,6 +1010,7 @@ const SFX=(()=>{
     bray(){tone(640,.2,'sawtooth',.1,900);tone(560,.34,'sawtooth',.11,300,.22);noise(.25,900,.8,.08,'bandpass',.22);},
     fanfare(){[392,523,659].forEach((f,i)=>tone(f,.2,'square',.07,f*1.01,i*.1));tone(784,.42,'sawtooth',.07,790,.3);},
     flare(){tone(1700,.5,'sine',.07,2500);tone(2300,.4,'triangle',.05,3300,.08);noise(.45,6000,2,.05);},
+    heart(v){tone(64,.15,'sine',.55*v,46);tone(58,.2,'sine',.4*v,42,.19);},
     hop(){tone(300,.18,'sine',.13,760);},
     ui(){tone(720,.07,'sine',.15,900);},
     tap(){noise(.05,2200,2,.25);tone(260,.05,'sine',.15,130);},
@@ -1071,14 +1074,14 @@ function setupMatch(cfg){
       else{const arr=(cfg.oppTypes||['strong','fast','defense','basic']);type=arr[i%arr.length];hat=hatsAI[(Math.random()*hatsAI.length)|0];if(cfg.demo)type=demo18();}
       if(cfg.demo&&!isMine&&key==='blue')type=demo18();
       const p=makePeng(tm,roles[i],type,i,false,hat);
-      if(isMine){const asg=(i===0||!!save.squad[i-1]);applyLevel(p,asg);applyChem(p,asg);}
+      if(isMine&&!cfg.flat){const asg=(i===0||!!save.squad[i-1]);applyLevel(p,asg);applyChem(p,asg);}
       if(cfg.passiveMates&&isMine&&i>0){p.passive=true;p.role='attacker';}
       p.hx=tm.dir*-form[i][0]*-1;p.hx=tm.dir>0?form[i][0]:-form[i][0];p.hz=tm.dir>0?form[i][1]:-form[i][1];
       tm.skaters.push(p);G.pengs.push(p);
     }
     const wantGoalie=!cfg.noGoalies&&!(cfg.goalieOnly&&isMine)&&(isMine||!cfg.noOpp||cfg.goalieOnly);
     if(wantGoalie&&!(cfg.noOpp&&!cfg.goalieOnly&&!isMine)){
-      const g=makePeng(tm,'goalie',isMine?'defense':'strong',9,true,'helmet');g.hx=-tm.dir*(W-1.7);g.hz=0;tm.goalie=g;G.pengs.push(g);
+      const g=makePeng(tm,'goalie',(isMine||cfg.flat)?'defense':'strong',9,true,'helmet');g.hx=-tm.dir*(W-1.7);g.hz=0;tm.goalie=g;G.pengs.push(g);
     }
   }
   if(mine&&(cfg.noScoreOpp||cfg.noScoreTeam))mine.opp.noScore=true;
@@ -1437,8 +1440,8 @@ function useSpecial(p){
   return true;
 }
 function humanAim(p){
-  let ax=Math.sin(p.heading),az=Math.cos(p.heading);
-  if(!IS_TOUCH&&G.mouse.active&&performance.now()-G.mouse.t<3000){const dx=G.mouse.wx-p.x,dz=G.mouse.wz-p.z,l=Math.hypot(dx,dz);if(l>1.1){ax=dx/l;az=dz/l;}}
+  let ax=Math.sin(p.heading),az=Math.cos(p.heading);if(p.remote&&p.raim&&(p.raim[0]||p.raim[1]))return assistAim(p,p.raim[0],p.raim[1]);
+  if(p.human&&!IS_TOUCH&&G.mouse.active&&performance.now()-G.mouse.t<3000){const dx=G.mouse.wx-p.x,dz=G.mouse.wz-p.z,l=Math.hypot(dx,dz);if(l>1.1){ax=dx/l;az=dz/l;}}
   return assistAim(p,ax,az);
 }
 
@@ -1654,24 +1657,24 @@ function aiGoalie(p,dt){
     p.anim.swing=1;p.cd.shoot=.6;p.shotGrace=.12;pk.last=p;pk.lastTeam=tm;SFX.tap();
   }
 }
-function humanControl(p,dt){
-  p.ix=input.x;p.iz=input.z;
-  if(p.fall>0){input.shootPress=input.pass=input.dash=input.special=input.shootRel=false;p.charging=false;p.charge=0;return;}
-  if(input.shootPress){input.shootPress=false;if(p.cd.shoot<=0){p.charging=true;p.charge=0;p.stage=0;}}
-  if(p.charging&&input.shoot){
+function humanControl(p,dt,inp){inp=inp||input;
+  p.ix=inp.x;p.iz=inp.z;
+  if(p.fall>0){inp.shootPress=inp.pass=inp.dash=inp.special=inp.shootRel=false;p.charging=false;p.charge=0;return;}
+  if(inp.shootPress){inp.shootPress=false;if(p.cd.shoot<=0){p.charging=true;p.charge=0;p.stage=0;}}
+  if(p.charging&&inp.shoot){
     p.charge=Math.min(1,p.charge+dt/(.75*(p.tr&&p.tr.charge?.88:1))*(ttOf(p).chg||1));
     const sg=p.charge<.14?0:p.charge<.45?1:p.charge<.8?2:3;
     if(sg>p.stage){p.stage=sg;SFX.tick(sg);vib(8+sg*6);}
   }
-  if(input.shootRel){
-    input.shootRel=false;
+  if(inp.shootRel){
+    inp.shootRel=false;
     if(p.charging&&p.cd.shoot<=0){const a=humanAim(p);performShot(p,a[0],a[1],p.charge);}
     p.charging=false;p.charge=0;p.stage=0;
   }
-  if(input.pass){input.pass=false;if(p.cd.pass<=0){const a=humanAim(p),m=bestMate(p,a[0],a[1],false);if(!doPass(p,m)){p.cd.pass=.15;SFX.whoosh();}}}
-  if(input.dash){input.dash=false;doDash(p);}
-  if(input.special){input.special=false;useSpecial(p);}
-  if(input.swap){input.swap=false;swapNearest();}
+  if(inp.pass){inp.pass=false;if(p.cd.pass<=0){const a=humanAim(p),m=bestMate(p,a[0],a[1],false);if(!doPass(p,m)){p.cd.pass=.15;SFX.whoosh();}}}
+  if(inp.dash){inp.dash=false;doDash(p);}
+  if(inp.special){inp.special=false;useSpecial(p);}
+  if(inp.swap){inp.swap=false;if(inp===input)swapNearest();else netSwapNearest(p);}
 }
 function swapNearest(){
   if(G.so||G.ps)return;
@@ -1703,7 +1706,7 @@ function decide(dt){
     if(p.boostT>0)p.boostT-=dt;if(p.fireT>0)p.fireT-=dt;if(p.magT>0)p.magT-=dt;tick18(p,dt);
     if(p.frozen){p.ix=p.iz=0;continue;}
     if(p.fall>0){p.fall-=dt;p.ix=p.iz=0;p.gvx=p.gvz=0;if(p.fall<=0)p.getup=.6;continue;}
-    if(p.human)humanControl(p,dt);else if(p.goalie)aiGoalie(p,dt);else aiSkater(p,dt);
+    if(p.human)humanControl(p,dt);else if(p.remote)remoteControl(p,dt);else if(p.goalie)aiGoalie(p,dt);else aiSkater(p,dt);
   }
 }
 function simulate(h){
@@ -1721,7 +1724,7 @@ function runPhysics(dt){
   while(G.acc>=FIXED&&G.state==='play'){
     for(const p of G.pengs){p.ox=p.x;p.oz=p.z;}
     G.puck.ox=G.puck.x;G.puck.oz=G.puck.z;
-    autoSwitch(FIXED);simulate(FIXED);G.acc-=FIXED;
+    autoSwitch(FIXED);if(G.net==='host')netAutoSwitch(FIXED);simulate(FIXED);G.acc-=FIXED;
   }
   G.alpha=G.state==='play'?clamp(G.acc/FIXED,0,1):1;
 }
@@ -1737,7 +1740,7 @@ function scored(tm){
   if(tm.noScore){pk_reset();return;}
   const pk=G.puck,sh=pk.shot;
   tm.score++;G.golden2=goldenGoal(tm);G.scoredBy=tm;G.state='goal';G.stateT=G.cfg.demo?2.2:3;pk_spAtGoal();G.pass=null;
-  hypeGoal(tm,sh);pcGoal(tm,sh);
+  clutchClear();hypeGoal(tm,sh);pcGoal(tm,sh);if(G.net==='host')netEv('g',{t:tm.key,s:[G.teams.blue.score,G.teams.red.score]});
   for(const p of G.pengs){
     if(p.team===tm){p.pose='cheer';p.cheerKind=(Math.random()*3)|0;}else{p.pose='sad';}p.charging=false;
   }
@@ -1763,7 +1766,7 @@ function pk_reset(){const pk=G.puck;pk.x=0;pk.z=0;pk.vx=0;pk.vz=0;pk.ox=0;pk.oz=
 function startMatch(cfg){
   resetInput();
   hideAll();document.body.classList.add('ingame');document.body.classList.remove('menuish');
-  cfg.teamKey=save.team;G.mode=cfg.mode;
+  cfg.teamKey=cfg.netTeam||save.team;G.mode=cfg.mode;G.net=cfg.net||'';
   cfg.final=!!((cfg.mode==='tour'&&G.tour&&G.tour.round===TOUR.length-1)||(cfg.mode==='trial'&&TRIALS[cfg.kind]&&cfg.round===TRIALS[cfg.kind].rounds.length-1));
   setupMatch(cfg);G.view='game';G.state='ready';G.stateT=3.2;G.paused=false;G.cam.zoom=1;G.cheer=0;G.acc=0;G.alpha=1;
   G.cam.x=0;G.cam.z=0;G.countN=4;G.result=null;G.resultShown=false;
@@ -1822,7 +1825,7 @@ function endMatch(){
   for(const p of G.pengs){p.pose=draw?'idle':((p.team===mine)===win?'cheer':'sad');p.cheerKind=(Math.random()*3)|0;}
   if(win&&G.cfg.final){SFX.champ();hypeBanner('CHAMPION!',['🏆 '+(G.cfg.mode==='tour'?__L('토너먼트 우승'):(G.cfg.label||__L('우승')))],4,mine.key);champT=3.2;fwT=0;G.cam.shake=Math.max(G.cam.shake,.5);vib([40,40,40,40,180]);
     for(let i=0;i<160;i++){const a=rnd(TAU),s=rnd(4,12);emit(rnd(-8,8),rnd(2,6),rnd(-5,5),Math.cos(a)*s,rnd(5,12),Math.sin(a)*s,rnd(1.4,2.4),rnd(.25,.5),1,rnd(.75,.95),rnd(.2,.5));}}
-  else if(win){SFX.win();const gk=(G.cfg.diff==='hard');const cm=G.hype&&G.hype.trailLate;hypeBanner(gk?'GIANT KILLER!':cm?'COMEBACK WIN!':'VICTORY! \uD83D\uDC27\uD83C\uDFC6',gk&&cm?['COMEBACK WIN!']:[],gk||cm?3:1,'');}else if(draw){SFX.whistle();showBanner('DRAW',2400,'');}else{SFX.lose();showBanner('GAME OVER',2400,'r');}
+  else if(win){SFX.win();const gk=(G.cfg.diff==='hard');const cm=G.hype&&(G.hype.trailLate||G.hype.wasBehind);hypeBanner(gk?'GIANT KILLER!':cm?'COMEBACK WIN!':'VICTORY! \uD83D\uDC27\uD83C\uDFC6',gk&&cm?['COMEBACK WIN!']:[],gk||cm?3:1,'');}else if(draw){SFX.whistle();showBanner('DRAW',2400,'');}else{SFX.lose();showBanner('GAME OVER',2400,'r');}
   G.result={win,draw,ms,os,note,paid:false};
 }
 function showResultScreen(){
@@ -1843,6 +1846,7 @@ function showResultScreen(){
       btns.push([__L('이 라운드 재도전'),()=>showTourIntro()]);btns.push([__L('처음부터'),()=>startTournament()]);
     }
   }else if(cfg.mode==='ranked'){btns.push([__L('🔁 다시 매칭'),()=>rankedStart()]);btns.push([__L('🏅 티어 게임'),()=>goRanked()]);}
+  else if(cfg.mode==='friend'){btns.push(['👥 '+__L(__L('친구 대전')),()=>{netClose();G.net='';goScreen('sFriend');}]);NET.st='done';setTimeout(()=>netShut(true),2500);}
   else if(cfg.mode!=='trial')btns.push([__L('다시 하기'),()=>startMatch(Object.assign({},cfg))]);
   btns.push([__L('메인 메뉴'),()=>toMenu()]);
   const cbBonus=Math.min(30,Math.round(Math.min(h.combo.max,8)*3*mult));   // capped: combos can never outweigh the match itself
@@ -1851,7 +1855,7 @@ function showResultScreen(){
     if(cfg.mode==='trial'){R.tr=trialAfterMatch(win);if(R.tr&&R.tr.st==='champ'){extra+=R.tr.pts;extraName=R.tr.first?__L('첫 선발 보상'):__L('선발 보상');}}
     const fv=Math.min(20,((h.feverGoals)|0)*5);R.fv=fv;
     R.base=base;R.cb=cbBonus;R.extra=extra;R.extraName=extraName;R.cond=condBonus(base);R.condK=G.cond;R.total=base+cbBonus+extra+fv+R.cond;
-    save.points+=R.total;save.stats.played++;if(win)save.stats.wins++;save.stats.goals+=ms;
+    save.points+=R.total;save.stats.played++;if(win)save.stats.wins++;save.stats.goals+=ms;R.bond=bondAdd(save.type,win,ms);
     R.hy=hypeMatchEnd(win,draw,ms,os,cfg);{const ga=achCheck();R.ach=ga;R.achP=ga.reduce((s,a)=>s+a.pts,0);R.total+=R.achP;}
     R.mg=mgrMatchEnd(win,draw,cfg);
     if(cfg.mode==='tour'&&G.tour&&win&&G.tour.round+1>save.rec.tourBest)save.rec.tourBest=G.tour.round+1;
@@ -1884,7 +1888,7 @@ function showResultScreen(){
   if(R.fv>0)html+=__L('<div class="rs-row"><span>🔥 피버 골 보너스 (')+h.feverGoals+__L('골)</span><span><b class="cu" data-to="')+R.fv+'">0</b> P</span></div>';
   if(R.extra>0)html+='<div class="rs-row"><span>'+R.extraName+'</span><span><b class="cu" data-to="'+R.extra+'">0</b> P</span></div>';
   html+=__L('<div class="rs-row total"><span>획득 포인트</span><span>⭐ <b class="cu" data-to="')+R.total+'">0</b> P</span></div></div>';
-  html+=passRowHtml(R);
+  html+=passRowHtml(R)+bondRowHtml(R);
   html+='<div class="rs-xp">'+hy.xp.map(r=>{
     const pb=r.b.need?r.b.cur/r.b.need*100:100,pa=r.a.need?r.a.cur/r.a.need*100:100,lvl=r.to>r.from;
     const tr=TRAITS.filter(t=>t.lv>r.from&&t.lv<=r.to);
@@ -1929,7 +1933,7 @@ function enterDemo(){
   const st=save.stats;$('#menuStats').textContent=st.played>0?'🏆 '+st.wins+__L('승 / ')+st.played+__L('경기 · 골 ')+st.goals+(st.tourClears?__L(' · 토너먼트 우승 ')+st.tourClears+__L('회'):''):'';
   hypeMenuRefresh();leagueMenuRefresh();G.arena='classic';funReset();achCheck();
 }
-function toMenu(){G.paused=false;enterDemo();show('sMenu');SFX.crowd(0);}
+function toMenu(){if(NET.st!=='idle'&&NET.st!=='done')netClose();G.paused=false;enterDemo();show('sMenu');SFX.crowd(0);}
 
 /* ---- tournament ---- */
 function startTournament(){G.tour={round:0,champPaid:false};showTourIntro();}
@@ -2183,7 +2187,7 @@ function step(dt){
       for(const p of G.pengs){p.ix=p.iz=0;}
     }else if(st==='play'){
       G.elapsed+=dt;
-      if(G.cfg.mode!=='demo'){
+      if(G.cfg.mode!=='demo'&&G.net!=='guest'){
         if(G.so||G.ps){}else if(G.cfg.time&&!G.ot){
           G.timeLeft-=dt;
           if(G.timeLeft<=0){G.timeLeft=0;
@@ -2193,16 +2197,16 @@ function step(dt){
           }
         }else if(G.ot){G.otLeft-=dt;if(G.otLeft<=0){SFX.whistle();if(soAllowed()&&G.mine.score===G.mine.opp.score)soStart();else endMatch();}}
       }
-      if(G.state==='play')runPhysics(dt);
+      if(G.state==='play'){if(G.net==='guest')netGuestApply();else runPhysics(dt);}
     }else if(st==='goal'){
       G.stateT-=dt;G.alpha=1;
       for(const p of G.pengs){p.ix=p.iz=0;p.gvx=p.gvz=0;}
-      if(!hypeGoalStep(dt)){
+      if(G.net==='guest')netGuestApply();else if(!hypeGoalStep(dt)){
         const sd=dt*.4,sub=Math.max(1,Math.ceil(sd/(1/90))),h=sd/sub;
         for(let i=0;i<sub;i++){for(const p of G.pengs){if(!p.frozen)movePeng(p,h);}puckStep(h);}
       }
       G.cheer=1;
-      if(G.stateT<=0){
+      if(G.stateT<=0&&G.net!=='guest'){
         if(G.cfg.mode==='demo'){resetPositions();G.state='play';}
         else if(G.ot){endMatch();}
         else if((G.cfg.challenge&&!G.cfg.challenge.match)||G.cfg.mode==='practice'){resetPositions();G.state='play';}
@@ -2214,7 +2218,7 @@ function step(dt){
       if(G.stateT<=0)rulesResume();
     }else if(st==='over'){
       G.stateT-=dt;G.alpha=1;for(const p of G.pengs){p.ix=p.iz=0;p.gvx=p.gvz=0;}
-      const sd=dt*.5;for(const p of G.pengs)if(!p.frozen)movePeng(p,sd);puckStep(sd);G.cheer=.8;
+      const sd=dt*.5;if(G.net==='guest')netGuestApply();else{for(const p of G.pengs)if(!p.frozen)movePeng(p,sd);puckStep(sd);}G.cheer=.8;
       if(G.stateT<=0&&G.result&&!G.resultShown){G.resultShown=true;if(G.result.chal)showChalResult();else showResultScreen();}
     }
     if(st!=='over')G.resultShown=false;
@@ -2250,7 +2254,7 @@ function step(dt){
     }else{marker.visible=false;markerRing.visible=false;aimArrow.visible=false;passRing.visible=false;}
     if(G.view==='menu'){marker.visible=false;markerRing.visible=false;aimArrow.visible=false;passRing.visible=false;}
   }}catch(e){dbgErr('logic',e);}
-  safe(hypeFrame,dt);safe(funFrame,dt);safe(tutFrame,dt);safe(mgrFrame,dt);safe(arenaFrame,dt);safe(v17Frame,dt);safe(v18Frame,dt);safe(v22Frame,dt);safe(v23Frame,G.cine?G.rdt:dt);
+  safe(hypeFrame,dt);safe(funFrame,dt);safe(tutFrame,dt);safe(mgrFrame,dt);safe(arenaFrame,dt);safe(v17Frame,dt);safe(v18Frame,dt);safe(v22Frame,dt);safe(v23Frame,G.cine?G.rdt:dt);safe(netFrame,dt);
   safe(updateWeather,dt);safe(updateParticles,G.cine?G.rdt:dt);safe(updateWorld,dt);safe(()=>setTOD(todTarget(),dt));safe(updateCamera,dt);safe(updateHud);
 }
 function frame(){
@@ -2326,7 +2330,7 @@ const HM_IC={
 };
 
 /* ================= UI ================= */
-const screens=['sMenu','sMode','sHow','sSelect','sSet','sPause','sResult','sTour','sChal','sScout','sSquad','sGoals','sMarket','sProfile','sRanked','sPass'];
+const screens=['sMenu','sMode','sHow','sSelect','sSet','sPause','sResult','sTour','sChal','sScout','sSquad','sGoals','sMarket','sProfile','sRanked','sPass','sFriend'];
 function show(id){screens.forEach(s=>$('#'+s).classList.toggle('on',s===id));G.ui=id;uiTidy();}
 function hideAll(){screens.forEach(s=>$('#'+s).classList.remove('on'));}
 function goScreen(id){
@@ -2336,11 +2340,12 @@ function goScreen(id){
   if(id==='sScout')renderScout();
   if(id==='sSquad'){renderSquad();requestAnimationFrame(renderSquad);}
   if(id==='sGoals')renderGoals();
-  if(id==='sMenu'){hypeMenuRefresh();leagueMenuRefresh();}
+  if(id==='sMenu'){hypeMenuRefresh();leagueMenuRefresh();dlyAuto();}
   if(id==='sMarket')renderMarket();
   if(id==='sProfile')renderProfile();
   if(id==='sRanked')renderRanked();
   if(id==='sPass')renderPass();
+  if(id==='sFriend')frRender();
   show(id);$('#ptsN').textContent=save.points;
 }
 let msgT=0;
@@ -2393,6 +2398,7 @@ function renderSettings(){
       b.onclick=()=>{if(sd.k==='lang'){if(o[0]!==I18N.lang){save.set.lang=o[0];persist();SFX.init();SFX.ui();I18N.set(o[0]);}return;}save.set[sd.k]=o[0];persist();SFX.init();SFX.ui();if(sd.k==='sound'){SFX.setOn(o[0]);$('#bSound').textContent=o[0]?'🔊':'🔇';}if(sd.k==='quality'){GFX.drop=0;applyQuality();}if(['vol','shake','flash','motion'].includes(sd.k))applyFxSettings();renderSettings();};seg.appendChild(b);});
     row.appendChild(seg);el.appendChild(row);
   });
+  safe(accRow);
 }
 function applyQuality(){
   const low=save.set.quality==='low';
@@ -2994,7 +3000,7 @@ function claimLong(id){
   const L=LDEFS.find(x=>x.id===id);if(!L||save.long[id]||L.prog()<L.n)return;
   save.long[id]=true;save.points+=L.pts;persist();SFX.win();vib([30,30,60]);hypeToast('+'+L.pts+'P');$('#ptsN').textContent=save.points;renderGoals();hypeMenuRefresh();
 }
-function claimable(){goalsEnsure();let n=0;for(const g of save.goals.list)if(!g.c&&g.p>=GDEFS[g.id].n)n++;for(const L of LDEFS)if(!save.long[L.id]&&L.prog()>=L.n)n++;return n;}
+function claimable(){goalsEnsure();let n=(typeof dlyCan==='function'&&dlyCan())?1:0;for(const g of save.goals.list)if(!g.c&&g.p>=GDEFS[g.id].n)n++;for(const L of LDEFS)if(!save.long[L.id]&&L.prog()>=L.n)n++;return n;}
 function hypeMenuRefresh(){
   try{
     goalsEnsure();const n=claimable(),b=$('#goalBadge');if(b){const an=save.achNew|0;b.textContent=n?n:an?'NEW':'';b.style.display=n||an?'inline-block':'none';b.title=n?__L('받을 보상 ')+n+__L('개'):an?__L('새 업적 ')+an+__L('개'):'';}
@@ -3064,6 +3070,7 @@ function renderGoals(){
   document.querySelectorAll('#gTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===gTab));
   const info=goalsEnsure();let h='';
   if(gTab==='day'){
+    h+=dlyCardHtml();
     h+=__L('<div class="lbl" style="text-align:center">오늘의 목표 · 완료하면 아래 버튼으로 보상을 받아요 (한 번만 수령)</div>');
     save.goals.list.forEach((g,i)=>{const d=GDEFS[g.id],ok=g.p>=d.n;
       h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:passGain(PASS.earn.daily)})+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
@@ -3128,6 +3135,7 @@ function hypeGoal(tm,sh){
     if(mine){h.streak++;h.maxStreak=Math.max(h.maxStreak,h.streak);}
     else{h.streak=0;h.conceded++;h.concT=G.t;if(h.combo.n>=2&&h.combo.t>0)hypeToast(__L('실점으로 콤보가 끊겼어요'));h.combo.n=0;h.combo.t=0;comboHide();if(tm.score>tm.opp.score)h.wasBehind=true;}
   }
+  {const lt=$('#late');if(lt)lt.classList.remove('on');}
   const info=classifyGoal(tm,sh);let main='GOAL!',sub=[],tier=0;
   const t=info.tags;
   if(t.includes('OT WINNER!')){main='OT WINNER!';sub=t.filter(x=>x!==main);tier=4;}
@@ -3153,6 +3161,7 @@ function hypeGoal(tm,sh){
   SFX.bump(oppG?.6:1);if(oppG)SFX.lose();else SFX.goal();if(tier>=2)SFX.win();if(tier>=1)vib([40,30,70]);
   hypeBanner(main,sub,tier,key);
   if(real&&G.mine&&tm.score===tm.opp.score&&!t.includes('EQUALIZER!'))hypeToast(__L('⚖️ 동점! ')+tm.score+' : '+tm.opp.score);
+  if(real)G.cbLast=clutchGoal(tm,main);
   const scp=$(key==='blue'?'#sB':'#sR');scp.classList.remove('hpop');void scp.offsetWidth;scp.classList.add('hpop');
   if(info.shooter){h.scorer=info.shooter;popAt(TYPES[info.shooter.type].name+'!',info.shooter.x,2.8,info.shooter.z);}
   // --- slow-motion replay for special goals ---
@@ -3221,11 +3230,13 @@ function hypeFrame(dt){
       }else if(G.ot&&!h.otShown){h.otShown=true;const mt=$('#modeTag');mt.textContent='⚡ SUDDEN DEATH';mt.classList.add('sd');clk.classList.remove('l1');clk.classList.add('l2');hypeToast(__L('연장전! 먼저 넣는 팀이 승리'));}
     }
   }
+  safe(clutchFrame,dt);
   if(h.ringT>0){h.ringT-=dt;const k=1-Math.max(0,h.ringT)/.95;gRing.visible=true;gRing.scale.setScalar(1+k*15);gRing.material.opacity=Math.max(0,(1-k)*.85);if(h.ringT<=0)gRing.visible=false;}
   if(G.state==='goal'&&h.scorer&&!(G.replay&&G.replay.active)){const p=h.scorer;sRing.visible=true;sRing.position.set(p.rx,.09,p.rz);const k=1+.12*Math.sin(G.t*9);sRing.scale.setScalar(k);sRing.material.color.setRGB(1,.85,.25);sRing.material.opacity=.9;}
   else sRing.visible=false;
 }
 function hypeReset(){
+  clutchClear();document.body.classList.remove('cbhit');G.cbLast=null;
   G.hype=hypeNew();G.hitStop=0;G.slow=null;G.replay=null;cineClear();G.cineFull=null;
   document.body.classList.remove('replay','chmax');
   for(const id of['#combo','#late','#toast','#replayTag','#gflash'])try{$(id).className='';}catch(e){}
@@ -4433,7 +4444,7 @@ function openCard(k){
     h+=statGrid(k);
     h+=__L('<div class="cd-grow"><div><span>강화</span><b>Lv.')+lv+' / '+MAX_LV+'</b>'+(lv<MAX_LV?__L('<small>다음 OVR ')+cardOvr(k,lv+1)+'</small>':'<small>MAX</small>')+__L('</div><div><span>돌파</span><b class="pc-stars">')+('★'.repeat(bk)||'—')+'</b><small>'+(bk<BRK.max?__L('다음 ★ ')+brkPlan(k).have+'/'+BRK.need[bk]+__L('점'):__L('최대'))+__L('</small></div><div><span>숙련</span><b>M')+m.lv+'</b><small>'+(m.need?m.cur+'/'+m.need+__L(' XP (경기 출전)'):'MAX')+'</small></div></div>';
     h+='<div class="cd-mats">'+fmtL(__L('보유 카드: {n}장'),{n:'<span class="g'+rarCls(k)+'">'+save.cc[k].reduce((a,n)=>a+n,0)+'</span>'})+'<br><small>'+fmtL(__L('같은 펭귄 카드는 강화 재료(1장)와 돌파 포인트(1장 = {v}점)로 쓰여요'),{v:BRK.val[RAR[k]|0]})+'</small></div>';
-    const syn=SYN.filter(s=>s.link&&s.link.includes(k)).map(s=>s.name+' ('+s.desc+')');if(syn.length)h+=__L('<div class="cd-mats">케미: ')+syn.join(' · ')+'</div>';
+    h+=bondCardHtml(k);const syn=SYN.filter(s=>s.link&&s.link.includes(k)).map(s=>s.name+' ('+s.desc+')');if(syn.length)h+=__L('<div class="cd-mats">케미: ')+syn.join(' · ')+'</div>';
     h+=__L('<div class="row"><button class="btn primary" data-cd="enh">⬆ 강화·돌파</button><button class="btn" data-cd="close">닫기</button></div>');
   }else{
     const eff=typeRate(k);
@@ -5051,6 +5062,7 @@ if(IS_TOUCH)document.body.classList.add('touch');
 /* ---- pause ---- */
 function togglePause(){
   if(G.view!=='game'||G.state==='over')return;
+  if(G.net&&!G.paused){netLeaveAsk();return;}
   G.paused=!G.paused;resetInput();
   if(G.paused){show('sPause');SFX.crowd(0);SFX.slideLvl(0,0);SFX.windLvl(0);}else{hideAll();blurUI();}
 }
@@ -6494,7 +6506,7 @@ function castProps(p){
 }
 /* --- start a cast (called after the skill really fired) --- */
 function castStart(p){
-  const C=CAST[p.type];if(!C||!p.pg||G.view!=='game')return;
+  const C=CAST[p.type];if(!C||!p.pg||G.view!=='game')return;if(G.net==='host')netEv('c',{i:G.pengs.indexOf(p),w:(p.specMax||0)<=2.6?1:0});
   const whiff=(p.specMax||0)<=2.6;   // a whiffed flipper smash / royal pass with no puck: small version, no banner
   if(p.cast)sigEnd(p,p.cast);
   p.cast={k:p.type,t:0,dur:C.dur*(whiff?.6:1),hit:false,whiff,hx:p.x,hz:p.z,h:p.heading,to:G.royal&&G.royal.by===p?G.royal.to:null};
@@ -6781,7 +6793,7 @@ const CINE={full:2.5,quick:1.2,repeat:25,skipAfter:.4,
   Q:{band:.14,impact:.62,out:.92},     // quick version
   HIT:{strong:.6,defense:.5,galapagos:.45,african:.45,king:.4,yelloweye:.3,magellanic:.3}};
 function cineMode(){const m=save.set.cine;return m==='short'||m==='off'?m:'full';}
-function cineOk(p){return !!(p&&p.human&&G.view==='game'&&G.state==='play'&&!G.paused&&!save.set.motion&&cineMode()!=='off'&&G.cfg&&G.cfg.mode!=='demo'&&CAST[p.type]&&p.cast&&!p.cast.whiff);}
+function cineOk(p){return !!(p&&p.human&&!G.net&&G.view==='game'&&G.state==='play'&&!G.paused&&!save.set.motion&&cineMode()!=='off'&&G.cfg&&G.cfg.mode!=='demo'&&CAST[p.type]&&p.cast&&!p.cast.whiff);}
 // keep the cinematic camera inside the rink (rounded rectangle) so the boards never block the shot
 function cineInside(x,z,m){const ax=Math.abs(x),az=Math.abs(z);if(ax>W-m||az>D-m)return false;if(ax>W-CR&&az>D-CR)return Math.hypot(ax-(W-CR),az-(D-CR))<CR-m;return true;}
 function cineNear(p){const s=(p.pg&&p.pg.root.scale.x)||1,h=1.73*s,sc=(typeof SIGCAM!=='undefined'&&SIGCAM[p.type])||{},d=sc.d||1;   // penguin height ≈ 1.73 m × scale (measured in the browser)
@@ -7320,7 +7332,7 @@ function appInit(){
 }
 // ---- Android back button: close the top overlay → leave the screen → pause the match; on the home screen a second press within 2 s exits ----
 function appVis(e){if(!e)return false;const cs=getComputedStyle(e);return cs.display!=='none'&&cs.visibility!=='hidden'&&e.getClientRects().length>0;}   // not opacity: dialogs fade in
-const APP_OV=['#cfmDlg','#cardDlg','#enhFx','#packFx','#fuseFx','#devFx','#tutAsk','#vsFx'];
+const APP_OV=['#accDlg','#dlyDlg','#cfmDlg','#cardDlg','#enhFx','#packFx','#fuseFx','#devFx','#tutAsk','#vsFx'];
 const APP_OVBTN=['[data-cf="0"]','[data-ef="close"]','.cd-x','#pkOk','#fzOk','#devOk','#tutNo','#pkSkip','#fzSkip'];
 function appOverlay(){
   for(const id of APP_OV){const e=document.querySelector(id);if(e&&e.classList.contains('on')&&appVis(e))return e;}
@@ -7435,12 +7447,771 @@ function landZoom(asp){
   return 1+.15*Math.max(0,1-Math.abs(asp-1.3)/.3);
 }
 
+/* ================= v31: 👥 friend code 1v1 (online) ================= */
+// Two players on two devices. The host makes a 6-letter code, the friend types it in.
+//  · Firebase only signals: Auth REST (anonymous, or the Google account from v35) + Realtime Database REST / SSE.
+//  · The match goes peer to peer over a WebRTC data channel (STUN only). When the two networks cannot see each other
+//    (no TURN server), it falls back to relaying through the database: slower (≈10 updates/s) but still playable.
+//  · The host's device runs the match. The friend's device sends its stick and buttons (button presses as counters, so
+//    a lost packet never loses a press) and shows the host's snapshots, interpolated ~110 ms behind (~260 ms relayed).
+//  · 3 vs 3, 2 minutes, each player steers one penguin (auto switching as usual) with AI team-mates. No items, events,
+//    conditions, rules calls, skill cinematics or enhancement levels; both goalies the same type; not rated.
+const NET_V=1,NET_TIME=120,NET_AB='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const NET_BTN=['shootPress','shootRel','pass','dash','special','swap'];
+const NETCFG=(typeof window!=='undefined'&&window.PH_NETCFG)||null;
+
+// ---------- Firebase: auth (shared with the v35 account) and the realtime database ----------
+const FB={tok:'',uid:'',exp:0,ref:'',prov:'',email:'',name:'',busy:null};
+const FB_KEY='penguinHockey.auth';
+function fbOn(){return !!(NETCFG&&NETCFG.apiKey&&NETCFG.dbUrl);}
+function fbLoad(){
+  if(FB.ref)return;
+  try{const j=JSON.parse(localStorage.getItem(FB_KEY)||'null');if(j&&j.ref){FB.ref=j.ref;FB.uid=j.uid||'';FB.prov=j.prov||'anon';FB.email=j.email||'';FB.name=j.name||'';}}catch(e){}
+}
+function fbKeep(){try{if(FB.ref)localStorage.setItem(FB_KEY,JSON.stringify({uid:FB.uid,ref:FB.ref,prov:FB.prov,email:FB.email,name:FB.name}));else localStorage.removeItem(FB_KEY);}catch(e){}}
+async function fbJson(url,opt){
+  const r=await fetch(url,opt);let j=null;try{j=await r.json();}catch(e){}
+  if(!r.ok){const m=(j&&j.error&&(j.error.message||j.error))||('HTTP '+r.status);const er=new Error(String(m));er.status=r.status;throw er;}
+  return j;
+}
+function fbA(path){return (NETCFG.authBase||'https://identitytoolkit.googleapis.com/v1')+'/'+path+'?key='+encodeURIComponent(NETCFG.apiKey);}
+function fbSet(j,prov){
+  FB.tok=j.idToken||j.id_token||'';FB.uid=j.localId||j.user_id||FB.uid;FB.ref=j.refreshToken||j.refresh_token||FB.ref;
+  FB.exp=Date.now()+(Math.max(120,+(j.expiresIn||j.expires_in||3600))-60)*1000;if(prov)FB.prov=prov;fbKeep();
+}
+async function fbToken(){
+  if(!fbOn())throw new Error('nocfg');
+  if(FB.tok&&Date.now()<FB.exp)return FB.tok;
+  if(FB.busy)return FB.busy;
+  FB.busy=(async()=>{
+    fbLoad();
+    if(FB.ref){
+      try{const j=await fbJson((NETCFG.tokenBase||'https://securetoken.googleapis.com/v1')+'/token?key='+encodeURIComponent(NETCFG.apiKey),
+        {method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(FB.ref)});fbSet(j);return FB.tok;}
+      catch(e){if(e.status!==400)throw e;FB.ref='';FB.uid='';FB.prov='';FB.email='';FB.name='';}   // the account is gone: start over anonymously
+    }
+    const j=await fbJson(fbA('accounts:signUp'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({returnSecureToken:true})});
+    FB.email='';FB.name='';fbSet(j,'anon');return FB.tok;
+  })();
+  try{return await FB.busy;}finally{FB.busy=null;}
+}
+function dbU(path,tok){return NETCFG.dbUrl.replace(/\/+$/,'')+'/'+path+'.json?auth='+encodeURIComponent(tok)+(NETCFG.ns?'&ns='+encodeURIComponent(NETCFG.ns):'');}
+async function dbReq(method,path,body){
+  const t=await fbToken();
+  return fbJson(dbU(path,t),{method,headers:body===undefined?undefined:{'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
+}
+async function dbListen(path,cb){
+  const t=await fbToken(),es=new EventSource(dbU(path,t));
+  const h=e=>{try{const d=JSON.parse(e.data);if(d)cb(e.type,d.path,d.data);}catch(x){}};
+  es.addEventListener('put',h);es.addEventListener('patch',h);
+  es.addEventListener('cancel',()=>cb('cancel'));es.addEventListener('auth_revoked',()=>cb('cancel'));
+  return es;
+}
+
+// ---------- connection ----------
+const NET={st:'idle',role:'',code:'',msg:'',pc:null,rel:null,un:null,es:null,relay:false,peer:null,lastRx:0,lastTx:0,
+  rin:{x:0,z:0,ax:0,az:0,sh:0,c:[0,0,0,0,0,0]},vin:{},rseen:[0,0,0,0,0,0],cnt:[0,0,0,0,0,0],snaps:[],off:null,timer:null,
+  rp:null,swCd:0,seen:{},rt:{},rbusy:{},pkSp:0,gen:0,applied:0};
+function netInfo(){
+  const mt=['balanced','defense','fast','basic'];
+  return {v:NET_V,ty:[0,1,2].map(i=>i===0?save.type:(save.squad[i-1]||mt[(i-1)%mt.length])),n:String((save.profile&&save.profile.name)||'').slice(0,16)};
+}
+function netCodeGen(){let s='';const a=new Uint32Array(6);crypto.getRandomValues(a);for(const x of a)s+=NET_AB[x%NET_AB.length];return s;}
+function netSet(st,msg){NET.st=st;NET.msg=msg||'';if(G.ui==='sFriend')frRender();}
+function netReset(){
+  netShut(false);
+  Object.assign(NET,{st:'idle',role:'',code:'',msg:'',relay:false,peer:null,lastRx:0,lastTx:0,rin:{x:0,z:0,ax:0,az:0,sh:0,c:[0,0,0,0,0,0]},vin:{},
+    rseen:[0,0,0,0,0,0],cnt:[0,0,0,0,0,0],snaps:[],off:null,rp:null,swCd:0,seen:{},rt:{},rbusy:{},pkSp:0,applied:0});
+  NET.gen++;
+}
+function netShut(del){
+  clearTimeout(NET.timer);
+  try{if(NET.es)NET.es.close();}catch(e){}
+  try{if(NET.rel)NET.rel.close();}catch(e){}try{if(NET.un)NET.un.close();}catch(e){}try{if(NET.pc)NET.pc.close();}catch(e){}
+  if(del&&NET.role==='host'&&NET.code)dbReq('DELETE','rooms/'+NET.code).catch(()=>{});
+  NET.es=NET.rel=NET.un=NET.pc=null;
+}
+function netClose(){if(NET.st==='idle'&&!NET.code)return;const was=NET.st;if(was==='play'||was==='wait'||was==='conn'||was==='making')netSendRel({k:'bye'});netShut(true);NET.st='idle';NET.code='';NET.msg='';if(G.ui==='sFriend')frRender();}
+function netErrMsg(e){
+  const m=String(e&&e.message||e);
+  if(m==='nocfg')return __L(__L('친구 대전 서버가 아직 연결되지 않았어요'));
+  if(m==='nf')return __L(__L('그 코드의 방을 찾을 수 없어요. 코드를 다시 확인해 주세요'));
+  if(m==='full')return __L(__L('이미 다른 친구가 들어간 방이에요'));
+  if(m==='ver')return __L(__L('게임 버전이 서로 달라요. 둘 다 최신 버전으로 업데이트해 주세요'));
+  if(m==='self')return __L(__L('내가 만든 방에는 같은 기기로 들어갈 수 없어요'));
+  if(m==='code')return __L(__L('방 코드를 만들지 못했어요. 잠시 후 다시 해 주세요'));
+  if(m==='gone')return __L(__L('방이 닫혔어요'));
+  if(m==='timeout')return __L(__L('친구와 연결하지 못했어요. 잠시 후 다시 해 주세요'));
+  return __L(__L('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요'));
+}
+function netFail(e){netShut(NET.role==='host');netSet('err',netErrMsg(e));}
+
+async function netHost(){
+  netReset();NET.role='host';const gen=NET.gen;netSet('making',__L(__L('방을 만드는 중…')));
+  try{
+    await fbToken();let code='';
+    for(let i=0;i<6&&!code;i++){const c=netCodeGen(),r=await dbReq('GET','rooms/'+c);if(!r||!r.t||r.t<Date.now()-3600000)code=c;}
+    if(!code)throw new Error('code');
+    await dbReq('PUT','rooms/'+code,{host:FB.uid,t:{'.sv':'timestamp'},v:NET_V,hi:netInfo()});
+    if(gen!==NET.gen)return;
+    NET.code=code;netSet('wait');
+    NET.es=await dbListen('rooms/'+code,(ev,path,data)=>{if(gen===NET.gen)netDb(ev,path,data);});
+  }catch(e){if(gen===NET.gen)netFail(e);}
+}
+async function netJoin(code){
+  code=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!/^[A-Z2-9]{6}$/.test(code)){netSet('err',__L(__L('코드는 6자리 영문·숫자예요')));return;}
+  netReset();NET.role='guest';NET.code=code;const gen=NET.gen;netSet('conn',__L(__L('방을 찾는 중…')));
+  try{
+    await fbToken();const r=await dbReq('GET','rooms/'+code);
+    if(!r||!r.host||!r.t||r.t<Date.now()-3600000)throw new Error('nf');
+    if(r.host===FB.uid)throw new Error('self');
+    if(r.guest&&r.guest!==FB.uid)throw new Error('full');
+    if(r.v!==NET_V)throw new Error('ver');
+    NET.peer=r.hi||null;
+    await dbReq('PUT','rooms/'+code+'/guest',FB.uid);await dbReq('PUT','rooms/'+code+'/guestInfo',netInfo());
+    if(gen!==NET.gen)return;
+    netSet('conn',__L(__L('친구와 연결하는 중…')));
+    NET.es=await dbListen('rooms/'+code,(ev,path,data)=>{if(gen===NET.gen)netDb(ev,path,data);});
+    NET.timer=setTimeout(()=>{if(gen===NET.gen&&NET.st==='conn')netFail(new Error('timeout'));},30000);
+  }catch(e){if(gen===NET.gen)netFail(e);}
+}
+// database stream: a put / patch at the room root or below one top-level key
+function netDb(ev,path,data){
+  if(ev==='cancel')return;
+  const parts=String(path||'/').split('/').filter(Boolean);
+  if(!parts.length){
+    if(data===null&&ev==='put'){if(NET.st!=='play')netFail(new Error('gone'));return;}
+    for(const k of Object.keys(data||{}))netDbKey(k,data[k],null);
+    return;
+  }
+  netDbKey(parts[0],data,parts.length>1?parts.slice(1):null);
+}
+function netDbKey(k,v,sub){
+  const host=NET.role==='host';
+  if(host&&k==='guestInfo'&&v&&!NET.pc&&NET.st==='wait'){
+    if(v.v!==NET_V)return;
+    NET.peer=v;netSet('conn',__L(__L('친구가 들어왔어요! 연결하는 중…')));
+    if(NETCFG.forceRelay){netRelayOn();return;}   // tests: behave as if no peer-to-peer path exists
+    netOffer().catch(e=>netFail(e));return;
+  }
+  if(host&&k==='answer'&&v&&v.sdp&&NET.pc&&!NET.pc.remoteDescription){NET.pc.setRemoteDescription({type:'answer',sdp:v.sdp}).catch(()=>{});return;}
+  if(!host&&k==='offer'&&v&&v.sdp&&!NET.pc){netAnswer(v.sdp).catch(e=>netFail(e));return;}
+  // relayed messages (used when the data channel cannot open); receiving one means the other side relays: relay back
+  if(!host&&k==='hs'&&v&&!sub){NET.relay=true;netOnMsg(Object.assign({},v,{k:'s'}));return;}
+  if(host&&k==='gi'&&v&&!sub){NET.relay=true;netOnMsg(Object.assign({},v,{k:'i'}));return;}
+  if((!host&&k==='he')||(host&&k==='ge')){NET.relay=true;
+    if(sub){const id=sub[0];if(sub.length===1&&v&&!NET.seen[id]){NET.seen[id]=1;netOnMsg(v);}}
+    else if(v)for(const id of Object.keys(v).sort())if(!NET.seen[id]){NET.seen[id]=1;netOnMsg(v[id]);}
+  }
+}
+function netPC(){
+  const ice=NETCFG.ice!==undefined?NETCFG.ice:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}];
+  const pc=new RTCPeerConnection({iceServers:ice});NET.pc=pc;
+  pc.onconnectionstatechange=()=>{if((pc.connectionState==='failed'||pc.connectionState==='disconnected')&&NET.pc===pc)netRelayOn();};
+  return pc;
+}
+function netIce(pc,ms){return new Promise(res=>{if(pc.iceGatheringState==='complete')return res();const t=setTimeout(res,ms);
+  pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);res();}});});}
+function netChan(ch){
+  ch.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch(x){return;}netOnMsg(m);};
+  ch.onopen=()=>{if(netOpen()&&NET.st==='conn'){clearTimeout(NET.timer);netReady();}};
+}
+function netOpen(){return !!(NET.rel&&NET.rel.readyState==='open');}
+function netUnOpen(){return !!(NET.un&&NET.un.readyState==='open');}
+async function netOffer(){
+  const gen=NET.gen,pc=netPC();
+  NET.rel=pc.createDataChannel('r',{ordered:true});NET.un=pc.createDataChannel('u',{ordered:false,maxRetransmits:0});netChan(NET.rel);netChan(NET.un);
+  await pc.setLocalDescription(await pc.createOffer());await netIce(pc,2500);
+  if(gen!==NET.gen)return;
+  await dbReq('PUT','rooms/'+NET.code+'/offer',{sdp:pc.localDescription.sdp});
+  NET.timer=setTimeout(()=>{if(gen===NET.gen&&!netOpen())netRelayOn();},12000);
+}
+async function netAnswer(sdp){
+  const gen=NET.gen,pc=netPC();
+  pc.ondatachannel=e=>{const ch=e.channel;if(ch.label==='r')NET.rel=ch;else NET.un=ch;netChan(ch);};
+  await pc.setRemoteDescription({type:'offer',sdp});await pc.setLocalDescription(await pc.createAnswer());await netIce(pc,2500);
+  if(gen!==NET.gen)return;
+  await dbReq('PUT','rooms/'+NET.code+'/answer',{sdp:pc.localDescription.sdp});
+  clearTimeout(NET.timer);NET.timer=setTimeout(()=>{if(gen===NET.gen&&!netOpen())netRelayOn();},12000);
+}
+// no peer-to-peer path: relay through the database
+function netRelayOn(){
+  if(NET.relay)return;NET.relay=true;clearTimeout(NET.timer);
+  if(NET.st==='conn')netReady();
+}
+function netReady(){
+  NET.lastRx=performance.now();
+  if(NET.role==='host'){netSendRel({k:'start',ty:netInfo().ty,n:netInfo().n});netBegin(NET.peer.ty);}
+  else{netSet('conn',__L(__L('경기를 준비하는 중…')));clearTimeout(NET.timer);NET.timer=setTimeout(()=>{if(NET.st==='conn')netFail(new Error('timeout'));},15000);}
+}
+function netSendU(m){
+  const s=JSON.stringify(m);
+  if(netUnOpen()){try{NET.un.send(s);return;}catch(e){}}
+  if(netOpen()){try{NET.rel.send(s);return;}catch(e){}}
+  if(!NET.relay)return;
+  const key=m.k==='s'?'hs':'gi',now=performance.now();if(now-(NET.rt[key]||0)<100||NET.rbusy[key])return;
+  NET.rt[key]=now;NET.rbusy[key]=true;const o=Object.assign({},m);delete o.k;o.q=Math.round(now);   // the database only notifies on a change: always change
+  dbReq('PUT','rooms/'+NET.code+'/'+key,o).catch(()=>{}).finally(()=>{NET.rbusy[key]=false;});
+}
+function netSendRel(m){
+  if(netOpen()){try{NET.rel.send(JSON.stringify(m));return;}catch(e){}}
+  if(!NET.code)return;
+  if(NET.relay||m.k==='bye')dbReq('POST','rooms/'+NET.code+'/'+(NET.role==='host'?'he':'ge'),m).catch(()=>{});
+}
+function netOnMsg(m){
+  if(!m||!m.k)return;NET.lastRx=performance.now();
+  const host=NET.role==='host';
+  if(m.k==='start'&&!host){if(NET.st!=='play'){clearTimeout(NET.timer);if(m.n&&NET.peer)NET.peer.n=m.n;netBegin(m.ty);}return;}
+  if(m.k==='i'&&host){NET.rin=m;return;}
+  if(m.k==='s'&&!host){
+    if(m.ht<=NET.applied)return;   // older than what is on screen
+    const o=NET.lastRx-m.ht;NET.off=NET.off===null?o:Math.min(o,NET.off+.5);
+    const S=NET.snaps;let i=S.length;while(i>0&&S[i-1].ht>m.ht)i--;if(!(i>0&&S[i-1].ht===m.ht))S.splice(i,0,m);if(S.length>48)S.shift();
+    return;
+  }
+  if(m.k==='e'&&!host){netGuestEv(m);return;}
+  if(m.k==='bye'){netPeerLeft();return;}
+}
+
+// ---------- the match ----------
+function netBegin(peerTy){
+  const host=NET.role==='host',mt=['balanced','defense','fast','basic'];
+  const ty=Array.isArray(peerTy)?peerTy.slice(0,3).map((k,i)=>TYPES[k]?k:mt[i]):['basic','fast','strong'];
+  NET.st='play';NET.snaps=[];NET.off=null;NET.applied=0;NET.rseen=[0,0,0,0,0,0];NET.cnt=[0,0,0,0,0,0];NET.rin={x:0,z:0,ax:0,az:0,sh:0,c:[0,0,0,0,0,0]};NET.vin={};
+  NET.lastRx=performance.now();NET.lastTx=0;
+  const nm=NET.peer&&NET.peer.n?' vs '+NET.peer.n:'';
+  startMatch({mode:'friend',size:3,time:NET_TIME,diff:'normal',tag:'👥 '+__L(__L('친구 대전'))+nm,net:NET.role,netTeam:host?'blue':'red',flat:true,oppTypes:ty});
+  if(host){const r=G.teams.red.skaters[0];if(r)netSetRemote(r);}
+}
+function netSetRemote(q){if(NET.rp)NET.rp.remote=false;NET.rp=q||null;if(q){q.remote=true;q.charging=false;q.charge=0;}}
+function remoteControl(p,dt){
+  const R=NET.rin,v=NET.vin;v.x=clamp(+R.x||0,-1,1);v.z=clamp(+R.z||0,-1,1);v.shoot=!!R.sh;
+  const c=Array.isArray(R.c)?R.c:[];
+  for(let i=0;i<6;i++){const n=c[i]|0;if(n>NET.rseen[i]){NET.rseen[i]=n;v[NET_BTN[i]]=true;}}
+  p.raim=(R.ax||R.az)?[+R.ax,+R.az]:null;
+  humanControl(p,dt,v);
+}
+function netAutoSwitch(dt){
+  const tm=G.teams.red,cur=NET.rp;if(!tm||!cur||G.so||G.ps)return;
+  if(G.carry&&G.carry.team===tm&&G.carry!==cur&&!G.carry.goalie){netSetRemote(G.carry);NET.swCd=.6;return;}
+  NET.swCd-=dt;if(NET.swCd>0)return;
+  const pk=G.puck,dc=Math.hypot(pk.x-cur.x,pk.z-cur.z);if(dc<5&&cur.fall<=0)return;
+  let best=null,bd=1e9;for(const s of tm.skaters){if(s===cur||s.fall>0||s.frozen)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
+  if(best&&dc-bd>3.5){netSetRemote(best);NET.swCd=1;}
+}
+function netSwapNearest(p){
+  const tm=p.team,pk=G.puck;let best=null,bd=1e9;
+  for(const s of tm.skaters){if(s===p||s.fall>0||s.frozen)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
+  if(best){netSetRemote(best);NET.swCd=.8;}
+}
+const netR2=x=>Math.round((+x||0)*100)/100;
+function netSnap(){
+  const P=G.pengs.map(p=>[netR2(p.x),netR2(p.z),netR2(p.vx),netR2(p.vz),netR2(p.heading),p.pose||'play',netR2(p.fall),p.charging?netR2(p.charge):-1,
+    (p.boxed?1:0)|(p.frozen?2:0)|(p.dashT>0?4:0)|(p.slideT>0?8:0)|(p.diveT>0?16:0),netR2(p.cd.special),netR2(p.specMax)]);
+  const pk=G.puck;
+  return {k:'s',ht:Math.round(performance.now()),st:G.state,sT:netR2(G.stateT),tl:netR2(G.timeLeft),ot:G.ot?1:0,ol:netR2(G.otLeft),
+    sc:[G.teams.blue.score,G.teams.red.score],rp:NET.rp?G.pengs.indexOf(NET.rp):-1,cr:G.carry?G.pengs.indexOf(G.carry):-1,
+    pk:[netR2(pk.x),netR2(pk.z),netR2(pk.vx),netR2(pk.vz)],P};
+}
+function netEv(e,o){if(G.net!=='host'||NET.st!=='play')return;netSendRel(Object.assign({k:'e',e},o||{}));}
+// the friend's device: show the host's world
+function netGuestApply(){
+  const S=NET.snaps;if(!S.length)return;
+  const tgt=performance.now()-(NET.off||0)-(NET.relay&&!netUnOpen()?260:110);
+  let a=S[0],b=S[0];
+  for(let i=S.length-1;i>=0;i--)if(S[i].ht<=tgt){a=S[i];b=S[i+1]||S[i];break;}
+  const f=b===a?0:clamp((tgt-a.ht)/((b.ht-a.ht)||1),0,1);NET.applied=Math.max(NET.applied,a.ht-1);
+  while(S.length>3&&S[1].ht<tgt-400)S.shift();
+  for(let i=0;i<G.pengs.length;i++){
+    const p=G.pengs[i],A=a.P[i],B=b.P[i];if(!A||!B)continue;
+    const x=A[0]+(B[0]-A[0])*f,z=A[1]+(B[1]-A[1])*f;p.x=p.ox=p.rx=x;p.z=p.oz=p.rz=z;p.vx=B[2];p.vz=B[3];
+    p.heading=A[4]+angDiff(A[4],B[4])*f;p.pose=B[5];p.fall=B[6];p.charging=B[7]>=0;p.charge=Math.max(0,B[7]);
+    const fl=B[8];p.boxed=!!(fl&1);p.frozen=!!(fl&2);p.dashT=fl&4?.2:0;p.slideT=fl&8?.2:0;p.diveT=fl&16?.2:0;p.cd.special=B[9];p.specMax=B[10];
+  }
+  const pk=G.puck;pk.x=pk.ox=pk.rx=a.pk[0]+(b.pk[0]-a.pk[0])*f;pk.z=pk.oz=pk.rz=a.pk[1]+(b.pk[1]-a.pk[1])*f;pk.vx=b.pk[2];pk.vz=b.pk[3];
+  const sp=Math.hypot(pk.vx,pk.vz);if(sp>NET.pkSp+11&&sp>14)SFX.shot(Math.min(1,sp/40));NET.pkSp=sp;
+  G.carry=b.cr>=0?G.pengs[b.cr]||null:null;G.alpha=1;
+  const L=S[S.length-1];   // clock, score and state from the newest snapshot
+  G.timeLeft=L.tl;G.ot=!!L.ot;G.otLeft=L.ol;
+  if(G.teams.blue.score!==L.sc[0]||G.teams.red.score!==L.sc[1]){G.teams.blue.score=L.sc[0];G.teams.red.score=L.sc[1];updateScoreHud();}
+  if(L.rp>=0&&G.pengs[L.rp]&&G.player!==G.pengs[L.rp])setHuman(G.pengs[L.rp]);
+  if(L.st==='over'){if(!G.result)endMatch();}
+  else if(G.state!=='over'){
+    if(L.st==='ready'&&G.state!=='ready'){G.state='ready';G.countN=4;}
+    if(L.st==='play'&&G.state==='ready'){G.state='play';$('#count').textContent='GO!';SFX.beep(true);SFX.whistle();setTimeout(()=>{const c=$('#count');if(c.textContent==='GO!')c.textContent='';},700);}
+    else G.state=L.st;
+    G.stateT=L.sT;
+  }
+}
+function netGuestEv(m){
+  if(G.net!=='guest')return;
+  if(m.e==='g'){   // goal
+    const tm=G.teams[m.t];if(!tm)return;
+    if(Array.isArray(m.s)){G.teams.blue.score=m.s[0];G.teams.red.score=m.s[1];updateScoreHud();}
+    for(const p of G.pengs){p.pose=p.team===tm?'cheer':'sad';p.cheerKind=(Math.random()*3)|0;}
+    try{hypeGoal(tm,null);}catch(e){}
+    const gx=tm.dir*W;for(let i=0;i<60;i++){const c=[[1,.9,.3],[.4,.8,1],[1,.5,.7],[.6,1,.7]][i%4];emit(gx,rnd(1,3),rnd(-GW,GW),rnd(-6,6),rnd(3,9),rnd(-6,6),rnd(1,1.8),rnd(.25,.5),c[0],c[1],c[2]);}
+  }else if(m.e==='c'){   // a skill
+    const p=G.pengs[m.i];if(!p)return;p.specMax=m.w?2:9;try{castStart(p);}catch(e){}SFX.whoosh();
+  }
+}
+function netGuestInput(now){
+  for(let i=0;i<6;i++){const k=NET_BTN[i];if(input[k]){input[k]=false;NET.cnt[i]++;NET.lastTx=0;}}
+  const iv=NET.relay&&!netUnOpen()?100:45;if(now-NET.lastTx<iv)return;NET.lastTx=now;
+  let ax=0,az=0;const p=G.player;
+  if(p&&!IS_TOUCH&&G.mouse.active&&now-G.mouse.t<3000){const dx=G.mouse.wx-p.x,dz=G.mouse.wz-p.z,l=Math.hypot(dx,dz);if(l>1.1){ax=netR2(dx/l);az=netR2(dz/l);}}
+  netSendU({k:'i',x:netR2(input.x),z:netR2(input.z),ax,az,sh:input.shoot?1:0,c:NET.cnt.slice()});
+}
+function netFrame(){
+  if(!G.net||G.view!=='game'||NET.st!=='play')return;
+  const now=performance.now();
+  if(now-NET.lastRx>8000){netLost();return;}
+  if(G.net==='host'){const iv=NET.relay&&!netUnOpen()?100:50;if(now-NET.lastTx>=iv){NET.lastTx=now;netSendU(netSnap());}}
+  else netGuestInput(now);
+}
+function netPeerLeft(){
+  if(NET.st!=='play'){if(NET.st==='wait'||NET.st==='conn')netFail(new Error('gone'));return;}
+  NET.st='done';
+  if(G.view==='game'&&G.state!=='over'&&!G.result)endMatch();
+  showBanner(__L(__L('친구가 대전을 떠났어요')),2600,'g');
+  netShut(true);
+}
+function netLost(){
+  NET.st='done';
+  if(G.view==='game'&&G.state!=='over'&&!G.result)endMatch();
+  showBanner(__L(__L('연결이 끊겼어요')),2600,'g');
+  netShut(true);
+}
+async function netLeaveAsk(){
+  const ok=await askConfirm(__L(__L('친구 대전을 나갈까요?')),'<p>'+__L(__L('나가면 이 경기는 지금 점수로 끝나요.'))+'</p>',__L(__L('나가기')));
+  if(!ok)return;
+  netSendRel({k:'bye'});NET.st='done';netShut(NET.role==='host');G.net='';toMenu();
+}
+
+// ---------- the 친구 대전 screen ----------
+function frRender(){
+  const el=document.getElementById('frBody');if(!el)return;let h='';
+  if(!fbOn())h='<div class="fr-msg">'+__L(__L('친구 대전 서버가 아직 연결되지 않았어요'))+'</div><div class="fr-note">'+__L(__L('곧 열릴 예정이에요!'))+'</div>';
+  else if(NET.st==='idle'||NET.st==='err'||NET.st==='done'){
+    h=(NET.st==='err'?'<div class="fr-err">'+escH(NET.msg)+'</div>':'')
+      +'<button class="btn primary fr-big" id="frHost">🏠 '+__L(__L('방 만들기'))+'</button>'
+      +'<div class="fr-or">'+__L(__L('또는 친구의 코드 입력'))+'</div>'
+      +'<div class="fr-join"><input id="frCode" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC234" aria-label="'+__L(__L('친구 코드'))+'">'
+      +'<button class="btn primary" id="frJoin">'+__L(__L('참가'))+'</button></div>'
+      +'<div class="fr-note">'+fmtL(__L('3대3 · {m}분 · 각자 펭귄 1마리를 조종하고 나머지는 AI 팀원 · 아이템·강화 없이 같은 조건 · 티어 점수에는 반영되지 않아요'),{m:NET_TIME/60})+'</div>';
+  }else if(NET.st==='wait'){
+    h='<div class="fr-lbl">'+__L(__L('친구에게 이 코드를 알려 주세요'))+'</div><div class="fr-code" id="frCodeShow">'+NET.code+'</div>'
+      +'<button class="btn small" id="frCopy">📋 '+__L(__L('코드 복사'))+'</button><div class="fr-wait"><i class="fr-dot"></i>'+__L(__L('친구를 기다리는 중…'))+'</div>'
+      +'<button class="btn small" id="frCancel">'+__L(__L('취소'))+'</button>';
+  }else h='<div class="fr-wait"><i class="fr-dot"></i>'+escH(NET.msg||__L(__L('연결하는 중…')))+'</div><button class="btn small" id="frCancel">'+__L(__L('취소'))+'</button>';
+  el.innerHTML=h;
+  const on=(id,f)=>{const b=document.getElementById(id);if(b)b.onclick=()=>{SFX.ui();f();};};
+  on('frHost',()=>netHost());
+  on('frJoin',()=>netJoin(document.getElementById('frCode').value));
+  on('frCancel',()=>{netClose();netSet('idle');});
+  on('frCopy',()=>{const c=NET.code;try{(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(()=>flashMsg(__L(__L('코드를 복사했어요'))),()=>flashMsg(c));}catch(e){flashMsg(c);}});
+  const inp=document.getElementById('frCode');
+  if(inp){inp.addEventListener('input',()=>{const v=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);if(v!==inp.value)inp.value=v;});
+    inp.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')netJoin(inp.value);});}
+}
+
+/* ================= v32: 💙 penguin growth stories ================= */
+// Every finished match with a penguin as your own player (save.type) builds your bond with that species.
+// At 3 / 10 / 25 / 50 matches a new chapter of its story opens (+50 / 100 / 200 / 400 points); the 4th gives it a
+// nickname shown on its card. The result screen shows the progress and any chapter that just opened; the card shows
+// every chapter (locked ones say how many matches are left).
+const BOND_LV=[3,10,25,50],BOND_PTS=[50,100,200,400];
+const BOND_TXT={
+  basic:[__L('처음 링크에 선 날, 아델리는 퍽보다 자기 발이 더 빨라서 넘어졌어요.'),__L('이제 아이스 대시로 수비 사이를 빠져나가는 법을 알아요.'),__L('동네 꼬마 펭귄들이 아델리처럼 달리겠다며 얼음판에 줄을 섰어요.'),__L('평범해서 더 강한 펭귄. 누구와 함께여도 해내요.'),__L('얼음판의 기본기')],
+  fast:[__L('젠투는 연습 첫날부터 배로 미끄러지는 게 제일 신났어요.'),__L('펭귄 슬라이드로 퍽을 낚아채자 관중이 처음으로 이름을 불렀어요.'),__L('너무 빨라서 그림자가 늦게 따라온다는 소문이 돌아요.'),__L('이제 링크에서 가장 빠른 줄무늬 꼬리예요.'),__L('번개 썰매')],
+  strong:[__L('황제는 처음엔 퍽을 너무 세게 쳐서 펜스만 흔들었어요.'),__L('힘을 모으는 법을 배우자 플리퍼 슛이 골망을 갈랐어요.'),__L('상대 골키퍼가 황제 앞에서는 장갑을 두 번 낀대요.'),__L('남극에서 가장 묵직한 한 방의 주인이에요.'),__L('남극의 대포')],
+  defense:[__L('턱끈은 말수가 적지만 골문 앞은 절대 비우지 않아요.'),__L('아이스 브레이크로 얼음을 깨자 상대 공격이 멈춰 섰어요.'),__L('팀원들은 턱끈 뒤에 서면 마음이 놓인대요.'),__L('턱끈이 지키는 골문 앞은 바람도 못 지나가요.'),__L('얼음 성벽')],
+  balanced:[__L('바위뛰기는 링크에서도 자꾸 깡충깡충 뛰어서 혼났어요.'),__L('그 점프 덕분에 넘어지는 일이 거의 없어졌어요.'),__L('노란 눈썹을 휘날리며 달리는 모습이 하이라이트에 자주 나와요.'),__L('어느 자리에서도 균형을 잃지 않는 만능 선수예요.'),__L('깡충 만능꾼')],
+  king:[__L('임금 펭귄은 경기 전에 트럼펫을 불어야 마음이 차분해져요.'),__L('트럼펫 소리에 팀 전체가 한꺼번에 힘을 냈어요.'),__L('관중석이 임금의 곡조를 따라 부르기 시작했어요.'),__L('링크의 왕이 연주를 시작하면 경기가 뒤집혀요.'),__L('링크의 지휘자')],
+  macaroni:[__L('마카로니는 머리깃이 흐트러지면 경기에 집중을 못 했어요.'),__L('볏을 세우는 순간 상대가 움찔하는 걸 알게 됐어요.'),__L('경기 전 머리깃 손질은 이제 팀의 행운 의식이에요.'),__L('노란 볏이 빛나면 골이 들어간다는 전설이 생겼어요.'),__L('황금 볏')],
+  royal:[__L('로열은 혼자 골을 넣는 것보다 패스하는 게 더 좋았어요.'),__L('로열 패스가 동료 발끝에 딱 닿자 모두가 활짝 웃었어요.'),__L('로열이 고개만 들어도 팀원들이 빈 곳으로 달려가요.'),__L('보지 않고도 동료를 찾아내는 링크의 설계자예요.'),__L('왕실 플레이메이커')],
+  fiordland:[__L('피오르드랜드는 숲속 안개처럼 조용히 다가가는 걸 좋아해요.'),__L('그림자처럼 사라졌다 나타나 퍽을 빼앗았어요.'),__L('상대 선수들은 경기 내내 자꾸 뒤를 돌아보게 됐어요.'),__L('안개가 걷히면 이미 골이 들어가 있어요.'),__L('안개 속 그림자')],
+  yelloweye:[__L('노란눈은 멀리 있는 퍽도 제일 먼저 찾아냈어요.'),__L('날카로운 눈으로 골키퍼의 빈틈을 꿰뚫었어요.'),__L('노란눈이 노려보면 상대 수비가 한 걸음 물러서요.'),__L('단 한 번의 틈도 놓치지 않는 빙판의 매예요.'),__L('빙판의 매')],
+  little:[__L('쇠푸른은 너무 작아서 처음엔 퍽보다 조금 큰 정도였어요.'),__L('폴짝 뛰어 태클을 피하자 모두가 깜짝 놀랐어요.'),__L('작은 몸으로 큰 펭귄들 사이를 누비는 게 특기가 됐어요.'),__L('키는 작아도 심장은 링크에서 가장 커요.'),__L('작은 거인')],
+  african:[__L('아프리카 펭귄은 당나귀 같은 울음소리 때문에 놀림을 받았어요.'),__L('그 울음소리에 상대가 흔들리자 다들 따라 하고 싶어 했어요.'),__L('이제 관중이 아프리카의 울음소리를 응원가로 불러요.'),__L('따뜻한 바다에서 온 링크의 함성이에요.'),__L('남쪽 바다의 함성')],
+  humboldt:[__L('훔볼트는 차가운 해류를 타던 때를 떠올리며 스케이트를 배웠어요.'),__L('해류처럼 동료들을 앞으로 밀어 주는 법을 익혔어요.'),__L('훔볼트가 흐름을 만들면 팀 전체가 빨라져요.'),__L('경기의 흐름을 바꾸는 조용한 물결이에요.'),__L('흐름의 주인')],
+  magellanic:[__L('마젤란은 한 번 달리고 나면 꼭 한 번 더 달리고 싶었어요.'),__L('두 번 연속 대시로 수비를 두 겹이나 뚫었어요.'),__L('상대가 막았다고 생각하는 순간 마젤란은 한 번 더 가요.'),__L('멈추지 않는 탐험가의 발걸음이에요.'),__L('두 번의 돌풍')],
+  galapagos:[__L('갈라파고스는 추운 링크가 처음이라 덜덜 떨었어요.'),__L('적도의 햇살을 터뜨리자 얼음판이 반짝반짝 빛났어요.'),__L('갈라파고스가 웃으면 경기장이 따뜻해진대요.'),__L('가장 먼 곳에서 온 가장 밝은 선수예요.'),__L('적도의 햇살')],
+  auk:[__L('큰바다쇠오리는 오래전 바다의 이야기를 품고 링크에 왔어요.'),__L('큰바다 돌진으로 파도처럼 상대를 밀어냈어요.'),__L('어린 펭귄들이 옛 바다 이야기를 들으러 모여들어요.'),__L('사라졌던 바다의 전설이 링크에서 다시 살아났어요.'),__L('돌아온 바다의 전설')]
+};
+// Korean particles after a name: 와/과 and 을/를 depend on whether the last syllable ends in a consonant
+function bondJ(s){const F=String.fromCharCode,fin=c=>{const n=c.charCodeAt(0)-0xAC00;return n>=0&&n<11172&&n%28!==0;};
+  const WA=F(0xC640),GWA=F(0xACFC),UI=F(0xC758),EUL=F(0xC744),REUL=F(0xB97C);   // 와 과 의 을 를 (built from codes: not UI text)
+  return String(s).replace(new RegExp('([\\uAC00-\\uD7A3])'+WA+UI,'g'),(m,c)=>c+(fin(c)?GWA:WA)+UI)
+    .replace(new RegExp('([\\uAC00-\\uD7A3])\u300D'+EUL,'g'),(m,c)=>c+'\u300D'+(fin(c)?EUL:REUL));}
+function bondOf(k){const b=save.bond[k];return b||{g:0,w:0,gl:0,lv:0};}
+function bondLvFor(g){let l=0;for(const n of BOND_LV)if(g>=n)l++;return l;}
+function bondNick(k){const b=bondOf(k),t=BOND_TXT[k];return b.lv>=4&&t?t[4]:'';}
+// one finished match with species k: returns what changed (for the result row)
+function bondAdd(k,win,goals){
+  if(!TYPES[k]||!BOND_TXT[k])return null;
+  const b=save.bond[k]||(save.bond[k]={g:0,w:0,gl:0,lv:0});
+  b.g++;if(win)b.w++;b.gl+=Math.max(0,goals|0);
+  const to=bondLvFor(b.g),out={k,g:b.g,from:b.lv,to,pts:0};
+  while(b.lv<to){out.pts+=BOND_PTS[b.lv];b.lv++;}
+  if(out.pts)save.points+=out.pts;
+  return out;
+}
+function bondRowHtml(R){
+  const B=R&&R.bond;if(!B)return '';
+  const t=TYPES[B.k],nm=t.name,next=BOND_LV[B.to];
+  let h='<div class="bd-row"><span class="bd-ic">💙</span><span>'+bondJ(fmtL(__L('{n}와의 이야기 {l}/4'),{n:nm,l:B.to}))
+    +(next?' · '+fmtL(__L('다음 이야기까지 {m}경기'),{m:next-B.g}):' · '+__L(__L('모든 이야기를 열었어요')))+'</span></div>';
+  if(B.to>B.from){
+    for(let l=B.from;l<B.to;l++)h+='<div class="bd-new"><b>📖 '+fmtL(__L('{n} 이야기 {l}'),{n:nm,l:l+1})+'</b><p>'+BOND_TXT[B.k][l]+'</p><small>+'+BOND_PTS[l]+'P</small>'
+      +(l===3?'<div class="bd-nick">'+bondJ(fmtL(__L('별명 「{s}」을 얻었어요!'),{s:BOND_TXT[B.k][4]}))+'</div>':'')+'</div>';
+  }
+  return h;
+}
+function bondCardHtml(k){
+  const t=BOND_TXT[k];if(!t)return '';const b=bondOf(k);
+  let h='<div class="bd-card"><div class="bd-h">💙 '+bondJ(fmtL(__L('{n}와의 이야기'),{n:TYPES[k].name}))+' <small>'+fmtL(__L('{g}경기 · {l}/4'),{g:b.g,l:b.lv})+'</small></div>';
+  if(b.lv>=4)h+='<div class="bd-nick">「'+t[4]+'」</div>';
+  for(let l=0;l<4;l++)h+=l<b.lv?'<p class="bd-ch">📖 '+t[l]+'</p>':'<p class="bd-ch lock">🔒 '+fmtL(__L('{m}경기 더 하면 열려요 (+{p}P)'),{m:BOND_LV[l]-b.g,p:BOND_PTS[l]})+'</p>';
+  return h+'</div>';
+}
+
+/* ================= v33: 📅 7-day attendance ================= */
+// One reward per calendar day (local time). Days do not have to be consecutive: each new day you open the game moves
+// you one step along the 7 rewards; after day 7 the cycle starts again. Day 7 gives the attendance-only trail the first
+// time (DLY_DUP points instead once you own it). Moving the device clock backwards does not give extra days.
+const DLY=[{p:50},{f:40},{p:80},{f:60},{p:120},{f:80},{t:'dly',p:100}],DLY_DUP=250;
+function dlyDay(d){d=d||new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/864e5);}   // local calendar day number
+function dlyTamper(){return !!(save.clk&&Date.now()<save.clk-300000);}
+function dlyCan(){const L=save.login;return !dlyTamper()&&dlyDay()>(L.last|0);}
+function dlyNext(){return (save.login.d|0)%7;}               // index of the reward the next claim gives
+function dlyGotToday(){return (save.login.last|0)===dlyDay();}
+function dlyTxt(i){const r=DLY[i];
+  if(r.t){const just=dlyLast&&dlyLast.i===i&&dlyLast.trail;return save.trails.includes(r.t)&&!just?'⭐'+DLY_DUP+'P':'✨ '+TRAILS[r.t].name+' + ⭐'+r.p+'P';}
+  if(r.f)return '🐟+'+passGain(r.f);return '⭐'+r.p+'P';}
+let dlyLast=null;   // what the last claim in this session gave (for the dialog)
+function dlyClaim(){
+  if(!dlyCan())return null;
+  const L=save.login,i=dlyNext(),r=DLY[i],out={i,pts:0,fish:0,trail:''};
+  if(r.t){if(save.trails.includes(r.t))out.pts=DLY_DUP;else{save.trails.push(r.t);out.trail=r.t;out.pts=r.p;}}
+  else if(r.f){const a=passAdd(r.f);out.fish=a?a.n:0;}
+  else out.pts=r.p;
+  save.points+=out.pts;
+  L.d=i+1;if(L.d>=7){L.d=0;L.cyc=(L.cyc|0)+1;}L.last=dlyDay();L.tot=(L.tot|0)+1;
+  dlyLast=out;persist();return out;
+}
+function dlyGridHtml(){
+  const L=save.login,can=dlyCan(),nx=dlyNext(),got=dlyGotToday();
+  const doneN=(!can&&got&&(L.d|0)===0&&(L.cyc|0)>0)?7:(L.d|0);   // claimed in this cycle (all 7 on the day the cycle completes)
+  let h='<div class="dl-grid">';
+  for(let i=0;i<7;i++){const r=DLY[i],done=i<doneN,today=can&&i===nx,justGot=!!(dlyLast&&dlyLast.i===i&&got);
+    h+='<div class="dl-t'+(done?' dl-done':'')+(today?' dl-today':'')+(r.t?' dl-big':'')+(justGot?' dl-pop':'')+'"><small>'+fmtL(__L('{d}일'),{d:i+1})+'</small><b>'+(r.t?'✨':r.f?'🐟':'⭐')+'</b><span>'+dlyTxt(i)+'</span>'+(done?'<i>✓</i>':'')+'</div>';}
+  return h+'</div>';
+}
+function dlyBody(){
+  const can=dlyCan(),L=save.login;
+  let h='<h3>📅 '+__L(__L('7일 출석 보상'))+'</h3><div class="dl-sub">'+__L(__L('하루에 한 번 받을 수 있어요 · 날짜가 이어지지 않아도 괜찮아요'))+'</div>'+dlyGridHtml();
+  if(can)h+='<div class="row"><button class="btn primary" data-dly="claim">🎁 '+fmtL(__L('{d}일차 보상 받기'),{d:dlyNext()+1})+'</button></div>';
+  else h+='<div class="dl-msg">'+(dlyTamper()?__L(__L('기기 시계가 되돌려져 있어요. 시계가 맞으면 다시 받을 수 있어요')):__L(__L('오늘 출석 완료! 내일 또 와요')))+'</div><div class="row"><button class="btn" data-dly="close">'+__L(__L('닫기'))+'</button></div>';
+  h+='<div class="dl-foot">'+fmtL(__L('7일차: 출석 전용 트레일 「{n}」 (이미 있으면 ⭐{p}P) · 7일을 다 받으면 1일차부터 다시 시작해요'),{n:TRAILS.dly.name,p:DLY_DUP})
+    +((L.tot|0)?' · '+fmtL(__L('지금까지 {n}일 출석'),{n:L.tot|0}):'')+'</div>';
+  return h;
+}
+function dlyOpen(){
+  const d=$('#dlyDlg');if(!d||window.__NOFX)return;
+  d.querySelector('.cd-body').innerHTML=dlyBody();d.classList.add('on');
+}
+function dlyClose(){const d=$('#dlyDlg');if(d)d.classList.remove('on');dlyLast=null;if(G.ui==='sGoals')renderGoals();try{hypeMenuRefresh();}catch(e){}}
+function dlyDo(){
+  const o=dlyClaim();if(!o)return;SFX.win();vib([30,30,60]);
+  hypeToast(o.trail?'✨ '+bondJ(fmtL(__L('트레일 「{n}」을 얻었어요!'),{n:TRAILS[o.trail].name})):o.fish?'🐟+'+o.fish:'⭐+'+o.pts+'P');
+  const d=$('#dlyDlg');if(d&&d.classList.contains('on'))d.querySelector('.cd-body').innerHTML=dlyBody();
+  const pn=$('#ptsN');if(pn)pn.textContent=save.points;
+}
+// the card on top of 오늘의 목표
+function dlyCardHtml(){
+  const can=dlyCan(),nx=dlyNext();
+  return '<div class="dl-card'+(can?' rdy':'')+'"><b>📅 '+__L(__L('7일 출석'))+'</b><span>'+(can?fmtL(__L('{d}일차 보상: {r}'),{d:nx+1,r:dlyTxt(nx)}):__L(__L('오늘 출석 완료! 내일 또 와요')))+'</span>'
+    +'<button class="btn small'+(can?' primary':'')+'" data-dly="open">'+(can?__L(__L('받기')):__L(__L('보기')))+'</button></div>';
+}
+// once a day on the home screen (not before the first-run tutorial question, not over another dialog)
+let dlyAutoDay=-1;
+function dlyAuto(){
+  if(window.__NOFX||window.PH_NODAILY||!dlyCan()||dlyAutoDay===dlyDay())return;   // PH_NODAILY: browser tests of other screens
+  if(!(save.tut.done||save.tut.asked||save.stats.played>0))return;
+  setTimeout(()=>{
+    if(G.ui!=='sMenu'||G.view==='game'||!dlyCan()||dlyAutoDay===dlyDay())return;
+    if(document.querySelector('.cdlg.on,.efx.on,#tutAsk.on,#vsFx.on'))return;
+    dlyAutoDay=dlyDay();dlyOpen();
+  },700);
+}
+function dlyInit(){
+  if(!$('#dlyDlg')){const d=document.createElement('div');d.id='dlyDlg';d.className='cdlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
+    d.innerHTML='<div class="cd-box dl-box"><button class="cd-x" aria-label="'+__L(__L('닫기'))+'">✕</button><div class="cd-body"></div></div>';document.body.appendChild(d);
+    d.addEventListener('click',e=>{if(e.target===d||e.target.closest('.cd-x')||e.target.closest('[data-dly="close"]')){SFX.ui();dlyClose();}});}
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-dly]');if(!b)return;
+    if(b.dataset.dly==='claim'){dlyDo();}else if(b.dataset.dly==='open'){SFX.ui();dlyOpen();}});
+  document.addEventListener('keydown',e=>{const d=$('#dlyDlg');if(e.key==='Escape'&&d&&d.classList.contains('on')){e.stopPropagation();dlyClose();}},true);
+}
+
+/* ================= v34: 🔥 comeback drama ================= */
+// 1) Chase: the last 30 s of regulation while your team trails by 1–2 goals — heartbeat (faster in the last 10 s),
+//    a pulsing red edge on the screen, the crowd getting louder, one "따라잡을 시간!" call-out.
+// 2) The goal that ties it after being behind (EQUALIZER!) or turns it around (COMEBACK!): a gold banner, confetti,
+//    a gold flash, stronger shake and — late in the match or for the go-ahead goal — a short slow motion.
+// 3) Winning after trailing at any point: COMEBACK WIN! (was: only when trailing in the last 30 s).
+const CLUTCH={win:30,fast:10,maxDef:2};
+function clutchReal(){const c=G.cfg;return !!(c&&G.mine&&c.mode!=='demo'&&c.mode!=='practice'&&c.mode!=='free'&&c.mode!=='tutorial'&&c.time&&!G.so&&!G.ps);}
+function clutchDef(){return G.mine?G.mine.opp.score-G.mine.score:0;}
+function clutchOn(){const d=clutchDef();return clutchReal()&&!G.ot&&G.state==='play'&&G.timeLeft>0&&G.timeLeft<=CLUTCH.win&&d>=1&&d<=CLUTCH.maxDef;}
+let chaseEl=null;
+function clutchFrame(dt){
+  const h=G.hype;if(!h||G.view!=='game')return;
+  const on=clutchOn();
+  if(!chaseEl)chaseEl=document.getElementById('chaseFx');
+  if(on!==!!h.chase){
+    h.chase=on;if(chaseEl)chaseEl.classList.toggle('on',on);document.body.classList.toggle('chase',on);
+    if(on){h.hbT=0;if(!h.chaseShown){h.chaseShown=true;hypeToast(clutchDef()===1?__L(__L('🔥 따라잡을 시간! 1골 차')):__L(__L('🔥 따라잡을 시간! 2골 차')));}}
+  }
+  if(!on)return;
+  const fast=G.timeLeft<=CLUTCH.fast;if(chaseEl)chaseEl.classList.toggle('fast',fast);
+  h.hbT-=dt;if(h.hbT<=0){h.hbT=fast?.5:.78;SFX.heart(fast?1:.8);if(chaseEl){chaseEl.classList.remove('beat');void chaseEl.offsetWidth;chaseEl.classList.add('beat');}}
+  G.cheer=Math.max(G.cheer,fast?.75:.55);   // the crowd gets on its feet
+}
+function clutchClear(){const h=G.hype;if(h)h.chase=false;const e=document.getElementById('chaseFx');if(e)e.className='';document.body.classList.remove('chase');}
+// called right after the normal goal banner; returns what it did (for tests)
+function clutchGoal(tm,main){
+  const h=G.hype;if(!h||!G.mine||tm!==G.mine||!clutchReal()||main==='OT WINNER!')return null;
+  const eq=tm.score===tm.opp.score,ahead=tm.score===tm.opp.score+1;
+  if(!h.wasBehind||!(eq||ahead))return null;
+  if(ahead&&h.cbDone)return null;   // the turn-around is celebrated once; later goals are normal
+  const late=G.ot||G.timeLeft<=CLUTCH.win,big=ahead||late,kind=ahead?'COMEBACK!':'EQUALIZER!';
+  if(ahead)h.cbDone=true;h.cbGoals=(h.cbGoals||0)+1;
+  // banner: the comeback word on top, the rest of the goal's tags below
+  const sub=[...document.querySelectorAll('#bannerSub span')].map(e=>e.textContent).filter(x=>x!==kind&&x!=='EQUALIZER!'&&x!=='GO-AHEAD!');
+  if(ahead&&!sub.includes('GO-AHEAD!'))sub.unshift('GO-AHEAD!');
+  hypeBanner(kind,sub.slice(0,3),4,tm.key);const b=$('#banner');if(b)b.classList.add('cb');
+  hypeToast(ahead?__L(__L('🔥 역전! 경기를 뒤집었어요!')):__L(__L('⚖️ 따라잡았어요! 동점!')));
+  // feel
+  const sk=shakeK();G.cam.shake=Math.max(G.cam.shake,(big?1.1:.8)*Math.max(.35,sk));
+  if(big&&!G.net&&!save.set.motion)hypeSlow(.35,big&&ahead?1.1:.8);
+  const fl=$('#gflash');if(fl){fl.style.setProperty('--gc','rgba(255,205,70,');fl.style.setProperty('--ga','.42');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');}
+  document.body.classList.remove('cbhit');void document.body.offsetWidth;document.body.classList.add('cbhit');clearTimeout(clutchGoal.t);clutchGoal.t=setTimeout(()=>document.body.classList.remove('cbhit'),1600);
+  const n=big?170:90,gx=tm.dir*W,C=[[1,.85,.25],[1,.45,.6],[.45,.8,1],[.55,1,.65],[1,1,1]];
+  for(let i=0;i<n;i++){const c=C[i%5];emit(rnd(-W*.8,W*.8)*.6+gx*.35,rnd(5,9),rnd(-GW*1.6,GW*1.6),rnd(-3,3),rnd(1,6),rnd(-3,3),rnd(1.6,2.8),rnd(.18,.4),c[0],c[1],c[2]);}
+  SFX.fanfare();G.cheer=1;vib(ahead?[60,40,60,40,160]:[50,40,120]);
+  clutchClear();
+  return {kind,big};
+}
+
+/* ================= v35: ☁️ Google account + cloud save ================= */
+// Sign in with Google → Firebase Auth (REST accounts:signInWithIdp). The anonymous account the friend match made is
+// linked to Google when possible, so the uid stays the same. The save then lives in the Realtime Database at
+// saves/{uid} = {data: the save as JSON text, t: upload time, p: points, g: matches} (only that user can read or write it).
+//  · Google ID token: in the Android app from Credential Manager (native op 'gsignin'), in a browser from Google
+//    Identity Services (the official "Sign in with Google" button, loaded only when the account window opens).
+//  · Upload: after changes (at most every 30 s), when the page is hidden, and right after signing in when the cloud is empty.
+//  · Another device uploaded since this one last synced → the player chooses which progress to keep (nothing is
+//    overwritten silently). Loading a cloud save replaces this device's save and restarts the game.
+//  · Sign out keeps this device's save. Delete account removes the cloud save and the Firebase account (Play policy).
+const ACC={st:'',msg:'',cloud:null,dirty:false,upT:0,busy:false,gisP:null,choice:null};
+const ACC_META='penguinHockey.cloud';
+function accOn(){return fbOn()&&!!NETCFG.webClientId;}
+function accSigned(){try{fbLoad();}catch(e){}return FB.prov==='google'&&!!FB.ref;}
+function accHash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(36)+':'+s.length;}
+function accMeta(){try{return JSON.parse(localStorage.getItem(ACC_META)||'null')||{t:0,h:''};}catch(e){return {t:0,h:''};}}
+function accMetaSet(m){try{if(m)localStorage.setItem(ACC_META,JSON.stringify(m));else localStorage.removeItem(ACC_META);}catch(e){}}
+function accLocal(){try{return localStorage.getItem('penguinHockey.v1')||JSON.stringify(save);}catch(e){return JSON.stringify(save);}}
+function accSum(data){   // what the choice cards show: points, matches, penguins, date
+  let s=null;try{s=JSON.parse(data);}catch(e){}
+  if(!s||typeof s!=='object')return {p:0,g:0,n:0};
+  return {p:Math.max(0,s.points|0),g:Math.max(0,(s.stats&&s.stats.played)|0),n:Array.isArray(s.types)?s.types.length:0};
+}
+function accErr(e){
+  const m=String(e&&e.message||e);
+  if(m==='nocfg')return __L(__L('로그인 서버가 아직 연결되지 않았어요'));
+  if(/cancel/i.test(m)||e&&e.name==='Cancel')return __L(__L('로그인을 취소했어요'));
+  if(/CREDENTIAL_TOO_OLD|TOKEN_EXPIRED|requires-recent-login/i.test(m))return __L(__L('보안을 위해 한 번 더 로그인해 주세요'));
+  if(/gis|script/i.test(m))return __L(__L('Google 로그인을 불러오지 못했어요. 인터넷 연결을 확인해 주세요'));
+  return __L(__L('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요'));
+}
+function accSet(st,msg){ACC.st=st;ACC.msg=msg||'';accRender();}
+
+// ---------- the Google ID token ----------
+function accGis(){   // Google Identity Services, browser only
+  if(ACC.gisP)return ACC.gisP;
+  ACC.gisP=new Promise((res,rej)=>{
+    if(window.google&&google.accounts&&google.accounts.id){res(google.accounts.id);return;}
+    const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;
+    s.onload=()=>window.google&&google.accounts&&google.accounts.id?res(google.accounts.id):rej(new Error('gis'));
+    s.onerror=()=>{ACC.gisP=null;rej(new Error('gis'));};document.head.appendChild(s);
+  });
+  return ACC.gisP;
+}
+async function accGisButton(el){
+  const id=await accGis();
+  id.initialize({client_id:NETCFG.webClientId,callback:r=>{if(r&&r.credential)accWithIdToken(r.credential,'web');},ux_mode:'popup',auto_select:false,cancel_on_tap_outside:true,
+    use_fedcm_for_prompt:true,locale:({ko:'ko',en:'en',zh:'zh_CN',ja:'ja'})[I18N.lang]||'ko'});
+  el.innerHTML='';id.renderButton(el,{type:'standard',theme:'filled_blue',size:'large',shape:'pill',text:'signin_with',width:Math.min(300,Math.max(200,el.clientWidth||260))});
+}
+async function accAppSignIn(){   // Android: Credential Manager in the app
+  accSet('busy',__L(__L('Google 계정으로 로그인하는 중…')));
+  try{const r=await appCall('gsignin',{cid:NETCFG.webClientId});if(!r||!r.idToken)throw new Error('cancel');await accWithIdToken(r.idToken,'app');}
+  catch(e){accSet('err',accErr(e));}
+}
+
+// ---------- Firebase sign-in with that token ----------
+async function accWithIdToken(idt,src){
+  accSet('busy',__L(__L('Google 계정으로 로그인하는 중…')));
+  try{
+    const reqUri=(location.origin&&/^https?:/.test(location.origin))?location.origin:'http://localhost';
+    const base={postBody:'id_token='+encodeURIComponent(idt)+'&providerId=google.com',requestUri:reqUri,returnSecureToken:true,returnIdpCredential:true};
+    let anon='';try{if(FB.prov!=='google')anon=await fbToken();}catch(e){}
+    let j=null;
+    if(anon){try{j=await fbJson(fbA('accounts:signInWithIdp'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({idToken:anon},base))});}
+      catch(e){if(!/FEDERATED_USER_ID_ALREADY_LINKED|EMAIL_EXISTS|INVALID_ID_TOKEN|USER_NOT_FOUND|CREDENTIAL_TOO_OLD/.test(e.message))throw e;j=null;}}
+    if(!j||j.errorMessage)j=await fbJson(fbA('accounts:signInWithIdp'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(base)});   // this Google account already has its own uid
+    if(j.errorMessage)throw new Error(j.errorMessage);
+    if(FB.uid&&j.localId&&FB.uid!==j.localId)accMetaSet(null);   // another account: no shared sync history
+    FB.email=j.email||'';FB.name=j.displayName||j.fullName||j.firstName||'';fbSet(j,'google');
+    await accSync(true);
+  }catch(e){accSet('err',accErr(e));}
+}
+
+// ---------- the cloud copy ----------
+async function accUpload(force){
+  if(!accSigned()||ACC.busy)return false;
+  const data=accLocal(),h=accHash(data),m=accMeta();
+  if(!force&&m.h===h){ACC.dirty=false;return true;}
+  ACC.busy=true;
+  try{
+    const ct=await dbReq('GET','saves/'+FB.uid+'/t');
+    if(ct&&+ct>(m.t||0)&&!force){ACC.busy=false;await accSync(false);return false;}   // another device saved since: let the player choose
+    const t=Math.max(Date.now(),(+ct||0)+1),s=accSum(data);
+    await dbReq('PUT','saves/'+FB.uid,{data,t,p:s.p,g:s.g});
+    accMetaSet({t,h});ACC.dirty=false;ACC.upT=Date.now();
+    if(G.ui==='sSet'||$('#accDlg.on'))accRender();
+    return true;
+  }catch(e){ACC.dirty=true;return false;}
+  finally{ACC.busy=false;}
+}
+// compare the cloud with this device. login=true right after signing in.
+async function accSync(login){
+  if(!accSigned())return 'off';
+  accSet('busy',__L(__L('클라우드 저장을 확인하는 중…')));
+  let c=null;try{c=await dbReq('GET','saves/'+FB.uid);}catch(e){accSet('err',accErr(e));return 'err';}
+  const data=accLocal(),h=accHash(data),m=accMeta();
+  if(!c||typeof c.data!=='string'){await accUpload(true);accSet('ok',__L(__L('이 기기의 진행을 클라우드에 저장했어요')));return 'up';}
+  const ch=accHash(c.data);
+  if(ch===h){accMetaSet({t:+c.t||Date.now(),h});accSet('ok',__L(__L('클라우드와 같은 진행이에요')));return 'same';}
+  if(!login&&+c.t<=(m.t||0)){await accUpload(true);accSet('ok','');return 'up';}            // only this device changed
+  if(!login&&m.h===h){accSet('choose','');ACC.choice={c,auto:true};accOpen();return 'choose';}  // only the cloud changed
+  ACC.choice={c,auto:false};accSet('choose','');accOpen();return 'choose';
+}
+function accUseCloud(){
+  const c=ACC.choice&&ACC.choice.c;if(!c)return;
+  window.__phHold=true;   // the old in-memory save must not be written back before the restart
+  try{localStorage.setItem('penguinHockey.v1',c.data);accMetaSet({t:+c.t||Date.now(),h:accHash(c.data)});}catch(e){window.__phHold=false;accSet('err',accErr(e));return;}
+  try{if(window.__phMirror)appMirror(true);}catch(e){}
+  ACC.choice=null;accSet('busy',__L(__L('클라우드 진행을 불러왔어요. 다시 시작해요…')));
+  setTimeout(()=>{try{location.reload();}catch(e){}},window.__NOFX?0:700);
+}
+async function accUseLocal(){ACC.choice=null;accSet('busy','');const ok=await accUpload(true);accSet(ok?'ok':'err',ok?__L(__L('이 기기의 진행을 클라우드에 저장했어요')):__L(__L('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요')));}
+function accSignOut(){
+  FB.tok='';FB.ref='';FB.uid='';FB.prov='';FB.email='';FB.name='';fbKeep();accMetaSet(null);ACC.choice=null;ACC.dirty=false;
+  if(APP.on)appPost({op:'gsignout'});
+  accSet('ok',__L(__L('로그아웃했어요. 이 기기의 진행은 그대로 있어요')));
+}
+async function accDelete(){
+  const ok=await askConfirm(__L(__L('계정을 삭제할까요?')),'<p>'+__L(__L('클라우드에 저장된 진행과 로그인 정보가 지워지고 되돌릴 수 없어요. 이 기기의 진행은 남아요.'))+'</p>',__L(__L('삭제')));
+  if(!ok)return;
+  accSet('busy',__L(__L('계정을 삭제하는 중…')));
+  try{
+    await dbReq('DELETE','saves/'+FB.uid);
+    const t=await fbToken();await fbJson(fbA('accounts:delete'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idToken:t})});
+    accSignOut();accSet('ok',__L(__L('계정과 클라우드 저장을 삭제했어요')));
+  }catch(e){accSet('err',accErr(e));}
+}
+// persist() → mark dirty; upload a little later (several saves in a row become one upload)
+function accDirty(){
+  if(!accSigned())return;ACC.dirty=true;clearTimeout(accDirty.t);
+  const wait=Math.max(4000,30000-(Date.now()-ACC.upT));accDirty.t=setTimeout(()=>{if(ACC.dirty)accUpload(false);},wait);
+}
+
+// ---------- UI: a row in 설정 and the account window ----------
+function accRowHtml(){
+  const on=accSigned();
+  return '<div>☁️ '+__L(__L('계정 · 클라우드 저장'))+'</div><div class="acc-row"><span class="acc-who">'+(on?escH(FB.email||FB.name||'Google'):__L(__L('로그인 안 함')))+'</span>'
+    +'<button class="btn small'+(on?'':' primary')+'" id="accOpenB">'+(on?__L(__L('관리')):__L(__L('Google 로그인')))+'</button></div>';
+}
+function accRow(){
+  const el=$('#setList');if(!el)return;let r=$('#accRow');
+  if(!r){r=document.createElement('div');r.id='accRow';r.className='setrow acc-set';el.appendChild(r);}
+  r.innerHTML=accRowHtml();const b=$('#accOpenB');if(b)b.onclick=()=>{SFX.init();SFX.ui();accOpen();};
+}
+function accDate(t){try{return new Date(+t).toLocaleString(I18N.loc||'ko',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+function accCard(kind,sum,t){
+  return '<div class="acc-pick" data-acc="'+kind+'"><b>'+(kind==='local'?'📱 '+__L(__L('이 기기')):'☁️ '+__L(__L('클라우드')))+'</b>'
+    +'<span>⭐ '+sum.p+'P</span><span>'+fmtL(__L('{n}경기'),{n:sum.g})+' · '+fmtL(__L('펭귄 {n}종'),{n:sum.n})+'</span>'+(t?'<small>'+accDate(t)+'</small>':'')+'</div>';
+}
+function accBody(){
+  if(!accOn())return '<h3>☁️ '+__L(__L('계정 · 클라우드 저장'))+'</h3><div class="acc-msg">'+__L(__L('로그인 서버가 아직 연결되지 않았어요'))+'</div><div class="acc-note">'+__L(__L('지금은 이 기기에만 저장돼요.'))+'</div>';
+  const on=accSigned();let h='<h3>☁️ '+__L(__L('계정 · 클라우드 저장'))+'</h3>';
+  if(ACC.st==='choose'&&ACC.choice){
+    const c=ACC.choice.c,l=accLocal();
+    h+='<div class="acc-q">'+(ACC.choice.auto?__L(__L('다른 기기에서 저장한 새 진행이 있어요. 어느 진행으로 할까요?')):__L(__L('이 기기와 클라우드의 진행이 달라요. 어느 진행으로 할까요?')))+'</div>'
+      +'<div class="acc-picks">'+accCard('local',accSum(l),0)+accCard('cloud',accSum(c.data),c.t)+'</div>'
+      +'<div class="acc-note">'+__L(__L('고르지 않은 쪽의 진행은 지워져요. 클라우드를 고르면 게임이 다시 시작돼요.'))+'</div>';
+    return h;
+  }
+  if(ACC.st==='busy')return h+'<div class="acc-msg"><i class="fr-dot"></i>'+escH(ACC.msg)+'</div>';
+  if(ACC.st==='err')h+='<div class="acc-err">'+escH(ACC.msg)+'</div>';
+  else if(ACC.msg)h+='<div class="acc-ok">'+escH(ACC.msg)+'</div>';
+  if(!on){
+    h+='<div class="acc-note">'+__L(__L('Google 계정으로 로그인하면 진행이 클라우드에 저장돼요. 휴대폰을 바꾸거나 다른 기기에서도 이어서 할 수 있어요.'))+'</div>';
+    h+=APP.on?'<div class="row"><button class="btn primary" data-acc="app">'+__L(__L('Google 계정으로 로그인'))+'</button></div>':'<div id="accGis" class="acc-gis"></div>';
+    h+='<div class="acc-note small">'+__L(__L('저장하는 것: 게임 진행(포인트·펭귄·기록)과 Google 계정의 이메일 주소. 광고나 다른 용도로 쓰지 않아요.'))+'</div>';
+  }else{
+    const m=accMeta();
+    h+='<div class="acc-who2">'+escH(FB.name||'')+(FB.name&&FB.email?' · ':'')+escH(FB.email||'')+'</div>'
+      +'<div class="acc-note">'+(m.t?fmtL(__L('마지막 클라우드 저장: {d}'),{d:accDate(m.t)}):__L(__L('아직 클라우드에 저장하지 않았어요')))+'</div>'
+      +'<div class="row acc-btns"><button class="btn primary" data-acc="up">⬆ '+__L(__L('지금 저장'))+'</button><button class="btn" data-acc="sync">🔄 '+__L(__L('클라우드 확인'))+'</button></div>'
+      +'<div class="row acc-btns"><button class="btn small" data-acc="out">'+__L(__L('로그아웃'))+'</button><button class="btn small acc-del" data-acc="del">'+__L(__L('계정 삭제'))+'</button></div>';
+  }
+  return h;
+}
+function accRender(){
+  try{if(G.ui==='sSet')accRow();}catch(e){}
+  const d=$('#accDlg');if(!d||!d.classList.contains('on'))return;
+  d.querySelector('.cd-body').innerHTML=accBody();
+  const g=$('#accGis');if(g&&accOn()&&!APP.on)accGisButton(g).catch(e=>{const gg=$('#accGis');if(gg)gg.innerHTML='<div class="acc-err">'+escH(accErr(e))+'</div>';});
+}
+function accOpen(){
+  let d=$('#accDlg');
+  if(!d){d=document.createElement('div');d.id='accDlg';d.className='cdlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
+    d.innerHTML='<div class="cd-box acc-box"><button class="cd-x" aria-label="'+__L(__L('닫기'))+'">✕</button><div class="cd-body"></div></div>';document.body.appendChild(d);
+    d.addEventListener('click',e=>{
+      if(e.target===d||e.target.closest('.cd-x')){if(ACC.st==='choose')return;SFX.ui();d.classList.remove('on');if(ACC.st!=='busy'){ACC.st='';ACC.msg='';}accRender();return;}
+      const b=e.target.closest('[data-acc]');if(!b)return;const k=b.dataset.acc;SFX.ui();
+      if(k==='app')accAppSignIn();else if(k==='up'){accSet('busy',__L(__L('저장하는 중…')));accUpload(false).then(ok=>{if(ACC.st!=='choose')accSet(ok?'ok':'err',ok?__L(__L('클라우드에 저장했어요')):__L(__L('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요')));});}
+      else if(k==='sync')accSync(false);else if(k==='out')accSignOut();else if(k==='del')accDelete();
+      else if(k==='cloud')accUseCloud();else if(k==='local')accUseLocal();
+    });}
+  d.classList.add('on');accRender();
+}
+function accInit(){
+  window.__phCloud=accDirty;
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&ACC.dirty)accUpload(false);});
+  if(accOn()&&accSigned())setTimeout(()=>{accSync(false).then(r=>{if(r!=='choose'){ACC.st='';ACC.msg='';}});},window.__NOFX?0:2500);   // another device may have saved meanwhile
+}
+
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
-enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();
+enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();safe(accInit);safe(dlyInit);safe(dlyAuto);
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

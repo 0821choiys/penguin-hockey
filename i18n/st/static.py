@@ -1,5 +1,7 @@
 # static markup: Korean text node / attribute value -> (en, zh, ja)
 S={
+"친구 대전":("Friend match","好友对战","フレンド対戦"),
+"친구 코드로 1대1":("1 vs 1 with a friend code","用好友代码1对1","フレンドコードで1対1"),
 "🐧 경기장을 준비하는 중…":("🐧 Getting the rink ready…","🐧 正在准备冰场…","🐧 リンクを準備しています…"),
 "3D 엔진을 불러오고 있어요":("Loading the 3D engine","正在加载3D引擎","3Dエンジンを読み込んでいます"),
 "이 브라우저에서는 3D(WebGL)를 실행할 수 없어요. 최신 브라우저로 열어 주세요.":("This browser can't run 3D (WebGL). Please open the game in an up-to-date browser.","此浏览器无法运行3D (WebGL)。请使用最新的浏览器打开。","このブラウザでは3D (WebGL) を実行できません。最新のブラウザで開いてください。"),

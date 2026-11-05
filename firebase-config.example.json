@@ -1,0 +1,6 @@
+{
+  "apiKey": "AIza…(Firebase 콘솔 > 프로젝트 설정 > 일반 > 웹 API 키)",
+  "dbUrl": "https://<프로젝트ID>-default-rtdb.<지역>.firebasedatabase.app",
+  "webClientId": "1234567890-xxxxxxxx.apps.googleusercontent.com",
+  "ice": [{"urls": ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"]}]
+}

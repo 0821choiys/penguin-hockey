@@ -25,7 +25,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
     if(u.startsWith('https://fonts.gstatic.com/__fs/')){const rel=u.split('/__fs/')[1];return r.respond({status:200,contentType:'font/woff2',body:fs.readFileSync(path.join(FS,rel))});}
     if(u.startsWith('file:'))return r.continue();r.abort();});
   // mock app side (MainActivity + BillingBridge): replies like the Java code, logs every message
-  await page.evaluateOnNewDocument(()=>{const L=window.__appLog=[];let owned=[],n=0;window.__appMode='ok';
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(()=>{const L=window.__appLog=[];let owned=[],n=0;window.__appMode='ok';
     const A={onmessage:null,postMessage(s){const m=JSON.parse(s);L.push(m);if(!m.id)return;
       const rep=o=>setTimeout(()=>A.onmessage&&A.onmessage({data:JSON.stringify(Object.assign({id:m.id},o))}),30);
       if(m.op==='price')rep({ok:true,data:{value:8900,currency:'KRW',text:'₩8,900'}});
@@ -34,7 +34,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
       else if(m.op==='list')rep({ok:true,data:owned.slice()});
       else rep({ok:false,name:'Error',err:'unknown op'});}};
     window.PHAndroid=A;});
-  await page.evaluateOnNewDocument(s=>{if(!sessionStorage.getItem('__s')){localStorage.setItem('penguinHockey.v1',s);sessionStorage.setItem('__s','1');}},SAVE);
+  await page.evaluateOnNewDocument(()=>{window.PH_NODAILY=1;});await page.evaluateOnNewDocument(s=>{if(!sessionStorage.getItem('__s')){localStorage.setItem('penguinHockey.v1',s);sessionStorage.setItem('__s','1');}},SAVE);
   await page.goto('file://'+path.resolve(__dirname,'../penguin-hockey-improved.html')+'?lang='+lang,{waitUntil:'load'});await wait(3000);
   const E=(f,...a)=>page.evaluate(f,...a);
   await E(()=>{const R=window.__PH.renderer;R.__r=R.render;R.render=function(){};});

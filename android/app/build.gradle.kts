@@ -66,6 +66,10 @@ dependencies {
     implementation("androidx.webkit:webkit:1.18.0")
     implementation("androidx.activity:activity:1.11.0")
     implementation("androidx.core:core:1.17.0")
+    // Sign in with Google (cloud save): Credential Manager + Google ID token
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20250517")   // real org.json for JVM unit tests (android.jar only has stubs)
 }
