@@ -1240,7 +1240,7 @@ body.rm #castBan.on{animation:castFade 1.25s linear forwards}
 .ps-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0 6px}
 .ps-gold.on{display:inline-flex;align-items:center;padding:8px 14px;border-radius:14px;background:linear-gradient(90deg,#ffe27a,#ffb21f);color:#3a2400;font-weight:700}
 .ps-note{font-size:12.5px!important;margin:0 0 8px}
-.ps-track{display:flex;gap:6px;overflow-x:auto;padding:8px 4px 12px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;background:rgba(4,16,32,.35);border-radius:16px;border:1px solid var(--line)}
+.ps-track{display:flex;gap:6px;overflow-x:auto;padding:8px 4px 12px;scroll-snap-type:x proximity;scroll-padding-left:52px;-webkit-overflow-scrolling:touch;background:rgba(4,16,32,.35);border-radius:16px;border:1px solid var(--line)}
 .ps-lab{flex:none;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;font-size:11px;line-height:1.15;color:var(--frost2);padding:22px 2px;width:46px;position:sticky;left:-4px;margin-left:-4px;background:#0b2340;border-radius:0 10px 10px 0;z-index:2;box-shadow:6px 0 10px -4px rgba(0,0,0,.55)}
 .ps-col{flex:none;width:76px;display:flex;flex-direction:column;align-items:center;gap:5px;scroll-snap-align:start}
 .ps-num{font:700 13px 'Fredoka','Jua',sans-serif;color:var(--frost2);background:rgba(160,212,255,.12);border-radius:999px;min-width:30px;text-align:center;padding:1px 6px}
@@ -1362,6 +1362,70 @@ body.noflash #cine.p2 .cn-band{animation-name:cnBandOutSoft}
 .ps-cell.x.none{background:transparent;border:1.5px dashed rgba(160,140,255,.18);opacity:.5}
 .ps-lab{justify-content:space-around}
 #sMenu .hm-pass.pro .ps-ic{box-shadow:0 0 0 2px #b69bff,0 0 12px rgba(150,120,255,.8)}
+
+/* ================= v30: comfortable landscape on phones (short, wide screens) =================
+   Before: every panel kept 58–72 px free above it for the points chip, then spent ~150 px on a centred title, a tab bar
+   and a bottom "완료" row, so on a 390 px tall screen only 90–200 px of content showed (pass track and scout pull button
+   hidden, settings 4 rows, the mode screen's 완료 button below the screen).
+   Now (landscape, height ≤ 520 px): panels use the whole height and the title, tabs, close buttons and points chip share
+   one top row; settings run in two columns; the pass puts progress / buy on the left and the reward track on the right. */
+@media (orientation:landscape) and (max-height:520px){
+  .screen:not(#sMenu):not(#sPause):not(#sResult),.screen.ptsgap:not(#sMenu){padding:calc(env(safe-area-inset-top,0px) + 6px) calc(env(safe-area-inset-right,0px) + 8px) calc(env(safe-area-inset-bottom,0px) + 6px) calc(env(safe-area-inset-left,0px) + 8px)!important}
+  .pts{top:calc(env(safe-area-inset-top,0px) + 11px)!important;right:calc(env(safe-area-inset-right,0px) + 16px)!important;font-size:15px!important;padding:4px 11px!important}
+
+  /* ---- panels with a title / tabs / scrolling body / button row ---- */
+  /* one grid: [title | tabs | buttons + room for the points chip] on top, the scrolling body below — nothing can overlap */
+  .screen .panel.pfix,.screen.ptsgap .panel.pfix{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);
+    column-gap:10px;row-gap:6px;align-items:center;
+    height:calc(100vh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+    max-height:calc(100vh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;padding-top:6px!important;padding-bottom:6px!important}
+  .screen:not(#sSelect) .panel.pfix{width:min(100%,1000px)!important;max-width:none!important}
+  .panel.pfix>*{grid-column:1 / -1}
+  .panel.pfix>h2{grid-column:1;grid-row:1;margin:0!important;padding:0 0 0 6px!important;font-size:19px!important;line-height:38px;
+    width:auto!important;max-width:30vw;text-align:left!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .panel.pfix>h2::after{display:none!important}
+  .panel.pfix>.seg{grid-column:2;grid-row:1;justify-self:center;width:auto!important;max-width:100%;margin:0!important;overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none}
+  .panel.pfix>.seg>button{min-height:38px!important;height:38px;padding-top:0!important;padding-bottom:0!important;flex:none}
+  .panel.pfix>.row:last-child{grid-column:3;grid-row:1;margin:0 112px 0 0!important;width:auto!important;gap:6px;flex-wrap:nowrap}
+  .panel.pfix>.row:last-child .btn{min-height:38px!important;height:38px;padding-top:0!important;padding-bottom:0!important}
+  .panel.pfix>.pbody{grid-row:2;align-self:stretch}
+  .pfix>.pbody{padding-bottom:8px!important}
+
+  /* ---- settings: two columns ---- */
+  #setList{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:26px;row-gap:2px;align-items:start}
+  #setList>*{min-width:0}
+
+  /* ---- fish pass: progress + buy on the left, rewards on the right ---- */
+  body:has(#sPass.on) .pts{display:none!important}
+  #sPass .pp-panel{width:min(100%,1000px)!important;max-width:none!important;height:calc(100vh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+    max-height:none!important;overflow-y:auto!important;display:grid!important;grid-template-columns:minmax(250px,36%) minmax(0,1fr);
+    grid-template-rows:auto auto auto minmax(0,1fr) auto;column-gap:16px;row-gap:6px;align-content:stretch;padding:8px 14px!important;margin:0!important}
+  #sPass #psBody{display:contents!important}
+  #sPass #psBody>*{grid-column:1;margin:0!important}
+  #sPass #psHead{grid-column:1;grid-row:1;margin:0!important}
+  #sPass #psHead .ps-h{font-size:.92em}
+  #sPass .ps-prog{grid-row:2}
+  #sPass .ps-acts{grid-row:3}
+  #sPass .ps-acts .ps-gold{font-size:15px!important;padding:8px 12px!important;min-height:0!important;white-space:nowrap}
+  #sPass .ps-note{grid-row:4;overflow-y:auto;min-height:0;font-size:11.5px!important}
+  #sPass #psBody>.ps-track{grid-column:2!important;grid-row:1 / 4;align-self:start}
+  #sPass #psBody>.ps-info{grid-column:2!important;grid-row:4 / 6;overflow-y:auto;min-height:0}
+  #sPass .pp-panel>.row{grid-column:1;grid-row:5;margin:0!important}
+
+  /* ---- game modes: smaller cards so the 완료 button stays on screen ---- */
+  #sMode .col{max-height:calc(100vh - 12px);overflow-y:auto;gap:6px!important;padding:0!important;justify-content:flex-start}
+  #sMode .col>h2{font-size:20px!important;margin:0!important}
+  #sMode .col>h2::after{display:none!important}
+  #sMode .mode-h{margin:2px 0 0!important}
+  #sMode .modes{gap:8px!important}
+  #sMode .mode{min-height:0!important;height:auto!important;padding-top:8px!important;padding-bottom:8px!important}
+  #sMode .mode.rk{padding-top:6px!important;padding-bottom:6px!important}
+
+  /* ---- in a match: the combo / hint banners take less of the short screen ---- */
+  /* CSS zoom also divides the element's own offsets, so its top is scaled back to the old place (50 % of the screen) */
+  #combo{zoom:.62;top:31%!important}
+  #hint{zoom:.85}
+}
 
 /* ===== v16 i18n ===== */
 /* hidden for the few ms between first paint and the static-markup translation (2.5 s safety timeout in the bootstrap) */
@@ -3829,7 +3893,7 @@ function updateCamera(dt){
     const k=1-Math.exp(-4*dt);G.cam.x+=(fx-G.cam.x)*k;G.cam.z+=(fz-G.cam.z)*k;
     let zoom=1;if(G.state==='goal')zoom=(G.replay&&G.replay.active)?.85:.62;else if(pl){const sp=Math.hypot(pk.x-pl.x,pk.z-pl.z);zoom=1+clamp((sp-8)/30,0,.25);}
     G.cam.zoom+=(zoom-G.cam.zoom)*(1-Math.exp(-2.5*dt));
-    const port=asp<1?lerp(1.95,1,clamp((asp-.45)/.55,0,1)):1,z=G.cam.zoom*port;
+    const port=asp<1?lerp(1.95,1,clamp((asp-.45)/.55,0,1)):landZoom(asp),z=G.cam.zoom*port;
     G.cam.shake=Math.max(0,G.cam.shake-dt*1.6);const sh=G.cam.shake*.35*shakeK();
     camera.position.set(G.cam.x+rnd(-sh,sh),15*z+rnd(-sh,sh)*.5,G.cam.z+13.2*z+rnd(-sh,sh));camera.lookAt(G.cam.x,0,G.cam.z-1);
     G.vo+=(0-G.vo)*Math.min(1,dt*4);
@@ -8510,7 +8574,7 @@ function renderPass(){
   const a=$('#psAll');if(a)a.onclick=()=>{passClaimAll();renderPass();hypeMenuRefresh();};
   el.querySelectorAll('[data-pc]').forEach(c=>{c.onclick=()=>{const t=c.dataset.pc[0],i=+c.dataset.pc.slice(1);if(passCan(t,i)){passClaim(t,i);renderPass();hypeMenuRefresh();}
     else if((t==='g'&&!passGoldOn()||t==='x'&&!passProOn())&&i<passTier())flashMsg('💎 '+__L('프로 패스를 사면 받을 수 있어요'));else if(i>=passTier())flashMsg(fmtL(__L('🐟 {t}단계에 도달하면 받을 수 있어요'),{t:i+1}));};});
-  const tr=$('#psTrack');if(tr){const col=tr.querySelectorAll('.ps-col')[Math.max(0,Math.min(PASS.tiers-1,tier)-2)];if(col)tr.scrollLeft=col.offsetLeft-tr.offsetLeft;}
+  const tr=$('#psTrack');if(tr){const col=tr.querySelectorAll('.ps-col')[Math.max(0,Math.min(PASS.tiers-1,tier)-2)];if(col){const lab=tr.querySelector('.ps-lab');tr.scrollLeft=Math.max(0,col.offsetLeft-tr.offsetLeft-(lab?lab.offsetWidth+6:0));}}   // keep the column clear of the sticky track labels
   $('#ptsN').textContent=save.points;
 }
 function passMenu(){
@@ -9190,12 +9254,21 @@ function shFit(){
 function pkHi(){return save.set.quality==='ultra';}
 function pkS(n){return pkHi()?Math.max(n+2,Math.round(n*1.6)):n;}
 
+/* ================= v30: landscape tablets — the match camera pulls back on squarer landscape screens ================= */
+// The match camera's distance did not depend on the screen shape in landscape, so on a 4:3 tablet held sideways
+// (aspect 1.33) it showed much less of the rink side to side than on a PC (1.6) or a phone (2.2): big penguins, little ice.
+// Between aspect 1.0 and 1.6 it now backs off by up to 15 % (most at 1.3, a tent so 1.0 and 1.6 stay as they were).
+function landZoom(asp){
+  if(asp<1||asp>=1.6)return 1;
+  return 1+.15*Math.max(0,1-Math.abs(asp-1.3)/.3);
+}
+
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

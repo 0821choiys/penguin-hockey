@@ -144,7 +144,7 @@ function renderPass(){
   const a=$('#psAll');if(a)a.onclick=()=>{passClaimAll();renderPass();hypeMenuRefresh();};
   el.querySelectorAll('[data-pc]').forEach(c=>{c.onclick=()=>{const t=c.dataset.pc[0],i=+c.dataset.pc.slice(1);if(passCan(t,i)){passClaim(t,i);renderPass();hypeMenuRefresh();}
     else if((t==='g'&&!passGoldOn()||t==='x'&&!passProOn())&&i<passTier())flashMsg('💎 '+'프로 패스를 사면 받을 수 있어요');else if(i>=passTier())flashMsg(fmtL('🐟 {t}단계에 도달하면 받을 수 있어요',{t:i+1}));};});
-  const tr=$('#psTrack');if(tr){const col=tr.querySelectorAll('.ps-col')[Math.max(0,Math.min(PASS.tiers-1,tier)-2)];if(col)tr.scrollLeft=col.offsetLeft-tr.offsetLeft;}
+  const tr=$('#psTrack');if(tr){const col=tr.querySelectorAll('.ps-col')[Math.max(0,Math.min(PASS.tiers-1,tier)-2)];if(col){const lab=tr.querySelector('.ps-lab');tr.scrollLeft=Math.max(0,col.offsetLeft-tr.offsetLeft-(lab?lab.offsetWidth+6:0));}}   // keep the column clear of the sticky track labels
   $('#ptsN').textContent=save.points;
 }
 function passMenu(){

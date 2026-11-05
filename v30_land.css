@@ -1,0 +1,63 @@
+/* ================= v30: comfortable landscape on phones (short, wide screens) =================
+   Before: every panel kept 58–72 px free above it for the points chip, then spent ~150 px on a centred title, a tab bar
+   and a bottom "완료" row, so on a 390 px tall screen only 90–200 px of content showed (pass track and scout pull button
+   hidden, settings 4 rows, the mode screen's 완료 button below the screen).
+   Now (landscape, height ≤ 520 px): panels use the whole height and the title, tabs, close buttons and points chip share
+   one top row; settings run in two columns; the pass puts progress / buy on the left and the reward track on the right. */
+@media (orientation:landscape) and (max-height:520px){
+  .screen:not(#sMenu):not(#sPause):not(#sResult),.screen.ptsgap:not(#sMenu){padding:calc(env(safe-area-inset-top,0px) + 6px) calc(env(safe-area-inset-right,0px) + 8px) calc(env(safe-area-inset-bottom,0px) + 6px) calc(env(safe-area-inset-left,0px) + 8px)!important}
+  .pts{top:calc(env(safe-area-inset-top,0px) + 11px)!important;right:calc(env(safe-area-inset-right,0px) + 16px)!important;font-size:15px!important;padding:4px 11px!important}
+
+  /* ---- panels with a title / tabs / scrolling body / button row ---- */
+  /* one grid: [title | tabs | buttons + room for the points chip] on top, the scrolling body below — nothing can overlap */
+  .screen .panel.pfix,.screen.ptsgap .panel.pfix{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);
+    column-gap:10px;row-gap:6px;align-items:center;
+    height:calc(100vh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+    max-height:calc(100vh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;padding-top:6px!important;padding-bottom:6px!important}
+  .screen:not(#sSelect) .panel.pfix{width:min(100%,1000px)!important;max-width:none!important}
+  .panel.pfix>*{grid-column:1 / -1}
+  .panel.pfix>h2{grid-column:1;grid-row:1;margin:0!important;padding:0 0 0 6px!important;font-size:19px!important;line-height:38px;
+    width:auto!important;max-width:30vw;text-align:left!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .panel.pfix>h2::after{display:none!important}
+  .panel.pfix>.seg{grid-column:2;grid-row:1;justify-self:center;width:auto!important;max-width:100%;margin:0!important;overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none}
+  .panel.pfix>.seg>button{min-height:38px!important;height:38px;padding-top:0!important;padding-bottom:0!important;flex:none}
+  .panel.pfix>.row:last-child{grid-column:3;grid-row:1;margin:0 112px 0 0!important;width:auto!important;gap:6px;flex-wrap:nowrap}
+  .panel.pfix>.row:last-child .btn{min-height:38px!important;height:38px;padding-top:0!important;padding-bottom:0!important}
+  .panel.pfix>.pbody{grid-row:2;align-self:stretch}
+  .pfix>.pbody{padding-bottom:8px!important}
+
+  /* ---- settings: two columns ---- */
+  #setList{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:26px;row-gap:2px;align-items:start}
+  #setList>*{min-width:0}
+
+  /* ---- fish pass: progress + buy on the left, rewards on the right ---- */
+  body:has(#sPass.on) .pts{display:none!important}
+  #sPass .pp-panel{width:min(100%,1000px)!important;max-width:none!important;height:calc(100vh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+    max-height:none!important;overflow-y:auto!important;display:grid!important;grid-template-columns:minmax(250px,36%) minmax(0,1fr);
+    grid-template-rows:auto auto auto minmax(0,1fr) auto;column-gap:16px;row-gap:6px;align-content:stretch;padding:8px 14px!important;margin:0!important}
+  #sPass #psBody{display:contents!important}
+  #sPass #psBody>*{grid-column:1;margin:0!important}
+  #sPass #psHead{grid-column:1;grid-row:1;margin:0!important}
+  #sPass #psHead .ps-h{font-size:.92em}
+  #sPass .ps-prog{grid-row:2}
+  #sPass .ps-acts{grid-row:3}
+  #sPass .ps-acts .ps-gold{font-size:15px!important;padding:8px 12px!important;min-height:0!important;white-space:nowrap}
+  #sPass .ps-note{grid-row:4;overflow-y:auto;min-height:0;font-size:11.5px!important}
+  #sPass #psBody>.ps-track{grid-column:2!important;grid-row:1 / 4;align-self:start}
+  #sPass #psBody>.ps-info{grid-column:2!important;grid-row:4 / 6;overflow-y:auto;min-height:0}
+  #sPass .pp-panel>.row{grid-column:1;grid-row:5;margin:0!important}
+
+  /* ---- game modes: smaller cards so the 완료 button stays on screen ---- */
+  #sMode .col{max-height:calc(100vh - 12px);overflow-y:auto;gap:6px!important;padding:0!important;justify-content:flex-start}
+  #sMode .col>h2{font-size:20px!important;margin:0!important}
+  #sMode .col>h2::after{display:none!important}
+  #sMode .mode-h{margin:2px 0 0!important}
+  #sMode .modes{gap:8px!important}
+  #sMode .mode{min-height:0!important;height:auto!important;padding-top:8px!important;padding-bottom:8px!important}
+  #sMode .mode.rk{padding-top:6px!important;padding-bottom:6px!important}
+
+  /* ---- in a match: the combo / hint banners take less of the short screen ---- */
+  /* CSS zoom also divides the element's own offsets, so its top is scaled back to the old place (50 % of the screen) */
+  #combo{zoom:.62;top:31%!important}
+  #hint{zoom:.85}
+}

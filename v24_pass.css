@@ -20,7 +20,7 @@
 .ps-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0 6px}
 .ps-gold.on{display:inline-flex;align-items:center;padding:8px 14px;border-radius:14px;background:linear-gradient(90deg,#ffe27a,#ffb21f);color:#3a2400;font-weight:700}
 .ps-note{font-size:12.5px!important;margin:0 0 8px}
-.ps-track{display:flex;gap:6px;overflow-x:auto;padding:8px 4px 12px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;background:rgba(4,16,32,.35);border-radius:16px;border:1px solid var(--line)}
+.ps-track{display:flex;gap:6px;overflow-x:auto;padding:8px 4px 12px;scroll-snap-type:x proximity;scroll-padding-left:52px;-webkit-overflow-scrolling:touch;background:rgba(4,16,32,.35);border-radius:16px;border:1px solid var(--line)}
 .ps-lab{flex:none;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;font-size:11px;line-height:1.15;color:var(--frost2);padding:22px 2px;width:46px;position:sticky;left:-4px;margin-left:-4px;background:#0b2340;border-radius:0 10px 10px 0;z-index:2;box-shadow:6px 0 10px -4px rgba(0,0,0,.55)}
 .ps-col{flex:none;width:76px;display:flex;flex-direction:column;align-items:center;gap:5px;scroll-snap-align:start}
 .ps-num{font:700 13px 'Fredoka','Jua',sans-serif;color:var(--frost2);background:rgba(160,212,255,.12);border-radius:999px;min-width:30px;text-align:center;padding:1px 6px}
