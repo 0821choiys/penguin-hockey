@@ -39,7 +39,7 @@
 3. **Authentication → 로그인 방법**: `익명`과 `Google` 사용 설정.
    - 익명은 친구 대전용이에요.
    - Google을 켜면 "웹 SDK 구성"에 **웹 클라이언트 ID**가 생겨요 → `webClientId`.
-4. **Android 앱 지문(SHA-1)** 등록: Firebase 프로젝트 설정 → Android 앱 추가(패키지 `com.penguinhockey.game`).
+4. **Android 앱 지문(SHA-1)** 등록: Firebase 프로젝트 설정 → Android 앱 추가(패키지 `com.ysgames.penguingame`).
    등록할 SHA-1은 두 개예요.
    - Play Console → 앱 무결성 → **앱 서명 키** SHA-1(스토어에서 받은 앱용)
    - **업로드 키** SHA-1(직접 설치 테스트용)

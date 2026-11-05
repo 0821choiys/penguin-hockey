@@ -8,12 +8,12 @@ val ksFile = rootProject.file("keystore.properties")
 val ks = Properties().apply { if (ksFile.exists()) ksFile.inputStream().use { load(it) } }
 
 android {
-    namespace = "com.penguinhockey.game"
+    namespace = "com.penguinhockey.game"   // Java package of the code only; the Play Store ID is applicationId below
     compileSdk = 36
 
     defaultConfig {
         // The Play Store package name. It can never change after the first upload — confirm before uploading.
-        applicationId = (project.findProperty("APP_ID") as String?) ?: "com.penguinhockey.game"
+        applicationId = (project.findProperty("APP_ID") as String?) ?: "com.ysgames.penguingame"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

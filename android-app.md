@@ -4,8 +4,8 @@ Play 스토어용 앱은 `android/`에 있어요. 게임 HTML 하나를 앱 안�
 게임 쪽 연결 코드는 `v28_app.js`이고, 앱이 아닌 일반 브라우저에서는 아무것도 바뀌지 않아요.
 
 ## 구조
-- **패키지 이름(applicationId):** `com.penguinhockey.game` (임시). **첫 업로드 뒤에는 절대 바꿀 수 없어요.** 업로드 전에 확정하고,
-  바꾸려면 `./gradlew bundleRelease -PAPP_ID=원하는.이름`처럼 빌드하거나 `app/build.gradle.kts`의 기본값을 고쳐요.
+- **패키지 이름(applicationId):** `com.ysgames.penguingame` (소유자 확정, 2026-11-05). **첫 업로드 뒤에는 절대 바꿀 수 없어요.**
+  코드의 Java 패키지(`namespace`, `com.penguinhockey.game`)는 내부 이름일 뿐이라 그대로 둬요(스토어 ID와 무관).
 - **버전:** versionCode 1 · versionName 1.0.0. 업데이트를 올릴 때마다 versionCode를 1씩 올려요.
 - **SDK:** minSdk 24 (Android 7.0) · targetSdk 36 · compileSdk 36 · AGP 8.13.2 · Gradle 8.14.3 · Java.
 - **라이브러리:** Play Billing 9.1.0 (2026-08-31부터 8 이상 필수), androidx.webkit 1.18.0, activity 1.11.0, core 1.17.0.
