@@ -1,0 +1,61 @@
+/* v36: controls — joystick ring, cooldown rings, bigger touch targets, layout editor */
+#touch.meas{display:block!important;visibility:hidden!important}
+#touch.jz-right #joyZone{left:auto;right:0}
+#joyBase{position:fixed;width:calc(120px*var(--js,1));height:calc(120px*var(--js,1));margin:calc(-60px*var(--js,1)) 0 0 calc(-60px*var(--js,1));
+  transition:opacity .18s;box-shadow:0 0 0 1px rgba(0,30,60,.25),inset 0 0 18px rgba(255,255,255,.12)}
+#joyKnob{width:calc(56px*var(--js,1));height:calc(56px*var(--js,1));margin:calc(-28px*var(--js,1)) 0 0 calc(-28px*var(--js,1));
+  background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.95),rgba(190,230,255,.7));box-shadow:0 3px 10px rgba(0,30,60,.35)}
+#joyBase.idle{opacity:calc(.42*var(--op,1))}
+#joyBase.idle #joyKnob{transition:transform .12s ease-out}
+#joyBase.act{opacity:max(.75,var(--op,1))}
+.tb::before{content:"";position:absolute;inset:-9px;border-radius:50%}          /* a slightly bigger touch target than the drawn circle */
+.tb.down{opacity:1!important}
+.tb.ce-hidden{display:none}
+.tb.cd::after{content:"";position:absolute;inset:-2px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(rgba(4,18,40,.6) calc(var(--cd,0)*1turn),rgba(0,0,0,0) 0)}
+.tb.cd{color:rgba(255,255,255,.72)}
+.tb.rdy{animation:ctlRdy .55s ease-out}
+@keyframes ctlRdy{0%{box-shadow:0 0 0 0 rgba(255,226,110,.95)}100%{box-shadow:0 0 0 18px rgba(255,226,110,0)}}
+/* settings row */
+.ctl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ctl-sum{font-size:13px;opacity:.85}
+/* editor */
+#ctlEdBg{position:fixed;inset:0;z-index:80;display:none;
+  background:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px) 0 0/40px 40px,
+  radial-gradient(ellipse at 50% 60%,rgb(62,118,176),rgb(10,30,58))}
+body.ctledit #ctlEdBg{display:block}
+body.ctledit #touch{display:block!important;z-index:81}
+body.ctledit #joyZone{opacity:1!important}
+body.ctledit #joyZone{pointer-events:none;outline:2px dashed rgba(255,255,255,.18);outline-offset:-6px}
+body.ctledit #joyBase{display:block!important;opacity:max(.6,var(--op,1))!important;pointer-events:auto;cursor:grab}
+body.ctledit #joyBase::after{content:attr(data-lab);position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:6px;font-size:13px;color:#fff;
+  white-space:nowrap;text-shadow:0 1px 4px rgba(0,20,40,.9)}
+body.ctledit #touch .tb{outline:2px dashed rgba(255,255,255,.7);outline-offset:4px;cursor:grab;transition:none}
+body.ctledit .tb.ce-hidden{display:flex!important;opacity:.3!important}
+body.ctledit .tb.ce-sel,body.ctledit #joyBase.ce-sel{outline:3px solid #ffd84a;outline-offset:4px}
+body.ctledit .tb.cd::after{display:none}
+#ctlEdPanel{position:fixed;z-index:82;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);width:min(560px,calc(100vw - 24px));
+  max-height:calc(62vh - 8px);overflow:auto;display:none;padding:10px 12px;border-radius:16px;color:#fff;
+  background:rgba(12,32,62,.94);border:1px solid rgba(160,210,255,.35);box-shadow:0 10px 30px rgba(0,10,30,.5);font-size:14px}
+#ctlEdPanel.on{display:block}
+#ctlEdPanel .ce-head{display:flex;align-items:center;gap:8px}
+#ctlEdPanel .ce-head b{font-size:16px}
+#ctlEdPanel .ce-sel-n{flex:1;font-size:13px;color:#ffe27a;text-align:right}
+#ctlEdPanel .ce-sub{font-size:12px;opacity:.85;margin:4px 0 6px;line-height:1.4}
+#ctlEdPanel .ce-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+#ctlEdPanel .ce-rng{display:flex;flex-direction:column;gap:2px;font-size:13px}
+#ctlEdPanel .ce-rng input{width:100%;accent-color:#ffd84a;height:26px}
+#ctlEdPanel .ce-opt{display:flex;flex-direction:column;gap:3px;font-size:13px}
+#ctlEdPanel .ce-opt .seg{display:flex;gap:4px;flex-wrap:wrap}
+#ctlEdPanel .ce-opt .seg button{flex:1;min-width:0;padding:6px 4px;font-size:13px}
+#ctlEdPanel .ce-note{font-size:11.5px;opacity:.8;margin-top:6px;line-height:1.45}
+#ctlEdPanel .ce-btns{position:sticky;bottom:-10px;margin:8px -12px -10px;padding:8px 12px 10px;justify-content:center;gap:8px;flex-wrap:wrap;background:rgba(12,32,62,.97);border-top:1px solid rgba(160,210,255,.2)}
+@media (max-width:420px){#ctlEdPanel{font-size:13px}#ctlEdPanel .ce-opt .seg button{padding:5px 2px;font-size:12px}}
+@media (orientation:landscape) and (max-height:500px){
+  #ctlEdPanel{top:6px;max-height:calc(100vh - 12px);width:min(400px,calc(100vw - 420px));min-width:320px;padding:8px 10px;font-size:13px}
+  #ctlEdPanel .ce-btns{bottom:-8px;margin:6px -10px -8px;padding:6px 10px 8px}
+  #ctlEdPanel .ce-opt .seg button{padding:5px 2px;font-size:12px}
+  #ctlEdPanel .ce-sub{display:none}
+  #ctlEdPanel .ce-note{display:none}
+}
+body.ce-drag #ctlEdPanel{opacity:.22;pointer-events:none;transition:opacity .15s}

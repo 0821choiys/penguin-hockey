@@ -310,6 +310,7 @@ exec(open('v32_bond.py',encoding='utf-8').read())
 exec(open('v33_daily.py',encoding='utf-8').read())
 exec(open('v34_clutch.py',encoding='utf-8').read())
 exec(open('v35_acct.py',encoding='utf-8').read())
+exec(open('v36_ctl.py',encoding='utf-8').read())
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 

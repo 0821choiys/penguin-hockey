@@ -112,9 +112,10 @@ startMatch({mode:'free',size:1,time:0,diff:'normal',noOpp:true,goalieOnly:true,c
   const p=G.player;
   const coast=()=>{p.x=-10;p.z=0;p.vx=10;p.vz=0;p.heading=Math.PI/2;p.ix=p.iz=0;p.slideT=p.dashT=p.fall=p.slow=0;let d=0;for(let i=0;i<120;i++){const x0=p.x;PH.movePeng(p,1/120);d+=p.x-x0;}return d;};
   const side=()=>{p.x=-10;p.z=0;p.vx=0;p.vz=8;p.heading=Math.PI/2;p.ix=1;p.iz=0;p.slideT=p.dashT=p.fall=p.slow=0;for(let i=0;i<60;i++)PH.movePeng(p,1/120);return Math.abs(p.vz);};
+  PH.ctl().easy=false;   // the condition factors on the classic handling (v36test checks they still matter with easy handling on)
   Object.assign(CF,CF0);const d0=coast(),s0=side();
   Object.assign(CF,CF0,COND.thin.f);const d1=coast(),s1=side();
-  Object.assign(CF,CF0);
+  Object.assign(CF,CF0);PH.ctl().easy=true;
   ok(d1>d0*1.05,'thin ice: a coasting penguin glides farther ('+d0.toFixed(2)+' → '+d1.toFixed(2)+' m in 1 s)');
   ok(s1>s0*1.3,'thin ice: sideways slide is held less by the edges ('+s0.toFixed(2)+' → '+s1.toFixed(2)+' m/s after 0.5 s)');
   const pk=G.puck,keep=G.pengs;
