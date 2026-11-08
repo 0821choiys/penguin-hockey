@@ -40,6 +40,10 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 - Config comes from `firebase-config.json` in the build folder at build time (`apiKey`, `dbUrl`, `webClientId`, optional `ice`;
   example in `firebase-config.example.json`). Without it both features say the server is not connected. Rules: `firebase/database.rules.json`.
 - Emulators for tests: `cd firebase && firebase emulators:start --project demo-ph --only auth,database` (auth :9099, db :9000).
+  One command: `bash tools/emu.sh` (installs firebase-tools if missing, starts both, waits; needs java — present in the cloud workspace, jar download works through the proxy).
+  **Weekly run: start it before the tests** so `v31test.js`, `v35test.js`, `br/v31net.js` and `br/v35acct.js` really run (verified 2026-11-08: 20 / 14 / 24 / 27 pass).
+  With a real `firebase-config.json` present two offline "server not connected" checks fail by design — build without it for tests.
+  `br/v31net.js tall` failed 3 checks on three runs back-to-back right after the emulators started, then passed 24/24 four times: when it fails, rerun once before calling it a bug.
 - v32 growth stories (`bond`), v33 7-day attendance (`login`, trail `dly`), v34 comeback drama — see `growth-daily-comeback.md`.
   Browser tests of other screens set `window.PH_NODAILY=1` so the attendance window does not cover them.
 
