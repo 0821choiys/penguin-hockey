@@ -1,0 +1,8 @@
+/* v38: the buttons follow the play — Shoot = Poke (opponent has the puck), Pass = Call (an AI team-mate has it) */
+.tb.hk-poke{background:rgba(255,128,84,.36);border-color:rgba(255,206,180,.95)}
+.tb.hk-call{background:rgba(96,222,150,.34);border-color:rgba(196,255,218,.95)}
+.tb.hk-poke.down,.tb.hk-call.down{background:rgba(255,230,120,.5)}
+/* an arrow at the screen edge pointing to your penguin when it is off screen */
+#hkOff{position:fixed;left:0;top:0;width:36px;height:36px;z-index:10;pointer-events:none;display:none;border-radius:50%;
+  background:rgba(255,214,60,.94);box-shadow:0 0 0 3px rgba(255,255,255,.6),0 3px 10px rgba(0,0,0,.35)}
+#hkOff::after{content:"";position:absolute;left:50%;top:50%;margin:-7px 0 0 -4px;border:7px solid transparent;border-left:11px solid #17324d;border-right:0}

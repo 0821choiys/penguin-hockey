@@ -1088,7 +1088,7 @@ function setupMatch(cfg){
   if(mine&&(cfg.noScoreOpp||cfg.noScoreTeam))mine.opp.noScore=true;
   if(cfg.noScoreAll){G.teams.blue.noScore=true;G.teams.red.noScore=true;}
   if(mine){G.teams[mine.key].human=null;setHuman(mine.skaters[0]);}
-  G.score={blue:0,red:0};G.elapsed=0;G.timeLeft=cfg.time||0;G.ot=false;G.pass=null;G.passCount=0;G.pending=null;G.over=false;G.mine=mine;G.stats={shots:0,onTarget:0,goals:0,saves:0,passOK:0,passTry:0,bestChain:0};G.tstat={blue:{shots:0,on:0},red:{shots:0,on:0}};G.chain=0;G.chainT=0;G.otLeft=0;hypeReset();tutInit();mgrReset();
+  G.score={blue:0,red:0};G.elapsed=0;G.timeLeft=cfg.time||0;G.ot=false;G.pass=null;G.passCount=0;G.pending=null;G.callFor=null;NET.pend=null;G.over=false;G.mine=mine;G.stats={shots:0,onTarget:0,goals:0,saves:0,passOK:0,passTry:0,bestChain:0};G.tstat={blue:{shots:0,on:0},red:{shots:0,on:0}};G.chain=0;G.chainT=0;G.otLeft=0;hypeReset();tutInit();mgrReset();
   resetPositions();
 }
 function setHuman(p){
@@ -1373,7 +1373,7 @@ function bestMate(p,ax,az,aiMode){
     const lane=laneBlock(pk.x,pk.z,m.x,m.z,tm),open=oppNear(m.x,m.z,tm);let s=0;
     if(aiMode){
       if(d<4||d>24||!onside)continue;
-      s=(m.x-pk.x)*tm.dir*.5-d*.12+Math.min(open,6)*.8+shotQ(m.x,m.z,tm)*10;
+      s=(m.x-pk.x)*tm.dir*.5-d*.12+Math.min(open,6)*.8+shotQ(m.x,m.z,tm)*10+((m.human||m.remote)&&!hkAuto()?HK.mate:0);
       if(lane<1.8)s-=8;else if(lane<2.6)s-=2.5;
     }else{
       const cs=(dx*ax+dz*az)/(d||1);
@@ -1391,7 +1391,7 @@ function doPass(p,mate){
   p.anim.swing=1;p.cd.pass=.35;p.shotGrace=.12;if(G.carry)carryRelease(G.carry===p?.3:.6);pk.last=p;pk.lastTeam=p.team;pk.lastT=G.t;pk.shot=null;
   G.pass={from:p,to:mate,t:G.t,d:d};
   if(p.team===G.mine&&G.stats){G.stats.passTry++;updateObjective();}
-  if(p.human)G.pending={to:mate,t:.28};
+  if(p.human)G.pending={to:mate,t:HK.sw};else if(p.remote&&G.net==='host')NET.pend={to:mate,t:HK.sw};
   popAt(__L('패스!'),pk.x,1.4,pk.z);SFX.tap();return true;
 }
 function doDash(p){
@@ -1445,7 +1445,7 @@ function useSpecial(p){
 function humanAim(p){
   let ax=Math.sin(p.heading),az=Math.cos(p.heading);if(p.remote&&p.raim&&(p.raim[0]||p.raim[1]))return assistAim(p,p.raim[0],p.raim[1]);
   if(p.human&&!IS_TOUCH&&G.mouse.active&&performance.now()-G.mouse.t<3000){const dx=G.mouse.wx-p.x,dz=G.mouse.wz-p.z,l=Math.hypot(dx,dz);if(l>1.1){ax=dx/l;az=dz/l;}}
-  else{const m=Math.hypot(p.ix||0,p.iz||0);if(m>.3){ax=p.ix/m;az=p.iz/m;}}   // v36: the stick direction, not the facing
+  else if(p.hkAim){ax=p.hkAim[0];az=p.hkAim[1];}else{const m=Math.hypot(p.ix||0,p.iz||0);if(m>.3){ax=p.ix/m;az=p.iz/m;}}   // v36: the stick direction, not the facing
   return assistAim(p,ax,az);
 }
 
@@ -1599,7 +1599,7 @@ function aiThink(p){
 }
 function aiSkater(p,dt){
   const ai=p.ai,df=G.diff;
-  ai.think-=dt;ai.cool-=dt;ai.dash-=dt;ai.slotT-=dt;
+  ai.think-=dt;ai.cool-=dt;ai.dash-=dt;ai.slotT-=dt;hkCallPass(p);
   if(ai.plan){   // visible wind-up before an AI shot
     ai.plan.t-=dt;p.charging=true;p.charge=Math.min(1,p.charge+dt/.45*(ttOf(p).chg||1));
     if(reach(p)>3.3||(p.fall>0)){ai.plan=null;p.charging=false;p.charge=0;}
@@ -1663,8 +1663,10 @@ function aiGoalie(p,dt){
 }
 function humanControl(p,dt,inp){inp=inp||input;
   p.ix=inp.x;p.iz=inp.z;
+  if(hkEarly(p,inp))return;   // v38: a press right after your own pass belongs to the receiver
   if(p.fall>0){inp.shootPress=inp.pass=inp.dash=inp.special=inp.shootRel=false;p.charging=false;p.charge=0;return;}
-  if(inp.shootPress){inp.shootPress=false;if(p.cd.shoot<=0){p.charging=true;p.charge=0;p.stage=0;}}
+  if(hkPokePress(p,inp)){}   // v38: an opponent has the puck → poke check
+  else if(inp.shootPress){inp.shootPress=false;if(p.cd.shoot<=0){p.charging=true;p.charge=0;p.stage=0;}}
   if(p.charging&&inp.shoot){
     p.charge=Math.min(1,p.charge+dt/(.75*(p.tr&&p.tr.charge?.88:1))*(ttOf(p).chg||1));
     const sg=p.charge<.14?0:p.charge<.45?1:p.charge<.8?2:3;
@@ -1672,31 +1674,18 @@ function humanControl(p,dt,inp){inp=inp||input;
   }
   if(inp.shootRel){
     inp.shootRel=false;
-    if(p.charging&&p.cd.shoot<=0){if(!canHit(p))p.bufShot={at:G.t,c:p.charge};else{const a=humanAim(p);performShot(p,a[0],a[1],p.charge);}}
+    if(p.charging&&p.cd.shoot<=0){if(!canHit(p))hkBufShot(p);else{if(hkIncoming(p))touchPuck(p,3);const a=humanAim(p);performShot(p,a[0],a[1],p.charge);}}
     p.charging=false;p.charge=0;p.stage=0;
   }
-  if(inp.pass){inp.pass=false;if(p.cd.pass<=0&&!canHit(p))p.bufPass={at:G.t};else if(p.cd.pass<=0){const a=humanAim(p),m=bestMate(p,a[0],a[1],false);if(!doPass(p,m)){p.cd.pass=.15;SFX.whoosh();}}}
-  ctlBuf(p);
+  hkCallPress(p,inp);   // v38: an AI team-mate has the puck → ask for it
+  if(inp.pass){inp.pass=false;if(p.cd.pass<=0&&!canHit(p))p.bufPass={at:G.t,w:hkIncoming(p)};else if(p.cd.pass<=0){const a=humanAim(p),m=bestMate(p,a[0],a[1],false);if(m&&hkIncoming(p))touchPuck(p,3);if(!doPass(p,m)){p.cd.pass=.15;SFX.whoosh();}}}
+  ctlBuf(p);hkRecvAssist(p,inp);   // v38: glide onto an incoming pass while a one-timer waits
   if(inp.dash){inp.dash=false;doDash(p);}
   if(inp.special){inp.special=false;useSpecial(p);}
   if(inp.swap){inp.swap=false;if(inp===input)swapNearest();else netSwapNearest(p);}
 }
-function swapNearest(){
-  if(G.so||G.ps)return;
-  const tm=G.mine;if(!tm||!G.player)return;const pk=G.puck;let best=null,bd=1e9;
-  for(const s of tm.skaters){if(s===G.player||s.fall>0||s.frozen)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
-  if(best){setHuman(best);G.switchCd=.8;SFX.ui();}
-}
-function autoSwitch(dt){
-  if(G.so||G.ps)return;
-  if(G.carry&&G.mine&&G.carry.team===G.mine&&G.carry!==G.player&&!G.pending){setHuman(G.carry);G.switchCd=.6;return;}
-  const tm=G.mine;if(!tm||!G.player)return;
-  if(G.pending){G.pending.t-=dt;if(G.pending.t<=0){if(G.pending.to.fall<=0&&tm.skaters.includes(G.pending.to))setHuman(G.pending.to);G.pending=null;G.switchCd=.8;}return;}
-  G.switchCd-=dt;if(G.switchCd>0)return;
-  const pk=G.puck,dc=Math.hypot(pk.x-G.player.x,pk.z-G.player.z);if(dc<5&&G.player.fall<=0)return;
-  let best=null,bd=1e9;for(const s of tm.skaters){if(s===G.player||s.fall>0||s.frozen)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
-  if(best&&dc-bd>3.5){setHuman(best);G.switchCd=1;}
-}
+function swapNearest(){hkSwap();}
+function autoSwitch(dt){hkAutoSwitch(dt);}
 
 /* ================= SIMULATION (fixed 120 Hz step) ================= */
 function decide(dt){
@@ -2069,7 +2058,7 @@ function updateCamera(dt){
   }else{
     const pk=G.puck,pl=G.player;let fx=pk.x,fz=pk.z;
     if(G.state==='goal'&&G.scoredBy&&!(G.replay&&G.replay.active)){let sx=0,sz=0,n=0;for(const p of G.scoredBy.skaters){sx+=p.x;sz+=p.z;n++;}if(n){fx=lerp(pk.x,sx/n,.6);fz=lerp(pk.z,sz/n,.6);}}
-    else if(pl){fx=lerp(pk.x,pl.x,.4);fz=lerp(pk.z,pl.z,.4);}
+    else if(pl){const w=hkCamW(pl);fx=lerp(pk.x,pl.x,w);fz=lerp(pk.z,pl.z,w);}
     fx+=clamp(pk.vx*.12,-4,4);fx=clamp(fx,-W+9,W-9);fz=clamp(fz,-D*.35,D*.35);
     const k=1-Math.exp(-4*dt);G.cam.x+=(fx-G.cam.x)*k;G.cam.z+=(fz-G.cam.z)*k;
     let zoom=1;if(G.state==='goal')zoom=(G.replay&&G.replay.active)?.85:.62;else if(pl){const sp=Math.hypot(pk.x-pl.x,pk.z-pl.z);zoom=1+clamp((sp-8)/30,0,.25);}
@@ -2260,7 +2249,7 @@ function step(dt){
     if(G.view==='menu'){marker.visible=false;markerRing.visible=false;aimArrow.visible=false;passRing.visible=false;}
   }}catch(e){dbgErr('logic',e);}
   safe(hypeFrame,dt);safe(funFrame,dt);safe(tutFrame,dt);safe(mgrFrame,dt);safe(arenaFrame,dt);safe(v17Frame,dt);safe(v18Frame,dt);safe(v22Frame,dt);safe(v23Frame,G.cine?G.rdt:dt);safe(netFrame,dt);
-  safe(updateWeather,dt);safe(updateParticles,G.cine?G.rdt:dt);safe(updateWorld,dt);safe(()=>setTOD(todTarget(),dt));safe(updateCamera,dt);safe(updateHud);safe(ctlFrame);
+  safe(updateWeather,dt);safe(updateParticles,G.cine?G.rdt:dt);safe(updateWorld,dt);safe(()=>setTOD(todTarget(),dt));safe(updateCamera,dt);safe(updateHud);safe(ctlFrame);safe(hkFrame);
 }
 function frame(){
   const now=clockT(),raw=now-lastT;lastT=now;const dt=Math.min(.05,raw);
@@ -7694,19 +7683,8 @@ function remoteControl(p,dt){
   p.raim=(R.ax||R.az)?[+R.ax,+R.az]:null;
   humanControl(p,dt,v);
 }
-function netAutoSwitch(dt){
-  const tm=G.teams.red,cur=NET.rp;if(!tm||!cur||G.so||G.ps)return;
-  if(G.carry&&G.carry.team===tm&&G.carry!==cur&&!G.carry.goalie){netSetRemote(G.carry);NET.swCd=.6;return;}
-  NET.swCd-=dt;if(NET.swCd>0)return;
-  const pk=G.puck,dc=Math.hypot(pk.x-cur.x,pk.z-cur.z);if(dc<5&&cur.fall<=0)return;
-  let best=null,bd=1e9;for(const s of tm.skaters){if(s===cur||s.fall>0||s.frozen)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
-  if(best&&dc-bd>3.5){netSetRemote(best);NET.swCd=1;}
-}
-function netSwapNearest(p){
-  const tm=p.team,pk=G.puck;let best=null,bd=1e9;
-  for(const s of tm.skaters){if(s===p||s.fall>0||s.frozen)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
-  if(best){netSetRemote(best);NET.swCd=.8;}
-}
+function netAutoSwitch(dt){hkNetAutoSwitch(dt);}
+function netSwapNearest(p){hkNetSwap(p);}
 const netR2=x=>Math.round((+x||0)*100)/100;
 function netSnap(){
   const P=G.pengs.map(p=>[netR2(p.x),netR2(p.z),netR2(p.vx),netR2(p.vz),netR2(p.heading),p.pose||'play',netR2(p.fall),p.charging?netR2(p.charge):-1,
@@ -8227,7 +8205,7 @@ var CJ={home:null};
 var CE={on:false,work:null,sel:'shoot',drag:null,fold:false,from:''};
 // save.set.ctl, sanitised (literals only: also called from loadSave before this module has run)
 function ctlLoad(q){
-  const d={sz:1,op:1,js:1,jm:'follow',sens:'mid',easy:true,swap:true,P:{},L:{}};
+  const d={sz:1,op:1,js:1,jm:'follow',sens:'mid',easy:true,swap:true,auto:false,P:{},L:{}};
   if(!q||typeof q!=='object')return d;
   const n=(v,a,b,df)=>{v=+v;return Number.isFinite(v)?Math.round(Math.min(b,Math.max(a,v))*1000)/1000:df;};
   d.sz=n(q.sz,.7,1.5,1);d.op=n(q.op,.3,1,1);d.js=n(q.js,.7,1.5,1);
@@ -8235,6 +8213,7 @@ function ctlLoad(q){
   if(q.sens==='low'||q.sens==='high')d.sens=q.sens;
   if(q.easy===false)d.easy=false;
   if(q.swap===false)d.swap=false;
+  if(q.auto===true)d.auto=true;
   for(const o of['P','L']){const src=q[o];if(!src||typeof src!=='object')continue;
     for(const k of['shoot','pass','dash','spec','swap','joy']){const e=src[k];
       if(Array.isArray(e)&&e.length>=2&&Number.isFinite(+e[0])&&Number.isFinite(+e[1]))d[o][k]=[n(e[0],0,1,.5),n(e[1],0,1,.5),n(e[2],.6,1.6,1)];}}
@@ -8273,18 +8252,7 @@ function ctlJoyIdle(){
 }
 
 /* ---- shots / passes pressed a moment early ---- */
-function ctlBuf(p){
-  const b=p.bufShot,q=p.bufPass,lim=CTLV.buf;
-  if(b){const age=G.t-b.at;
-    if(p.fall>0||age>lim+.1||age<0)p.bufShot=null;                                   // stale (switched penguin, stoppage)
-    else if(p.cd.shoot<=0&&(canHit(p)||age>=lim)){p.bufShot=null;const a=humanAim(p);performShot(p,a[0],a[1],b.c);}   // in reach → shot; too late → the normal whiff
-  }
-  if(q){const age=G.t-q.at;
-    if(p.fall>0||age>lim+.16||age<0)p.bufPass=null;
-    else if(p.cd.pass<=0&&canHit(p)){const a=humanAim(p),m=bestMate(p,a[0],a[1],false);p.bufPass=null;if(!doPass(p,m)){p.cd.pass=.15;SFX.whoosh();}}
-    else if(age>=lim+.06){p.bufPass=null;p.cd.pass=.15;SFX.whoosh();}
-  }
-}
+function ctlBuf(p){hkBuf(p);}
 
 /* ---- easy handling (movePeng) ---- */
 function ctlEasy(p){
@@ -8331,7 +8299,7 @@ function ctlApply(c){
   hx=clamp(hx,zl+a,Math.max(zl+a,zl+Z.w-a));hy=clamp(hy,Z.t+a,Math.max(Z.t+a,vh-a-M));
   CJ.home={x:Math.round(hx),y:Math.round(hy)};
   if(jid===null)ctlJoyIdle();
-  ctlFitAll();   // v37: one-line labels
+  hkRemember();ctlFitAll();   // v37: one-line labels
 }
 let ctlRzT=0;
 function ctlResize(){clearTimeout(ctlRzT);ctlRzT=setTimeout(()=>{safe(ctlApply,CE.on?CE.work:null);if(CE.on)safe(ctlEdRender);},150);}
@@ -8389,10 +8357,10 @@ function ctlEdHtml(){
       +'<div class="ce-opt"><span>'+__L(__L('조이스틱'))+'</span>'+seg('jm',c.jm,[['follow',__L(__L('따라오기'))],['fixed',__L(__L('고정'))]])+'</div>'
       +'<div class="ce-opt"><span>'+__L(__L('조이스틱 감도'))+'</span>'+seg('sens',c.sens,[['low',__L(__L('낮음'))],['mid',__L(__L('보통'))],['high',__L(__L('높음'))]])+'</div>'
       +'<div class="ce-opt"><span>'+__L(__L('쉬운 조작'))+'</span>'+seg('easy',c.easy,[[true,__L(__L('켜기'))],[false,__L(__L('끄기'))]])+'</div>'
-      +'<div class="ce-opt"><span>'+__L(__L('교체 버튼'))+'</span>'+seg('swap',c.swap,[[true,__L(__L('표시'))],[false,__L(__L('숨김'))]])+'</div>'
+      +'<div class="ce-opt"><span>'+__L(__L('펭귄 교체'))+'</span>'+seg('auto',c.auto,[[false,__L(__L('버튼으로만'))],[true,__L(__L('자동'))]])+'</div>'+'<div class="ce-opt"><span>'+__L(__L('교체 버튼'))+'</span>'+seg('swap',c.swap,[[true,__L(__L('표시'))],[false,__L(__L('숨김'))]])+'</div>'
       +'</div><div class="ce-note">'+__L(__L('쉬운 조작: 방향을 빨리 바꾸고 덜 미끄러져요 (친구 대전에서는 두 사람 모두 켜져요)'))+'<br>'
       +(c.jm==='fixed'?__L(__L('고정: 조이스틱이 그 자리에 있어요. 조이스틱 쪽 화면 어디를 눌러도 그 방향으로 움직여요')):__L(__L('따라오기: 누른 곳에 조이스틱이 생기고, 손가락을 멀리 끌면 따라와요')))
-      +(c.swap?'':'<br>'+__L(__L('교체 버튼을 숨겨도 퍽에 가까운 펭귄으로 자동 교체돼요')))+'</div>';
+      +'<br>'+hkSwapNote(c)+'</div>';
   }
   h+='<div class="row ce-btns"><button class="btn small" data-ce="def">'+__L(__L('모두 기본값'))+'</button><button class="btn small" id="ceCancel" data-ce="cancel">'+__L(__L('취소'))+'</button><button class="btn small primary" data-ce="save">'+__L(__L('저장'))+'</button></div>';
   return h;
@@ -8404,6 +8372,7 @@ function ctlEdAct(act,v){
   else if(act==='jm')c.jm=v==='fixed'?'fixed':'follow';
   else if(act==='sens')c.sens=['low','mid','high'].includes(v)?v:'mid';
   else if(act==='easy')c.easy=v==='true';
+  else if(act==='auto')c.auto=v==='true';
   else if(act==='swap'){c.swap=v==='true';if(!c.swap&&CE.sel==='swap')CE.sel='shoot';}
   else if(act==='def'){CE.work=ctlLoad(null);CE.sel='shoot';}
   else if(act==='cancel'){SFX.ui();ctlEdClose(false);return;}
@@ -8470,12 +8439,198 @@ function ctlFitAll(){
   finally{t.classList.remove('meas');}
 }
 
+/* ================= v38: 🏒 hockey-style control (2026-11-09) ================= */
+// The owner: "the penguin should not change until I pass or press Switch" and "look at how hockey games do it".
+// Taken from hockey games (EA NHL, NHL 94, FC Mobile's switching options) — reference only, our own numbers:
+//  1) Switching is yours. Only a pass (control goes to the receiver) or the Switch button changes your penguin.
+//     Switch picks the team-mate nearest the puck (NHL: "closest to the puck"); a white ring shows who that is.
+//     Auto switching stays as a setting (FC Mobile offers manual / auto), off by default and never online.
+//     The only forced change: your penguin goes to the penalty box (it cannot play).
+//  2) The buttons follow the play (NHL / FC Mobile change what the buttons do without the puck):
+//     an opponent has the puck → Shoot = Poke (뺏기) · an AI team-mate has it → Pass = Call for it (패스 요청).
+//  3) One-timers / one-touch passes: Shoot or Pass pressed while a pass is on its way to you fires the moment the puck
+//     arrives (NHL 94: "one-timer without the puck"); a press right after your own pass hands control to the receiver at once.
+//  4) The camera keeps the puck in view when your penguin is far from it; an arrow at the screen edge shows your penguin.
+var HK={sw:.28,dbl:.25,callWin:1.2,callDelay:.12,mate:1.5,wait:2.2,otTap:.5,pokeCd:.45,whiffCd:.3,whiffSlow:.25,pokeSp:5,
+  camNear:8,camFar:22,camW:.4,camMin:.25};
+// auto switching (old behaviour) only when the player turned it on, never in a friend match
+function hkAuto(){return !G.net&&!!ctl().auto;}
+// the team-mate the Switch button picks: nearest the puck (the ring shows the same penguin)
+function hkSwapTarget(p){
+  if(!p||!p.team)return null;const pk=G.puck;let best=null,bd=1e9;
+  for(const s of p.team.skaters){if(s===p||s.fall>0||s.frozen||s.boxed)continue;const d=Math.hypot(pk.x-s.x,pk.z-s.z);if(d<bd){bd=d;best=s;}}
+  return best;
+}
+function hkSwap(){
+  if(G.so||G.ps)return;const tm=G.mine;if(!tm||!G.player)return;
+  const best=hkSwapTarget(G.player);if(best){setHuman(best);G.pending=null;G.switchCd=.8;SFX.ui();}
+}
+function hkNetSwap(p){const best=hkSwapTarget(p);if(best){netSetRemote(best);NET.pend=null;NET.swCd=.8;}}
+function hkAutoSwitch(dt){
+  if(G.so||G.ps)return;
+  const tm=G.mine;if(!tm||!G.player)return;
+  // Switch works while your penguin is down: a knocked-down penguin gets no input, so the press used to wait until it got up
+  if(input.swap&&G.player.fall>0){input.swap=false;hkSwap();}
+  if(G.pending){G.pending.t-=dt;if(G.pending.t<=0){const to=G.pending.to;G.pending=null;G.switchCd=.8;if(to.fall<=0&&!to.frozen&&tm.skaters.includes(to))setHuman(to);}return;}
+  if(!hkAuto())return;   // manual (default): nothing else changes your penguin
+  if(G.carry&&G.carry.team===tm&&G.carry!==G.player){setHuman(G.carry);G.switchCd=.6;return;}
+  G.switchCd-=dt;if(G.switchCd>0)return;
+  const pk=G.puck,dc=Math.hypot(pk.x-G.player.x,pk.z-G.player.z);if(dc<5&&G.player.fall<=0)return;
+  const best=hkSwapTarget(G.player),bd=best?Math.hypot(pk.x-best.x,pk.z-best.z):1e9;
+  if(best&&dc-bd>3.5){setHuman(best);G.switchCd=1;}
+}
+// the friend's penguin (host side): a pass hands control to the receiver; the penalty box is the only forced change
+function hkNetAutoSwitch(dt){
+  const tm=G.teams.red,cur=NET.rp;if(!tm||!cur||G.so||G.ps)return;
+  if(cur.fall>0){const c=Array.isArray(NET.rin.c)?NET.rin.c:[],n=c[5]|0;if(n>NET.rseen[5]){NET.rseen[5]=n;hkNetSwap(cur);return;}}   // the friend's Switch while down
+  const P=NET.pend;
+  if(P){P.t-=dt;if(P.t<=0){NET.pend=null;if(P.to.fall<=0&&!P.to.frozen&&tm.skaters.includes(P.to))netSetRemote(P.to);}return;}
+  if(cur.boxed){const o=hkSwapTarget(cur);if(o)netSetRemote(o);}
+}
+// a Shoot / Pass press right after your own pass belongs to the receiver: control moves now and the press is kept for them
+function hkEarly(p,inp){
+  if(!(inp.shootPress||inp.pass))return false;
+  const pend=p.human&&inp===input?G.pending:(p.remote?NET.pend:null);
+  if(!pend||!pend.to||pend.to===p)return false;
+  if(inp.pass&&G.pass&&G.pass.from===p&&G.t-G.pass.t<HK.dbl){inp.pass=false;if(!inp.shootPress)return false;}   // a double tap is not a one-touch pass
+  const to=pend.to;if(to.fall>0||to.frozen)return false;
+  if(p.human){G.pending=null;G.switchCd=.8;setHuman(to);}else{NET.pend=null;netSetRemote(to);}
+  return true;
+}
+// while you wait for a pass with a shot / pass queued (or a shot charging), your penguin glides onto the puck's path and the
+// stick only aims — otherwise pushing the stick to aim would skate you away from the pass
+function hkRecvAssist(p,inp){
+  p.hkAim=null;
+  if(!hkIncoming(p)||!((p.bufShot&&p.bufShot.w)||(p.bufPass&&p.bufPass.w)||p.charging))return;
+  const m=Math.hypot(inp.x||0,inp.z||0);if(m>.3)p.hkAim=[inp.x/m,inp.z/m];
+  const pk=G.puck,sp=Math.hypot(pk.vx,pk.vz);if(sp<1)return;
+  const ux=pk.vx/sp,uz=pk.vz/sp,along=(p.x-pk.x)*ux+(p.z-pk.z)*uz;if(along<0)return;   // already past you
+  const dx=pk.x+ux*along-p.x,dz=pk.z+uz*along-p.z,d=Math.hypot(dx,dz);
+  if(d<.35){p.ix=0;p.iz=0;}else{const k=Math.min(1,d/2.5);p.ix=dx/d*k;p.iz=dz/d*k;}
+}
+function hkIncoming(p){const ps=G.pass;return !!(ps&&ps.to===p&&ps.from!==p&&ps.from.team===p.team);}
+function hkBufShot(p){p.bufShot={at:G.t,c:p.charge,w:hkIncoming(p)};if(p.bufShot.w&&p.human)popAt(__L(__L('원타이머 준비!')),p.x,2.6,p.z);}
+// a tapped one-timer is struck firmly (a hockey one-timer is a slap shot, not a nudge)
+function hkOtCharge(p,b){const ot=G.t-(p.recvT==null?-9:p.recvT)<OT_WIN;return (b.w&&ot&&b.c<.14)?Math.max(b.c,HK.otTap):b.c;}
+// v36 buffer + v38: a press made while a pass is coming to you waits for the puck (up to HK.wait s) instead of 0.22 s
+function hkBuf(p){
+  const b=p.bufShot,q=p.bufPass,lim=CTLV.buf,inc=hkIncoming(p);
+  if(b){const age=G.t-b.at;
+    if(b.w&&!inc&&!canHit(p))p.bufShot=null;                                           // the pass did not reach you: dropped quietly
+    else if(p.fall>0||age<0||(!b.w&&age>lim+.1)||age>HK.wait)p.bufShot=null;           // stale (switched penguin, stoppage)
+    else if(p.cd.shoot<=0&&(canHit(p)||(!b.w&&age>=lim))){p.bufShot=null;if(inc&&canHit(p))touchPuck(p,3);   // struck straight off the pass = received (one-timer)
+      const a=humanAim(p);performShot(p,a[0],a[1],hkOtCharge(p,b));}
+  }
+  if(q){const age=G.t-q.at;
+    if(q.w&&!inc&&!canHit(p))p.bufPass=null;
+    else if(p.fall>0||age<0||(!q.w&&age>lim+.16)||age>HK.wait)p.bufPass=null;
+    else if(p.cd.pass<=0&&canHit(p)){const a=humanAim(p),m=bestMate(p,a[0],a[1],false);p.bufPass=null;if(inc&&m)touchPuck(p,3);if(!doPass(p,m)){p.cd.pass=.15;SFX.whoosh();}}
+    else if(!q.w&&age>=lim+.06){p.bufPass=null;p.cd.pass=.15;SFX.whoosh();}
+  }
+}
+/* ---- the buttons follow the play ---- */
+// Pass while an AI team-mate carries the puck = "pass it here" (NHL: call for pass). Never buffered, so the pass you get
+// is not passed straight on.
+function hkCallPress(p,inp){
+  if(!inp.pass)return false;const c=G.carry;
+  if(!c||c===p||c.team!==p.team||c.human||c.remote||c.goalie)return false;
+  inp.pass=false;if(p.cd.pass>0)return true;
+  G.callFor={p,t:G.t};p.cd.pass=.3;if(p.human)popAt(__L(__L('🙋 여기!')),p.x,2.5,p.z);SFX.ui();return true;
+}
+// the AI carrier answers a call (a short reaction delay; a shot already well wound up goes first)
+function hkCallPass(p){
+  const c=G.callFor;if(!c)return;if(G.t-c.t>HK.callWin){G.callFor=null;return;}
+  if(G.carry!==p)return;const q=c.p;
+  if(q===p||q.team!==p.team||!(q.human||q.remote)||q.fall>0||q.frozen){G.callFor=null;return;}
+  if(G.t-c.t<HK.callDelay||p.cd.pass>0||!canHit(p))return;
+  if(p.ai&&p.ai.plan){if(p.charge>.45)return;p.ai.plan=null;p.charging=false;p.charge=0;}
+  G.callFor=null;doPass(p,q);
+}
+// Shoot while an opponent carries the puck = poke check: in stick reach (the same reach as a shot) the puck is knocked
+// to your stick; out of reach it is a whiff that costs a moment. (Before v38 the same press shot the puck off their stick.)
+function hkPokePress(p,inp){
+  if(!inp.shootPress)return false;const c=G.carry;
+  if(!c||c.team===p.team||c.goalie||p.cd.shoot>0)return false;
+  inp.shootPress=false;inp.shootRel=false;if(inp===input)input.shoot=false;
+  p.charging=false;p.charge=0;p.stage=0;p.anim.swing=1;
+  if(canHit(p)&&!(c.shadowT>0||c.hopT>0)){
+    const pk=G.puck;carryRelease(.5);
+    const f=p.r+PUCKR+.12,tx=p.x+Math.sin(p.heading)*f,tz=p.z+Math.cos(p.heading)*f,dx=tx-pk.x,dz=tz-pk.z,l=Math.hypot(dx,dz)||1,sp=Math.min(HK.pokeSp,l*5+1);
+    pk.vx=p.vx+dx/l*sp;pk.vz=p.vz+dz/l*sp;pk.shot=null;touchPuck(p,3);p.cd.shoot=HK.pokeCd;
+    if(G.cfg&&G.cfg.mode!=='demo'){if(p.team===G.mine){popAt(__L(__L('뺏기!')),c.x,2.4,c.z);if(realMatch())save.cum.steals++;if(p.human)vib(15);}
+      else if(c.team===G.mine)popAt(__L(__L('빼앗겼다!')),c.x,2.3,c.z);}
+    SFX.hit(.6);return true;
+  }
+  p.cd.shoot=HK.whiffCd;p.slow=Math.max(p.slow,HK.whiffSlow);SFX.whoosh();whiffFx(p);
+  return true;
+}
+// what Shoot / Pass do right now (also used for the button labels)
+function hkCtx(p){
+  const c=G.carry,live=G.state==='play'||G.state==='ready';
+  if(!p||!live||G.so||G.ps||!c)return{sh:0,pa:0};
+  return{sh:c.team!==p.team&&!c.goalie?1:0,pa:c!==p&&c.team===p.team&&!c.human&&!c.remote&&!c.goalie?1:0};
+}
+/* ---- every frame: button labels, the switch ring, the arrow to your penguin ---- */
+function hkRemember(){for(const id of['#tbShoot','#tbPass']){const b=$(id);if(b&&b.style&&b.dataset)b.dataset.fs=b.style.fontSize||'';}}
+function hkLab(id,txt,cls){
+  const b=$(id);if(!b||!b.classList)return;let t=b.firstChild;
+  if(!t||t.nodeType!==3){t=document.createTextNode('');b.insertBefore(t,b.firstChild);}
+  if(t.nodeValue===txt)return;
+  t.nodeValue=txt;b.classList.toggle('hk-poke',cls==='poke');b.classList.toggle('hk-call',cls==='call');
+  if(b.dataset&&b.dataset.fs!=null)b.style.fontSize=b.dataset.fs;try{ctlFitAll();}catch(_){}
+}
+function hkLabels(){
+  const x=hkCtx(G.view==='game'?G.player:null);
+  hkLab('#tbShoot',x.sh?__L(__L('뺏기')):__L(__L('슛')),x.sh?'poke':'');
+  hkLab('#tbPass',x.pa?__L(__L('패스 요청')):__L(__L('패스')),x.pa?'call':'');
+}
+var HKR={ring:null,tgt:null,v:null,off:null};
+function hkRingFrame(){
+  if(!HKR.ring){if(typeof T==='undefined'||!T.RingGeometry||!T.Group||!scene)return;
+    // a white ring with a dark edge: plain white disappears on the white ice
+    const mk=(a,b,c,o)=>{const m=new T.Mesh(new T.RingGeometry(a,b,40),new T.MeshBasicMaterial({color:c,transparent:true,opacity:o,side:T.DoubleSide,depthWrite:false,depthTest:false}));m.rotation.x=-Math.PI/2;return m;};
+    HKR.ring=new T.Group();HKR.ring.add(mk(1.0,1.13,0x14304d,.55));HKR.ring.add(mk(.82,1.0,0xffffff,.95));
+    HKR.ring.position.y=.042;HKR.ring.visible=false;scene.add(HKR.ring);}
+  const p=G.player,r=HKR.ring;let t=null;
+  if(p&&G.view==='game'&&(G.state==='play'||G.state==='ready')&&!G.so&&!G.ps&&!G.cine&&G.carry!==p&&!canHit(p)&&!p.charging)t=hkSwapTarget(p);
+  HKR.tgt=t;if(!t){r.visible=false;return;}
+  r.visible=true;r.position.set(t.rx,.042,t.rz);const k=.85+.15*Math.sin(G.t*3);
+  if(r.children&&r.children.length===2){r.children[0].material.opacity=.55*k;r.children[1].material.opacity=.95*k;}
+}
+// camera: the puck stays the main subject when your penguin is far from it (it used to sit 40 % of the way to your penguin)
+function hkCamW(pl){const pk=G.puck,d=Math.hypot(pk.x-pl.x,pk.z-pl.z);return HK.camW*clamp(1-(d-HK.camNear)/HK.camFar,HK.camMin,1);}
+function hkOffFrame(){
+  let el=HKR.off;
+  if(!el){if(!document.body||!document.createElement)return;el=HKR.off=document.createElement('div');el.id='hkOff';el.setAttribute('aria-hidden','true');document.body.appendChild(el);}
+  const p=G.player;
+  if(!p||G.view!=='game'||G.cine||G.so||G.ps||typeof T==='undefined'||!T.Vector3||!camera){el.style.display='none';return;}
+  const v=HKR.v||(HKR.v=new T.Vector3());v.set(p.rx,1,p.rz);if(typeof v.project!=='function'){el.style.display='none';return;}
+  if(camera.updateMatrixWorld)camera.updateMatrixWorld();v.project(camera);
+  const W_=innerWidth,H_=innerHeight,m=30;let x=(v.x*.5+.5)*W_,y=(-v.y*.5+.5)*H_;
+  if(v.z<1&&x>m&&x<W_-m&&y>m+44&&y<H_-m){el.style.display='none';return;}
+  const cx=W_/2,cy=H_/2;let dx=x-cx,dy=y-cy;if(v.z>=1){dx=-dx;dy=-dy;}
+  const k=Math.min((W_/2-m)/Math.max(Math.abs(dx),1e-6),(H_/2-m-22)/Math.max(Math.abs(dy),1e-6));
+  const ex=cx+dx*k,ey=cy+dy*k;
+  el.style.display='block';el.style.transform='translate('+Math.round(ex-18)+'px,'+Math.round(ey-18)+'px) rotate('+Math.atan2(dy,dx).toFixed(3)+'rad)';
+}
+function hkFrame(){
+  try{if(document.body&&document.body.classList.contains('touch'))hkLabels();}catch(_){}
+  hkRingFrame();hkOffFrame();
+}
+/* ---- settings (조작 설정): 펭귄 교체 = 버튼으로만 (default) / 자동 ---- */
+function hkSwapNote(c){
+  let t=c.auto?__L(__L('자동: 퍽에 더 가까운 펭귄으로 저절로 바뀌어요')):__L(__L('버튼으로만: 패스하거나 교체 버튼을 누를 때만 바뀌어요 · 흰 링이 바뀔 펭귄이에요'));
+  t+=' ('+__L(__L('친구 대전에서는 두 사람 모두 버튼으로만'))+')';
+  if(!c.swap)t+='<br>'+(c.auto?__L(__L('교체 버튼을 숨겨도 퍽에 가까운 펭귄으로 자동 교체돼요')):__L(__L('교체 버튼을 숨기면 패스할 때만 펭귄이 바뀌어요')));
+  return t;
+}
+
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();safe(accInit);safe(dlyInit);safe(dlyAuto);safe(ctlInit);
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

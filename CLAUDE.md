@@ -12,6 +12,10 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 - Every probability / number shown on screen must equal the code that decides it (tests check this).
 - Controls (v36, `controls-v36.md`): shots / passes aim where the stick points; easy handling applies to human-controlled
   skaters only (never AI), always on for both players online; layout per orientation in `save.set.ctl`.
+- Switching (owner, 2026-11-09; v38, `hockey-v38.md`): the human's penguin changes ONLY on a pass (→ receiver) or the Switch button
+  (→ team-mate nearest the puck = the white ring). The only forced change is the penalty box. Auto switching is a setting
+  (`save.set.ctl.auto`, off by default, never online). Without the puck the buttons follow the play: Shoot = 뺏기 (poke) when an
+  opponent carries, Pass = 패스 요청 (call) when an AI team-mate carries.
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
@@ -25,7 +29,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -60,6 +64,10 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 - Unit suites (Node, mocked THREE): `bash runsuites.sh` (≈ 15 min). Single suite: `node v22test.js`. `v35test.js` reports its online
   checks as SKIPPED unless the Firebase emulators run.
 - `tools/refsim.js`: how much the referee turns (°/s, direction reversals) in AI-vs-AI matches.
+- `tools/hksim.js`: a scripted human against the AI, auto switching vs buttons only — goals, carry %, why the penguin changed (`N=4 node tools/hksim.js`).
+- AI-vs-AI numbers from before 2026-11-09 (`rulesim`, `refsim`, the referee part of `v29test`) are not comparable: the old auto switching ran
+  before its no-human check, so the blue puck carrier became a zero-input "human" in ≈43 % of play frames and stood still. v38 fixed it;
+  `v29test` now asserts the match is really AI vs AI.
 - `tools/rulesim.js`: AI-vs-AI matches with the referee — calls per match, goals, stoppage time (`N=6 RULES=full|fouls|off node tools/rulesim.js`).
 - Real browser (SwiftShader WebGL): `cd br && npm ci` once, then e.g.
   `node homeverify.js pc`, `node langswitch.js`, `node v17ui.js tall en`, `node v18play.js pc`, `node v19gfx.js pc`, `node offline.js pc`,
@@ -70,6 +78,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node v32bond.js`, `node v33daily.js`, `node v34clutch.js` `<pc|tall|wide|wideS> <lang>`,
   `node v36ctl.js <pc|tall|wide|wideS> <lang>` (controls: layout editor, saved layout in a match, follow / fixed joystick, cooldown rings),
   `node v37fix.js <pc|tall|wide|wideS> <lang>` (touch labels on one line, landscape home titles, finished fish pass on the objectives screen),
+  `node v38hk.js <pc|tall|wide|wideS> <lang>` (no automatic switching with the stick held, white Switch ring, off-screen arrow, 뺏기 / 패스 요청 labels and taps, 펭귄 교체 setting),
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
   `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
@@ -88,4 +97,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
 `rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md`, `landscape-v30.md`, `online-account.md`,
-`growth-daily-comeback.md`, `controls-v36.md` (also kept in the claude.ai project).
+`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md` (also kept in the claude.ai project).

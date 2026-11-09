@@ -17,7 +17,9 @@ const stealTest=dash=>{startMatch({mode:'quick',size:2,time:120,diff:'normal'});
     PH.carryStep(1/120);for(let i=0;i<60;i++){c.dashT=dash?1:0;o.x=pk.x+.4;o.z=.3;PH.carryStep(1/120);}if(G.carry!==c)n++;}
   return n;};
 {const a=stealTest(false),b=stealTest(true);ok(a>=8,'a defender on your stick steals the puck most of the time in 0.5 s ('+a+'/20)');ok(b<a,'dashing with the puck (deke) is much harder to strip ('+b+'/20 vs '+a+'/20)');}
-{startMatch({mode:'quick',size:3,time:120,diff:'normal'});run(3.4);const m=G.mine.skaters.find(s=>s!==G.player);G.carry=m;G.pending=null;PH.autoSwitch(1/120);ok(G.player===m,'when a teammate gets the puck you take control of them');}
+{startMatch({mode:'quick',size:3,time:120,diff:'normal'});run(3.4);const me=G.player,m=G.mine.skaters.find(s=>s!==G.player);G.carry=m;G.pending=null;
+ PH.save.set.ctl.auto=false;PH.autoSwitch(1/120);ok(G.player===me,'v38 (default, buttons only): a team-mate getting the puck does not take your penguin away');
+ PH.save.set.ctl.auto=true;PH.autoSwitch(1/120);ok(G.player===m,'v38 auto switching setting: a team-mate gets the puck → you take control of them');PH.save.set.ctl.auto=false;}
 {const c=G.player;G.carry=c;PH.knock(c,1);PH.carryStep(1/120);ok(G.carry===null,'getting knocked down drops the puck');}
 console.log('runtime errors: '+errs.length);if(errs.length){fails++;errs.slice(0,5).forEach(e=>console.log(e));}
 console.log('TOTAL: '+passes+' passed, '+fails+' failed');process.exit(fails?1:0);
