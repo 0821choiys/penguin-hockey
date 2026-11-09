@@ -19,7 +19,7 @@ X={
 "🎯 다음 {r} 펭귄은 <b>픽업 확정!</b>":("🎯 Your next {r} penguin is <b>the featured one!</b>","🎯 下一只{r}企鹅<b>必定是UP！</b>","🎯 次の{r}ペンギンは<b>ピックアップ確定！</b>"),
 "이 펭귄 카드 1장 사용 · {r} 등급 보너스 +{b}%":("Uses 1 card of this penguin · {r} rarity bonus +{b}%","消耗此企鹅卡1张 · {r}稀有度加成 +{b}%","このペンギンのカードを1枚使用 · {r}レアリティボーナス +{b}%"),
 "돌파 포인트가 {n}점 부족해요 (이 펭귄 카드 1장 = {v}점)":("You need {n} more breakthrough points (1 card of this penguin = {v} pts)","突破点数还差{n}点（此企鹅卡1张 = {v}点）","突破ポイントが{n}pt足りません（このペンギンのカード1枚 = {v}pt）"),
-"{r} 펭귄이 나왔는데 픽업이 아니면 다음 {r} 펭귄은 픽업 확정":("If a {r} penguin isn't the featured one, your next {r} penguin will be","若{r}企鹅不是UP，下一只{r}企鹅必定是UP","{r}ペンギンがピックアップでなかったら、次の{r}ペンギンはピックアップ確定"),
+"{r} 펭귄이 나왔는데 픽업이 아니면 다음 {r} 펭귄은 픽업 확정":("If a {r} penguin is not the featured one, your next {r} penguin is guaranteed to be featured","若{r}企鹅不是UP，下一只{r}企鹅必定是UP","{r}ペンギンがピックアップでなかったら、次の{r}ペンギンはピックアップ確定"),
 "<div class=\"gpity-sub\">다음 뽑기 신화 이상 <b>":("<div class=\"gpity-sub\">Next pull Mythic+ <b>","<div class=\"gpity-sub\">下次抽取神话以上 <b>","<div class=\"gpity-sub\">次の神話以上 <b>"),
 "10회 뽑기: 앞 9장에 {r} 이상이 없으면 10번째는 {r} 이상 보장":("10-pull: if the first 9 have no {r} or better, the 10th is {r} or better","10连抽：前9张没有{r}以上时，第10张保底{r}以上","10回ガチャ：最初の9枚に{r}以上がなければ10枚目は{r}以上確定"),
 "같은 펭귄 카드는 강화 재료(1장)와 돌파 포인트(1장 = {v}점)로 쓰여요":("Cards of the same penguin are used for upgrades (1 card) and breakthrough points (1 card = {v} pts)","同一企鹅的卡用于强化材料（1张）和突破点数（1张 = {v}点）","同じペンギンのカードは強化素材（1枚）と突破ポイント（1枚 = {v}pt）に使います"),

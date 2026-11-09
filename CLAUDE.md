@@ -25,7 +25,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -41,9 +41,11 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   example in `firebase-config.example.json`). Without it both features say the server is not connected. Rules: `firebase/database.rules.json`.
 - Emulators for tests: `cd firebase && firebase emulators:start --project demo-ph --only auth,database` (auth :9099, db :9000).
   One command: `bash tools/emu.sh` (installs firebase-tools if missing, starts both, waits; needs java — present in the cloud workspace, jar download works through the proxy).
-  **Weekly run: start it before the tests** so `v31test.js`, `v35test.js`, `br/v31net.js` and `br/v35acct.js` really run (verified 2026-11-08: 20 / 14 / 24 / 27 pass).
+  **Weekly run: start it before the tests** so `v31test.js`, `v35test.js`, `br/v31net.js` and `br/v35acct.js` really run (verified 2026-11-09: 14 / 20 / 24 / 27 pass).
   With a real `firebase-config.json` present two offline "server not connected" checks fail by design — build without it for tests.
   `br/v31net.js tall` failed 3 checks on three runs back-to-back right after the emulators started, then passed 24/24 four times: when it fails, rerun once before calling it a bug.
+  `RELAY=1 node v31net.js pc` (database relay) is flaky on the 2-core cloud box: 3 of 8 runs on 2026-11-09 failed one check
+  (position 2 m apart after the key release, or one skill press not seen within 0.8 s); rerun before calling it a bug.
 - v32 growth stories (`bond`), v33 7-day attendance (`login`, trail `dly`), v34 comeback drama — see `growth-daily-comeback.md`.
   Browser tests of other screens set `window.PH_NODAILY=1` so the attendance window does not cover them.
 
@@ -67,9 +69,13 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node v31net.js pc|tall` (+`RELAY=1`) and `node v35acct.js pc|tall|wide <lang>` (need the Firebase emulators),
   `node v32bond.js`, `node v33daily.js`, `node v34clutch.js` `<pc|tall|wide|wideS> <lang>`,
   `node v36ctl.js <pc|tall|wide|wideS> <lang>` (controls: layout editor, saved layout in a match, follow / fixed joystick, cooldown rings),
+  `node v37fix.js <pc|tall|wide|wideS> <lang>` (touch labels on one line, landscape home titles, finished fish pass on the objectives screen),
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
   `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
+- Cloud box has 2 cores: the full browser list takes ≈ 2.5 h. Run browser tests one after another (not next to `runsuites.sh` or
+  `rulesim`), and run `SHOTS=1 node i18nscan.js` with a long timeout (> 25 min each under load). `i18nscan` ignores the 9 px larger
+  touch target of `.tb` buttons (v36) when it looks for text spilling out.
 
 ## Weekly self-critique (every Monday)
 1. Build and run the unit suites + the browser checks above; note anything failing or slow.

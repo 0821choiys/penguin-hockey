@@ -10,13 +10,15 @@ function dlyNext(){return (save.login.d|0)%7;}               // index of the rew
 function dlyGotToday(){return (save.login.last|0)===dlyDay();}
 function dlyTxt(i){const r=DLY[i];
   if(r.t){const just=dlyLast&&dlyLast.i===i&&dlyLast.trail;return save.trails.includes(r.t)&&!just?'⭐'+DLY_DUP+'P':'✨ '+TRAILS[r.t].name+' + ⭐'+r.p+'P';}
-  if(r.f)return '🐟+'+passGain(r.f);return '⭐'+r.p+'P';}
+  if(r.f){if(dlyLast&&dlyLast.i===i&&dlyGotToday())return dlyLast.fish?'🐟+'+dlyLast.fish:'⭐'+dlyLast.pts+'P';
+    return passFull()?'⭐'+r.f+'P':'🐟+'+passGain(r.f);}   // v37: a finished pass holds no more fish → the same number of points
+  return '⭐'+r.p+'P';}
 let dlyLast=null;   // what the last claim in this session gave (for the dialog)
 function dlyClaim(){
   if(!dlyCan())return null;
   const L=save.login,i=dlyNext(),r=DLY[i],out={i,pts:0,fish:0,trail:''};
   if(r.t){if(save.trails.includes(r.t))out.pts=DLY_DUP;else{save.trails.push(r.t);out.trail=r.t;out.pts=r.p;}}
-  else if(r.f){const a=passAdd(r.f);out.fish=a?a.n:0;}
+  else if(r.f){if(passFull())out.pts=r.f;else{const a=passAdd(r.f);out.fish=a?a.got:0;}}
   else out.pts=r.p;
   save.points+=out.pts;
   L.d=i+1;if(L.d>=7){L.d=0;L.cyc=(L.cyc|0)+1;}L.last=dlyDay();L.tot=(L.tot|0)+1;
@@ -27,7 +29,7 @@ function dlyGridHtml(){
   const doneN=(!can&&got&&(L.d|0)===0&&(L.cyc|0)>0)?7:(L.d|0);   // claimed in this cycle (all 7 on the day the cycle completes)
   let h='<div class="dl-grid">';
   for(let i=0;i<7;i++){const r=DLY[i],done=i<doneN,today=can&&i===nx,justGot=!!(dlyLast&&dlyLast.i===i&&got);
-    h+='<div class="dl-t'+(done?' dl-done':'')+(today?' dl-today':'')+(r.t?' dl-big':'')+(justGot?' dl-pop':'')+'"><small>'+fmtL('{d}일',{d:i+1})+'</small><b>'+(r.t?'✨':r.f?'🐟':'⭐')+'</b><span>'+dlyTxt(i)+'</span>'+(done?'<i>✓</i>':'')+'</div>';}
+    h+='<div class="dl-t'+(done?' dl-done':'')+(today?' dl-today':'')+(r.t?' dl-big':'')+(justGot?' dl-pop':'')+'"><small>'+fmtL('{d}일',{d:i+1})+'</small><b>'+(r.t?'✨':r.f&&dlyTxt(i).charAt(0)!=='⭐'?'🐟':'⭐')+'</b><span>'+dlyTxt(i)+'</span>'+(done?'<i>✓</i>':'')+'</div>';}
   return h+'</div>';
 }
 function dlyBody(){
@@ -36,7 +38,7 @@ function dlyBody(){
   if(can)h+='<div class="row"><button class="btn primary" data-dly="claim">🎁 '+fmtL('{d}일차 보상 받기',{d:dlyNext()+1})+'</button></div>';
   else h+='<div class="dl-msg">'+(dlyTamper()?__L('기기 시계가 되돌려져 있어요. 시계가 맞으면 다시 받을 수 있어요'):__L('오늘 출석 완료! 내일 또 와요'))+'</div><div class="row"><button class="btn" data-dly="close">'+__L('닫기')+'</button></div>';
   h+='<div class="dl-foot">'+fmtL('7일차: 출석 전용 트레일 「{n}」 (이미 있으면 ⭐{p}P) · 7일을 다 받으면 1일차부터 다시 시작해요',{n:TRAILS.dly.name,p:DLY_DUP})
-    +((L.tot|0)?' · '+fmtL('지금까지 {n}일 출석',{n:L.tot|0}):'')+'</div>';
+    +' · '+__L('패스를 다 채운 뒤에는 🐟 칸을 같은 수의 ⭐P로 받아요')+((L.tot|0)?' · '+fmtL('지금까지 {n}일 출석',{n:L.tot|0}):'')+'</div>';
   return h;
 }
 function dlyOpen(){

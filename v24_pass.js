@@ -86,17 +86,20 @@ function passCheck(){
 }
 function passGain(n){return passProOn()?Math.round(n*(1+PRO.bonus)):n;}   // 프로 패스: 생선 +PRO.bonus
 function passAdd(n){
-  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier(),g=passGain(n);P.xp=Math.min(PASS.tiers*PASS.per,P.xp+g);const t1=passTier();persist();
-  return{n:g,base:n,bonus:g-n,t0,t1};
+  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier(),g=passGain(n),x0=P.xp;P.xp=Math.min(PASS.tiers*PASS.per,P.xp+g);const t1=passTier();persist();
+  return{n:g,base:n,bonus:g-n,t0,t1,got:P.xp-x0};   // got: fish that really went in (a finished pass holds no more — v37)
 }
 function passMatch(win,draw,ms){
   const E=PASS.earn,P=save.pass,base=win?E.win:draw?E.draw:E.loss,goals=Math.min(ms,E.goalMax)*E.goal,dn=dayNum();
   let first=0;if(win&&P.fw!==dn){first=E.first;P.fw=dn;}
-  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier(),bonus:0};
-  return{base,goals,ms:Math.min(ms,E.goalMax),first,pro:r.bonus||0,total:base+goals+first+(r.bonus||0),t0:r.t0,t1:r.t1,win,draw};
+  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier(),bonus:0,got:0};
+  const total=base+goals+first+(r.bonus||0),got=r.got==null?total:r.got;
+  return{base,goals,ms:Math.min(ms,E.goalMax),first,pro:r.bonus||0,total,got,full:got<total,t0:r.t0,t1:r.t1,win,draw};
 }
 function passRowHtml(R){
   const p=R&&R.pass;if(!p)return '';
+  if(p.full&&!p.got)return '<div class="rs-pass"><span>🐟 '+fmtL('{p} {t}단계 완료! 생선은 다음 시즌 패스부터 다시 모여요',{p:passTitle(save.pass.s),t:PASS.tiers})+'</span></div>';   // v37: no "+63" that goes nowhere
+  if(p.full)return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.got})+' <small>('+fmtL('{t}단계까지 채웠어요',{t:PASS.tiers})+')</small></span><span class="rtag">'+fmtL('{p} {t}단계!',{p:passTitle(save.pass.s),t:p.t1})+'</span></div>';
   const parts=[fmtL(p.win?'승리 {n}':p.draw?'무승부 {n}':'패배 {n}',{n:p.base})];if(p.goals)parts.push(fmtL('골 {n}×{g}',{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL('오늘 첫 승리 {f}',{f:p.first}));if(p.pro)parts.push(fmtL('프로 +{b}',{b:p.pro}));
   return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.total})+' <small>('+parts.join(' · ')+')</small></span>'+(p.t1>p.t0?'<span class="rtag">'+fmtL('{p} {t}단계!',{p:passTitle(save.pass.s),t:p.t1})+'</span>':'<small>'+fmtL('{p} {t}단계',{p:passTitle(save.pass.s),t:p.t1})+'</small>')+'</div>';
 }

@@ -1,0 +1,5 @@
+/* v37: touch button labels never break inside a word (ctlFitAll shrinks the font instead) */
+.tb{white-space:nowrap;word-break:keep-all}
+/* v37: landscape phones — the home tiles use the free width at the sides, so Chinese / Japanese titles
+   (转会市场, 沙丁鱼通行证, 移籍市場 …) no longer break in the middle of a word */
+@media (max-height:520px) and (orientation:landscape){html:not(:lang(ko)) #sMenu .hm-cta{width:min(620px,92vw)}}

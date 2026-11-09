@@ -2999,7 +2999,7 @@ function claimGoal(i){
   goalsEnsure();const g=save.goals.list[i];if(!g)return;const d=GDEFS[g.id];
   if(g.c||g.p<d.n){return;}
   g.c=true;save.points+=d.pts;passAdd(PASS.earn.daily);const r=grantXp(save.type,d.xp);save.cum.dailyDone++;persist();SFX.win();vib([30,30,60]);
-  hypeToast('+'+d.pts+'P · +'+d.xp+'XP · 🐟+'+passGain(PASS.earn.daily)+(r.to>r.from?' · LEVEL UP!':''));$('#ptsN').textContent=save.points;renderGoals();hypeMenuRefresh();
+  hypeToast('+'+d.pts+'P · +'+d.xp+'XP'+goalFishTxt()+(r.to>r.from?' · LEVEL UP!':''));$('#ptsN').textContent=save.points;renderGoals();hypeMenuRefresh();
 }
 function claimLong(id){
   const L=LDEFS.find(x=>x.id===id);if(!L||save.long[id]||L.prog()<L.n)return;
@@ -3078,7 +3078,7 @@ function renderGoals(){
     h+=dlyCardHtml();
     h+=__L('<div class="lbl" style="text-align:center">오늘의 목표 · 완료하면 아래 버튼으로 보상을 받아요 (한 번만 수령)</div>');
     save.goals.list.forEach((g,i)=>{const d=GDEFS[g.id],ok=g.p>=d.n;
-      h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:passGain(PASS.earn.daily)})+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
+      h+='<div class="grow'+(g.c?' done':ok?' rdy':'')+'"><div class="gi"><b>'+gName(g)+'</b><div class="pbar"><i style="width:'+(g.p/d.n*100)+'%"></i></div><small>'+(passFull()?fmtL('{p} / {n} · ⭐{a}P · {x}XP',{p:g.p,n:d.n,a:d.pts,x:d.xp}):fmtL('{p} / {n} · ⭐{a}P · {x}XP · 🐟{s}',{p:g.p,n:d.n,a:d.pts,x:d.xp,s:passGain(PASS.earn.daily)}))+'</small></div>'+(g.c?__L('<span class="gbtn">수령 완료 ✔</span>'):ok?'<button class="btn small primary" data-claim="'+i+__L('">🎁 받기</button>'):__L('<span class="gbtn">진행 중</span>'))+'</div>';});
     h+=__L('<div class="odds">목표는 하루에 한 번 새로 나와요. 기기 날짜를 되돌리면 갱신되지 않아요')+(info.tamper?__L(' <b>(현재 시계가 되돌려진 것으로 감지됨)</b>'):'')+__L('.<br>오프라인 게임이라 날짜 변경을 완전히 막을 수는 없어서, 보상은 작게 설정했어요.</div>');
   }else if(gTab==='long'){
     h+=__L('<div class="lbl" style="text-align:center">장기 목표 · 천천히 도전해 보세요</div>');
@@ -6699,17 +6699,20 @@ function passCheck(){
 }
 function passGain(n){return passProOn()?Math.round(n*(1+PRO.bonus)):n;}   // 프로 패스: 생선 +PRO.bonus
 function passAdd(n){
-  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier(),g=passGain(n);P.xp=Math.min(PASS.tiers*PASS.per,P.xp+g);const t1=passTier();persist();
-  return{n:g,base:n,bonus:g-n,t0,t1};
+  if(!(n>0))return null;passCheck();const P=save.pass,t0=passTier(),g=passGain(n),x0=P.xp;P.xp=Math.min(PASS.tiers*PASS.per,P.xp+g);const t1=passTier();persist();
+  return{n:g,base:n,bonus:g-n,t0,t1,got:P.xp-x0};   // got: fish that really went in (a finished pass holds no more — v37)
 }
 function passMatch(win,draw,ms){
   const E=PASS.earn,P=save.pass,base=win?E.win:draw?E.draw:E.loss,goals=Math.min(ms,E.goalMax)*E.goal,dn=dayNum();
   let first=0;if(win&&P.fw!==dn){first=E.first;P.fw=dn;}
-  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier(),bonus:0};
-  return{base,goals,ms:Math.min(ms,E.goalMax),first,pro:r.bonus||0,total:base+goals+first+(r.bonus||0),t0:r.t0,t1:r.t1,win,draw};
+  const r=passAdd(base+goals+first)||{t0:passTier(),t1:passTier(),bonus:0,got:0};
+  const total=base+goals+first+(r.bonus||0),got=r.got==null?total:r.got;
+  return{base,goals,ms:Math.min(ms,E.goalMax),first,pro:r.bonus||0,total,got,full:got<total,t0:r.t0,t1:r.t1,win,draw};
 }
 function passRowHtml(R){
   const p=R&&R.pass;if(!p)return '';
+  if(p.full&&!p.got)return '<div class="rs-pass"><span>🐟 '+fmtL(__L('{p} {t}단계 완료! 생선은 다음 시즌 패스부터 다시 모여요'),{p:passTitle(save.pass.s),t:PASS.tiers})+'</span></div>';   // v37: no "+63" that goes nowhere
+  if(p.full)return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.got})+' <small>('+fmtL(__L('{t}단계까지 채웠어요'),{t:PASS.tiers})+')</small></span><span class="rtag">'+fmtL(__L('{p} {t}단계!'),{p:passTitle(save.pass.s),t:p.t1})+'</span></div>';
   const parts=[fmtL(p.win?__L('승리 {n}'):p.draw?__L('무승부 {n}'):__L('패배 {n}'),{n:p.base})];if(p.goals)parts.push(fmtL(__L('골 {n}×{g}'),{n:p.ms,g:PASS.earn.goal}));if(p.first)parts.push(fmtL(__L('오늘 첫 승리 {f}'),{f:p.first}));if(p.pro)parts.push(fmtL(__L('프로 +{b}'),{b:p.pro}));
   return '<div class="rs-pass"><span>🐟 '+fmtL('{f} +{n}',{f:passTheme(save.pass.s).n,n:p.total})+' <small>('+parts.join(' · ')+')</small></span>'+(p.t1>p.t0?'<span class="rtag">'+fmtL(__L('{p} {t}단계!'),{p:passTitle(save.pass.s),t:p.t1})+'</span>':'<small>'+fmtL(__L('{p} {t}단계'),{p:passTitle(save.pass.s),t:p.t1})+'</small>')+'</div>';
 }
@@ -7888,13 +7891,15 @@ function dlyNext(){return (save.login.d|0)%7;}               // index of the rew
 function dlyGotToday(){return (save.login.last|0)===dlyDay();}
 function dlyTxt(i){const r=DLY[i];
   if(r.t){const just=dlyLast&&dlyLast.i===i&&dlyLast.trail;return save.trails.includes(r.t)&&!just?'⭐'+DLY_DUP+'P':'✨ '+TRAILS[r.t].name+' + ⭐'+r.p+'P';}
-  if(r.f)return '🐟+'+passGain(r.f);return '⭐'+r.p+'P';}
+  if(r.f){if(dlyLast&&dlyLast.i===i&&dlyGotToday())return dlyLast.fish?'🐟+'+dlyLast.fish:'⭐'+dlyLast.pts+'P';
+    return passFull()?'⭐'+r.f+'P':'🐟+'+passGain(r.f);}   // v37: a finished pass holds no more fish → the same number of points
+  return '⭐'+r.p+'P';}
 let dlyLast=null;   // what the last claim in this session gave (for the dialog)
 function dlyClaim(){
   if(!dlyCan())return null;
   const L=save.login,i=dlyNext(),r=DLY[i],out={i,pts:0,fish:0,trail:''};
   if(r.t){if(save.trails.includes(r.t))out.pts=DLY_DUP;else{save.trails.push(r.t);out.trail=r.t;out.pts=r.p;}}
-  else if(r.f){const a=passAdd(r.f);out.fish=a?a.n:0;}
+  else if(r.f){if(passFull())out.pts=r.f;else{const a=passAdd(r.f);out.fish=a?a.got:0;}}
   else out.pts=r.p;
   save.points+=out.pts;
   L.d=i+1;if(L.d>=7){L.d=0;L.cyc=(L.cyc|0)+1;}L.last=dlyDay();L.tot=(L.tot|0)+1;
@@ -7905,7 +7910,7 @@ function dlyGridHtml(){
   const doneN=(!can&&got&&(L.d|0)===0&&(L.cyc|0)>0)?7:(L.d|0);   // claimed in this cycle (all 7 on the day the cycle completes)
   let h='<div class="dl-grid">';
   for(let i=0;i<7;i++){const r=DLY[i],done=i<doneN,today=can&&i===nx,justGot=!!(dlyLast&&dlyLast.i===i&&got);
-    h+='<div class="dl-t'+(done?' dl-done':'')+(today?' dl-today':'')+(r.t?' dl-big':'')+(justGot?' dl-pop':'')+'"><small>'+fmtL(__L('{d}일'),{d:i+1})+'</small><b>'+(r.t?'✨':r.f?'🐟':'⭐')+'</b><span>'+dlyTxt(i)+'</span>'+(done?'<i>✓</i>':'')+'</div>';}
+    h+='<div class="dl-t'+(done?' dl-done':'')+(today?' dl-today':'')+(r.t?' dl-big':'')+(justGot?' dl-pop':'')+'"><small>'+fmtL(__L('{d}일'),{d:i+1})+'</small><b>'+(r.t?'✨':r.f&&dlyTxt(i).charAt(0)!=='⭐'?'🐟':'⭐')+'</b><span>'+dlyTxt(i)+'</span>'+(done?'<i>✓</i>':'')+'</div>';}
   return h+'</div>';
 }
 function dlyBody(){
@@ -7914,7 +7919,7 @@ function dlyBody(){
   if(can)h+='<div class="row"><button class="btn primary" data-dly="claim">🎁 '+fmtL(__L('{d}일차 보상 받기'),{d:dlyNext()+1})+'</button></div>';
   else h+='<div class="dl-msg">'+(dlyTamper()?__L(__L('기기 시계가 되돌려져 있어요. 시계가 맞으면 다시 받을 수 있어요')):__L(__L('오늘 출석 완료! 내일 또 와요')))+'</div><div class="row"><button class="btn" data-dly="close">'+__L(__L('닫기'))+'</button></div>';
   h+='<div class="dl-foot">'+fmtL(__L('7일차: 출석 전용 트레일 「{n}」 (이미 있으면 ⭐{p}P) · 7일을 다 받으면 1일차부터 다시 시작해요'),{n:TRAILS.dly.name,p:DLY_DUP})
-    +((L.tot|0)?' · '+fmtL(__L('지금까지 {n}일 출석'),{n:L.tot|0}):'')+'</div>';
+    +' · '+__L(__L('패스를 다 채운 뒤에는 🐟 칸을 같은 수의 ⭐P로 받아요'))+((L.tot|0)?' · '+fmtL(__L('지금까지 {n}일 출석'),{n:L.tot|0}):'')+'</div>';
   return h;
 }
 function dlyOpen(){
@@ -8326,6 +8331,7 @@ function ctlApply(c){
   hx=clamp(hx,zl+a,Math.max(zl+a,zl+Z.w-a));hy=clamp(hy,Z.t+a,Math.max(Z.t+a,vh-a-M));
   CJ.home={x:Math.round(hx),y:Math.round(hy)};
   if(jid===null)ctlJoyIdle();
+  ctlFitAll();   // v37: one-line labels
 }
 let ctlRzT=0;
 function ctlResize(){clearTimeout(ctlRzT);ctlRzT=setTimeout(()=>{safe(ctlApply,CE.on?CE.work:null);if(CE.on)safe(ctlEdRender);},150);}
@@ -8442,8 +8448,26 @@ function ctlInit(){
     const pr=$('#pResume');if(pr&&!$('#pCtl')){const b=document.createElement('button');b.className='btn';b.id='pCtl';b.textContent='🎮 '+__L(__L('조작 설정'));
       b.onclick=()=>{SFX.ui();ctlEdOpen('pause');};pr.insertAdjacentElement('afterend',b);}
   }
-  addEventListener('resize',ctlResize);addEventListener('orientationchange',ctlResize);
+  addEventListener('resize',ctlResize);try{document.fonts.ready.then(()=>safe(ctlApply));}catch(_){}addEventListener('orientationchange',ctlResize);
   ctlApply();
+}
+
+/* ================= v37: weekly fixes (2026-11-09) ================= */
+// A finished fish pass (all tiers) holds no more fish. The screens stop promising fish that would go nowhere:
+// the result row says the pass is complete, daily-goal rewards drop the 🐟 part, and the 7-day attendance fish days
+// pay the same number of ⭐ points instead (v33).
+function passFull(){passCheck();return passTier()>=PASS.tiers;}   // passCheck: a new season starts a fresh (empty) pass
+function goalFishTxt(){return passFull()?'':' · 🐟+'+passGain(PASS.earn.daily);}
+// Touch button labels stay on one line: a label wider than its circle (シュート, スペシャル, Special on a small button…)
+// gets a smaller font instead of breaking in the middle of the word. Runs after every layout change and once the web fonts are in.
+function ctlFitAll(){
+  const t=$('#touch');if(!t||!t.classList||typeof document.createRange!=='function')return;
+  t.classList.add('meas');
+  try{for(const k of CL.keys){const b=$(CL.ids[k]);if(!b||!b.firstChild||!b.getBoundingClientRect)continue;
+    const w=b.getBoundingClientRect().width;if(!(w>0))continue;
+    const r=document.createRange();r.selectNodeContents(b);const tw=r.getBoundingClientRect().width,room=w*.86;
+    if(tw>room){const fs=parseFloat(b.style.fontSize)||parseFloat(getComputedStyle(b).fontSize)||16;b.style.fontSize=Math.max(9,Math.floor(fs*room/tw))+'px';}}}
+  finally{t.classList.remove('meas');}
 }
 
 /* ================= INIT ================= */
@@ -8451,7 +8475,7 @@ SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();safe(accInit);safe(dlyInit);safe(dlyAuto);safe(ctlInit);
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

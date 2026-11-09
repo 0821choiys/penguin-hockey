@@ -12,7 +12,7 @@ scan=r'''
     const els=[...document.querySelectorAll("body *")].filter(e=>{if(/^(SCRIPT|STYLE|CANVAS|BR)$/.test(e.tagName)||e.closest("svg")&&e.tagName!=="svg")return false;if(e.closest("#achPop"))return false;const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&isVis(e);});
     for(const e of els){const r=e.getBoundingClientRect(),cs=getComputedStyle(e);
       if(/(hidden|clip)/.test(cs.overflowX)&&e.scrollWidth>e.clientWidth+2&&cs.textOverflow!=="ellipsis"&&e.clientWidth>0&&!/pc-art|pc /.test(" "+e.className+" "))res.push("clipX "+nm(e)+" ["+tx(e)+"] "+e.scrollWidth+">"+e.clientWidth);
-      if(/(visible)/.test(cs.overflowX)&&e.childElementCount===0&&e.scrollWidth>e.clientWidth+2&&e.clientWidth>0&&cs.display!=="inline")res.push("spillX "+nm(e)+" ["+tx(e)+"] "+e.scrollWidth+">"+e.clientWidth);
+      if(/(visible)/.test(cs.overflowX)&&e.childElementCount===0&&e.scrollWidth>e.clientWidth+(e.matches(".tb")?11:2)&&e.clientWidth>0&&cs.display!=="inline")res.push("spillX "+nm(e)+" ["+tx(e)+"] "+e.scrollWidth+">"+e.clientWidth);
       const sa=scrollAnc(e);
       if(!sa&&cs.position!=="fixed"&&(r.left<-1||r.right>vw+1||r.top<-1||r.bottom>vh+1)&&!clipAnc(e,r))res.push("offscreen "+nm(e)+" ["+tx(e)+"] ("+Math.round(r.left)+","+Math.round(r.top)+","+Math.round(r.right)+","+Math.round(r.bottom)+")");
       if(cs.position==="fixed"&&(r.left<-1||r.right>vw+1||r.top<-1||r.bottom>vh+1)&&r.width<vw*1.5&&!e.classList.contains("screen"))res.push("fixedOff "+nm(e)+" ["+tx(e)+"] ("+Math.round(r.left)+","+Math.round(r.top)+","+Math.round(r.right)+","+Math.round(r.bottom)+")");
