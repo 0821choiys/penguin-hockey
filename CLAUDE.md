@@ -67,7 +67,8 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 - `tools/hksim.js`: a scripted human against the AI, auto switching vs buttons only — goals, carry %, why the penguin changed (`N=4 node tools/hksim.js`).
 - AI-vs-AI numbers from before 2026-11-09 (`rulesim`, `refsim`, the referee part of `v29test`) are not comparable: the old auto switching ran
   before its no-human check, so the blue puck carrier became a zero-input "human" in ≈43 % of play frames and stood still. v38 fixed it;
-  `v29test` now asserts the match is really AI vs AI.
+  `v29test` now asserts the match is really AI vs AI. New baseline (2026-11-09, `N=4 RULES=full`, 3 min): 6.25 goals, 4.5 calls,
+  12.2 s stoppage, 42 s in the box per match, 0 stuck, 0 errors (the 2026-11-09 weekly's 2.58 goals were the frozen-carrier version).
 - `tools/rulesim.js`: AI-vs-AI matches with the referee — calls per match, goals, stoppage time (`N=6 RULES=full|fouls|off node tools/rulesim.js`).
 - Real browser (SwiftShader WebGL): `cd br && npm ci` once, then e.g.
   `node homeverify.js pc`, `node langswitch.js`, `node v17ui.js tall en`, `node v18play.js pc`, `node v19gfx.js pc`, `node offline.js pc`,
