@@ -8,7 +8,7 @@
 //  · arena: camera flashes in the crowd; an ice-blue band of light sweeps the ice at every face-off with four follow-spots
 // Visual only: nothing here touches the simulation, and it uses its own random numbers (lxr) so seeded tests stay the same.
 // Off at 절약 quality (gfxTier 0); the streak and the edge pulse follow the flash / reduced-motion settings.
-var LXV={ringN:8,goalShow:2.6,intro:1.5,sweep:1.3,streakMin:.45,streakHot:.8,streakSp:12,flashIdle:1.5,flashCheer:12,flashGoal:40,rays:1900,
+var LXV={ringN:8,goalShow:2.6,intro:1.5,sweep:1.3,streakMin:.45,streakHot:.8,streakSp:12,flashIdle:1.5,flashCheer:12,flashGoal:40,rays:1900,spk:16,
   poolShow:.85,poolR:3.6,sweepO:.8,fw:[.35,.9,1.5]};
 var LX={ready:false,fail:false,rings:[],beams:[],streak:null,sweep:null,ps:'',introT:0,goalT:0,goalX:0,goalC:[1,.85,.4],sweepT:9,fw:[],clock:0,seed:20261110,raysT:0,n:{goal:0,hit:0,ring:0,fw:0,flash:0,rays:0}};
 function lxr(a,b){LX.seed=(LX.seed*16807)%2147483647;const u=LX.seed/2147483647;return a===undefined?u:b===undefined?u*a:a+(b-a)*u;}
@@ -61,6 +61,10 @@ function lxRays(kind,col){
     let el=document.getElementById('lxRays');
     if(!el){const hud=document.getElementById('hud');if(!hud||!document.createElement)return false;el=document.createElement('div');el.id='lxRays';el.setAttribute('aria-hidden','true');hud.insertBefore(el,hud.firstChild);}
     if(col&&el.style&&el.style.setProperty)el.style.setProperty('--lx',col);
+    // your goal: a soft fan of light in the team colour, a shock ring and a burst of star sparkles behind the streak
+    let h='';if(kind==='mine'){h='<i class="lx-fan"></i><i class="lx-ring"></i>';
+      for(let i=0;i<LXV.spk;i++)h+='<b style="--a:'+Math.round(lxr(0,360))+'deg;--r:'+Math.round(lxr(24,62))+'vmin;--s:'+lxr(10,26).toFixed(0)+'px;--t:'+lxr(.7,1.3).toFixed(2)+'s;--d:'+lxr(0,.22).toFixed(2)+'s"></b>';}
+    el.innerHTML=h;
     el.className='';void el.offsetWidth;el.className='on '+kind;LX.raysT=LXV.rays/1000;LX.n.rays++;return true;
   }catch(_){return false;}
 }

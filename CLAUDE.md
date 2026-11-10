@@ -24,6 +24,15 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
   v39's match show is visual only (own random numbers `lxr`, off at 절약 quality, the goal streak follows flash / reduced motion).
   On white ice: additive light is invisible and warm tints look like stains — use ice-blue / team colours; flat things on the ice
   need `polygonOffset` stronger than the ice's (-2).
+- Flashy things (owner, 2026-11-10 evening): "when I say it looks cheap, don't just take it out — improve it". Rejected ≠ delete:
+  bring the element back with better craft (v39 third pass: the goal light fan is back, soft and in the scorer's colour; gold lives on
+  the 전설 cards as real metal). Still not on the home screen: gold paint, looping button sheen. See `mates-cards-v41.md`.
+- Team-mates (owner, 2026-11-10; v40, `mates-cards-v41.md`): AI mates of a human player ALWAYS answer a call for the pass (even over a
+  wound-up shot, after a cooldown; nothing else happens to the puck while a call is open), look for the human first, and shoot only as a
+  last resort (`MT.hold` s on the puck with no way to reach the human, or the last `MT.late` s). Opponents / demo / auto switching: unchanged.
+- Card art (owner, 2026-11-10; v41): "a few shapes glued together is not a penguin" — cards show a rendered portrait of the species' real
+  3D game model (`p3Shot`, per species + team colour, made at run time); the flat drawings (`pengSVG`) are only the no-WebGL fallback.
+  The card is "the penguin at the rink boards": portrait behind the white dasher board (name, yellow kick plate), rarity = the scene behind the glass + the metal bezel.
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
@@ -37,7 +46,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -72,7 +81,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 - Unit suites (Node, mocked THREE): `bash runsuites.sh` (≈ 15 min). Single suite: `node v22test.js`. `v35test.js` reports its online
   checks as SKIPPED unless the Firebase emulators run.
 - `tools/refsim.js`: how much the referee turns (°/s, direction reversals) in AI-vs-AI matches.
-- `tools/hksim.js`: a scripted human against the AI, auto switching vs buttons only — goals, carry %, why the penguin changed (`N=4 node tools/hksim.js`).
+- `tools/hksim.js`: a scripted human against the AI, auto switching vs buttons only — goals, carry %, why the penguin changed, who shoots / scores on your team (you or an AI mate) and how calls for the pass go (`N=4 node tools/hksim.js`; `PHDIR=<folder with another build's harness.js, main.js, loader.js, i18n.js>` compares builds; ≈ 35 s per match). `v40test.js` has chance-based checks written as n-of-N.
 - AI-vs-AI numbers from before 2026-11-09 (`rulesim`, `refsim`, the referee part of `v29test`) are not comparable: the old auto switching ran
   before its no-human check, so the blue puck carrier became a zero-input "human" in ≈43 % of play frames and stood still. v38 fixed it;
   `v29test` now asserts the match is really AI vs AI (referee limits re-set to real play: reversals < 70/min, turning < 90°/s; measured 35–50 and 52–69). New baseline (2026-11-09, `N=4 RULES=full`, 3 min): 6.25 goals, 4.5 calls,
@@ -89,6 +98,8 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node v37fix.js <pc|tall|wide|wideS> <lang>` (touch labels on one line, landscape home titles, finished fish pass on the objectives screen),
   `node v38hk.js <pc|tall|wide|wideS> <lang>` (no automatic switching with the stick held, white Switch ring, off-screen arrow, 뺏기 / 패스 요청 labels and taps, 펭귄 교체 setting),
   `node v39luxe.js <pc|tall|wide|wideS> <lang> <day|night>` (detail pass: quick-match button unchanged, tile emblems, bolted boards, LED scoreboard, goal show, shot streak, 절약 / flash-off),
+  `node v41card.js <pc|tall|wide|wideS> <lang>` (card portraits: 16 rendered images, renderer left untouched, board layout, silhouettes, scout banner / collection / card window, team colour, drawing fallback),
+  `node p3lab.js <sheet|big|cards> <tag>` (portrait / card sheets with the CURRENT `v41_card.js/.css` swapped into the built game — no rebuild while iterating) and `node cardshot.js <mode> <lang> <tag>`,
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
   `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
@@ -108,4 +119,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
 `rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md`, `landscape-v30.md`, `online-account.md`,
-`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md` (also kept in the claude.ai project).
+`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md` (also kept in the claude.ai project).

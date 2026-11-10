@@ -1674,9 +1674,100 @@ body.ce-drag #ctlEdPanel{opacity:.22;pointer-events:none;transition:opacity .15s
   opacity:0;animation:lxStreak 1.5s cubic-bezier(.2,.8,.2,1) forwards}
 #lxRays.mine::after{content:"";position:absolute;left:50%;top:38%;width:130vmin;height:34vmin;margin:-17vmin 0 0 -65vmin;
   background:radial-gradient(closest-side,rgba(255,255,255,.34),color-mix(in srgb,var(--lx) 30%,transparent) 45%,transparent 72%);opacity:0;animation:lxBloom 1.5s ease-out forwards}
+/* third pass (the owner: "when something looks cheap, improve it — don't just take it out"): the light fan is back, this time
+   soft, short and in the scorer's colour instead of hard gold wedges, with a shock ring and star sparkles */
+@keyframes lxFan{0%{opacity:0;transform:scale(.3) rotate(-14deg)}12%{opacity:.62}55%{opacity:.3}100%{opacity:0;transform:scale(1.08) rotate(10deg)}}
+@keyframes lxRingK{0%{opacity:.9;transform:scale(.2)}100%{opacity:0;transform:scale(3.4)}}
+@keyframes lxSpk{0%{opacity:0;transform:rotate(var(--a)) translateX(5vmin) scale(.3)}16%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--r)) scale(1.1)}}
+#lxRays .lx-fan{position:absolute;left:50%;top:38%;width:170vmax;height:170vmax;margin:-85vmax 0 0 -85vmax;border-radius:50%;opacity:0;
+  background:repeating-conic-gradient(from 0deg,transparent 0 7deg,color-mix(in srgb,var(--lx) 72%,#fff) 10.5deg,transparent 14deg,transparent 22deg,rgba(255,255,255,.85) 24deg,transparent 26deg);
+  -webkit-mask:radial-gradient(closest-side,transparent 0 5%,#000 13%,rgba(0,0,0,.34) 36%,transparent 60%);mask:radial-gradient(closest-side,transparent 0 5%,#000 13%,rgba(0,0,0,.34) 36%,transparent 60%);
+  filter:blur(1.4px);animation:lxFan 1.7s cubic-bezier(.2,.7,.2,1) forwards}
+#lxRays .lx-ring{position:absolute;left:50%;top:38%;width:40vmin;height:40vmin;margin:-20vmin 0 0 -20vmin;border-radius:50%;border:2px solid #fff;
+  box-shadow:0 0 18px 4px var(--lx),inset 0 0 18px 2px var(--lx);opacity:0;animation:lxRingK 1s ease-out forwards}
+#lxRays b{position:absolute;left:50%;top:38%;width:var(--s);height:var(--s);margin:calc(var(--s)/-2);opacity:0;
+  background:radial-gradient(circle,#fff 0 20%,var(--lx) 34%,transparent 66%);clip-path:polygon(50% 0,59% 41%,100% 50%,59% 59%,50% 100%,41% 59%,0 50%,41% 41%);
+  animation:lxSpk var(--t) cubic-bezier(.15,.7,.3,1) var(--d) forwards}
 #lxRays.theirs{box-shadow:inset 0 0 80px 18px rgba(255,60,70,.42);opacity:0;animation:lxRed .9s ease-out forwards}
 body.noflash #lxRays,body.rm #lxRays,body.cine #lxRays{display:none!important}
 
+/*P3:css*//* ================= v41: the real penguins on the cards =================
+   The card is a view from the stands: the penguin stands at the rink boards, the arena light behind the glass carries the
+   rarity, the white dasher board in front carries the name (as arena boards do), with its yellow kick plate at the bottom.
+   The frame is a metal bezel in the rarity's colour. Sizes follow the card's own em (= card width / 9). */
+.p3{display:block;width:100%;height:100%;background:center bottom/contain no-repeat}
+
+.pc{--bd:3.02em;--m1:#eef4fa;--m2:#93a7bb;--m3:#3c4b5c;--m4:#c8d6e4;--bk1:#8fa8c2;--bk2:#3d5674;--bk3:#17283d;--sp:rgba(236,246,255,.95);
+  padding:0;border:.22em solid transparent;border-radius:.92em;overflow:hidden;
+  background:radial-gradient(ellipse 82% 52% at 50% 34%,var(--sp),transparent 74%) padding-box,
+    linear-gradient(180deg,var(--bk1),var(--bk2) 58%,var(--bk3)) padding-box,
+    linear-gradient(142deg,var(--m1) 0%,var(--m2) 16%,var(--m3) 31%,var(--m4) 46%,var(--m2) 60%,var(--m3) 78%,var(--m1) 100%) border-box;
+  box-shadow:inset 0 0 0 .06em rgba(4,12,26,.7),inset 0 .08em 0 .06em rgba(255,255,255,.35),0 0 0 .05em rgba(4,12,26,.85),0 .34em .8em rgba(0,0,0,.5),0 0 .9em var(--glow)}
+.pc.g1{--m1:#e6f5ff;--m2:#5fb0f5;--m3:#123f85;--m4:#a9dcff;--bk1:#4d9ff0;--bk2:#1a57b4;--bk3:#0a2456;--sp:rgba(214,238,255,.92)}
+.pc.g2{--m1:#f6eaff;--m2:#b684f2;--m3:#3e1a7c;--m4:#e3c8ff;--bk1:#8a5ce0;--bk2:#4a22a0;--bk3:#1a0b45;--sp:rgba(236,222,255,.9)}
+.pc.g3{--m1:#ffecee;--m2:#f0707e;--m3:#6e0f1f;--m4:#ffc6cc;--bk1:#e0485c;--bk2:#96172b;--bk3:#3b0711;--sp:rgba(255,226,230,.9)}
+.pc.g4{--m1:#fff8dc;--m2:#e6b450;--m3:#6a450a;--m4:#ffeeb0;--bk1:#b9892c;--bk2:#3c2d1c;--bk3:#0b1424;--sp:rgba(255,244,206,.98)}
+.pc.g9{--m1:#ffffff;--m2:#8fe9ff;--m3:#5a3fd0;--m4:#ffd0f2;--bk1:#1d6f86;--bk2:#0d3552;--bk3:#060f24;--sp:rgba(206,255,244,.9)}
+
+/* the art: the whole card above the board; the portrait is sized so the sweater meets the board's rail */
+.pc-art{position:absolute;inset:0 0 var(--bd) 0;margin:0;border-radius:0;background:none;box-shadow:none;overflow:hidden;z-index:1;display:block}
+.pc-art::before{display:none!important}
+.pc-art .p3{position:absolute;left:50%;bottom:-2.9em;width:9.6em;height:12em;margin-left:-4.72em;background-size:contain;filter:drop-shadow(0 .1em .16em rgba(4,12,26,.4))}
+.pc-sil-art .p3{filter:brightness(0) invert(1);opacity:.24}
+.pc-art svg{position:absolute;left:50%;bottom:-.5em;height:8.6em;width:auto;max-width:none;transform:translateX(-50%)}
+
+/* the dasher board: cap rail, white face with a faint sheen, two bolts, the yellow kick plate */
+.pc::before{content:"";display:block;position:absolute;inset:auto 0 0 0;height:var(--bd);z-index:2;pointer-events:none;
+  background:radial-gradient(circle,rgba(40,62,92,.75) 0 .055em,rgba(255,255,255,.9) .07em .1em,transparent .12em) .26em .52em/.3em .3em no-repeat,
+    radial-gradient(circle,rgba(40,62,92,.75) 0 .055em,rgba(255,255,255,.9) .07em .1em,transparent .12em) calc(100% - .26em) .52em/.3em .3em no-repeat,
+    linear-gradient(180deg,#0c2244 0 .2em,#3d6fb3 .2em .26em,transparent .26em),
+    linear-gradient(0deg,#f2b400 0 .3em,#b98200 .3em .35em,transparent .35em),
+    linear-gradient(100deg,transparent 30%,rgba(255,255,255,.75) 42%,transparent 55%),
+    linear-gradient(180deg,#f7fbff,#dfeaf5 62%,#cbdbea);
+  box-shadow:0 -.12em .3em rgba(4,12,26,.35)}
+.pc-top{position:relative;z-index:3;padding:.34em .38em 0}
+.pc-name{position:relative;z-index:3;margin-top:auto;color:#0d2748;text-shadow:none;font-size:1.06em;line-height:1.2;padding:0 .3em;letter-spacing:.01em}
+.pc-foot{position:relative;z-index:3;color:#33507a;text-shadow:none;font-size:.7em;padding:0 .5em .62em;margin-top:.02em;opacity:1}
+.pc-foot span:first-child,.pc.g0 .pc-foot span:first-child{color:#d08a00;text-shadow:none}
+.pc-stars{text-shadow:none}
+.pc-deco{z-index:1}
+.pc-foil,.pc-holo{z-index:4}
+.pc-new{z-index:5}.pc-cnt{z-index:5}
+
+/* behind the glass: one scene per rarity (under the portrait), plus the glass's own reflection on every card */
+.pc .pc-deco{z-index:1;background:none}
+.pc .pc-deco::after{display:none!important}
+.pc .pc-deco::before{content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;font-size:inherit!important;animation:none!important;transform:none!important;opacity:1!important;border:0!important;clip-path:none!important;
+  background:linear-gradient(104deg,transparent 0 16%,rgba(255,255,255,.14) 22%,transparent 29%,transparent 60%,rgba(255,255,255,.08) 65%,transparent 71%)!important}
+.pc.g0 .pc-deco{background:var(--lx-scratch) 0 0/9em auto}
+.pc.g1 .pc-deco{background:linear-gradient(90deg,transparent 0 .5em,rgba(206,236,255,.6) .5em 1.2em,transparent 1.2em) 0 3.9em/100% .12em no-repeat,
+  linear-gradient(270deg,transparent 0 .5em,rgba(206,236,255,.6) .5em 1.2em,transparent 1.2em) 0 3.9em/100% .12em no-repeat,
+  radial-gradient(circle at 50% 3.95em,transparent 0 3.3em,rgba(206,236,255,.55) 3.3em 3.44em,transparent 3.46em)}
+.pc.g2 .pc-deco{background:linear-gradient(98deg,transparent 12%,rgba(96,255,206,.34) 27%,rgba(96,255,206,.06) 38%,transparent 44%),linear-gradient(84deg,transparent 52%,rgba(128,214,255,.32) 66%,rgba(128,214,255,.05) 76%,transparent 82%),linear-gradient(92deg,transparent 34%,rgba(255,150,240,.2) 47%,transparent 58%);
+  -webkit-mask:linear-gradient(180deg,#000 0 34%,transparent 76%);mask:linear-gradient(180deg,#000 0 34%,transparent 76%)}
+.pc.g3 .pc-deco{background:radial-gradient(circle at 50% -.2em,rgba(255,244,236,.95) 0 .55em,rgba(255,96,96,.6) .7em 1.5em,transparent 3.6em),
+  conic-gradient(from 128deg at 50% -.2em,transparent 0 9deg,rgba(255,214,204,.22) 17deg,transparent 26deg,transparent 43deg,rgba(255,214,204,.16) 52deg,transparent 62deg,transparent 78deg,rgba(255,214,204,.22) 87deg,transparent 96deg)}
+.pc.g4 .pc-deco{background:radial-gradient(circle,#fff 0 .05em,rgba(255,236,170,.75) .07em,transparent .26em) 1.1em 4.6em/.6em .6em no-repeat,
+  radial-gradient(circle,#fff 0 .04em,rgba(255,236,170,.7) .06em,transparent .2em) 7.3em 2.9em/.5em .5em no-repeat,
+  radial-gradient(circle,#fff 0 .035em,rgba(255,236,170,.65) .05em,transparent .17em) 6.6em 6.1em/.4em .4em no-repeat,
+  repeating-radial-gradient(circle at 50% 3.8em,rgba(255,226,150,.16) 0 .035em,transparent .035em .25em)}
+.pc.g9 .pc-deco{background:conic-gradient(from 20deg at 50% 3.8em,rgba(255,96,110,.5),rgba(255,222,96,.5),rgba(96,255,170,.5),rgba(96,206,255,.5),rgba(206,128,255,.5),rgba(255,96,110,.5));
+  -webkit-mask:radial-gradient(circle at 50% 3.8em,transparent 0 2.6em,#000 3.3em,transparent 5.6em);mask:radial-gradient(circle at 50% 3.8em,transparent 0 2.6em,#000 3.3em,transparent 5.6em)}
+@keyframes p3Myth{to{background-position:0 0,0 0,300% 0}}
+.pc.g9{border:.22em solid transparent;
+  background:radial-gradient(ellipse 82% 52% at 50% 34%,var(--sp),transparent 74%) padding-box,linear-gradient(180deg,var(--bk1),var(--bk2) 58%,var(--bk3)) padding-box,
+    linear-gradient(90deg,#ff6b6b,#ffd166,#6bffb0,#6bcbff,#c77dff,#ff6b6b,#ffd166,#6bffb0,#6bcbff,#c77dff,#ff6b6b) border-box;
+  background-size:auto,auto,300% 100%;animation:p3Myth 4s linear infinite}
+.pc.g9 .pc-holo{background:radial-gradient(circle at 30% 18%,rgba(255,255,255,.5),transparent 46%);mix-blend-mode:soft-light;opacity:.55}
+.pc.g9 .pc-ovr b{-webkit-text-fill-color:currentColor;background:none;color:#fff;filter:none}
+.pc.b5{box-shadow:inset 0 0 0 .06em rgba(4,12,26,.7),inset 0 0 0 .13em rgba(255,243,196,.9),0 0 0 .05em rgba(4,12,26,.85),0 .34em .8em rgba(0,0,0,.5),0 0 1.15em #ffd54a}
+.pc.g9 .pc-art{background:none}
+.pc.g9 .pc-holo{background:radial-gradient(circle at var(--mx,30%) var(--my,18%),rgba(255,255,255,.5),transparent 46%)}
+body.rm .pc.g9{animation:none}
+/* the same portrait elsewhere: scout banner, collection silhouettes, skill cut-in */
+.gb-art .p3{background-position:center bottom}
+#cine .cn-art .p3{background-position:center}
+/*P3:cssend*/
 /* ===== v16 i18n ===== */
 /* hidden for the few ms between first paint and the static-markup translation (2.5 s safety timeout in the bootstrap) */
 html.i18n-wait body{visibility:hidden}
@@ -3259,7 +3350,7 @@ function movePeng(p,h){
   }else{
     const slow=p.slow>0?.55:1,sp0=Math.hypot(p.vx,p.vz),EZ=ctlEasy(p);
     let cap=(7+1.4*st.speed)*dif*slow,acc=(13+5*st.accel)*slow*CF.acc;
-    if(p.boostT>0){cap*=1.3;acc*=1.25;}{const k=(p.rushT>0?SPX.rush:1)*(p.shadowT>0?SPX.shadow.spd:1)*(ttOf(p).spd||1);cap*=k;acc*=k;}if(G.carry===p)cap*=.93;if(G.hype&&G.hype.feverT>0&&p.team===G.mine)cap*=1.08;
+    if(p.boostT>0){cap*=1.3;acc*=1.25;}{const k=(p.rushT>0?SPX.rush:1)*(p.shadowT>0?SPX.shadow.spd:1)*(ttOf(p).spd||1);cap*=k;acc*=k;}if(G.carry===p)cap*=.93*(p.ai&&p.ai.mtSlow?MT.pace:1);if(G.hype&&G.hype.feverT>0&&p.team===G.mine)cap*=1.08;
     if(p.dashT>0){cap*=p.dashMul;acc*=1.8;}
     let mag=Math.hypot(ix,iz);
     const sliding=p.slideT>0;
@@ -3579,6 +3670,7 @@ function aiCarrier(p){
   const q=shotQ(pk.x,pk.z,tm),press=nearestOpp(p),gd=Math.hypot(gx-pk.x,pk.z),own=pk.x*d<-W*.35;
   const noShoot=G.cfg&&G.cfg.noAIShoot;
   if(noShoot){ai.cool=rnd(.4,.9);return;}
+  if(mtMate(p)){mtCarrier(p);return;}   // v40: a mate of a human player is a playmaker
   if(pcGiveGo(p))return;
   if(df.oneT&&G.t-(p.recvT==null?-9:p.recvT)<(p.otWin||.5)&&q>=df.shootQ*.7&&Math.random()<df.oneT){const c=rnd(.3,.5);ai.plan={t:.02,c,tz:aiPlanTz(p)};p.charge=c;p.charging=true;return;}
   const mate=bestMate(p,0,0,true),mq=mate?shotQ(mate.x,mate.z,tm):0;
@@ -3644,9 +3736,9 @@ function aiThink(p){
     ai.full=true;ai.mode='carry';let gdx=gx-p.x,gdz=-p.z;const gl=Math.hypot(gdx,gdz)||1;gdx/=gl;gdz/=gl;
     let tx=p.x+gdx*5,tz=p.z+gdz*5;const o=nearestOppObj(p);
     if(o){const ox=o.x-p.x,oz=o.z-p.z,od=Math.hypot(ox,oz);if(od<5&&(ox*gdx+oz*gdz)>-.5){const side=(ox*(-gdz)+oz*gdx)>0?-1:1;tx+=(-gdz)*side*3.2;tz+=gdx*side*3.2;}}
-    ai.tx=clamp(tx,-W+2,W-2);ai.tz=clamp(tz,-D+2,D-2);
+    ai.tx=clamp(tx,-W+2,W-2);ai.tz=clamp(tz,-D+2,D-2);mtCarry(p);
     if(p.cd.shoot<=0&&p.shotGrace<=0&&!ai.plan&&ai.cool<=0)aiCarrier(p);
-    if(p.cd.special<=0&&Math.random()<.3*ai.iv&&p.ty.special==='flipper'&&shotQ(pk.x,pk.z,tm)>df.shootQ*.8)useSpecial(p);
+    if(!mtMate(p)&&p.cd.special<=0&&Math.random()<.3*ai.iv&&p.ty.special==='flipper'&&shotQ(pk.x,pk.z,tm)>df.shootQ*.8)useSpecial(p);
     if(p.cd.special<=0&&SPX[p.ty.special]&&G.carry===p&&Math.random()<.35*ai.iv)ai18(p,'carry');
     return;
   }
@@ -3672,7 +3764,7 @@ function aiThink(p){
     if(dist>9&&ai.dash<=0&&p.cd.dash<=0&&Math.random()<.3){doDash(p);ai.dash=rnd(3,6);}
     if(p.cd.special<=0&&Math.random()<.5*ai.iv){
       const sp2=p.ty.special,gd=Math.hypot(gx-pk.x,pk.z);
-      if(sp2==='flipper'){if(dist<2.6&&gd<20&&shotQ(pk.x,pk.z,tm)>df.shootQ*.8)useSpecial(p);}
+      if(sp2==='flipper'){if(!mtMate(p)&&dist<2.6&&gd<20&&shotQ(pk.x,pk.z,tm)>df.shootQ*.8)useSpecial(p);}
       else if(sp2==='icebreak'){if(nearestOpp(p)<3.2)useSpecial(p);}
       else if(sp2==='slide'){if(((car&&car.team!==tm&&nearestOpp(p)<6)||(dist>12&&!rulesActive()))&&rulesSlideOk(p))useSpecial(p);}
       else if(SPX[sp2])ai18(p,'chase');
@@ -3682,7 +3774,7 @@ function aiThink(p){
 }
 function aiSkater(p,dt){
   const ai=p.ai,df=G.diff;
-  ai.think-=dt;ai.cool-=dt;ai.dash-=dt;ai.slotT-=dt;hkCallPass(p);
+  p.mtCar=G.carry===p?(p.mtCar||0)+dt:Math.max(0,(p.mtCar||0)-dt*3);ai.think-=dt;ai.cool-=dt;ai.dash-=dt;ai.slotT-=dt;hkCallPass(p);
   if(ai.plan){   // visible wind-up before an AI shot
     ai.plan.t-=dt;p.charging=true;p.charge=Math.min(1,p.charge+dt/.45*(ttOf(p).chg||1));
     if(reach(p)>3.3||(p.fall>0)){ai.plan=null;p.charging=false;p.charge=0;}
@@ -3694,6 +3786,7 @@ function aiSkater(p,dt){
   const ang=Math.atan2(dx,dz)+ai.noise*.6*(ai.full?.5:1);
   p.ix=Math.sin(ang)*s;p.iz=Math.cos(ang)*s;
   if(ai.plan){const k=G.carry===p?.55:.1;p.ix*=k;p.iz*=k;}
+  mtPace(p);
   const sp=Math.hypot(p.vx,p.vz);
   if(sp>9&&p.fall<=0&&Math.random()<df.slip*dt*(Math.abs(angDiff(Math.atan2(p.vx,p.vz),ang))>1.6?4:.4))knock(p,.9);
 }
@@ -4332,7 +4425,7 @@ function step(dt){
     if(G.view==='menu'){marker.visible=false;markerRing.visible=false;aimArrow.visible=false;passRing.visible=false;}
   }}catch(e){dbgErr('logic',e);}
   safe(hypeFrame,dt);safe(funFrame,dt);safe(tutFrame,dt);safe(mgrFrame,dt);safe(arenaFrame,dt);safe(v17Frame,dt);safe(v18Frame,dt);safe(v22Frame,dt);safe(v23Frame,G.cine?G.rdt:dt);safe(netFrame,dt);
-  safe(updateWeather,dt);safe(updateParticles,G.cine?G.rdt:dt);safe(updateWorld,dt);safe(()=>setTOD(todTarget(),dt));safe(updateCamera,dt);safe(updateHud);safe(ctlFrame);safe(hkFrame);safe(lxFrame,dt);
+  safe(updateWeather,dt);safe(updateParticles,G.cine?G.rdt:dt);safe(updateWorld,dt);safe(()=>setTOD(todTarget(),dt));safe(updateCamera,dt);safe(updateHud);safe(ctlFrame);safe(hkFrame);safe(lxFrame,dt);safe(p3Frame);
 }
 function frame(){
   const now=clockT(),raw=now-lastT;lastT=now;const dt=Math.min(.05,raw);
@@ -4503,6 +4596,7 @@ function hexA(hex,a){const n=parseInt(hex.slice(1),16);return 'rgba('+(n>>16&255
 
 /* ---------- card art (inline SVG, no external assets) ---------- */
 function pengSVG(k){   // card art per real species (own drawings)
+  {const h=p3Html(k);if(h)return h;}
   if(k==='auk')return aukSVG();
   if(SVG18[TYPES[k].patch])return pengSVG18(k);
   const t=TYPES[k],p=t.patch,D='#1d2540',Wh='#f6faff';
@@ -10616,21 +10710,9 @@ function hkBuf(p){
 /* ---- the buttons follow the play ---- */
 // Pass while an AI team-mate carries the puck = "pass it here" (NHL: call for pass). Never buffered, so the pass you get
 // is not passed straight on.
-function hkCallPress(p,inp){
-  if(!inp.pass)return false;const c=G.carry;
-  if(!c||c===p||c.team!==p.team||c.human||c.remote||c.goalie)return false;
-  inp.pass=false;if(p.cd.pass>0)return true;
-  G.callFor={p,t:G.t};p.cd.pass=.3;if(p.human)popAt(__L(__L('🙋 여기!')),p.x,2.5,p.z);SFX.ui();return true;
-}
+function hkCallPress(p,inp){return mtCallPress(p,inp);}
 // the AI carrier answers a call (a short reaction delay; a shot already well wound up goes first)
-function hkCallPass(p){
-  const c=G.callFor;if(!c)return;if(G.t-c.t>HK.callWin){G.callFor=null;return;}
-  if(G.carry!==p)return;const q=c.p;
-  if(q===p||q.team!==p.team||!(q.human||q.remote)||q.fall>0||q.frozen){G.callFor=null;return;}
-  if(G.t-c.t<HK.callDelay||p.cd.pass>0||!canHit(p))return;
-  if(p.ai&&p.ai.plan){if(p.charge>.45)return;p.ai.plan=null;p.charging=false;p.charge=0;}
-  G.callFor=null;doPass(p,q);
-}
+function hkCallPass(p){mtCallPass(p);}
 // Shoot while an opponent carries the puck = poke check: in stick reach (the same reach as a shot) the puck is knocked
 // to your stick; out of reach it is a whiff that costs a moment. (Before v38 the same press shot the puck off their stick.)
 function hkPokePress(p,inp){
@@ -10720,7 +10802,7 @@ function hkSwapNote(c){
 //  · arena: camera flashes in the crowd; an ice-blue band of light sweeps the ice at every face-off with four follow-spots
 // Visual only: nothing here touches the simulation, and it uses its own random numbers (lxr) so seeded tests stay the same.
 // Off at 절약 quality (gfxTier 0); the streak and the edge pulse follow the flash / reduced-motion settings.
-var LXV={ringN:8,goalShow:2.6,intro:1.5,sweep:1.3,streakMin:.45,streakHot:.8,streakSp:12,flashIdle:1.5,flashCheer:12,flashGoal:40,rays:1900,
+var LXV={ringN:8,goalShow:2.6,intro:1.5,sweep:1.3,streakMin:.45,streakHot:.8,streakSp:12,flashIdle:1.5,flashCheer:12,flashGoal:40,rays:1900,spk:16,
   poolShow:.85,poolR:3.6,sweepO:.8,fw:[.35,.9,1.5]};
 var LX={ready:false,fail:false,rings:[],beams:[],streak:null,sweep:null,ps:'',introT:0,goalT:0,goalX:0,goalC:[1,.85,.4],sweepT:9,fw:[],clock:0,seed:20261110,raysT:0,n:{goal:0,hit:0,ring:0,fw:0,flash:0,rays:0}};
 function lxr(a,b){LX.seed=(LX.seed*16807)%2147483647;const u=LX.seed/2147483647;return a===undefined?u:b===undefined?u*a:a+(b-a)*u;}
@@ -10773,6 +10855,10 @@ function lxRays(kind,col){
     let el=document.getElementById('lxRays');
     if(!el){const hud=document.getElementById('hud');if(!hud||!document.createElement)return false;el=document.createElement('div');el.id='lxRays';el.setAttribute('aria-hidden','true');hud.insertBefore(el,hud.firstChild);}
     if(col&&el.style&&el.style.setProperty)el.style.setProperty('--lx',col);
+    // your goal: a soft fan of light in the team colour, a shock ring and a burst of star sparkles behind the streak
+    let h='';if(kind==='mine'){h='<i class="lx-fan"></i><i class="lx-ring"></i>';
+      for(let i=0;i<LXV.spk;i++)h+='<b style="--a:'+Math.round(lxr(0,360))+'deg;--r:'+Math.round(lxr(24,62))+'vmin;--s:'+lxr(10,26).toFixed(0)+'px;--t:'+lxr(.7,1.3).toFixed(2)+'s;--d:'+lxr(0,.22).toFixed(2)+'s"></b>';}
+    el.innerHTML=h;
     el.className='';void el.offsetWidth;el.className='on '+kind;LX.raysT=LXV.rays/1000;LX.n.rays++;return true;
   }catch(_){return false;}
 }
@@ -10840,12 +10926,235 @@ function lxFrame(dt){
       emit(x,lxr(1.3,1.9),z,0,.4,0,.13,lxr(.5,.95),1,1,1);LX.n.flash++;}}
 }
 
+/* ================= v40: 🤝 team-mates play for you (2026-11-10) ================= */
+// The owner: "the AI scoring by itself is too much — when I ask for the pass it has to give it, not go and score alone".
+// With buttons-only switching (v38) an AI team-mate that won the puck simply played on: it shot whenever it had a chance,
+// a call was ignored once its shot was 45 % wound up, and the call was forgotten after 1.2 s.
+// Now, on a team that has a human-controlled skater on the ice (you, or the friend in an online match):
+//  · a call is always answered — the carrier drops the shot it was winding up and passes HK.callDelay s later; the call
+//    waits up to MT.callWin s for a pass cooldown or for the mate to actually get the puck on its stick
+//  · Pass pressed while nobody has the puck is a call too: the first AI mate that wins it inside the window passes to you
+//  · the mates are playmakers: they look for you first (at once under pressure, after MT.look s otherwise, when the lane
+//    is open), hand the puck on to another mate only when pressed, and keep the puck moving on a calm loop in the
+//    attacking end (MT.loop, at MT.pace of its top speed) instead of driving the net
+//  · they shoot only as a last resort: MT.hold s on the puck with a real chance and no lane to you, or in the last
+//    MT.late s of the match. AI one-timers, give-and-go plays and shooting skills are left to teams without a human.
+// Opponents, the demo match and teams with auto switching (the human becomes the carrier anyway) play as before.
+var MT={callWin:2.4,look:.45,lane:1.5,far:28,back:10,hold:3.6,late:6,press:3.4,zone:20,pace:.62,loop:[[9,8],[16,8.5],[15,3.5]]};
+function mtHuman(tm){
+  if(!tm||!tm.skaters||G.so||G.ps||!G.cfg||G.cfg.mode==='demo'||hkAuto())return null;
+  for(const s of tm.skaters)if((s.human||s.remote)&&!s.boxed)return s;
+  return null;
+}
+function mtMate(p){return !!(p&&!p.human&&!p.remote&&!p.goalie&&mtHuman(p.team));}
+// can a pass reach you right now? (an uncalled pass never goes to you while you stand offside)
+function mtOpen(p,H){
+  const pk=G.puck,d=Math.hypot(H.x-pk.x,H.z-pk.z);
+  return H.fall<=0&&!H.frozen&&d>2.2&&d<MT.far&&rulesMateOk(H)&&laneBlock(pk.x,pk.z,H.x,H.z,p.team)>=MT.lane;
+}
+// is a call waiting for this carrier? (the caller is on its team, on its feet, and the window is still open)
+function mtCalled(p){const c=G.callFor;return !!(c&&c.p!==p&&c.p.team===p.team&&G.t-c.t<=MT.callWin&&!(c.p.fall>0)&&!c.p.frozen);}
+// the decision of an AI mate that has (or can touch) the puck — replaces aiCarrier for it
+function mtCarrier(p){
+  const tm=p.team,pk=G.puck,df=G.diff,d=tm.dir,ai=p.ai,H=mtHuman(tm);if(!H)return;
+  if(mtCalled(p)){ai.cool=.04;return;}                                   // you called: nothing else happens to the puck until it is passed to you
+  const press=nearestOpp(p),own=pk.x*d<-W*.35,open=mtOpen(p,H),held=p.mtCar||0,near=(p.x-H.x)*d<MT.back;
+  // 1) you first: at once under pressure, otherwise after a short look (and not a long pass back to you far behind)
+  if(open&&p.cd.pass<=0&&canHit(p)&&(press<MT.press||(held>=MT.look&&near))){if(doPass(p,H)){ai.cool=rnd(.9,1.4);return;}}
+  // 2) pressed with no lane to you: move it to another mate (who will look for you too), or clear the zone
+  if(press<3.2){const m=bestMate(p,0,0,true);
+    if(m&&m!==H&&!m.goalie&&laneBlock(pk.x,pk.z,m.x,m.z,tm)>=MT.lane&&Math.random()<df.passP+.25&&doPass(p,m)){ai.cool=rnd(.9,1.6);return;}}
+  if(own&&press<MT.press&&!rulesIcingRisk(p)){const sg=pk.z>=0?1:-1,l=Math.hypot(d,sg*.45);performShot(p,d/l,sg*.45/l,.55);ai.cool=rnd(.8,1.4);return;}
+  // 3) last resort only: a long time on the puck with a real chance and no way to give it to you, or the final seconds
+  const late=G.cfg.time>0&&!G.ot&&G.timeLeft<=MT.late;
+  if(!(open&&near)&&shotQ(pk.x,pk.z,tm)>=df.shootQ&&(held>=MT.hold||late)){
+    const gd=Math.hypot(d*W-pk.x,pk.z);ai.plan={t:rnd(.08,.22),c:gd>13?rnd(.75,1):gd>7?rnd(.45,.75):rnd(.2,.5),tz:aiPlanTz(p)};return;}
+  ai.cool=rnd(.05,.18);
+}
+// where the mate skates with the puck: up the ice as before, but in the attacking end it keeps the puck moving on a calm
+// loop on its side (low half-wall → high wall → high slot) instead of taking it to the net itself, so it is still there
+// when you get open or call; on the loop its top speed is MT.pace of normal (movePeng), a sprint along the boards loses
+// the puck. After MT.hold s / in the last seconds it goes to the net after all.
+function mtCarry(p){
+  const ai=p.ai;ai.mtSlow=false;if(!mtMate(p))return;
+  const d=p.team.dir,gx=d*W,deep=(gx-p.x)*d;if(deep>MT.zone){ai.mtSide=0;return;}
+  if((p.mtCar||0)>=MT.hold||(G.cfg.time>0&&!G.ot&&G.timeLeft<=MT.late))return;   // last resort: take it to the net after all
+  if(mtCalled(p)){ai.tx=p.x;ai.tz=p.z;ai.full=false;ai.mtSlow=true;return;}       // you called: it stops and turns to pass
+  const H=mtHuman(p.team);
+  if(!ai.mtSide){ai.mtSide=Math.abs(p.z)>1.5?Math.sign(p.z):(H&&H.z>0?-1:1);ai.mtLeg=deep<12?0:1;}
+  const sg=ai.mtSide,L=MT.loop;let k=ai.mtLeg%L.length;
+  for(let n=0;n<L.length;n++){const tx=gx-d*L[k][0],tz=sg*L[k][1];
+    if(Math.hypot(tx-p.x,tz-p.z)<2.4||oppNear(tx,tz,p.team)<3){k=(k+1)%L.length;continue;}   // reached it, or somebody is waiting there
+    break;}
+  ai.mtLeg=k;ai.tx=gx-d*L[k][0];ai.tz=sg*L[k][1];ai.full=false;ai.mtSlow=true;
+}
+// the waiting loop is skated at MT.pace: a lower top speed (movePeng) and a softer push (the speed limit there is soft:
+// top speed ≈ cap + acceleration / 4, so both have to come down)
+function mtPace(p){const ai=p.ai;if(ai.mtSlow&&G.carry===p&&!ai.plan){p.ix*=MT.pace;p.iz*=MT.pace;}}
+// ---- the call (replaces v38's hkCallPress / hkCallPass) ----
+function mtCallPress(p,inp){
+  if(!inp.pass)return false;const c=G.carry;
+  if(c&&c!==p&&c.team===p.team&&!c.human&&!c.remote&&!c.goalie){   // a mate has the puck: ask for it
+    inp.pass=false;G.callFor={p,t:G.t};
+    if(c.ai&&c.ai.plan){c.ai.plan=null;c.charging=false;c.charge=0;}       // your call beats its own shot, however far it is wound up
+    if(p.cd.pass<=0){p.cd.pass=.3;if(p.human)popAt(__L(__L('🙋 여기!')),p.x,2.5,p.z);SFX.ui();}
+    return true;
+  }
+  // nobody has it and it is not on your stick: the next mate to win it will look for you (the press is still buffered for
+  // your own stick as before, so a puck that reaches you first is passed on)
+  if(!c&&!canHit(p)&&!hkIncoming(p)&&mtHuman(p.team))G.callFor={p,t:G.t};
+  return false;
+}
+function mtCallPass(p){
+  const c=G.callFor;if(!c)return;
+  if(G.t-c.t>MT.callWin||G.carry===c.p){G.callFor=null;return;}
+  if(G.carry!==p)return;const q=c.p;
+  if(q.team!==p.team)return;                                            // an opponent has it for now: the call stays open until the window closes
+  if(q===p||!(q.human||q.remote)||q.frozen){G.callFor=null;return;}
+  if(q.fall>0)return;                                                   // you are down: it waits until you are up (inside the window)
+  if(G.t-c.t<HK.callDelay||p.cd.pass>0||!canHit(p))return;
+  if(p.ai&&p.ai.plan){p.ai.plan=null;p.charging=false;p.charge=0;}      // your call beats its own shot, however far it is wound up
+  G.callFor=null;if(doPass(p,q))p.ai.cool=rnd(.9,1.4);
+}
+
+/*P3:js*//* ================= v41: 🃏 the real penguins on the cards (2026-11-10) ================= */
+// The owner: "the penguin card design is awful — a few shapes glued together, is that a penguin?"
+// The card art was a flat drawing (ellipses and circles). The game already has a sculpted, feathered, sweater-wearing 3D
+// penguin for every species, so the cards now show THAT penguin: a studio portrait of the game model (three-quarter view,
+// stick across the chest, key light + a rim light in the card's rarity colour), rendered once per species into an image
+// and shown on every card, the scout banner, the collection silhouettes and the skill cut-in.
+// The old drawing stays as the fallback (no WebGL, lost context, the Node test harness).
+var P3V={w:512,h:640,ss:2,fov:21,q:.9,camUp:1.6,camZ:6.15,camY:.86,exp:.68,iris:1.2,domeY:1.5,domeK:1.42,stick:1.6,
+  rim:{0:0xcfe2f5,1:0x6cc4ff,2:0xc79bff,3:0xff7d8a,4:0xffd98a,9:0x8dffe6},
+  pose:{attacker:{yaw:-.5,head:[-.1,.38,.07],fl:[-.45,-.12,-.9,.45],stk:[-1.12,1.44,1.05],eye:.84,brow:-.1,jaw:.14},
+        defender:{yaw:-.32,head:[-.04,.22,.06],fl:[-.6,-.08,-.95,.4],stk:[-1.18,1.22,1.1],eye:.8,brow:-.16,jaw:.02},
+        mid:{yaw:-.42,head:[-.12,.3,.1],fl:[-.3,-.2,-.85,.5],stk:[-1.05,1.56,1.0],eye:.9,brow:0,jaw:.1}}};
+var P3={url:{},team:'',scn:null,cam:null,rt:null,cv:null,cv2:null,buf:null,key:null,kick:null,fail:0,css:null,busy:false,warm:[],n:0};
+function p3Can(){
+  if(window.__NOFX||P3.fail>=2)return false;
+  try{return !!(renderer&&renderer.getContext&&!renderer.getContext().isContextLost());}catch(e){return false;}
+}
+function p3Init(){
+  if(P3.scn)return;
+  const s=P3.scn=new T.Scene();
+  s.add(new T.HemisphereLight(0xdcecff,0x41587a,.5));
+  const key=P3.key=new T.DirectionalLight(0xfff1dc,1.0);key.position.set(-2.8,3.6,4.0);s.add(key);s.add(key.target);key.target.position.set(0,.9,0);
+  key.castShadow=true;key.shadow.mapSize.set(1024,1024);const sc=key.shadow.camera;sc.left=-1.7;sc.right=1.7;sc.top=1.7;sc.bottom=-1.7;sc.near=1;sc.far=12;sc.updateProjectionMatrix();
+  key.shadow.bias=-.0012;key.shadow.normalBias=.03;key.shadow.radius=2.5;
+  const fill=new T.DirectionalLight(0xbfe0ff,.14);fill.position.set(3.4,.8,3.2);s.add(fill);
+  const kick=P3.kick=new T.DirectionalLight(0xffffff,1.5);kick.position.set(3.0,2.2,-3.4);s.add(kick);
+  const top=new T.DirectionalLight(0xffffff,.22);top.position.set(-.6,5,-1.8);s.add(top);
+  P3.cam=new T.PerspectiveCamera(P3V.fov,P3V.w/P3V.h,.5,40);
+  P3.rt=new T.WebGLRenderTarget(P3V.w*P3V.ss,P3V.h*P3V.ss,{depthBuffer:true,stencilBuffer:false});
+  P3.buf=new Uint8Array(P3V.w*P3V.ss*P3V.h*P3V.ss*4);
+  P3.cv=document.createElement('canvas');P3.cv.width=P3V.w*P3V.ss;P3.cv.height=P3V.h*P3V.ss;
+  P3.cv2=document.createElement('canvas');P3.cv2.width=P3V.w;P3.cv2.height=P3V.h;
+}
+// the stick: grip at the right flipper tip, blade towards a point given in the penguin's own space (same maths as the match)
+const _p3M=new T.Matrix4(),_p3B=new T.Matrix4(),_p3V=new T.Vector3(),_p3G=new T.Vector3(),_p3U=new T.Vector3(),_p3X=new T.Vector3(),_p3Y=new T.Vector3(),_p3Z=new T.Vector3();
+function p3Stick(P,x,y,z){
+  if(!P.stick)return;P.stick.visible=true;P.stick.scale.set(P3V.stick,P3V.stick,1);
+  P.piv.updateMatrix();P.inner.updateMatrix();P.flipR.updateMatrix();
+  _p3M.multiplyMatrices(P.piv.matrix,P.inner.matrix).invert();
+  _p3V.set(x,y,z).applyMatrix4(_p3M);_p3U.set(0,1,0).transformDirection(_p3M);
+  _p3G.set(0,-.34,.03).applyMatrix4(P.flipR.matrix);
+  _p3Z.subVectors(_p3V,_p3G).normalize();
+  _p3Y.copy(_p3U).addScaledVector(_p3Z,-_p3U.dot(_p3Z));if(_p3Y.lengthSq()<1e-6)_p3Y.set(0,0,-1);_p3Y.normalize();
+  _p3X.crossVectors(_p3Y,_p3Z);_p3B.makeBasis(_p3X,_p3Y,_p3Z);P.stick.quaternion.setFromRotationMatrix(_p3B);
+  P.stick.position.copy(_p3G).addScaledVector(_p3Z,-.08);
+}
+// the portrait gets a rounder crown: up close the match model's low cap reads as a bucket, so everything on the head
+// above P3V.domeY is stretched upwards by P3V.domeK (head skin, bands, crests alike; normals follow) — this copy only
+function p3Dome(P){
+  const y0=P3V.domeY,k=P3V.domeK,made=[];
+  for(const m of P.headAbs.children){
+    if(!m.isMesh||!m.geometry||!m.geometry.attributes||!m.geometry.attributes.position)continue;
+    if(m.position.lengthSq()>1e-8||m.rotation.x||m.rotation.y||m.rotation.z)continue;
+    const g=m.geometry.clone(),a=g.attributes.position,n=g.attributes.normal;let ch=false;
+    for(let i=0;i<a.count;i++){const y=a.getY(i);if(y<=y0)continue;a.setY(i,y0+(y-y0)*k);ch=true;
+      if(n){const nx=n.getX(i),ny=n.getY(i)/k,nz=n.getZ(i),l=Math.hypot(nx,ny,nz)||1;n.setXYZ(i,nx/l,ny/l,nz/l);}}
+    if(!ch){g.dispose();continue;}
+    a.needsUpdate=true;if(n)n.needsUpdate=true;m.geometry=g;made.push(g);
+  }
+  return made;
+}
+function p3Pose(k){const r=PREF[k]||'mid';return P3V.pose[r]||P3V.pose.mid;}
+// build the species' game model, pose it, light it, render it → a data URL (transparent background)
+function p3Shot(k){
+  p3Init();
+  const ty=TYPES[k],team=save.team||'blue',po=p3Pose(k),g=rarCls(k);
+  const p=makePeng({key:team,dir:1},'attacker',k,0,false,'none');scene.remove(p.pg.root);
+  const P=p.pg,S=P3.scn;S.add(P.root);
+  let out='',made=[];
+  const ct=renderer.getRenderTarget(),cc=renderer.getClearColor(new T.Color()),ca=renderer.getClearAlpha(),ex=renderer.toneMappingExposure,
+    rc=PRIM.c.value.clone(),rs=PRIM.s.value,st=save.set.stick;
+  try{
+    p.x=p.z=p.rx=p.rz=0;p.vx=p.vz=0;p.heading=po.yaw;p.pose='idle';p.seed=0;p.anim.phase=0;
+    save.set.stick=true;animatePenguin(p,1,0);save.set.stick=st;
+    const sc=lerp(1,ty.scale,.4);P.root.scale.setScalar(sc);P.root.position.set(0,0,0);P.root.rotation.y=po.yaw;
+    P.piv.rotation.set(0,0,0);P.piv.position.y=PIV;
+    P.head.rotation.set(po.head[0],po.head[1],po.head[2],'YXZ');
+    P.flipL.rotation.set(po.fl[0],0,po.fl[1]);P.flipR.rotation.set(po.fl[2],0,po.fl[3]);
+    P.eyeL.scale.y=P.eyeR.scale.y=po.eye||.88;P.eyeL.rotation.z=po.brow||0;P.eyeR.rotation.z=-(po.brow||0);
+    P.pupL.scale.setScalar(P3V.iris);P.pupR.scale.setScalar(P3V.iris);
+    const look=clamp(-(po.yaw+po.head[1])*.03,-.03,.03);P.pupL.position.x=P.pupR.position.x=look;P.pupL.position.y=P.pupR.position.y=.004;
+    if(P.jaw)P.jaw.rotation.x=po.jaw||0;
+    if(P.scarfTail){P.scarfTail.rotation.x=.35;P.scarfTail.rotation.z=.12;}
+    p3Stick(P,po.stk[0],po.stk[1],po.stk[2]);
+    if(P3V.domeK>1)made=p3Dome(P);
+    // camera: a bust from the top of the head to the belly, a touch below eye level
+    const c=P3.cam,cy=P3V.camY*sc;c.position.set(0,cy+P3V.camUp,P3V.camZ);c.lookAt(0,cy,0);c.updateProjectionMatrix();
+    P3.kick.color.setHex(P3V.rim[g]||P3V.rim[0]);
+    PRIM.c.value.setHex(P3V.rim[g]||P3V.rim[0]);PRIM.s.value=.85;
+    renderer.toneMappingExposure=P3V.exp;
+    renderer.setRenderTarget(P3.rt);renderer.setClearColor(0x000000,0);renderer.clear(true,true,true);
+    renderer.render(S,P3.cam);
+    const W=P3V.w*P3V.ss,H=P3V.h*P3V.ss;
+    renderer.readRenderTargetPixels(P3.rt,0,0,W,H,P3.buf);
+    const x=P3.cv.getContext('2d'),im=x.createImageData(W,H),d=im.data,b=P3.buf,row=W*4;
+    for(let y=0;y<H;y++)d.set(b.subarray((H-1-y)*row,(H-y)*row),y*row);
+    x.putImageData(im,0,0);
+    const x2=P3.cv2.getContext('2d');x2.clearRect(0,0,P3V.w,P3V.h);x2.imageSmoothingEnabled=true;x2.imageSmoothingQuality='high';x2.drawImage(P3.cv,0,0,P3V.w,P3V.h);
+    out=P3.cv2.toDataURL('image/webp',P3V.q);
+    if(typeof out!=='string'||out.length<2000)out='';
+  }catch(e){out='';P3.err=String(e&&e.message||e);}
+  renderer.setRenderTarget(ct);renderer.setClearColor(cc,ca);renderer.toneMappingExposure=ex;PRIM.c.value.copy(rc);PRIM.s.value=rs;PRIM.t=-1;save.set.stick=st;
+  S.remove(P.root);for(const g of made)g.dispose();
+  if(!out)P3.fail++;else P3.n++;
+  return out;
+}
+function p3Rule(k,u){
+  if(!P3.css){P3.css=document.createElement('style');P3.css.id='p3css';document.head.appendChild(P3.css);}
+  P3.rules=P3.rules||{};P3.rules[k]='.p3-'+k+'{background-image:url('+u+')}';
+  P3.css.textContent=Object.keys(P3.rules).map(q=>P3.rules[q]).join('\n');
+}
+// the portrait of a species (rendered on first use; the team colour of the sweater follows your team)
+function p3Url(k){
+  if(!TYPES[k]||!p3Can())return '';
+  const tm=save.team||'blue';if(P3.team!==tm){P3.team=tm;P3.url={};}
+  if(P3.url[k])return P3.url[k];
+  const u=p3Shot(k);if(!u)return '';
+  P3.url[k]=u;p3Rule(k,u);return u;
+}
+function p3Html(k){return p3Url(k)?'<i class="p3 p3-'+k+'"></i>':'';}
+// render the rest in the background while a menu is open, so no screen has to wait for a portrait
+function p3Warm(all){
+  if(!p3Can())return 0;let n=0;
+  for(const k of Object.keys(TYPES)){if(P3.url[k]&&P3.team===(save.team||'blue'))continue;if(p3Url(k))n++;if(!all)break;}
+  return n;
+}
+function p3Frame(){
+  if(P3.done||G.view==='game'||!p3Can())return;
+  P3.wt=(P3.wt||0)+1;if(P3.wt%4)return;            // one portrait every fourth frame
+  if(!p3Warm(false)){if(Object.keys(TYPES).every(k=>P3.url[k]))P3.done=true;}
+}
+/*P3:jsend*/
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();safe(accInit);safe(dlyInit);safe(dlyAuto);safe(ctlInit);
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,applyFxSettings,LX,LXV,lxr,lxOn,lxNight,lxBuild,lxRing,lxGoal,lxHit,lxRays,lxFrame,scored,bigHit,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,P3,P3V,p3Can,p3Shot,p3Url,p3Html,p3Warm,p3Frame,p3Stick,MT,mtHuman,mtMate,mtOpen,mtCalled,mtCarrier,mtCarry,mtPace,mtCallPress,mtCallPass,aiCarrier,aiThink,shotQ,applyFxSettings,LX,LXV,lxr,lxOn,lxNight,lxBuild,lxRing,lxGoal,lxHit,lxRays,lxFrame,scored,bigHit,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

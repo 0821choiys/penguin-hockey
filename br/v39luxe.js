@@ -81,15 +81,15 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   await shot('streak');
   // your goal → rings, rays, spotlights on the goal, fireworks
   const g1=await E(()=>{const P=window.__PH,G=P.G;const n0=P.LX.n.fw,pk=G.puck,me=G.player;pk.x=pk.ox=pk.rx=G.mine.dir*23.2;pk.z=pk.oz=pk.rz=0;pk.vx=pk.vz=0;me.x=me.ox=me.rx=G.mine.dir*17;me.z=me.oz=me.rz=2;me.vx=me.vz=0;P.scored(G.mine);for(let i=0;i<24;i++)P.step(1/60);P.updateCamera(1);const el=document.getElementById('lxRays');
-    return {rays:el&&el.className,disp:el&&getComputedStyle(el).display,col:el&&el.style.getPropertyValue('--lx'),spots:P.LX.beams.filter(b=>b.m.visible).length,rings:P.LX.rings.filter(r=>r.m.visible).length,goalT:+P.LX.goalT.toFixed(2),fwQ:P.LX.fw.length+(P.LX.n.fw-n0),banner:document.getElementById('banner').textContent};});
-  ok(/on mine/.test(g1.rays)&&g1.disp==='block'&&/^#/.test(g1.col||'')&&g1.rings>=2&&g1.fwQ===3,'your goal → a light streak in your colour, shock rings, 3 fireworks '+JSON.stringify(g1));
+    return {rays:el&&el.className,disp:el&&getComputedStyle(el).display,fan:el?el.querySelectorAll('.lx-fan').length:0,ring:el?el.querySelectorAll('.lx-ring').length:0,spk:el?el.querySelectorAll('b').length:0,col:el&&el.style.getPropertyValue('--lx'),spots:P.LX.beams.filter(b=>b.m.visible).length,rings:P.LX.rings.filter(r=>r.m.visible).length,goalT:+P.LX.goalT.toFixed(2),fwQ:P.LX.fw.length+(P.LX.n.fw-n0),banner:document.getElementById('banner').textContent};});
+  ok(/on mine/.test(g1.rays)&&g1.disp==='block'&&/^#/.test(g1.col||'')&&g1.rings>=2&&g1.fwQ===3&&g1.fan===1&&g1.ring===1&&g1.spk===16,'your goal → a light streak, a soft fan of light, a shock ring and 16 star sparkles in your colour, shock rings on the ice, 3 fireworks '+JSON.stringify(g1));
   // CSS animations stand still at their first frame in a headless capture: seek the rays to 0.5 s for the picture
   await shot('goal_ice');await E(()=>{window.__PH.lxRays('mine','#58b8ff');document.getAnimations().forEach(a=>{const t=a.effect&&a.effect.target;if(t&&t.closest&&t.closest('#lxRays')){a.pause();a.currentTime=620;}});});await wait(200);await shot('goal');
   const g2=await E(()=>{const P=window.__PH,G=P.G;for(let i=0;i<60*4;i++)P.step(1/60);const el=document.getElementById('lxRays');return {cls:el.className,rings:P.LX.rings.filter(r=>r.m.visible).length,st:G.state};});
   ok(g2.cls===''&&g2.rings===0,'…and the show clears afterwards '+JSON.stringify(g2));
   // their goal → red edge pulse, no rays
-  const g3=await E(()=>{const P=window.__PH,G=P.G;G.state='play';P.scored(G.mine.opp);for(let i=0;i<10;i++)P.step(1/60);return document.getElementById('lxRays').className;});
-  ok(/on theirs/.test(g3),'their goal → a red edge pulse, no streak ('+g3+')');
+  const g3=await E(()=>{const P=window.__PH,G=P.G;G.state='play';P.scored(G.mine.opp);for(let i=0;i<10;i++)P.step(1/60);const el=document.getElementById('lxRays');return el.className+' kids='+el.children.length;});
+  ok(/on theirs kids=0/.test(g3),'their goal → a red edge pulse, no fan / sparkles ('+g3+')');
   // 번쩍임 off → no rays; 절약 quality → no 3D show
   const off=await E(()=>{const P=window.__PH,G=P.G;for(let i=0;i<60*4;i++)P.step(1/60);G.state='play';P.save.set.flash=false;P.applyFxSettings();const r0=P.LX.n.rays;P.scored(G.mine);const a=P.LX.n.rays-r0;
     for(let i=0;i<60*4;i++)P.step(1/60);P.save.set.flash=true;P.save.set.quality='low';P.applyFxSettings();try{P.gfxApply();}catch(e){}G.state='play';const k0=P.LX.n.ring;P.scored(G.mine);for(let i=0;i<30;i++)P.step(1/60);

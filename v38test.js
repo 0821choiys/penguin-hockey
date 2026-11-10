@@ -114,7 +114,7 @@ match();freezeOpps();
 // a call expires
 match();freezeOpps();
 {const p=me(),m=mates()[0];place(p,6,3);place(m,-4,0);const f=front(m);puck(f[0],f[1]);tick();
- G.callFor={p,t:G.t-HK.callWin-.1};PH.hkCallPass(m);ok(G.callFor===null&&!G.pass,'a call older than '+HK.callWin+' s is forgotten');}
+ G.callFor={p,t:G.t-PH.MT.callWin-.1};PH.hkCallPass(m);ok(G.callFor===null&&!G.pass,'a call older than '+PH.MT.callWin+' s is forgotten (v40: the window is MT.callWin)');}
 
 // ---- 8) poke check ----
 match();

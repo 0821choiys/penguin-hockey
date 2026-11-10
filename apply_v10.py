@@ -314,6 +314,8 @@ exec(open('v36_ctl.py',encoding='utf-8').read())
 exec(open('v37_weekly.py',encoding='utf-8').read())
 exec(open('v38_hockey.py',encoding='utf-8').read())
 exec(open('v39_luxe.py',encoding='utf-8').read())
+exec(open('v40_mate.py',encoding='utf-8').read())
+exec(open('v41_card.py',encoding='utf-8').read())
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 

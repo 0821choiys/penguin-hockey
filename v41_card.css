@@ -1,0 +1,76 @@
+/* ================= v41: the real penguins on the cards =================
+   The card is a view from the stands: the penguin stands at the rink boards, the arena light behind the glass carries the
+   rarity, the white dasher board in front carries the name (as arena boards do), with its yellow kick plate at the bottom.
+   The frame is a metal bezel in the rarity's colour. Sizes follow the card's own em (= card width / 9). */
+.p3{display:block;width:100%;height:100%;background:center bottom/contain no-repeat}
+
+.pc{--bd:3.02em;--m1:#eef4fa;--m2:#93a7bb;--m3:#3c4b5c;--m4:#c8d6e4;--bk1:#8fa8c2;--bk2:#3d5674;--bk3:#17283d;--sp:rgba(236,246,255,.95);
+  padding:0;border:.22em solid transparent;border-radius:.92em;overflow:hidden;
+  background:radial-gradient(ellipse 82% 52% at 50% 34%,var(--sp),transparent 74%) padding-box,
+    linear-gradient(180deg,var(--bk1),var(--bk2) 58%,var(--bk3)) padding-box,
+    linear-gradient(142deg,var(--m1) 0%,var(--m2) 16%,var(--m3) 31%,var(--m4) 46%,var(--m2) 60%,var(--m3) 78%,var(--m1) 100%) border-box;
+  box-shadow:inset 0 0 0 .06em rgba(4,12,26,.7),inset 0 .08em 0 .06em rgba(255,255,255,.35),0 0 0 .05em rgba(4,12,26,.85),0 .34em .8em rgba(0,0,0,.5),0 0 .9em var(--glow)}
+.pc.g1{--m1:#e6f5ff;--m2:#5fb0f5;--m3:#123f85;--m4:#a9dcff;--bk1:#4d9ff0;--bk2:#1a57b4;--bk3:#0a2456;--sp:rgba(214,238,255,.92)}
+.pc.g2{--m1:#f6eaff;--m2:#b684f2;--m3:#3e1a7c;--m4:#e3c8ff;--bk1:#8a5ce0;--bk2:#4a22a0;--bk3:#1a0b45;--sp:rgba(236,222,255,.9)}
+.pc.g3{--m1:#ffecee;--m2:#f0707e;--m3:#6e0f1f;--m4:#ffc6cc;--bk1:#e0485c;--bk2:#96172b;--bk3:#3b0711;--sp:rgba(255,226,230,.9)}
+.pc.g4{--m1:#fff8dc;--m2:#e6b450;--m3:#6a450a;--m4:#ffeeb0;--bk1:#b9892c;--bk2:#3c2d1c;--bk3:#0b1424;--sp:rgba(255,244,206,.98)}
+.pc.g9{--m1:#ffffff;--m2:#8fe9ff;--m3:#5a3fd0;--m4:#ffd0f2;--bk1:#1d6f86;--bk2:#0d3552;--bk3:#060f24;--sp:rgba(206,255,244,.9)}
+
+/* the art: the whole card above the board; the portrait is sized so the sweater meets the board's rail */
+.pc-art{position:absolute;inset:0 0 var(--bd) 0;margin:0;border-radius:0;background:none;box-shadow:none;overflow:hidden;z-index:1;display:block}
+.pc-art::before{display:none!important}
+.pc-art .p3{position:absolute;left:50%;bottom:-2.9em;width:9.6em;height:12em;margin-left:-4.72em;background-size:contain;filter:drop-shadow(0 .1em .16em rgba(4,12,26,.4))}
+.pc-sil-art .p3{filter:brightness(0) invert(1);opacity:.24}
+.pc-art svg{position:absolute;left:50%;bottom:-.5em;height:8.6em;width:auto;max-width:none;transform:translateX(-50%)}
+
+/* the dasher board: cap rail, white face with a faint sheen, two bolts, the yellow kick plate */
+.pc::before{content:"";display:block;position:absolute;inset:auto 0 0 0;height:var(--bd);z-index:2;pointer-events:none;
+  background:radial-gradient(circle,rgba(40,62,92,.75) 0 .055em,rgba(255,255,255,.9) .07em .1em,transparent .12em) .26em .52em/.3em .3em no-repeat,
+    radial-gradient(circle,rgba(40,62,92,.75) 0 .055em,rgba(255,255,255,.9) .07em .1em,transparent .12em) calc(100% - .26em) .52em/.3em .3em no-repeat,
+    linear-gradient(180deg,#0c2244 0 .2em,#3d6fb3 .2em .26em,transparent .26em),
+    linear-gradient(0deg,#f2b400 0 .3em,#b98200 .3em .35em,transparent .35em),
+    linear-gradient(100deg,transparent 30%,rgba(255,255,255,.75) 42%,transparent 55%),
+    linear-gradient(180deg,#f7fbff,#dfeaf5 62%,#cbdbea);
+  box-shadow:0 -.12em .3em rgba(4,12,26,.35)}
+.pc-top{position:relative;z-index:3;padding:.34em .38em 0}
+.pc-name{position:relative;z-index:3;margin-top:auto;color:#0d2748;text-shadow:none;font-size:1.06em;line-height:1.2;padding:0 .3em;letter-spacing:.01em}
+.pc-foot{position:relative;z-index:3;color:#33507a;text-shadow:none;font-size:.7em;padding:0 .5em .62em;margin-top:.02em;opacity:1}
+.pc-foot span:first-child,.pc.g0 .pc-foot span:first-child{color:#d08a00;text-shadow:none}
+.pc-stars{text-shadow:none}
+.pc-deco{z-index:1}
+.pc-foil,.pc-holo{z-index:4}
+.pc-new{z-index:5}.pc-cnt{z-index:5}
+
+/* behind the glass: one scene per rarity (under the portrait), plus the glass's own reflection on every card */
+.pc .pc-deco{z-index:1;background:none}
+.pc .pc-deco::after{display:none!important}
+.pc .pc-deco::before{content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;font-size:inherit!important;animation:none!important;transform:none!important;opacity:1!important;border:0!important;clip-path:none!important;
+  background:linear-gradient(104deg,transparent 0 16%,rgba(255,255,255,.14) 22%,transparent 29%,transparent 60%,rgba(255,255,255,.08) 65%,transparent 71%)!important}
+.pc.g0 .pc-deco{background:var(--lx-scratch) 0 0/9em auto}
+.pc.g1 .pc-deco{background:linear-gradient(90deg,transparent 0 .5em,rgba(206,236,255,.6) .5em 1.2em,transparent 1.2em) 0 3.9em/100% .12em no-repeat,
+  linear-gradient(270deg,transparent 0 .5em,rgba(206,236,255,.6) .5em 1.2em,transparent 1.2em) 0 3.9em/100% .12em no-repeat,
+  radial-gradient(circle at 50% 3.95em,transparent 0 3.3em,rgba(206,236,255,.55) 3.3em 3.44em,transparent 3.46em)}
+.pc.g2 .pc-deco{background:linear-gradient(98deg,transparent 12%,rgba(96,255,206,.34) 27%,rgba(96,255,206,.06) 38%,transparent 44%),linear-gradient(84deg,transparent 52%,rgba(128,214,255,.32) 66%,rgba(128,214,255,.05) 76%,transparent 82%),linear-gradient(92deg,transparent 34%,rgba(255,150,240,.2) 47%,transparent 58%);
+  -webkit-mask:linear-gradient(180deg,#000 0 34%,transparent 76%);mask:linear-gradient(180deg,#000 0 34%,transparent 76%)}
+.pc.g3 .pc-deco{background:radial-gradient(circle at 50% -.2em,rgba(255,244,236,.95) 0 .55em,rgba(255,96,96,.6) .7em 1.5em,transparent 3.6em),
+  conic-gradient(from 128deg at 50% -.2em,transparent 0 9deg,rgba(255,214,204,.22) 17deg,transparent 26deg,transparent 43deg,rgba(255,214,204,.16) 52deg,transparent 62deg,transparent 78deg,rgba(255,214,204,.22) 87deg,transparent 96deg)}
+.pc.g4 .pc-deco{background:radial-gradient(circle,#fff 0 .05em,rgba(255,236,170,.75) .07em,transparent .26em) 1.1em 4.6em/.6em .6em no-repeat,
+  radial-gradient(circle,#fff 0 .04em,rgba(255,236,170,.7) .06em,transparent .2em) 7.3em 2.9em/.5em .5em no-repeat,
+  radial-gradient(circle,#fff 0 .035em,rgba(255,236,170,.65) .05em,transparent .17em) 6.6em 6.1em/.4em .4em no-repeat,
+  repeating-radial-gradient(circle at 50% 3.8em,rgba(255,226,150,.16) 0 .035em,transparent .035em .25em)}
+.pc.g9 .pc-deco{background:conic-gradient(from 20deg at 50% 3.8em,rgba(255,96,110,.5),rgba(255,222,96,.5),rgba(96,255,170,.5),rgba(96,206,255,.5),rgba(206,128,255,.5),rgba(255,96,110,.5));
+  -webkit-mask:radial-gradient(circle at 50% 3.8em,transparent 0 2.6em,#000 3.3em,transparent 5.6em);mask:radial-gradient(circle at 50% 3.8em,transparent 0 2.6em,#000 3.3em,transparent 5.6em)}
+@keyframes p3Myth{to{background-position:0 0,0 0,300% 0}}
+.pc.g9{border:.22em solid transparent;
+  background:radial-gradient(ellipse 82% 52% at 50% 34%,var(--sp),transparent 74%) padding-box,linear-gradient(180deg,var(--bk1),var(--bk2) 58%,var(--bk3)) padding-box,
+    linear-gradient(90deg,#ff6b6b,#ffd166,#6bffb0,#6bcbff,#c77dff,#ff6b6b,#ffd166,#6bffb0,#6bcbff,#c77dff,#ff6b6b) border-box;
+  background-size:auto,auto,300% 100%;animation:p3Myth 4s linear infinite}
+.pc.g9 .pc-holo{background:radial-gradient(circle at 30% 18%,rgba(255,255,255,.5),transparent 46%);mix-blend-mode:soft-light;opacity:.55}
+.pc.g9 .pc-ovr b{-webkit-text-fill-color:currentColor;background:none;color:#fff;filter:none}
+.pc.b5{box-shadow:inset 0 0 0 .06em rgba(4,12,26,.7),inset 0 0 0 .13em rgba(255,243,196,.9),0 0 0 .05em rgba(4,12,26,.85),0 .34em .8em rgba(0,0,0,.5),0 0 1.15em #ffd54a}
+.pc.g9 .pc-art{background:none}
+.pc.g9 .pc-holo{background:radial-gradient(circle at var(--mx,30%) var(--my,18%),rgba(255,255,255,.5),transparent 46%)}
+body.rm .pc.g9{animation:none}
+/* the same portrait elsewhere: scout banner, collection silhouettes, skill cut-in */
+.gb-art .p3{background-position:center bottom}
+#cine .cn-art .p3{background-position:center}
