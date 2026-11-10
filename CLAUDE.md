@@ -16,10 +16,14 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
   (→ team-mate nearest the puck = the white ring). The only forced change is the penalty box. Auto switching is a setting
   (`save.set.ctl.auto`, off by default, never online). Without the puck the buttons follow the play: Shoot = 뺏기 (poke) when an
   opponent carries, Pass = 패스 요청 (call) when an AI team-mate carries.
-- Look (owner, 2026-11-10; v39, `premium-look-v39.md`): FC-Mobile-like premium style — gold trim, gloss, light rays. v39 changes colours /
-  backgrounds / shadows only (no sizes or positions) and its match show is visual only (own random numbers `lxr`, off at 절약 quality,
-  rays follow the flash / reduced-motion settings). On white ice: additive light is invisible and warm tints look like stains — use
-  ice-blue / team colours; flat things on the ice need `polygonOffset` stronger than the ice's (-2).
+- Look (owner, 2026-11-10; v39, `premium-look-v39.md`): asked for a flashier design, then rejected the gold "premium" pass as cheap —
+  "not just colours, the detail must be good; the quick-match button was better before". So: NO gold paint (gold borders / gold buttons /
+  gold titles / sunburst rays / glints / looping sheen). Keep the original palette (navy boards, ice-blue, team colours, the yellow
+  kick-plate line) and put the work into craft: double hairlines, textures, emblems, hockey things (bolts, skate marks, LED clock).
+  The home quick-match button, logo, titles and chips stay as they were before v39 — do not restyle them.
+  v39's match show is visual only (own random numbers `lxr`, off at 절약 quality, the goal streak follows flash / reduced motion).
+  On white ice: additive light is invisible and warm tints look like stains — use ice-blue / team colours; flat things on the ice
+  need `polygonOffset` stronger than the ice's (-2).
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
@@ -84,7 +88,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node v36ctl.js <pc|tall|wide|wideS> <lang>` (controls: layout editor, saved layout in a match, follow / fixed joystick, cooldown rings),
   `node v37fix.js <pc|tall|wide|wideS> <lang>` (touch labels on one line, landscape home titles, finished fish pass on the objectives screen),
   `node v38hk.js <pc|tall|wide|wideS> <lang>` (no automatic switching with the stick held, white Switch ring, off-screen arrow, 뺏기 / 패스 요청 labels and taps, 펭귄 교체 setting),
-  `node v39luxe.js <pc|tall|wide|wideS> <lang> <day|night>` (premium look: home rays / gold hero button, scoreboard, goal show, shot streak, 절약 / flash-off),
+  `node v39luxe.js <pc|tall|wide|wideS> <lang> <day|night>` (detail pass: quick-match button unchanged, tile emblems, bolted boards, LED scoreboard, goal show, shot streak, 절약 / flash-off),
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
   `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.

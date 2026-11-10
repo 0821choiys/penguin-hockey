@@ -1,109 +1,63 @@
-/* ================= v39: ✨ premium look (gold trim, gloss, light rays) =================
-   Colours, backgrounds, borders and shadows only — no sizes or positions change, so every layout (portrait, landscape,
-   the custom control layout) stays where it was. Moving light stops with 움직임 줄이기 / prefers-reduced-motion. */
-:root{--g1:#fff3c2;--g2:#ffd15a;--g3:#e09a1c;--g4:#8a5406;--goldline:rgba(255,214,120,.46)}
-@keyframes lxSheen{0%,58%{background-position:170% 0,0 0}100%{background-position:-70% 0,0 0}}
-@keyframes lxSheen3{0%,62%{background-position:170% 0,0 0,0 0}100%{background-position:-70% 0,0 0,0 0}}
-@keyframes lxSway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
-@keyframes lxRaysIn{0%{opacity:0}12%{opacity:1}68%{opacity:.8}100%{opacity:0}}
-@keyframes lxSpin{to{transform:rotate(70deg)}}
+/* ================= v39: finer detail (second pass, 2026-11-10) =================
+   The first pass painted gold over everything and the owner called it cheap: "not just colours — the detail must be good;
+   the quick-match button was better before". So: the quick-match button, logo, titles, chips and dock colours are the
+   originals again, and the work is in the craft instead — double hairline strokes, ice-scratch texture, emblem watermarks,
+   bolted boards, an LED scoreboard, ringed glass buttons, a broadcast-style light streak for goals.
+   Hockey things only: dasher boards and their bolts, skate marks, the LED clock, the goal light. No sizes or positions change. */
+:root{--lx-scratch:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='140'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.055' stroke-linecap='round'%3E%3Cpath d='M-10 34q70-30 130 6t110-14'/%3E%3Cpath d='M14 128q46-56 190-66'/%3E%3Cpath d='M74 -4q12 44-34 82'/%3E%3Cpath d='M150 140q-8-40 40-70' stroke-opacity='.035'/%3E%3C/g%3E%3C/svg%3E");
+  --lx-hair:rgba(196,230,255,.2);--lx-ink:rgba(5,16,32,.92)}
+@keyframes lxStreak{0%{transform:scaleX(.04);opacity:0}10%{opacity:1}55%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1.06);opacity:0}}
+@keyframes lxBloom{0%{opacity:0;transform:scale(.6,.5)}14%{opacity:1}100%{opacity:0;transform:scale(1.15,1)}}
 @keyframes lxRed{0%{opacity:0}22%{opacity:1}100%{opacity:0}}
 
-/* ---- home: stage lighting over the live rink ---- */
-#sMenu.on::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(125% 88% at 50% 36%,transparent 40%,rgba(4,14,32,.62) 100%)}
-#sMenu.on::after{content:"";position:fixed;left:50%;top:-16vh;width:180vmax;height:125vh;margin-left:-90vmax;z-index:-1;pointer-events:none;
-  background:conic-gradient(from 148deg at 50% 0,transparent 0 4deg,rgba(255,232,160,.22) 7deg,transparent 11deg 17deg,rgba(170,225,255,.17) 21deg,transparent 25deg 30deg,
-    rgba(255,232,160,.15) 33deg,transparent 37deg 43deg,rgba(170,225,255,.19) 47deg,transparent 51deg 56deg,rgba(255,232,160,.18) 60deg,transparent 64deg);
-  -webkit-mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.55) 46%,transparent 76%);mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.55) 46%,transparent 76%);
-  transform-origin:50% 0;animation:lxSway 9s ease-in-out infinite alternate}
-/* logo: ice-white face, gold edge, a slow sheen */
-#sMenu .l1{background:linear-gradient(105deg,transparent 43%,rgba(255,255,255,.98) 50%,transparent 57%) 170% 0/230% 100% no-repeat,
-    linear-gradient(180deg,#ffffff 8%,#e6f6ff 36%,#86d0ff 66%,#ffe7a0 100%);
-  -webkit-background-clip:text;background-clip:text;animation:lxSheen 4.4s ease-in-out infinite;
-  filter:drop-shadow(0 2px 0 #f4bc46) drop-shadow(0 4px 0 #c98616) drop-shadow(0 6px 0 #8a5406) drop-shadow(0 13px 14px rgba(0,18,46,.7)) drop-shadow(0 0 24px rgba(255,205,90,.5))}
-#sMenu .l1 .em{-webkit-text-fill-color:initial}
-#sMenu .l2{color:var(--g1);opacity:1;font-weight:700;text-shadow:0 1px 0 rgba(90,50,0,.9),0 0 14px rgba(255,201,60,.55)}
+/* ---- home tiles: dasher boards — a dark outer line + a light inner hairline, skate marks, an emblem pressed into the board ---- */
+#sMenu .hm-cta .btn.hm-tile,#sMenu .hm-cta .btn.hm-tile:hover{position:relative;overflow:hidden;
+  background:var(--lx-scratch),linear-gradient(118deg,rgba(255,255,255,.07) 0 34%,rgba(255,255,255,0) 34.4%),radial-gradient(120% 140% at 0 50%,var(--accbg,rgba(98,212,255,.16)),transparent 58%),linear-gradient(180deg,#17406c,#0f2f55)!important;
+  border:1px solid var(--lx-ink)!important;
+  box-shadow:inset 0 0 0 1px var(--lx-hair),inset 0 1px 0 rgba(255,255,255,.22),inset 4px 0 0 var(--acc),0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.34)!important}
+#sMenu .hm-cta .btn.hm-tile>*{position:relative;z-index:1}
+#sMenu .hm-cta .btn.hm-tile::after{content:"";position:absolute;right:-14px;bottom:-22px;width:98px;height:98px;z-index:0;pointer-events:none;background:var(--acc,#62d4ff);opacity:.2;transform:rotate(-11deg);
+  -webkit-mask:var(--lx-wm) center/contain no-repeat;mask:var(--lx-wm) center/contain no-repeat}
+#sMenu .hm-tile.rkbtn{--lx-wm:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.25' stroke-linejoin='round'%3E%3Cpath d='M12 2.5l8 3v6.2c0 4.6-3.3 8.3-8 9.8-4.7-1.500-8-5.200-8-9.800V5.500z'/%3E%3Cpath d='M12 7.600l1.400 2.900 3.100.400-2.300 2.200.600 3.100L12 14.700l-2.800 1.500.600-3.100-2.300-2.200 3.100-.400z'/%3E%3C/svg%3E")}
+#sMenu .hm-tile.mkbtn{--lx-wm:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3.500' width='11' height='15' rx='2' transform='rotate(-8 8 11)'/%3E%3Crect x='10' y='5.500' width='11' height='15' rx='2' transform='rotate(7 15 13)'/%3E%3Cpath d='M13 11h5M16 9l2 2-2 2'/%3E%3C/svg%3E")}
+#sMenu .hm-tile.hm-pass{--acc:var(--p1,#3de8b0);--accbg:color-mix(in srgb,var(--p1,#3de8b0) 20%,transparent);--edge:#0a2340;--lx-wm:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.25' stroke-linejoin='round'%3E%3Cpath d='M2.500 12c3-4.600 8.200-5.600 12.300-3.200l5-3.300v13l-5-3.300C10.700 17.600 5.500 16.600 2.500 12z'/%3E%3Ccircle cx='7.400' cy='11.200' r='.9'/%3E%3Cpath d='M11 9.500q1.600 2.500 0 5'/%3E%3C/svg%3E")}
+#sMenu .hm-tile .ic{box-shadow:inset 0 0 0 1px var(--acc),inset 0 0 0 3.5px rgba(8,24,46,.5),0 1px 0 rgba(255,255,255,.14)}
+#sMenu .hm-cta .btn.hm-row,#sMenu .hm-cta .btn.hm-row:hover{background:var(--lx-scratch),linear-gradient(180deg,rgba(18,48,82,.96),rgba(9,29,52,.96))!important;border:1px solid var(--lx-ink)!important;
+  box-shadow:inset 0 0 0 1px var(--lx-hair),inset 0 1px 0 rgba(255,255,255,.16),0 3px 0 var(--edge)!important}
+#menuGoals{border-color:var(--lx-ink);box-shadow:inset 0 0 0 1px var(--lx-hair),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(2,10,24,.3)}
+.dock{box-shadow:0 14px 34px rgba(2,10,24,.5),0 0 0 1px var(--lx-ink),inset 0 0 0 1px var(--lx-hair),inset 0 1px 0 rgba(255,255,255,.2),inset 0 -3px 0 rgba(255,201,60,.6)}
 
-/* ---- boards, titles, buttons ---- */
-.screen.on:not(#sMenu):not(#sPause){background:radial-gradient(90% 50% at 50% 0,rgba(70,150,255,.26),transparent 70%),radial-gradient(70% 40% at 50% 100%,rgba(255,196,70,.13),transparent 70%),
-  linear-gradient(180deg,rgba(6,22,44,.58),rgba(4,14,32,.8))}
-.panel{border-color:rgba(255,214,120,.36);
-  background:linear-gradient(180deg,rgba(255,224,150,.11),rgba(255,224,150,0) 84px),radial-gradient(130% 70% at 50% 0,rgba(88,170,255,.17),transparent 62%),
-    repeating-linear-gradient(118deg,rgba(255,255,255,.022) 0 2px,transparent 2px 10px),var(--panel);
-  box-shadow:0 18px 50px rgba(2,10,24,.6),0 0 34px rgba(255,196,70,.1),inset 0 1px 0 rgba(255,240,200,.24),inset 0 -4px 0 rgba(255,201,60,.72)}
-h2{color:#ffeab0;text-shadow:0 1px 0 rgba(90,50,0,.85),0 0 20px rgba(255,201,60,.35)}
-h2::after{background:radial-gradient(circle,#fff6d0 0 2.6px,var(--g3) 2.7px 5px,transparent 5.2px) center/12px 12px no-repeat,
-  linear-gradient(90deg,transparent,var(--g2) 22%,var(--g2) 78%,transparent) center/100% 2px no-repeat}
-.btn{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 52%),linear-gradient(180deg,#1d4a7a,#123559);border-color:rgba(190,225,255,.42)}
-.btn.primary{background:linear-gradient(105deg,transparent 41%,rgba(255,255,255,.8) 50%,transparent 59%) 170% 0/230% 100% no-repeat,
-    linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 50%),linear-gradient(180deg,#9be8ff,#2a97f0);
-  border:1px solid #fff1c4;animation:lxSheen3 3.8s ease-in-out infinite;
-  box-shadow:0 5px 0 #145f9f,0 12px 26px rgba(0,40,90,.45),0 0 0 2px rgba(255,205,90,.38),0 0 24px rgba(120,210,255,.42)}
-.btn.small.primary{box-shadow:0 3px 0 #145f9f,0 0 0 1.5px rgba(255,205,90,.38),0 0 14px rgba(120,210,255,.35)}
-.seg button.on,#scTabs button.on,#mkTabs button.on,#gTabs button.on{background:linear-gradient(180deg,#74b8ff,#2f7df0);box-shadow:0 2px 0 #1b4fa6,0 0 12px rgba(80,160,255,.5)}
-.mode{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0) 46%),radial-gradient(120% 90% at 50% 0,rgba(98,190,255,.22),transparent 60%),linear-gradient(165deg,#1f5288,#11355a 72%);border-color:rgba(255,214,120,.34)}
-.mode:hover{border-color:rgba(255,214,120,.7)}
-.pts,#menuRank span{border:1px solid var(--goldline)!important;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0) 55%),var(--night)!important;
-  box-shadow:0 4px 14px rgba(2,10,24,.4),0 0 12px rgba(255,196,70,.14)}
+/* ---- boards (every panel): skate marks, a double line, four bolts like the ones that hold the glass ---- */
+.panel{border-color:var(--lx-ink);
+  background:radial-gradient(circle,rgba(210,236,255,.5) 0 1.6px,rgba(6,18,36,.55) 1.9px 3.2px,transparent 3.5px) 9px 9px/12px 12px no-repeat,
+    radial-gradient(circle,rgba(210,236,255,.5) 0 1.6px,rgba(6,18,36,.55) 1.9px 3.2px,transparent 3.5px) calc(100% - 9px) 9px/12px 12px no-repeat,
+    radial-gradient(circle,rgba(210,236,255,.5) 0 1.6px,rgba(6,18,36,.55) 1.9px 3.2px,transparent 3.5px) 9px calc(100% - 13px)/12px 12px no-repeat,
+    radial-gradient(circle,rgba(210,236,255,.5) 0 1.6px,rgba(6,18,36,.55) 1.9px 3.2px,transparent 3.5px) calc(100% - 9px) calc(100% - 13px)/12px 12px no-repeat,
+    var(--lx-scratch),radial-gradient(130% 60% at 50% 0,rgba(88,170,255,.12),transparent 62%),var(--panel);
+  box-shadow:0 18px 50px rgba(2,10,24,.55),inset 0 0 0 1px var(--lx-hair),inset 0 1px 0 rgba(255,255,255,.2),inset 0 -4px 0 rgba(255,201,60,.72)}
 
-/* ---- home buttons: a gold hero button, tiles lit from their accent colour, gold medallions ---- */
-@keyframes lxPulse{0%,100%{box-shadow:0 5px 0 #a8650a,0 14px 30px rgba(60,30,0,.45),0 0 0 2px rgba(255,244,200,.75),0 0 26px rgba(255,201,60,.55)}
-  50%{box-shadow:0 5px 0 #a8650a,0 14px 30px rgba(60,30,0,.45),0 0 0 2px rgba(255,244,200,.9),0 0 46px rgba(255,201,60,.9)}}
-@keyframes lxTwinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0deg)}45%,55%{opacity:1;transform:scale(1) rotate(40deg)}}
-#sMenu .hm-cta .hm-quick{color:#3a2200;border:1px solid #fff6d2;
-  background:linear-gradient(105deg,transparent 41%,rgba(255,255,255,.85) 50%,transparent 59%) 170% 0/230% 100% no-repeat,
-    linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0) 48%),linear-gradient(180deg,#ffe98f,#ffc93c 46%,#f09a1a);
-  animation:lxSheen3 3.6s ease-in-out infinite,lxPulse 2.4s ease-in-out infinite}
-#sMenu .hm-cta .hm-quick:active{animation:none;box-shadow:0 2px 0 #a8650a,0 0 0 2px rgba(255,244,200,.8)}
-#sMenu .hm-quick .tx small{color:#5a3200;opacity:.9}
-#sMenu .hm-quick .ic{background:radial-gradient(circle at 35% 30%,#ffffff,#d9f1ff 55%,#8fd2ff);color:#0b4f8a;box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 2px 8px rgba(120,70,0,.45)}
-#sMenu .hm-cta .btn.hm-tile,#sMenu .hm-cta .btn.hm-tile:hover{
-  background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 46%),radial-gradient(130% 150% at 0 50%,var(--accbg2,rgba(98,212,255,.26)),transparent 62%),linear-gradient(160deg,#20558c,#0f2f55 72%)!important;
-  border:1px solid rgba(255,214,120,.6)!important;
-  box-shadow:inset 4px 0 0 var(--acc),inset 0 1px 0 rgba(255,244,210,.32),0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.4),0 0 18px rgba(255,196,70,.16)!important}
-#sMenu .hm-tile.rkbtn{--accbg2:rgba(255,201,60,.34)}#sMenu .hm-tile.mkbtn{--accbg2:rgba(255,140,60,.36)}#sMenu .hm-tile.hm-pass{--acc:var(--p1,#3de8b0);--accbg2:color-mix(in srgb,var(--p1,#3de8b0) 38%,transparent)}
-#sMenu .hm-tile.rkbtn .ic,#sMenu .hm-tile.mkbtn .ic{background:radial-gradient(circle at 35% 30%,#fff8da,var(--acc) 60%,#b9770e);color:#3a2200;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7),0 0 14px var(--accbg2)}
-#sMenu .hm-cta .btn.hm-row,#sMenu .hm-cta .btn.hm-row:hover{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 50%),rgba(9,29,52,.95)!important;border:1px solid var(--goldline)!important}
-#menuGoals{border-color:var(--goldline);background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 50%),rgba(9,29,52,.95)}
-.dock{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,0) 42%),rgba(8,26,50,.95);border-color:rgba(255,214,120,.42);
-  box-shadow:0 14px 34px rgba(2,10,24,.55),0 0 22px rgba(255,196,70,.12),inset 0 1px 0 rgba(255,244,210,.26),inset 0 -3px 0 rgba(255,201,60,.66)}
-#sMenu .dock button i{color:#ffe7ae;filter:drop-shadow(0 0 6px rgba(255,201,60,.4))}
-/* glints on the logo */
-#sMenu .logo{position:relative}
-#sMenu .logo::before,#sMenu .logo::after{content:"✦";position:absolute;color:#fff7d0;font-size:clamp(14px,3.4vw,26px);line-height:1;text-shadow:0 0 10px rgba(255,220,120,.95),0 0 22px rgba(255,201,60,.7);
-  pointer-events:none;animation:lxTwinkle 2.8s ease-in-out infinite}
-#sMenu .logo::before{left:14%;top:-4%}
-#sMenu .logo::after{right:12%;top:46%;animation-delay:1.4s;font-size:clamp(11px,2.6vw,20px)}
-/* mode boards: lit icons, gold kick-plate */
-.mode{box-shadow:0 4px 0 var(--edge),0 10px 24px rgba(2,10,24,.38),inset 0 1px 0 rgba(255,244,210,.22),inset 0 -3px 0 rgba(255,201,60,.5)}
-.mode i{filter:drop-shadow(0 0 10px rgba(255,214,120,.55))}
-
-/* ---- match HUD: broadcast scoreboard, glass buttons ---- */
-#board{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 50%),rgba(7,24,48,.88);border:1.5px solid rgba(255,214,120,.8);
-  box-shadow:0 8px 26px rgba(0,20,50,.55),0 0 18px rgba(255,196,70,.25),inset 0 1px 0 rgba(255,244,210,.5)}
-.tm.b{background:linear-gradient(90deg,#2f7df0,rgba(47,125,240,.22))}
-.tm.r{background:linear-gradient(270deg,#f0364d,rgba(240,54,77,.22))}
-#clock{background:rgba(3,14,30,.84);color:#ffeab0;text-shadow:0 0 12px rgba(255,201,60,.6)}
-.hb{border-color:rgba(255,214,120,.62);background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 55%),var(--panel)}
-.tb{background:radial-gradient(circle at 50% 28%,rgba(150,210,255,.5),rgba(20,62,112,.62) 72%);border-color:rgba(225,243,255,.92);
-  box-shadow:0 4px 14px rgba(0,20,50,.4),inset 0 2px 6px rgba(255,255,255,.36),inset 0 -6px 12px rgba(0,20,60,.3)}
-#tbShoot{border-color:#ffe08a;box-shadow:0 4px 16px rgba(0,20,50,.45),0 0 16px rgba(255,201,60,.5),inset 0 2px 6px rgba(255,255,255,.4),inset 0 -6px 12px rgba(0,20,60,.3)}
+/* ---- match HUD: an LED scoreboard, ringed glass buttons ---- */
+#board{background:#07182e;border:1px solid var(--lx-ink);
+  box-shadow:0 8px 24px rgba(0,20,50,.5),0 0 0 1px rgba(170,214,255,.34),inset 0 1px 0 rgba(255,255,255,.28)}
+.tm.b{background:radial-gradient(circle,rgba(255,255,255,.1) 0 .6px,transparent .75px) 0 0/3px 3px,linear-gradient(90deg,#2f7df0,#1a56b8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.tm.r{background:radial-gradient(circle,rgba(255,255,255,.1) 0 .6px,transparent .75px) 0 0/3px 3px,linear-gradient(270deg,#f0364d,#b81f38);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+#clock{background:radial-gradient(circle,rgba(255,176,56,.14) 0 .6px,transparent .75px) 0 0/3px 3px,#040b16;color:#ffbf47;text-shadow:0 0 8px rgba(255,160,40,.55);
+  box-shadow:inset 1px 0 0 rgba(170,214,255,.22),inset -1px 0 0 rgba(170,214,255,.22)}
+.tb{background:radial-gradient(circle at 50% 30%,rgba(150,210,255,.4),rgba(20,62,112,.5) 72%);border-color:rgba(232,246,255,.92);
+  box-shadow:0 4px 14px rgba(0,20,50,.36),inset 0 0 0 4px rgba(8,30,60,.2),inset 0 0 0 5px rgba(255,255,255,.2),inset 0 2px 6px rgba(255,255,255,.3)}
+#tbShoot{box-shadow:0 4px 16px rgba(0,20,50,.42),0 0 0 3px rgba(98,212,255,.3),inset 0 0 0 5px rgba(8,30,60,.2),inset 0 0 0 6.5px rgba(255,255,255,.26),inset 0 2px 6px rgba(255,255,255,.34)}
 .tb.down{background:radial-gradient(circle at 50% 30%,rgba(255,246,196,.9),rgba(255,190,60,.62) 75%)}
-.tb.hk-poke{background:radial-gradient(circle at 50% 28%,rgba(255,194,154,.62),rgba(214,74,30,.64) 72%);border-color:#ffd9c2}
-.tb.hk-call{background:radial-gradient(circle at 50% 28%,rgba(170,255,205,.56),rgba(24,140,84,.64) 72%);border-color:#d2ffe2}
+.tb.hk-poke{background:radial-gradient(circle at 50% 30%,rgba(255,194,154,.55),rgba(214,74,30,.58) 72%);border-color:#ffd9c2}
+.tb.hk-call{background:radial-gradient(circle at 50% 30%,rgba(170,255,205,.5),rgba(24,140,84,.58) 72%);border-color:#d2ffe2}
 .tb.hk-poke.down,.tb.hk-call.down{background:radial-gradient(circle at 50% 30%,rgba(255,246,196,.9),rgba(255,190,60,.62) 75%)}
 
-#joyBase{box-shadow:0 0 0 1.5px rgba(255,224,150,.55),0 0 14px rgba(255,201,60,.22)}
-
-/* ---- goal: golden rays behind the banner (your goal) / a red edge pulse (theirs) ---- */
-#lxRays{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;display:none}
+/* ---- goal: a broadcast light streak through the banner in the scorer's colour (yours) / a red edge pulse (theirs) ---- */
+#lxRays{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;display:none;--lx:#58b8ff}
 #lxRays.on{display:block}
-#lxRays canvas{position:absolute;left:50%;top:38%;width:190vmax;height:190vmax;margin:-95vmax 0 0 -95vmax;opacity:0;display:none}
-#lxRays.gold canvas{display:block;animation:lxRaysIn 1.9s ease-out forwards,lxSpin 9s linear infinite}
-#lxRays.red{box-shadow:inset 0 0 90px 24px rgba(255,60,70,.5);opacity:0;animation:lxRed .9s ease-out forwards}
+#lxRays.mine::before{content:"";position:absolute;left:-4%;right:-4%;top:38%;height:3px;margin-top:-1.5px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,var(--lx) 18%,#fff 50%,var(--lx) 82%,transparent);box-shadow:0 0 14px 2px var(--lx),0 0 44px 8px color-mix(in srgb,var(--lx) 55%,transparent);
+  opacity:0;animation:lxStreak 1.5s cubic-bezier(.2,.8,.2,1) forwards}
+#lxRays.mine::after{content:"";position:absolute;left:50%;top:38%;width:130vmin;height:34vmin;margin:-17vmin 0 0 -65vmin;
+  background:radial-gradient(closest-side,rgba(255,255,255,.34),color-mix(in srgb,var(--lx) 30%,transparent) 45%,transparent 72%);opacity:0;animation:lxBloom 1.5s ease-out forwards}
+#lxRays.theirs{box-shadow:inset 0 0 80px 18px rgba(255,60,70,.42);opacity:0;animation:lxRed .9s ease-out forwards}
 body.noflash #lxRays,body.rm #lxRays,body.cine #lxRays{display:none!important}
-
-body.rm #sMenu .l1,body.rm .btn.primary,body.rm #sMenu.on::after,body.rm #sMenu .hm-cta .hm-quick{animation:none}
-body.rm #sMenu .logo::before,body.rm #sMenu .logo::after{display:none}
-@media (prefers-reduced-motion:reduce){#sMenu .l1,.btn.primary,#sMenu.on::after,#sMenu .hm-cta .hm-quick{animation:none}#sMenu .logo::before,#sMenu .logo::after{display:none}}

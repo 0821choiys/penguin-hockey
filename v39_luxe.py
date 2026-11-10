@@ -1,4 +1,4 @@
-# v39: ✨ premium look (v39_luxe.css) + the light show on the ice (v39_luxe.js) — visual only, no rule / number changes
+# v39: finer UI detail (v39_luxe.css, second pass after the gold look was rejected) + the match show on the ice (v39_luxe.js) — visual only, no rule / number changes
 R("/* ================= INIT ================= */", rd('v39_luxe.js') + "\n/* ================= INIT ================= */")
 _st_end39 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end39] + rd('v39_luxe.css') + "\n" + s[_st_end39:]
