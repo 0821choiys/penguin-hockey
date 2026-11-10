@@ -1,0 +1,109 @@
+/* ================= v39: ✨ premium look (gold trim, gloss, light rays) =================
+   Colours, backgrounds, borders and shadows only — no sizes or positions change, so every layout (portrait, landscape,
+   the custom control layout) stays where it was. Moving light stops with 움직임 줄이기 / prefers-reduced-motion. */
+:root{--g1:#fff3c2;--g2:#ffd15a;--g3:#e09a1c;--g4:#8a5406;--goldline:rgba(255,214,120,.46)}
+@keyframes lxSheen{0%,58%{background-position:170% 0,0 0}100%{background-position:-70% 0,0 0}}
+@keyframes lxSheen3{0%,62%{background-position:170% 0,0 0,0 0}100%{background-position:-70% 0,0 0,0 0}}
+@keyframes lxSway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+@keyframes lxRaysIn{0%{opacity:0}12%{opacity:1}68%{opacity:.8}100%{opacity:0}}
+@keyframes lxSpin{to{transform:rotate(70deg)}}
+@keyframes lxRed{0%{opacity:0}22%{opacity:1}100%{opacity:0}}
+
+/* ---- home: stage lighting over the live rink ---- */
+#sMenu.on::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(125% 88% at 50% 36%,transparent 40%,rgba(4,14,32,.62) 100%)}
+#sMenu.on::after{content:"";position:fixed;left:50%;top:-16vh;width:180vmax;height:125vh;margin-left:-90vmax;z-index:-1;pointer-events:none;
+  background:conic-gradient(from 148deg at 50% 0,transparent 0 4deg,rgba(255,232,160,.22) 7deg,transparent 11deg 17deg,rgba(170,225,255,.17) 21deg,transparent 25deg 30deg,
+    rgba(255,232,160,.15) 33deg,transparent 37deg 43deg,rgba(170,225,255,.19) 47deg,transparent 51deg 56deg,rgba(255,232,160,.18) 60deg,transparent 64deg);
+  -webkit-mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.55) 46%,transparent 76%);mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.55) 46%,transparent 76%);
+  transform-origin:50% 0;animation:lxSway 9s ease-in-out infinite alternate}
+/* logo: ice-white face, gold edge, a slow sheen */
+#sMenu .l1{background:linear-gradient(105deg,transparent 43%,rgba(255,255,255,.98) 50%,transparent 57%) 170% 0/230% 100% no-repeat,
+    linear-gradient(180deg,#ffffff 8%,#e6f6ff 36%,#86d0ff 66%,#ffe7a0 100%);
+  -webkit-background-clip:text;background-clip:text;animation:lxSheen 4.4s ease-in-out infinite;
+  filter:drop-shadow(0 2px 0 #f4bc46) drop-shadow(0 4px 0 #c98616) drop-shadow(0 6px 0 #8a5406) drop-shadow(0 13px 14px rgba(0,18,46,.7)) drop-shadow(0 0 24px rgba(255,205,90,.5))}
+#sMenu .l1 .em{-webkit-text-fill-color:initial}
+#sMenu .l2{color:var(--g1);opacity:1;font-weight:700;text-shadow:0 1px 0 rgba(90,50,0,.9),0 0 14px rgba(255,201,60,.55)}
+
+/* ---- boards, titles, buttons ---- */
+.screen.on:not(#sMenu):not(#sPause){background:radial-gradient(90% 50% at 50% 0,rgba(70,150,255,.26),transparent 70%),radial-gradient(70% 40% at 50% 100%,rgba(255,196,70,.13),transparent 70%),
+  linear-gradient(180deg,rgba(6,22,44,.58),rgba(4,14,32,.8))}
+.panel{border-color:rgba(255,214,120,.36);
+  background:linear-gradient(180deg,rgba(255,224,150,.11),rgba(255,224,150,0) 84px),radial-gradient(130% 70% at 50% 0,rgba(88,170,255,.17),transparent 62%),
+    repeating-linear-gradient(118deg,rgba(255,255,255,.022) 0 2px,transparent 2px 10px),var(--panel);
+  box-shadow:0 18px 50px rgba(2,10,24,.6),0 0 34px rgba(255,196,70,.1),inset 0 1px 0 rgba(255,240,200,.24),inset 0 -4px 0 rgba(255,201,60,.72)}
+h2{color:#ffeab0;text-shadow:0 1px 0 rgba(90,50,0,.85),0 0 20px rgba(255,201,60,.35)}
+h2::after{background:radial-gradient(circle,#fff6d0 0 2.6px,var(--g3) 2.7px 5px,transparent 5.2px) center/12px 12px no-repeat,
+  linear-gradient(90deg,transparent,var(--g2) 22%,var(--g2) 78%,transparent) center/100% 2px no-repeat}
+.btn{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 52%),linear-gradient(180deg,#1d4a7a,#123559);border-color:rgba(190,225,255,.42)}
+.btn.primary{background:linear-gradient(105deg,transparent 41%,rgba(255,255,255,.8) 50%,transparent 59%) 170% 0/230% 100% no-repeat,
+    linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 50%),linear-gradient(180deg,#9be8ff,#2a97f0);
+  border:1px solid #fff1c4;animation:lxSheen3 3.8s ease-in-out infinite;
+  box-shadow:0 5px 0 #145f9f,0 12px 26px rgba(0,40,90,.45),0 0 0 2px rgba(255,205,90,.38),0 0 24px rgba(120,210,255,.42)}
+.btn.small.primary{box-shadow:0 3px 0 #145f9f,0 0 0 1.5px rgba(255,205,90,.38),0 0 14px rgba(120,210,255,.35)}
+.seg button.on,#scTabs button.on,#mkTabs button.on,#gTabs button.on{background:linear-gradient(180deg,#74b8ff,#2f7df0);box-shadow:0 2px 0 #1b4fa6,0 0 12px rgba(80,160,255,.5)}
+.mode{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0) 46%),radial-gradient(120% 90% at 50% 0,rgba(98,190,255,.22),transparent 60%),linear-gradient(165deg,#1f5288,#11355a 72%);border-color:rgba(255,214,120,.34)}
+.mode:hover{border-color:rgba(255,214,120,.7)}
+.pts,#menuRank span{border:1px solid var(--goldline)!important;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0) 55%),var(--night)!important;
+  box-shadow:0 4px 14px rgba(2,10,24,.4),0 0 12px rgba(255,196,70,.14)}
+
+/* ---- home buttons: a gold hero button, tiles lit from their accent colour, gold medallions ---- */
+@keyframes lxPulse{0%,100%{box-shadow:0 5px 0 #a8650a,0 14px 30px rgba(60,30,0,.45),0 0 0 2px rgba(255,244,200,.75),0 0 26px rgba(255,201,60,.55)}
+  50%{box-shadow:0 5px 0 #a8650a,0 14px 30px rgba(60,30,0,.45),0 0 0 2px rgba(255,244,200,.9),0 0 46px rgba(255,201,60,.9)}}
+@keyframes lxTwinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0deg)}45%,55%{opacity:1;transform:scale(1) rotate(40deg)}}
+#sMenu .hm-cta .hm-quick{color:#3a2200;border:1px solid #fff6d2;
+  background:linear-gradient(105deg,transparent 41%,rgba(255,255,255,.85) 50%,transparent 59%) 170% 0/230% 100% no-repeat,
+    linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0) 48%),linear-gradient(180deg,#ffe98f,#ffc93c 46%,#f09a1a);
+  animation:lxSheen3 3.6s ease-in-out infinite,lxPulse 2.4s ease-in-out infinite}
+#sMenu .hm-cta .hm-quick:active{animation:none;box-shadow:0 2px 0 #a8650a,0 0 0 2px rgba(255,244,200,.8)}
+#sMenu .hm-quick .tx small{color:#5a3200;opacity:.9}
+#sMenu .hm-quick .ic{background:radial-gradient(circle at 35% 30%,#ffffff,#d9f1ff 55%,#8fd2ff);color:#0b4f8a;box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 2px 8px rgba(120,70,0,.45)}
+#sMenu .hm-cta .btn.hm-tile,#sMenu .hm-cta .btn.hm-tile:hover{
+  background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 46%),radial-gradient(130% 150% at 0 50%,var(--accbg2,rgba(98,212,255,.26)),transparent 62%),linear-gradient(160deg,#20558c,#0f2f55 72%)!important;
+  border:1px solid rgba(255,214,120,.6)!important;
+  box-shadow:inset 4px 0 0 var(--acc),inset 0 1px 0 rgba(255,244,210,.32),0 3px 0 var(--edge),0 8px 18px rgba(2,10,24,.4),0 0 18px rgba(255,196,70,.16)!important}
+#sMenu .hm-tile.rkbtn{--accbg2:rgba(255,201,60,.34)}#sMenu .hm-tile.mkbtn{--accbg2:rgba(255,140,60,.36)}#sMenu .hm-tile.hm-pass{--acc:var(--p1,#3de8b0);--accbg2:color-mix(in srgb,var(--p1,#3de8b0) 38%,transparent)}
+#sMenu .hm-tile.rkbtn .ic,#sMenu .hm-tile.mkbtn .ic{background:radial-gradient(circle at 35% 30%,#fff8da,var(--acc) 60%,#b9770e);color:#3a2200;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7),0 0 14px var(--accbg2)}
+#sMenu .hm-cta .btn.hm-row,#sMenu .hm-cta .btn.hm-row:hover{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 50%),rgba(9,29,52,.95)!important;border:1px solid var(--goldline)!important}
+#menuGoals{border-color:var(--goldline);background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 50%),rgba(9,29,52,.95)}
+.dock{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,0) 42%),rgba(8,26,50,.95);border-color:rgba(255,214,120,.42);
+  box-shadow:0 14px 34px rgba(2,10,24,.55),0 0 22px rgba(255,196,70,.12),inset 0 1px 0 rgba(255,244,210,.26),inset 0 -3px 0 rgba(255,201,60,.66)}
+#sMenu .dock button i{color:#ffe7ae;filter:drop-shadow(0 0 6px rgba(255,201,60,.4))}
+/* glints on the logo */
+#sMenu .logo{position:relative}
+#sMenu .logo::before,#sMenu .logo::after{content:"✦";position:absolute;color:#fff7d0;font-size:clamp(14px,3.4vw,26px);line-height:1;text-shadow:0 0 10px rgba(255,220,120,.95),0 0 22px rgba(255,201,60,.7);
+  pointer-events:none;animation:lxTwinkle 2.8s ease-in-out infinite}
+#sMenu .logo::before{left:14%;top:-4%}
+#sMenu .logo::after{right:12%;top:46%;animation-delay:1.4s;font-size:clamp(11px,2.6vw,20px)}
+/* mode boards: lit icons, gold kick-plate */
+.mode{box-shadow:0 4px 0 var(--edge),0 10px 24px rgba(2,10,24,.38),inset 0 1px 0 rgba(255,244,210,.22),inset 0 -3px 0 rgba(255,201,60,.5)}
+.mode i{filter:drop-shadow(0 0 10px rgba(255,214,120,.55))}
+
+/* ---- match HUD: broadcast scoreboard, glass buttons ---- */
+#board{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 50%),rgba(7,24,48,.88);border:1.5px solid rgba(255,214,120,.8);
+  box-shadow:0 8px 26px rgba(0,20,50,.55),0 0 18px rgba(255,196,70,.25),inset 0 1px 0 rgba(255,244,210,.5)}
+.tm.b{background:linear-gradient(90deg,#2f7df0,rgba(47,125,240,.22))}
+.tm.r{background:linear-gradient(270deg,#f0364d,rgba(240,54,77,.22))}
+#clock{background:rgba(3,14,30,.84);color:#ffeab0;text-shadow:0 0 12px rgba(255,201,60,.6)}
+.hb{border-color:rgba(255,214,120,.62);background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 55%),var(--panel)}
+.tb{background:radial-gradient(circle at 50% 28%,rgba(150,210,255,.5),rgba(20,62,112,.62) 72%);border-color:rgba(225,243,255,.92);
+  box-shadow:0 4px 14px rgba(0,20,50,.4),inset 0 2px 6px rgba(255,255,255,.36),inset 0 -6px 12px rgba(0,20,60,.3)}
+#tbShoot{border-color:#ffe08a;box-shadow:0 4px 16px rgba(0,20,50,.45),0 0 16px rgba(255,201,60,.5),inset 0 2px 6px rgba(255,255,255,.4),inset 0 -6px 12px rgba(0,20,60,.3)}
+.tb.down{background:radial-gradient(circle at 50% 30%,rgba(255,246,196,.9),rgba(255,190,60,.62) 75%)}
+.tb.hk-poke{background:radial-gradient(circle at 50% 28%,rgba(255,194,154,.62),rgba(214,74,30,.64) 72%);border-color:#ffd9c2}
+.tb.hk-call{background:radial-gradient(circle at 50% 28%,rgba(170,255,205,.56),rgba(24,140,84,.64) 72%);border-color:#d2ffe2}
+.tb.hk-poke.down,.tb.hk-call.down{background:radial-gradient(circle at 50% 30%,rgba(255,246,196,.9),rgba(255,190,60,.62) 75%)}
+
+#joyBase{box-shadow:0 0 0 1.5px rgba(255,224,150,.55),0 0 14px rgba(255,201,60,.22)}
+
+/* ---- goal: golden rays behind the banner (your goal) / a red edge pulse (theirs) ---- */
+#lxRays{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;display:none}
+#lxRays.on{display:block}
+#lxRays canvas{position:absolute;left:50%;top:38%;width:190vmax;height:190vmax;margin:-95vmax 0 0 -95vmax;opacity:0;display:none}
+#lxRays.gold canvas{display:block;animation:lxRaysIn 1.9s ease-out forwards,lxSpin 9s linear infinite}
+#lxRays.red{box-shadow:inset 0 0 90px 24px rgba(255,60,70,.5);opacity:0;animation:lxRed .9s ease-out forwards}
+body.noflash #lxRays,body.rm #lxRays,body.cine #lxRays{display:none!important}
+
+body.rm #sMenu .l1,body.rm .btn.primary,body.rm #sMenu.on::after,body.rm #sMenu .hm-cta .hm-quick{animation:none}
+body.rm #sMenu .logo::before,body.rm #sMenu .logo::after{display:none}
+@media (prefers-reduced-motion:reduce){#sMenu .l1,.btn.primary,#sMenu.on::after,#sMenu .hm-cta .hm-quick{animation:none}#sMenu .logo::before,#sMenu .logo::after{display:none}}

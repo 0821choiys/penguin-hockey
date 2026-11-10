@@ -20,7 +20,10 @@ for(let i=0;i<60*150;i++){
 ok(secs>60,'referee on the ice for '+secs.toFixed(0)+' s');
 ok(hum===0,'really AI vs AI: no human steering during play ('+hum+' frames)');   // before v38 auto switching handed the blue carrier to a zero-input "human" in 43 % of play frames
 const dps=turn/secs*180/Math.PI;
-ok(dps<60,'referee turns '+dps.toFixed(1)+'°/s on average (was ≈930°/s: he spun)');
+// limit 90°/s (2026-11-10): the old 60 was set while the blue carrier stood still (see the AI-vs-AI check above). In real
+// AI-vs-AI play 16 runs gave 52–69°/s (mean 61) on the v38 and v39 builds alike, so 60 failed about every other run.
+// The spinning bug this guards against was ≈930°/s.
+ok(dps<90,'referee turns '+dps.toFixed(1)+'°/s on average (was ≈930°/s: he spun)');
 ok(maxStep*60*180/Math.PI<=375,'never faster than ~370°/s ('+(maxStep*60*180/Math.PI).toFixed(0)+'°/s max)');
 // limit 70/min (v38): the old 40/min was measured while the blue carrier stood still (see above); with real AI-vs-AI play the
 // referee follows the puck back and forth 35–50×/min (8 runs, 2026-11-09). The jitter this guards against was ≈2,200×/min.
