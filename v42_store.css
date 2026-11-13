@@ -1,0 +1,5 @@
+/* v42: legal links */
+.legal-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
+a.legal-a{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.acc-legal{margin-top:10px;text-align:center;font-size:.86em;opacity:.85}
+.acc-legal a{color:inherit}
