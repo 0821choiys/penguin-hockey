@@ -17,3 +17,12 @@ function legalRow(){
 }
 // the account window ends with the privacy policy link (that is where players sign in and delete their account)
 {const _accBody=accBody;accBody=function(){return _accBody()+'<div class="acc-legal"><a href="'+legalUrl('pp')+'" target="_blank" rel="noopener">'+__L('개인정보처리방침')+'</a> · <a href="'+legalUrl('del')+'" target="_blank" rel="noopener">'+__L('계정 삭제 안내')+'</a></div>';};}
+// the round skill gauge (56 px) showed long skill names at a fixed 12 px: パワーフリッパーシュート ran out of the circle in
+// Japanese. The label now shrinks (down to 7 px) until it fits inside the circle.
+function gaugeFit(){
+  const g=$('#gauge'),t=$('#gaugeT');if(!g||!t)return;
+  t.style.fontSize='';const box=g.clientWidth*.74;if(!box||!t.firstChild)return;
+  const rg=document.createRange(),size=()=>{rg.selectNodeContents(t);const q=rg.getBoundingClientRect();return [q.width,q.height];};
+  let fs=parseFloat(getComputedStyle(t).fontSize)||12,[w,h]=size();
+  while(fs>7&&(w>box||h>box)){fs-=.5;t.style.fontSize=fs+'px';[w,h]=size();}
+}
