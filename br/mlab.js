@@ -26,6 +26,7 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
   if(VIEWS.includes('hats')){await p.setViewport({width:1200,height:700});const hats=await p.evaluate(()=>Object.keys(window.__PH.HATS||{}).slice(0,6));
     await stage([{k:'basic',x:-3,hat:'beanie'},{k:'fast',x:-1.5,hat:'helmet'},{k:'king',x:0,goalie:true,team:'red'},...hats.filter(h=>h!=='none'&&h!=='beanie'&&h!=='helmet').slice(0,2).map((h,i)=>({k:i?'royal':'little',x:1.5+i*1.5,hat:h}))],[0,2.1,7.2,0,1.05,0,40]);
     console.log('hats',JSON.stringify(hats));await shot('hats');}
+  if(VIEWS.includes('mac')){await p.setViewport({width:1000,height:700});await stage([{k:'macaroni',x:-1.1,goalie:true,team:'red'},{k:'macaroni',x:1.1,team:'red'}],[0,1.75,3.6,0,1.25,0,36]);await shot('mac');}
   if(VIEWS.includes('match')){await p.setViewport({width:960,height:540});await p.evaluate(()=>{const P=window.__PH,G=P.G;if(window.__ab)for(const o of window.__ab)P.scene.remove(o);window.__ab=[];
     P.startMatch({mode:'quick',size:3,time:180,diff:'normal',tag:'T',oppTypes:['king','macaroni','strong']});document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));
     for(let i=0;i<60*8;i++)P.step(1/60);P.updateCamera(1);P.renderer.render(P.scene,P.camera);});await shot('match');}

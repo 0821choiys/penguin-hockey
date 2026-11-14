@@ -47,7 +47,7 @@ const want=n=>!ONLY.length||ONLY.includes(n);
     for(let i=0;i<60*6&&G.state!=='play';i++)P.step(1/60);
     let best=0;for(let i=0;i<60*14;i++){P.step(1/60);
       if(i>60*4&&G.carry&&!G.carry.goalie){let n=0;for(const q of G.pengs)if(!q.goalie&&Math.hypot(q.x-G.puck.x,q.z-G.puck.z)<6)n++;if(n>=3){best=i;break;}}}
-    P.updateCamera(1);const h=document.getElementById('hint');if(h)h.classList.remove('on');return {state:G.state,best,score:G.mine.score+':'+G.mine.opp.score};});
+    P.updateCamera(1);const h=document.getElementById('hint');if(h)h.classList.remove('on');for(const id of ['banner','bannerSub']){const b=document.getElementById(id);if(b)b.classList.remove('on');}return {state:G.state,best,score:G.mine.score+':'+G.mine.opp.score};});
   const cards=async(page,E,dex)=>{await E(()=>{window.requestAnimationFrame=window.__rAF||window.requestAnimationFrame;window.__PH.goScreen('sScout');});await wait(800);
     if(dex){await E(()=>{const t=[...document.querySelectorAll('#scTabs button')];if(t[3])t[3].click();});await wait(900);}};
 
