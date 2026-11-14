@@ -5,7 +5,7 @@
 // stick across the chest, key light + a rim light in the card's rarity colour), rendered once per species into an image
 // and shown on every card, the scout banner, the collection silhouettes and the skill cut-in.
 // The old drawing stays as the fallback (no WebGL, lost context, the Node test harness).
-var P3V={w:512,h:640,ss:2,fov:21,q:.9,camUp:1.6,camZ:6.15,camY:.86,exp:.68,iris:1.2,domeY:1.5,domeK:1.42,stick:1.6,
+var P3V={w:512,h:640,ss:2,fov:21,q:.9,camUp:1.55,camZ:6.9,camY:1.02,exp:.68,iris:1,domeY:1.5,domeK:1,stick:1.6,
   rim:{0:0xcfe2f5,1:0x6cc4ff,2:0xc79bff,3:0xff7d8a,4:0xffd98a,9:0x8dffe6},
   pose:{attacker:{yaw:-.5,head:[-.1,.38,.07],fl:[-.45,-.12,-.9,.45],stk:[-1.12,1.44,1.05],eye:.84,brow:-.1,jaw:.14},
         defender:{yaw:-.32,head:[-.04,.22,.06],fl:[-.6,-.08,-.95,.4],stk:[-1.18,1.22,1.1],eye:.8,brow:-.16,jaw:.02},
@@ -77,7 +77,6 @@ function p3Shot(k){
     P.head.rotation.set(po.head[0],po.head[1],po.head[2],'YXZ');
     P.flipL.rotation.set(po.fl[0],0,po.fl[1]);P.flipR.rotation.set(po.fl[2],0,po.fl[3]);
     P.eyeL.scale.y=P.eyeR.scale.y=po.eye||.88;P.eyeL.rotation.z=po.brow||0;P.eyeR.rotation.z=-(po.brow||0);
-    P.pupL.scale.setScalar(P3V.iris);P.pupR.scale.setScalar(P3V.iris);
     const look=clamp(-(po.yaw+po.head[1])*.03,-.03,.03);P.pupL.position.x=P.pupR.position.x=look;P.pupL.position.y=P.pupR.position.y=.004;
     if(P.jaw)P.jaw.rotation.x=po.jaw||0;
     if(P.scarfTail){P.scarfTail.rotation.x=.35;P.scarfTail.rotation.z=.12;}

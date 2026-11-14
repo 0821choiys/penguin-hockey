@@ -18,7 +18,7 @@ const OUT=path.join(__dirname,'shots','p3');fs.mkdirSync(OUT,{recursive:true});
 function html(){   // the built game with the current patch sources swapped in
   let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.html'),'utf8');
   const sw=(a,b,f)=>{const i=s.indexOf(a),j=s.indexOf(b);if(i<0||j<0)throw new Error('marker '+a+' missing: rebuild with v41 registered');s=s.slice(0,i+a.length)+fs.readFileSync(path.join(ROOT,f),'utf8')+s.slice(j);};
-  sw('/*P3:js*/','/*P3:jsend*/','v41_card.js');sw('/*P3:css*/','/*P3:cssend*/','v41_card.css');return s;
+  sw('/*P3:js*/','/*P3:jsend*/','v41_card.js');if(s.includes('/*PKM:js*/'))sw('/*PKM:js*/','/*PKM:jsend*/','v43_model.js');sw('/*P3:css*/','/*P3:cssend*/','v41_card.css');return s;
 }
 (async()=>{
   const browser=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'],executablePath:await chromium.executablePath(),headless:'shell',defaultViewport:{width:1500,height:1000,deviceScaleFactor:1}});

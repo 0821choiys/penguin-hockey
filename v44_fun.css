@@ -1,0 +1,46 @@
+/* ================= v44: coach level, streaks, first win ================= */
+#coachBar{position:fixed;left:calc(env(safe-area-inset-left,0px) + 14px);top:58px;z-index:21;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;
+  max-width:calc(100vw - 28px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));padding:5px 12px;border-radius:16px;
+  background:var(--night);border:1px solid var(--line);box-shadow:0 4px 14px rgba(2,10,24,.3),inset 0 0 0 1px var(--lx-hair,rgba(196,230,255,.2));
+  color:#fff;font-size:12.5px;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+#coachBar .cb-lv{font-weight:800;white-space:nowrap}
+#coachBar .cb-bar{position:relative;width:72px;height:8px;border-radius:5px;background:rgba(255,255,255,.14);box-shadow:inset 0 1px 2px rgba(0,0,0,.45);overflow:hidden;flex:none}
+#coachBar .cb-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:linear-gradient(90deg,#3de8b0,#62d4ff)}
+#coachBar .cb-n{opacity:.82;white-space:nowrap}
+#coachBar .cb-st,#coachBar .cb-fw{white-space:nowrap;padding:1px 8px;border-radius:999px;font-weight:700}
+#coachBar .cb-st{background:rgba(255,120,60,.22);box-shadow:inset 0 0 0 1px rgba(255,150,90,.55)}
+#coachBar .cb-fw{background:rgba(61,232,176,.18);box-shadow:inset 0 0 0 1px rgba(61,232,176,.5)}
+/* result screen bar */
+.co-res{margin:10px auto 4px;max-width:420px;padding:9px 12px;border-radius:12px;background:rgba(6,20,42,.55);box-shadow:inset 0 0 0 1px var(--lx-hair,rgba(196,230,255,.2))}
+.co-res .co-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.co-res .co-xp{color:#62d4ff;font-weight:800}
+.co-res .co-bar{position:relative;height:10px;margin:6px 0 4px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
+.co-res .co-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,#3de8b0,#62d4ff);transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.co-res.up .co-bar i{background:linear-gradient(90deg,#ffd166,#3de8b0,#62d4ff)}
+.co-res .co-next{font-size:.86em;opacity:.8}
+/* level-up moment */
+#coUp{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(6,20,42,.55),rgba(6,20,42,.82));cursor:pointer}
+#coUp.on{display:flex;animation:coFade .25s ease-out}
+#coUp .co-card{position:relative;min-width:240px;padding:26px 34px 16px;border-radius:20px;text-align:center;color:#fff;overflow:hidden;
+  background:linear-gradient(180deg,#17406c,#0c2a50);border:1px solid rgba(5,16,32,.92);box-shadow:inset 0 0 0 1px rgba(196,230,255,.22),inset 0 1px 0 rgba(255,255,255,.25),0 20px 60px rgba(0,0,0,.55);
+  animation:coPop .55s cubic-bezier(.2,1.4,.4,1)}
+#coUp .co-rays{position:absolute;left:50%;top:44%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;opacity:.35;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,transparent 0 9deg,rgba(98,212,255,.55) 12deg,transparent 15deg,transparent 24deg);
+  -webkit-mask:radial-gradient(closest-side,transparent 0 12%,#000 30%,transparent 72%);mask:radial-gradient(closest-side,transparent 0 12%,#000 30%,transparent 72%);animation:coSpin 9s linear infinite}
+#coUp .co-t{position:relative;font:700 34px/1 'Fredoka','Jua',sans-serif;letter-spacing:1px;color:#fff;text-shadow:0 3px 0 #1f6dad,0 6px 0 #164f86,0 10px 22px rgba(0,20,50,.6)}
+#coUp .co-lv{position:relative;margin-top:12px;font-size:20px;font-weight:800}
+#coUp .co-p{position:relative;margin-top:6px;font-size:26px;font-weight:800;color:#3de8b0;text-shadow:0 2px 10px rgba(61,232,176,.45)}
+#coUp .co-b{position:relative;display:inline-block;margin-top:6px;padding:2px 10px;border-radius:999px;background:rgba(255,209,102,.18);box-shadow:inset 0 0 0 1px rgba(255,209,102,.6);font-weight:700}
+#coUp .co-tap{position:relative;margin-top:12px;font-size:12px;opacity:.6}
+@keyframes coFade{from{opacity:0}to{opacity:1}}
+@keyframes coPop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}
+@keyframes coSpin{to{transform:rotate(360deg)}}
+body.rm #coUp,body.rm #coUp .co-card,body.rm #coUp .co-rays{animation:none}
+body.noflash #coUp .co-rays{display:none}
+#coachBar .S{display:none}
+#coachBar.cmp .L{display:none}
+#coachBar.cmp .S{display:inline}
+#coachBar.cmp{flex-wrap:nowrap;gap:5px;padding:4px 9px;border-radius:999px;font-size:11.5px}
+#coachBar.cmp .cb-bar{width:38px}
+#coachBar.cmp .cb-st,#coachBar.cmp .cb-fw{padding:1px 6px}
+.co-res .co-one{display:block;margin-top:3px;color:#ffd166;font-weight:800}

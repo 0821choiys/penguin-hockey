@@ -19,7 +19,7 @@
 /* the art: the whole card above the board; the portrait is sized so the sweater meets the board's rail */
 .pc-art{position:absolute;inset:0 0 var(--bd) 0;margin:0;border-radius:0;background:none;box-shadow:none;overflow:hidden;z-index:1;display:block}
 .pc-art::before{display:none!important}
-.pc-art .p3{position:absolute;left:50%;bottom:-2.9em;width:9.6em;height:12em;margin-left:-4.72em;background-size:contain;filter:drop-shadow(0 .1em .16em rgba(4,12,26,.4))}
+.pc-art .p3{position:absolute;left:50%;bottom:-2.35em;width:8.9em;height:11.1em;margin-left:-4.4em;background-size:contain;filter:drop-shadow(0 .1em .16em rgba(4,12,26,.4))}
 .pc-sil-art .p3{filter:brightness(0) invert(1);opacity:.24}
 .pc-art svg{position:absolute;left:50%;bottom:-.5em;height:8.6em;width:auto;max-width:none;transform:translateX(-50%)}
 

@@ -1,0 +1,15 @@
+X={
+"🔥 {n}연승 보너스":("🔥 {n}-win streak bonus","🔥 {n}连胜奖励","🔥 {n}連勝ボーナス"),
+"🎁 오늘 첫 승리":("🎁 First win today","🎁 今日首胜","🎁 今日の初勝利"),
+"🏅 감독 레벨 업 보상 (Lv.{lv})":("🏅 Coach level-up reward (Lv.{lv})","🏅 教练升级奖励 (Lv.{lv})","🏅 監督レベルアップ報酬 (Lv.{lv})"),
+"🏅 감독 Lv.{lv}":("🏅 Coach Lv.{lv}","🏅 教练 Lv.{lv}","🏅 監督 Lv.{lv}"),
+"감독 Lv.{lv}":("Coach Lv.{lv}","教练 Lv.{lv}","監督 Lv.{lv}"),
+"최고 레벨!":("Max level!","最高等级！","最高レベル！"),
+"다음 레벨까지 {xp} XP · 보상 {pts} P":("{xp} XP to the next level · reward {pts} P","距下一级 {xp} XP · 奖励 {pts} P","次のレベルまで {xp} XP · 報酬 {pts} P"),
+"5레벨 보너스 ×3":("Every 5th level ×3","每5级奖励 ×3","5レベルごとのボーナス ×3"),
+"한 번 더 이기면 레벨 업!":("One more win and you level up!","再赢一场就升级！","あと1勝でレベルアップ！"),
+"탭하여 닫기":("Tap to close","点击关闭","タップして閉じる"),
+"다음 보상 {pts} P":("Next reward {pts} P","下次奖励 {pts} P","次の報酬 {pts} P"),
+"🔥 {n}연승":("🔥 {n} wins in a row","🔥 {n}连胜","🔥 {n}連勝"),
+"🎁 오늘 첫 승 +{p}P":("🎁 First win today +{p}P","🎁 今日首胜 +{p}P","🎁 今日の初勝利 +{p}P"),
+}

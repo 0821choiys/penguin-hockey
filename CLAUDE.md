@@ -36,6 +36,12 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 - Store (2026-11-13; v42, `store-ready-v42.md`): privacy policy + account deletion pages live on GitHub Pages from `docs/`
   (https://0821choiys.github.io/penguin-hockey/privacy.html, delete-account.html, English `-en` versions; YS Games, choiys6421@gmail.com).
   The app links to them from the bottom of 설정 and of the account window. If what the app collects changes, update the pages too.
+- Penguin model (owner, 2026-11-14; v43, `final-v44.md`): "the 3D penguin is really bad" → cute character style (picked by the owner):
+  head rig ×1.28 around the neck, rounded crown, eyes forward with big irises, short chunky beak, bigger flippers / feet, scarf rebuilt,
+  blush only on light faces. All numbers in `PKV`; `pk43` runs at the end of `buildPenguin`; iterate with `br/mlab.js` (no rebuild).
+- Engagement (owner, 2026-11-14; v44, `final-v44.md`): "make it addictive and fun" → 감독 레벨 (XP every match, points per level,
+  ×3 every 5th), win-streak bonus, first win of the day, level-up moment. Points only, nothing random, nothing paid, no pressure to spend
+  (all ages + Play policy). Numbers in `CO`; shown values = paid values.
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
@@ -49,7 +55,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -104,6 +110,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node v41card.js <pc|tall|wide|wideS> <lang>` (card portraits: 16 rendered images, renderer left untouched, board layout, silhouettes, scout banner / collection / card window, team colour, drawing fallback),
   `node p3lab.js <sheet|big|cards> <tag>` (portrait / card sheets with the CURRENT `v41_card.js/.css` swapped into the built game — no rebuild while iterating) and `node cardshot.js <mode> <lang> <tag>`,
   `node v42legal.js <pc|tall|wide|wideS> <lang>` (privacy / deletion links in 설정 and the account window), `node v42gauge.js tall <lang>` (the skill name fits the round gauge for every species; it shrinks to fit since 2026-11-13), `node storeshot.js <ko|en> [scene,…]` (Play Store screenshots + feature graphic → shots/store; convert to RGB before upload),
+  `node v43model.js <mode> <lang>` (model on real three.js + close-up), `node mlab.js <tag> close,all,hats,match` (model shots with the CURRENT `v43_model.js`), `node v44fun.js <pc|tall|wide|wideS> <lang>` (coach bar, result rows, level-up moment),
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
   `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
@@ -124,4 +131,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
 `rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md`, `landscape-v30.md`, `online-account.md`,
-`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md` (also kept in the claude.ai project).
+`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md` (also kept in the claude.ai project).
