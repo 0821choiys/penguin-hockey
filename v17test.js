@@ -159,7 +159,7 @@ startMatch({mode:'free',size:1,time:0,diff:'normal',noOpp:true,goalieOnly:true,c
   startMatch({mode:'quick',size:3,time:60,diff:'normal',cond:'thin'});run(3.4);
   const p0=save.points;G.mine.score=2;G.mine.opp.score=0;G.timeLeft=.02;run(4.5);const R=G.result;
   ok(R&&R.paid&&R.cond===Math.max(2,Math.round(R.base*.1))&&R.condK==='thin','thin-ice win: bonus = 10% of the base reward ('+R.cond+'P of '+R.base+'P)');
-  ok(R.total===R.base+R.cb+R.extra+R.fv+R.cond+(R.achP||0),'… and it is part of the total paid');
+  ok(R.total===R.base+R.cb+R.extra+R.fv+R.cond+(R.achP||0)+(R.co?R.co.pts:0),'… and it is part of the total paid (v44: plus the coach bonuses, each shown as its own row)');
   ok(PH.condBonusRow(R).includes('빙판 변수 보너스')&&PH.condBonusRow(R).includes('얇은 얼음'),'result screen shows the bonus row');
   startMatch({mode:'quick',size:3,time:60,diff:'normal',cond:null});run(3.4);G.mine.score=1;G.timeLeft=.02;run(4.5);
   ok(G.result.cond===0&&PH.condBonusRow(G.result)==='','no condition → no bonus row');
