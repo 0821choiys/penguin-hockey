@@ -27,6 +27,12 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
     await stage([{k:'basic',x:-3,hat:'beanie'},{k:'fast',x:-1.5,hat:'helmet'},{k:'king',x:0,goalie:true,team:'red'},...hats.filter(h=>h!=='none'&&h!=='beanie'&&h!=='helmet').slice(0,2).map((h,i)=>({k:i?'royal':'little',x:1.5+i*1.5,hat:h}))],[0,2.1,7.2,0,1.05,0,40]);
     console.log('hats',JSON.stringify(hats));await shot('hats');}
   if(VIEWS.includes('mac')){await p.setViewport({width:1000,height:700});await stage([{k:'macaroni',x:-1.1,goalie:true,team:'red'},{k:'macaroni',x:1.1,team:'red'}],[0,1.75,3.6,0,1.25,0,36]);await shot('mac');}
+  // v46: three custom kits (and v45 crafted sticks) at centre ice
+  if(VIEWS.includes('kit')){await p.setViewport({width:1200,height:800});await p.evaluate(()=>{const P=window.__PH;if(window.__ab)for(const o of window.__ab)P.scene.remove(o);window.__ab=[];
+    const set=[[{c1:'#0d2f6b',c2:'#ffd24a',pat:'chevron',crest:'shield',mas:'orca'},'basic',-2.3,.45,{s:'s9',b:'b9'}],[{c1:'#18a058',c2:'#ffffff',pat:'hoops',crest:'circle',mas:'bear'},'king',0,.1,{s:'s7',b:'b4'}],[{c1:'#e8266f',c2:'#9be7ff',pat:'split',crest:'hex',mas:'fox'},'macaroni',2.3,-.4,{s:'s8',b:'b7'}]];
+    for(const [k,ty,x,ry,st] of set){P.save.kit=Object.assign({on:1},k);P.kitSync();const g=P.buildPenguin(ty,'blue','none',{num:ty==='king'?10:7});g.root.position.set(x,0,0);g.root.rotation.y=ry;
+      const m=g.stick.children[0];if(m&&m.isMesh)m.geometry=P.stkGeo('blue',Object.assign({lv:0},st));P.scene.add(g.root);window.__ab.push(g.root);}
+    const c=P.camera;c.position.set(0,1.75,5.4);c.lookAt(0,1.05,0);c.fov=40;c.aspect=innerWidth/innerHeight;c.updateProjectionMatrix();for(let i=0;i<3;i++)P.shFit&&P.shFit();P.renderer.render(P.scene,c);});await shot('kit');}
   if(VIEWS.includes('match')){await p.setViewport({width:960,height:540});await p.evaluate(()=>{const P=window.__PH,G=P.G;if(window.__ab)for(const o of window.__ab)P.scene.remove(o);window.__ab=[];
     P.startMatch({mode:'quick',size:3,time:180,diff:'normal',tag:'T',oppTypes:['king','macaroni','strong']});document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));
     for(let i=0;i<60*8;i++)P.step(1/60);P.updateCamera(1);P.renderer.render(P.scene,P.camera);});await shot('match');}

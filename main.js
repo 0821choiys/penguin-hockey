@@ -77,7 +77,7 @@ const BRK={max:5,need:[3,6,10,15,24],val:[1,2,3,5,8],cost:[60,120,200,320,500],s
 const enhCost=lv=>20+15*lv;
 const RM0=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const DEF_SET={cine:'full',rules:'full',cond:true,size:3,time:180,diff:'normal',tod:'auto',aurora:true,sound:true,quality:'ultra',assist:true,arena:'auto',vol:'mid',vib:true,shake:RM0?'low':'on',flash:true,motion:RM0,items:true,events:true,fastFx:false,stick:true,lang:I18N.lang};
-const save={v:10,coach:{lv:1,xp:0,streak:0,best:0,fw:''},login:{d:0,last:0,cyc:0,tot:0},bond:{},chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0},pay:{tok:[],last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
+const save={v:10,kit:{on:0,c1:'#2f7bff',c2:'#ffffff',pat:'classic',crest:'circle',mas:'peng'},stk:{m:{s0:1,b2:1},seen:{s0:1,b2:1},list:[],eq:0,nu:1,pity:{s:0,b:0},pulls:0,free:'',hist:[]},coach:{lv:1,xp:0,streak:0,best:0,fw:''},login:{d:0,last:0,cyc:0,tot:0},bond:{},chalTypes:[],rl:{intro:0},pass:{s:0,xp:0,gold:false,cf:0,cg:0,fw:0,last:null,pro:0,cx:0},pay:{tok:[],last:null},codes:[],ach:{},achNew:0,brk:{},brkPts:{},points:100,types:['basic'],hats:['none','beanie'],trails:['ice'],type:'basic',hat:'beanie',trail:'ice',team:'blue',cleared:{},set:Object.assign({},DEF_SET),stats:{played:0,wins:0,goals:0,tourClears:0},cards:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0]])),cc:Object.fromEntries(Object.keys(TYPES).map(k=>[k,[0,0,0,0,0]])),lv:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),scout:{pulls:0,pity:0,freeDay:'',fail:{},hist:[],pickMiss:false,elog:[]},squad:[null,null,null],xp:Object.fromEntries(Object.keys(TYPES).map(k=>[k,0])),goals:{day:0,ts:0,list:[]},long:{},clk:0,growth:null,cum:{goals:0,passes:0,power:0,matches:0,wins:0,teamPlay:0,clutch:0,dailyDone:0,winHard:0,winMid:0,typeGame:0,tourWin:0,combo3:0,streak2:0,cleanWin:0,comeback:0,oneTimer:0,hatTrick:0,chainBest:0,powerGoal:0,bigHit:0,soWin:0,golden:0,steals:0,enhOk:0,brk:0,comboGoal:0,comboShot:0},rec:{maxGoals:0,maxStreak:0,maxCombo:0,maxMargin:0,maxPass:0,tourBest:0,diff:{easy:[0,0],normal:[0,0],hard:[0,0]},type:{}},tut:{done:false,asked:false},profile:{name:__L('펭귄 감독'),club:__L('펭귄 FC'),emb:'🐧',city:__L('서울'),since:0,seed:0},mgr:{r:1000,games:0,w:0,d:0,l:0,best:1000,form:[],hist:[],pending:null},mk:{salt:0,bought:[],log:[]},trial:{day:0,ts:0,used:{city:0,nat:0,world:0},run:null,titles:{city:0,nat:0,world:0},first:{city:false,nat:false,world:false},cityName:''},dev:{got:false,ts:0},season:{n:0,g:0,w:0,d:0,l:0,best:0,start:0,paid:0,last:null,hist:[]},news18:true};
 const persist=()=>{if(window.__phHold)return;try{localStorage.setItem('penguinHockey.v1',JSON.stringify(save));if(window.__phMirror)window.__phMirror();if(window.__phCloud)window.__phCloud();}catch(e){if(!persist.warned){persist.warned=true;console.warn('save failed',e);setTimeout(()=>{try{flashMsg(__L('저장하지 못했어요 (저장 공간·비공개 모드). 플레이는 계속할 수 있어요'));}catch(_){}},50);}}};
 // load + validate + migrate old (v1) data; nothing valid is ever dropped
 function loadSave(){
@@ -191,6 +191,8 @@ function loadSave(){
   if(s.season&&typeof s.season==='object')seasonLoad(s.season);
   if(s.rl&&typeof s.rl==='object')save.rl.intro=s.rl.intro?1:0;
   if(s.pass&&typeof s.pass==='object')passLoad(s.pass);
+  if(s.kit&&typeof s.kit==='object'){const q=s.kit,hx=v=>(typeof v==='string'&&/^#[0-9a-fA-F]{6}$/.test(v))?v.toLowerCase():null,w=(v,d)=>(typeof v==='string'&&/^[a-z]{2,10}$/.test(v))?v:d;save.kit={on:q.on?1:0,c1:hx(q.c1)||'#2f7bff',c2:hx(q.c2)||'#ffffff',pat:w(q.pat,'classic'),crest:w(q.crest,'circle'),mas:w(q.mas,'peng')};}
+  if(s.stk&&typeof s.stk==='object'){const q=s.stk,o={m:{},seen:{},list:[],eq:0,nu:1,pity:{s:0,b:0},pulls:0,free:'',hist:[]},okId=x=>typeof x==='string'&&/^[sb][0-9]$/.test(x);if(q.m&&typeof q.m==='object')for(const k in q.m)if(okId(k))o.m[k]=Math.max(0,Math.min(99,q.m[k]|0));if(q.seen&&typeof q.seen==='object')for(const k in q.seen)if(okId(k)&&q.seen[k])o.seen[k]=1;if(Array.isArray(q.list))for(const x of q.list.slice(0,12))if(x&&okId(x.s)&&okId(x.b)&&x.s[0]==='s'&&x.b[0]==='b'&&(x.u|0)>0&&!o.list.some(y=>y.u===(x.u|0)))o.list.push({u:x.u|0,s:x.s,b:x.b,lv:Math.max(0,Math.min(10,x.lv|0)),f:Math.max(0,Math.min(99,x.f|0))});o.nu=Math.max(1,Math.min(1e9,q.nu|0),...o.list.map(x=>x.u+1));o.eq=o.list.some(x=>x.u===(q.eq|0))?(q.eq|0):0;if(q.pity&&typeof q.pity==='object'){o.pity.s=Math.max(0,Math.min(29,q.pity.s|0));o.pity.b=Math.max(0,Math.min(29,q.pity.b|0));}o.pulls=Math.max(0,Math.min(1e9,q.pulls|0));o.free=(typeof q.free==='string'&&q.free.length<12)?q.free:'';if(Array.isArray(q.hist))o.hist=q.hist.filter(r=>Array.isArray(r)&&okId(r[0])).slice(0,30).map(r=>[r[0],Math.max(0,Math.min(4,r[1]|0))]);save.stk=o;}
   if(s.coach&&typeof s.coach==='object'){const q=s.coach;save.coach={lv:Math.max(1,Math.min(99,(q.lv|0)||1)),xp:Math.max(0,Math.min(100000,q.xp|0)),streak:Math.max(0,Math.min(9999,q.streak|0)),best:Math.max(0,Math.min(9999,q.best|0)),fw:(typeof q.fw==='string'&&q.fw.length<12)?q.fw:''};}
   if(s.login&&typeof s.login==='object'){const q=s.login;save.login={d:Math.max(0,Math.min(6,q.d|0)),last:Math.max(0,q.last|0),cyc:Math.max(0,q.cyc|0),tot:Math.max(0,q.tot|0)};}
   if(s.bond&&typeof s.bond==='object')for(const k of Object.keys(s.bond)){const b=s.bond[k];if(b&&typeof b==='object'&&/^[a-z]{2,12}$/.test(k))save.bond[k]={g:Math.max(0,b.g|0),w:Math.max(0,b.w|0),gl:Math.max(0,b.gl|0),lv:Math.max(0,Math.min(4,b.lv|0))};}
@@ -1060,6 +1062,7 @@ function makePeng(tm,role,typeKey,idx,isGoalie,hatKey){
 function clearMatch(){for(const p of G.pengs)scene.remove(p.pg.root);G.pengs=[];G.teams={};G.player=null;}
 
 function setupMatch(cfg){
+  try{kitSync(cfg);}catch(e){}
   condClear();clearMatch();G.rl=null;G.ps=null;G.cfg=cfg;G.diff=DIFF[cfg.diff||'normal'];
   const mk=(key)=>({key,dir:TEAM[key].dir,skaters:[],goalie:null,score:0,human:null,opp:null,chaser:null,chaser2:null,noScore:false,name:TEAM[key].name});
   G.teams.blue=mk('blue');G.teams.red=mk('red');G.teams.blue.opp=G.teams.red;G.teams.red.opp=G.teams.blue;
@@ -1077,6 +1080,7 @@ function setupMatch(cfg){
       if(cfg.demo&&!isMine&&key==='blue')type=demo18();
       const p=makePeng(tm,roles[i],type,i,false,hat);
       if(isMine&&!cfg.flat){const asg=(i===0||!!save.squad[i-1]);applyLevel(p,asg);applyChem(p,asg);}
+      if(isMine&&i===0&&!cfg.flat&&!cfg.demo)stkApply(p,cfg);
       if(cfg.passiveMates&&isMine&&i>0){p.passive=true;p.role='attacker';}
       p.hx=tm.dir*-form[i][0]*-1;p.hx=tm.dir>0?form[i][0]:-form[i][0];p.hz=tm.dir>0?form[i][1]:-form[i][1];
       tm.skaters.push(p);G.pengs.push(p);
@@ -1332,8 +1336,8 @@ function performShot(p,ax,az,charge){
   p.anim.swing=1;p.cd.shoot=.32;if(G.carry)carryRelease(G.carry===p?.3:.6);
   const pw=p.ty.stats.power,tap=charge<.14;
   let sp=tap?10.5+pw*.9:lerp(15,27,charge)*(.72+.1*pw);
-  const T_=ttOf(p),ow=p.otWin||0,ot=!p.goalie&&G.t-(p.recvT==null?-9:p.recvT)<(ow||OT_WIN);p.recvT=-9;p.otWin=0;
-  if(!tap)sp*=(T_.pow||1);else sp*=(T_.tap||1);if(ot)sp*=1.06*(T_.ot||1)*(ow?SPX.royalpass.mul:1);
+  const T_=ttOf(p),ow=p.otWin||0,ot=!p.goalie&&G.t-(p.recvT==null?-9:p.recvT)<(ow||OT_WIN+(T_.otw||0));p.recvT=-9;p.otWin=0;
+  if(!tap)sp*=(T_.pow||1);else sp*=(T_.tap||1);if(!tap&&charge>=.8)sp*=(T_.pow80||1);if(ot)sp*=1.06*(T_.ot||1)*(ow?SPX.royalpass.mul:1);
   sp*=v10ShotMul(p,tap)*pcShotMul(p);
   sp*=1-clamp((reach(p)-1.6)/3,0,.25);                 // awkward contact = a little weaker
   const l=Math.hypot(ax,az)||1;ax/=l;az/=l;
@@ -1342,7 +1346,7 @@ function performShot(p,ax,az,charge){
   let spread=(tap?.012:.012+.05*Math.max(0,charge-.8)/.2)+clamp(Math.hypot(p.vx,p.vz)/20,0,.6)*.03;
   if(!p.human)spread+=G.diff.aim*.05*CF.aim;
   if(p.tr&&p.tr.precise)spread*=.6;
-  spread*=(T_.spread||1);if(ot)spread*=.55;if(ke)spread=0;
+  spread*=(T_.spread||1);if(!tap&&charge>=.8)spread*=(T_.spread80||1);if(ot)spread*=.55;if(ke)spread=0;
   const ang=Math.atan2(ax,az)+(Math.random()-.5)*2*spread;ax=Math.sin(ang);az=Math.cos(ang);
   pk.vx=ax*sp+p.vx*.2;pk.vz=az*sp+p.vz*.2;p.shotGrace=.12;pk.last=p;pk.lastTeam=p.team;pk.lastT=G.t;
   if(ot&&p.team===G.mine&&G.cfg&&G.cfg.mode!=='demo'){gp('oneTimer',1);cbAdd('passShot','ONE-TIMER');}
@@ -2237,7 +2241,7 @@ function step(dt){
     const pl=G.player;aimLine.visible=false;aimTgt.visible=false;
     if(pl&&G.view==='game'){
       marker.visible=true;markerRing.visible=true;marker.position.set(pl.rx,2.9+Math.sin(G.t*4)*.15,pl.rz);marker.rotation.y=G.t*2;markerRing.position.set(pl.rx,.04,pl.rz);
-      const c=TEAM[pl.team.key].color;marker.children[0].material.color.setHex(c===0x2f7bff?0x6fb0ff:0xff8c98);
+      const c=TEAM[pl.team.key].color;marker.children[0].material.color.setHex(parseInt(kitMix(kitHex(c),'#ffffff',.35).slice(1),16));
       const near=canHit(pl);
       if(near||pl.charging){
         const a=humanAim(pl);aimArrow.visible=true;aimArrow.position.set(pl.rx,.05,pl.rz);aimArrow.rotation.y=Math.atan2(a[0],a[1]);
@@ -2328,10 +2332,11 @@ const HM_IC={
 };
 
 /* ================= UI ================= */
-const screens=['sMenu','sMode','sHow','sSelect','sSet','sPause','sResult','sTour','sChal','sScout','sSquad','sGoals','sMarket','sProfile','sRanked','sPass','sFriend'];
+const screens=['sMenu','sMode','sHow','sSelect','sSet','sPause','sResult','sTour','sChal','sScout','sSquad','sGoals','sMarket','sProfile','sRanked','sPass','sFriend','sStick','sKit'];
 function show(id){screens.forEach(s=>$('#'+s).classList.toggle('on',s===id));G.ui=id;uiTidy();}
 function hideAll(){screens.forEach(s=>$('#'+s).classList.remove('on'));}
 function goScreen(id){
+  try{kitSync();}catch(e){}
   if(id==='sSelect'){G.view='select';rebuildShowcase();renderSelect();}
   else{if(G.view==='select'){G.view='menu';if(showcase){showcase.pg.root.visible=false;}}}
   if(id==='sSet')renderSettings();
@@ -2344,6 +2349,8 @@ function goScreen(id){
   if(id==='sRanked')renderRanked();
   if(id==='sPass')renderPass();
   if(id==='sFriend')frRender();
+  if(id==='sStick')stkRender();
+  if(id==='sKit')kitRender();
   show(id);$('#ptsN').textContent=save.points;
 }
 let msgT=0;
@@ -2845,7 +2852,7 @@ function renderSqStyle(){
   const locked=Object.keys(TYPES).filter(k=>!save.types.includes(k));
   if(locked.length)h+=__L('<div class="sq-st-row"><span class="sq-st-l">펭귄 해금</span><div class="sq-chips">')+locked.map(k=>TYPES[k].exclusive?chip('data-sqlock',k,TYPES[k].name,false,false,0,__L('💻 개발자 티어 보상')):chip('data-sqbuy',k,TYPES[k].name,false,false,TYPES[k].cost)).join('')+'</div></div>';
   el.innerHTML=h;
-  el.querySelectorAll('[data-sqteam]').forEach(b=>{b.onclick=()=>{save.team=b.dataset.sqteam;persist();SFX.ui();renderSquad();};});
+  el.querySelectorAll('[data-sqteam]').forEach(b=>{b.onclick=()=>{save.team=b.dataset.sqteam;persist();try{kitSync();}catch(e){}SFX.ui();renderSquad();};});
   el.querySelectorAll('[data-sqhat]').forEach(b=>{b.onclick=()=>{const k=b.dataset.sqhat;buyConfirm(b,'hats',k,HATS[k].cost,()=>{save.hat=k;});};});
   el.querySelectorAll('[data-sqtrail]').forEach(b=>{b.onclick=()=>{const k=b.dataset.sqtrail;buyConfirm(b,'trails',k,TRAILS[k].cost,()=>{save.trail=k;});};});
   el.querySelectorAll('[data-sqbuy]').forEach(b=>{b.onclick=()=>{const k=b.dataset.sqbuy;buyConfirm(b,'types',k,TYPES[k].cost,null);};});
@@ -2904,6 +2911,7 @@ function renderScout(){
     else if(a==='fzgo')doFuse(fz.g,fz.sel.slice());};});
   scWire(el);
 }
+document.querySelectorAll('#stkTabs button').forEach(b=>{b.onclick=()=>{try{SFX.ui();}catch(e){}stkTab=b.dataset.t;stkMsg='';stkRender();};});
 document.querySelectorAll('#scTabs button').forEach(b=>{b.onclick=()=>{SFX.ui();scTab=b.dataset.t;scMsg='';renderScout();};});
 
 /* ================= HYPE: goal feel, combos, tension, replay, mastery XP, goals, records ================= */
@@ -3153,8 +3161,8 @@ function hypeGoal(tm,sh){
   const oppG=!!(G.mine&&!mine&&real);
   G.hitStop=Math.max(G.hitStop||0,oppG?0:tier?.05+.035*tier:.03);
   G.cam.shake=Math.max(G.cam.shake,oppG?.3:.45+.25*tier);
-  const col=key==='blue'?[.35,.65,1]:[1,.38,.45],gx=tm.dir*W;
-  const fl=$('#gflash');fl.style.setProperty('--gc',key==='blue'?'rgba(80,150,255,':'rgba(255,90,110,');fl.style.setProperty('--ga',(oppG?.14:.22+.1*tier).toFixed(2));fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');
+  const col=kitC3(key,key==='blue'?[.35,.65,1]:[1,.38,.45]),gx=tm.dir*W;
+  const fl=$('#gflash');fl.style.setProperty('--gc',kitRgba(key,key==='blue'?'rgba(80,150,255,':'rgba(255,90,110,'));fl.style.setProperty('--ga',(oppG?.14:.22+.1*tier).toFixed(2));fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');
   gRing.position.set(gx>0?W-.5:-W+.5,.08,0);gRing.material.color.setRGB(col[0],col[1],col[2]);h.ringT=.95;
   for(let i=0;i<(oppG?30:50+tier*35);i++){const a=rnd(TAU),s=rnd(3,11)+tier*1.5;emit(gx,rnd(.6,3),rnd(-GW,GW),Math.cos(a)*s*(gx>0?-1:1)*.7,rnd(2,9),Math.sin(a)*s,rnd(.8,1.6),rnd(.2,.5),col[0],col[1],col[2]);}
   SFX.bump(oppG?.6:1);if(oppG)SFX.lose();else SFX.goal();if(tier>=2)SFX.win();if(tier>=1)vib([40,30,70]);
@@ -3482,7 +3490,7 @@ function mgrReset(){   // every match setup (also on page load): settle an aband
 /* ---------- home summary ---------- */
 function leagueMenuRefresh(){
   try{seasonCheck();seasonBadge();}catch(e){}
-  seasonPopSoon();news18Soon();try{coachRow();}catch(e){}
+  seasonPopSoon();news18Soon();try{stkBadge();}catch(e){}try{coachRow();}catch(e){}
   try{
     const ct=clubTable(),mt=mgrTable(),ti=tierOf(save.mgr.r),el=$('#menuRank');
     if(el){el.innerHTML='<span class="mr-club">'+escH(save.profile.emb)+' '+escH(save.profile.club)+'</span><span class="mr-rank">'+HM_IC.rink+__L('구단 <b>')+ct.me.rank+__L('위</b></span><span class="mr-tier">')+HM_IC.medal+'<b style="color:'+ti.c+'">'+ti.name+__L('</b><em class="mr-sub">감독 ')+mt.me.rank+__L('위</em></span>')+(titleText()?'<span class="mr-title">'+titleText()+'</span>':'');
@@ -3751,7 +3759,7 @@ const TT={
   balanced:{name:__L('플레이메이커'),plus:__L('패스 속도 +10% · 원타이머 위력 +5%'),minus:__L('대시 재사용 +0.4초'),pass:1.1,ot:1.05,dashCd:.4},
   auk:{name:__L('바다의 지배자'),plus:__L('능력치 999 · 모든 능력 최강'),minus:__L('없음')}
 };
-const ttOf=p=>(p&&!p.goalie&&TT[p.type])||{};
+const ttOf=p=>(p&&!p.goalie&&(p.tt||TT[p.type]))||{};
 const ttLine=k=>{const t=TT[k];return t?'<b>'+t.name+__L('</b> · 강점: ')+t.plus+__L(' · 약점: ')+t.minus:'';};
 // one-timer: shooting within this window after receiving a pass (pre-charge while the pass is coming!)
 const OT_WIN=.75;
@@ -4136,7 +4144,7 @@ function soHud(){
   el.innerHTML=__L('<div class="so-t">🥅 승부차기 ')+so.s.mine+' : '+so.s.opp+'</div>'+row(mk==='blue'?'BLUE':'RED',so.res.mine,mk==='blue'?'#7fb6ff':'#ff8d99',true)+row(ok==='blue'?'BLUE':'RED',so.res.opp,ok==='blue'?'#7fb6ff':'#ff8d99',false);
   el.className='on';
 }
-function funFrame(dt){achFrame(dt);evFrame(dt);itemFrame(dt);feverFrame(dt);soFrame(dt);fxChipFrame();puckRing.material.color.setHex(G.carry&&G.view==='game'?(G.carry.team.key==='blue'?0x3d8bff:0xff4d5e):0x1d5fa8);}
+function funFrame(dt){achFrame(dt);evFrame(dt);itemFrame(dt);feverFrame(dt);soFrame(dt);fxChipFrame();puckRing.material.color.setHex(G.carry&&G.view==='game'?kitHexN(G.carry.team.key,G.carry.team.key==='blue'?0x3d8bff:0xff4d5e):0x1d5fa8);}
 function funReset(){itemsClear();evReset();G.so=null;try{$('#soHud').className='';$('#fever').className='';document.body.classList.remove('fever');}catch(e){}for(const p of G.pengs){p.frozen=false;p.boostT=p.fireT=p.magT=0;p.rushT=p.shadowT=p.eyeT=p.hopT=p.ramT=p.dbl=p.dazT=p.otWin=0;}G.royal=null;}
 
 
@@ -4688,7 +4696,7 @@ function pkKnitMat(col,rep){const k='k'+col+'_'+rep;if(pkMatC[k])return pkMatC[k
 function pkKnitVC(rep){const k='kv'+rep;if(pkMatC[k])return pkMatC[k];const t=PK_KNIT.clone();t.needsUpdate=true;t.repeat.set(rep[0],rep[1]);
   return pkMatC[k]=rimify(new T.MeshStandardMaterial({vertexColors:true,roughness:.95,bumpMap:t,bumpScale:.03}),1.1);}
 // --- hockey sweater: canvas texture with yoke, hem stripes, crest and a back number ---
-function pkJerseyMat(teamKey,num){const lo=pkLo(),k='j'+teamKey+num+lo;if(pkMatC[k])return pkMatC[k];
+function pkJerseyMat(teamKey,num){{const kk=kitFor(teamKey);if(kk)return kitJerseyMat(teamKey,num,kk);}const lo=pkLo(),k='j'+teamKey+num+lo;if(pkMatC[k])return pkMatC[k];
   const tc=new T.Color(TEAM[teamKey].color),hx=c=>'#'+c.getHexString(),dark=tc.clone().multiplyScalar(.6),lite=tc.clone().lerp(new T.Color(1,1,1),.16);
   const c=document.createElement('canvas');c.width=lo?256:512;c.height=lo?128:256;const x=c.getContext('2d');if(lo)x.scale(.5,.5);   // half-size texture in battery-saver graphics
   const gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,hx(lite));gr.addColorStop(1,hx(tc));x.fillStyle=gr;x.fillRect(0,0,512,256);
@@ -4712,7 +4720,7 @@ function pkScarfGeo(teamKey){const ck=(pkHi()?'U':'')+'s'+teamKey;if(pkGeoC[ck])
   for(let i=0;i<p.count;i++){const ph=Math.atan2(p.getZ(i),p.getX(i)),f=(((ph/TAU*14)%1)+1)%1,wh=f<.2?1:0;col[i*3]=lerp(tc.r,.96,wh);col[i*3+1]=lerp(tc.g,.97,wh);col[i*3+2]=lerp(tc.b,.98,wh);}
   g.setAttribute('color',new T.BufferAttribute(col,3));return pkGeoC[ck]=g;}
 function pkScarfTailGeo(teamKey){const ck=(pkHi()?'U':'')+'st'+teamKey;if(pkGeoC[ck])return pkGeoC[ck];
-  const tc=pkRGB(TEAM[teamKey].color),wh=[.96,.97,.98],list=[];
+  const tc=pkRGB(TEAM[teamKey].color),wh=kitStripe(teamKey),list=[];
   for(const [len,ox,rz] of[[.44,0,0],[.36,.075,.14]]){
     const n=Math.round(len/.075);for(let i=0;i<n;i++){const b=new T.BoxGeometry(.13,len/n+.002,.032);b.translate(ox,-(i+.5)*len/n,0);b.rotateZ(rz);list.push([b,i%2?wh:tc]);}
     for(let f=0;f<5;f++){const c=new T.CylinderGeometry(.008,.008,.07,pkS(4));c.translate(ox-.05+f*.025,-len-.035,0);c.rotateZ(rz);list.push([c,tc]);}
@@ -5078,7 +5086,7 @@ document.addEventListener('click',e=>{
   const ty=e.target.closest('[data-type]');if(ty){const k=ty.dataset.type;if(TYPES[k].exclusive&&!save.types.includes(k)){flashMsg(__L('🔒 개발자 티어(레이팅 2100) 달성 또는 설정의 코드 입력으로 얻을 수 있어요'));return;}tryUse('types',k,TYPES[k].cost,()=>{save.type=k;});return;}
   const ht=e.target.closest('[data-hat]');if(ht){const k=ht.dataset.hat;tryUse('hats',k,HATS[k].cost,()=>{save.hat=k;});return;}
   const tr=e.target.closest('[data-trail]');if(tr){const k=tr.dataset.trail;tryUse('trails',k,TRAILS[k].cost,()=>{save.trail=k;});return;}
-  const tm=e.target.closest('[data-team]');if(tm){save.team=tm.dataset.team;persist();renderSelect();rebuildShowcase();SFX.ui();return;}
+  const tm=e.target.closest('[data-team]');if(tm){save.team=tm.dataset.team;persist();try{kitSync();}catch(e){}renderSelect();rebuildShowcase();SFX.ui();return;}
 });
 addEventListener('resize',resize);addEventListener('resize',uiTidySoon);
 addEventListener('orientationchange',()=>setTimeout(()=>{resize();uiTidy();},200));
@@ -6821,7 +6829,7 @@ function cineStart(p){
   return true;
 }
 function cineDom(p,C,quick){
-  const el=$('#cine');if(!el)return;const sp=p.ty.special,tc=p.team.key==='blue'?'#2f7bff':'#ff3b4e',g=GRADES[RAR[p.type]||0];
+  const el=$('#cine');if(!el)return;const sp=p.ty.special,tc=kitHex(TEAM[p.team.key].color),g=GRADES[RAR[p.type]||0];
   el.style.setProperty('--c1',C.c[0]);el.style.setProperty('--c2',C.c[1]);el.style.setProperty('--tc',tc);el.style.setProperty('--gc',g.c);el.style.setProperty('--sl',Math.max(8,C.shout.length));
   el.innerHTML='<i class="cn-bar t"></i><i class="cn-bar b"></i><div class="cn-dim"></div><div class="cn-lines"></div>'
     +'<div class="cn-band"><div class="cn-bg"></div><div class="cn-art">'+pengSVG(p.type)+'</div>'
@@ -7512,7 +7520,7 @@ const NET={st:'idle',role:'',code:'',msg:'',pc:null,rel:null,un:null,es:null,rel
   rp:null,swCd:0,seen:{},rt:{},rbusy:{},pkSp:0,gen:0,applied:0};
 function netInfo(){
   const mt=['balanced','defense','fast','basic'];
-  return {v:NET_V,ty:[0,1,2].map(i=>i===0?save.type:(save.squad[i-1]||mt[(i-1)%mt.length])),n:String((save.profile&&save.profile.name)||'').slice(0,16)};
+  return {v:NET_V,ty:[0,1,2].map(i=>i===0?save.type:(save.squad[i-1]||mt[(i-1)%mt.length])),n:String((save.profile&&save.profile.name)||'').slice(0,16),kit:kitNet()};
 }
 function netCodeGen(){let s='';const a=new Uint32Array(6);crypto.getRandomValues(a);for(const x of a)s+=NET_AB[x%NET_AB.length];return s;}
 function netSet(st,msg){NET.st=st;NET.msg=msg||'';if(G.ui==='sFriend')frRender();}
@@ -8697,14 +8705,14 @@ function lxGoal(tm){
     if(lxOn()){
       lxBuild();
       if(LX.ready){
-        const c=tm.key==='blue'?[.3,.68,1]:[1,.34,.42];
+        const c=kitC3(tm.key,tm.key==='blue'?[.3,.68,1]:[1,.34,.42]);
         lxRing(gx,0,1.2,9,.9,c,0,.85);lxRing(gx,0,1,7,.9,[.62,.88,1],.12,.8);lxRing(gx,0,.8,5,.8,[1,1,1],.24,.8);
         for(let i=0;i<50;i++){const w=i%3===0;emit(gx-tm.dir*lxr(0,6),lxr(5,9),lxr(-5,5),lxr(-3,3),lxr(-1,3),lxr(-3,3),lxr(1.4,2.4),lxr(.22,.42),w?1:c[0],w?1:c[1],w?1:c[2]);}
         LX.goalT=LXV.goalShow;LX.goalX=gx;LX.goalC=c;
         if(mine&&!demo&&!(ARENAS[G.arena]||{}).fireworks)for(const t of LXV.fw)LX.fw.push(LX.clock+t);
       }
     }
-    if(!demo&&G.view==='game')lxRays(mine?'mine':'theirs',tm.key==='blue'?'#58b8ff':'#ff6a7c');
+    if(!demo&&G.view==='game')lxRays(mine?'mine':'theirs',kitCssC(tm.key,tm.key==='blue'?'#58b8ff':'#ff6a7c'));
   }catch(_){}
 }
 function lxHit(h,v){
@@ -9016,15 +9024,26 @@ function gaugeFit(){
 //  · eyes moved toward the front and enlarged (the blink still works: it scales the eye group, we scale the meshes)
 //  · a shorter, chunkier beak; bigger, rounder flippers and feet; soft cheek blush on light faces
 // All numbers are in PKV.
-var PKV={domeY:1.55,domeK:1.42,bulge:.055,bulgeY:1.4,bulgeW:.17,beakMax:.2,head:1.28,eth:.5,ey:1.44,eyeIn:.03,eye:1.16,iris:1.32,beakL:.74,beakW:1.38,beakH:1.22,beakY:1.37,fl:1.2,ft:1.22,
+var PKV={domeY:1.55,domeK:1.42,bulge:.055,bulgeY:1.4,bulgeW:.17,beakMax:.2,head:1.28,eth:.5,ey:1.44,eyeIn:.008,eye:1.16,iris:1,beakL:.74,beakW:1.38,beakH:1.22,beakY:1.37,fl:1.2,ft:1.22,
   scarfY:1.1,scarfT:.08,scarfM:.028,blush:.32,blushR:.06};
 function pk43HeadR(Y){const HS=PKV.head,y=PK_NECK+(Y-PK_NECK)/HS;return pkHeadR(y)*HS;}
 function pk43ScarfGeo(teamKey){const ck=(pkHi()?'U':'')+'s43'+teamKey+PKV.head+PKV.scarfY;if(pkGeoC[ck])return pkGeoC[ck];
-  const tc=new T.Color(TEAM[teamKey].color),Y=PKV.scarfY,R0=Math.max(pk43HeadR(Y),pkBodyR(Y))+PKV.scarfM;
+  const tc=new T.Color(TEAM[teamKey].color),sw=typeof kitStripe==='function'?kitStripe(teamKey):[.96,.97,.98],Y=PKV.scarfY,R0=Math.max(pk43HeadR(Y),pkBodyR(Y))+PKV.scarfM;
   const g=new T.TorusGeometry(R0,PKV.scarfT,pkS(12),pkS(48));g.rotateX(Math.PI/2);g.scale(1,.82,1);g.translate(0,Y,0);
   const p=g.attributes.position,col=new Float32Array(p.count*3);
-  for(let i=0;i<p.count;i++){const ph=Math.atan2(p.getZ(i),p.getX(i)),f=(((ph/TAU*14)%1)+1)%1,wh=f<.2?1:0;col[i*3]=lerp(tc.r,.96,wh);col[i*3+1]=lerp(tc.g,.97,wh);col[i*3+2]=lerp(tc.b,.98,wh);}
+  for(let i=0;i<p.count;i++){const ph=Math.atan2(p.getZ(i),p.getX(i)),f=(((ph/TAU*14)%1)+1)%1,wh=f<.2?1:0;col[i*3]=lerp(tc.r,sw[0],wh);col[i*3+1]=lerp(tc.g,sw[1],wh);col[i*3+2]=lerp(tc.b,sw[2],wh);}
   g.setAttribute('color',new T.BufferAttribute(col,3));return pkGeoC[ck]=g;}
+// character eyes (per species, cached): a flat white oval with a big pupil in the species' eye colour (≈ 80 % of the eye,
+// so only a thin white rim shows — on a black head an all-dark eye disappears), a black centre and two catch-lights.
+var PKE={w:.066,h:.08,d:.012,iw:.054,ih:.066,id:.01,in:-.006,dn:-.004,cw:.034,ch:.042,dark:.55,hl1:[.018,.026],hl1r:.02,hl2:[-.017,-.024],hl2r:.009,gz:.25};
+function pk43EyeGeos(key){const ck=(pkHi()?'U':'')+'e43'+key+JSON.stringify(PKE);if(pkGeoC[ck])return pkGeoC[ck];
+  const pt=TYPES[key].patch,src=PK18EYE[pt]||(pt==='rock'?0xd0182a:pt==='auk'?0x1a1410:0x2a1a12),c=pkRGB(src),lum=c[0]*.3+c[1]*.59+c[2]*.11,k=lum>.45?PKE.dark*.4:PKE.dark;
+  const col=[c[0]*(1-k),c[1]*(1-k),c[2]*(1-k)],sp=(sx,sy,sz,x,y,z,n)=>{const g=new T.SphereGeometry(1,pkS(n||18),pkS(Math.round((n||18)*.7)));g.scale(sx,sy,sz);g.translate(x||0,y||0,z||0);return g;};
+  const z1=PKE.d*.8,z2=z1+PKE.id*.7,z3=z2+.006;
+  const R={base:pkMerge([[sp(PKE.w,PKE.h,PKE.d,0,0,0,22),[.96,.965,.98]]]),
+    pupil:pkMerge([[sp(PKE.iw,PKE.ih,PKE.id,PKE.in,PKE.dn,z1,20),col],[sp(PKE.cw,PKE.ch,PKE.id*.8,PKE.in,PKE.dn,z2,16),[.01,.01,.014]]]),
+    hl:pkMerge([[sp(PKE.hl1r,PKE.hl1r*1.1,.005,PKE.in+PKE.hl1[0],PKE.dn+PKE.hl1[1],z3,10),null],[sp(PKE.hl2r,PKE.hl2r,.004,PKE.in+PKE.hl2[0],PKE.dn+PKE.hl2[1],z3,8),null]])};
+  return pkGeoC[ck]=R;}
 var PK43_BLUSH=null,PK43_GC={},PK43_MAT={};
 // a black beak on a black face disappears: the beak gets a faint cool sheen of its own, the head slightly glossier feathers
 function pk43Mats(){if(PK43_MAT.beak)return PK43_MAT;
@@ -9046,9 +9065,24 @@ function pk43(P,typeKey,teamKey,hatKey,o){
   // round the head and what is glued onto it (the head mesh, species markings, crests); hats, eyes and the beak are groups
   for(const m of P.headAbs.children)if(m.isMesh&&m.geometry&&m.position.lengthSq()<1e-8&&!m.rotation.x&&!m.rotation.y&&!m.rotation.z)m.geometry=pk43Geo(m.geometry);
   for(const m of P.headAbs.children)if(m.isMesh&&m.material===PK_MAT.body)m.material=pk43Mats().head;
-  // eyes: further forward, bigger
+  // eyes: further forward, and character eyes instead of eyeballs (the owner: "the eyes are creepy" — white bulging
+  // eyeballs with a small iris read as googly / human). Now: a flat white oval almost filled by a big pupil in the species'
+  // eye colour with a black centre and two catch-lights (see PKE). The pupils stay P.pupL/R, so the gaze and the sad look
+  // still move them. The size goes on the meshes, never on the eye group: the blink writes the group's scale.y every frame.
+  const EG=pk43EyeGeos(typeKey);
   [P.eyeL,P.eyeR].forEach((e,i)=>{if(!e)return;const s=i?1:-1,eth=auk?.58:PKV.eth,pt=pk43Pt(s*eth,auk?1.46:PKV.ey,PKV.eyeIn);
-    e.position.copy(pt);e.rotation.y=s*eth;for(const m of e.children)m.scale.setScalar(PKV.eye*(m===P.pupL||m===P.pupR?PKV.iris:1));});
+    e.position.copy(pt);e.rotation.y=s*eth;
+    for(const c of [...e.children])e.remove(c);
+    e.add(new T.Mesh(EG.base,PK_MAT.eye));
+    // the gaze moves the pupil up to .034 (written by animatePenguin): the big pupil would leave the white, so it moves
+    // inside a holder group squeezed to PKE.gz in x / y (the pupil mesh undoes the squeeze)
+    const gz=new T.Group();gz.scale.set(PKE.gz,PKE.gz,1);e.add(gz);
+    const ho=new T.Group();gz.add(ho);
+    const pu=new T.Mesh(EG.pupil,PK_MAT.eye);pu.add(new T.Mesh(EG.hl,PK_MAT.hl));ho.add(pu);
+    e.children[0].scale.set(i?PKV.eye:-PKV.eye,PKV.eye,PKV.eye);
+    pu.scale.set((i?PKV.eye:-PKV.eye)/PKE.gz,PKV.eye/PKE.gz,PKV.eye);
+    if(i)P.pupR=ho;else P.pupL=ho;
+    e.scale.set(1,1,1);});
   // beak: shorter and chunkier
   const bg=P.jaw&&P.jaw.parent;if(bg){if(pk43Dark(pkBeak(typeKey).up))bg.traverse(m=>{if(m.isMesh&&m.material===PK_MAT.beak)m.material=pk43Mats().beak;});const S=pkBeak(typeKey).S;bg.position.copy(pk43Pt(0,PKV.beakY,.05));bg.scale.set(PKV.beakW,PKV.beakH,Math.min(PKV.beakL,PKV.beakMax/S.L));}
   // flippers and feet
@@ -9152,12 +9186,603 @@ function coachPlace(){const el=$('#coachBar'),mr=$('#menuRank');if(!el)return;co
     if(pr){el.style.top=Math.round(pr.bottom+6)+'px';el.style.left=Math.round(pr.right-el.offsetWidth)+'px';if(!hit())return;}}   // under the points, right-aligned
   below();}
 
+/* ================= v45: 🏒 stick workshop — draw materials, craft your own stick, upgrade it (2026-11-14) ================= */
+// The owner: "draw the materials yourself and build your own hockey stick — two kinds of material, ten each, graded like the
+// penguins; every combination has its own ability, and it can be upgraded". So:
+//  · two parts, 샤프트 (shaft) and 블레이드 (blade), ten materials each, in the five penguin grades (3 기본 · 3 희귀 · 2 레어 · 1 신화 · 1 전설)
+//  · every material has a style (파워 / 스피드 / 컨트롤); the shaft's style × the blade's style picks one of nine abilities,
+//    and the two materials' grades + the stick's level decide how strong the stats and the ability are (100 combinations)
+//  · materials come from a points-only draw (no real money). The odds on screen are the numbers below; a hard pity and a
+//    10-draw guarantee as in the scout centre; a free draw every day
+//  · 강화 +1 … +10 with points: the success rate on screen is the one the code rolls (fail bonus, a guaranteed try after 5 fails,
+//    a failure never lowers the level)
+//  · the captain (first skater of the player's team) carries the equipped stick in offline matches; online friend matches stay
+//    flat (no stick stats), exactly like card levels
+// Every number that reaches the screen comes from stkCalc / stkProbs, which are what the game uses.
+var STK={cost1:30,cost10:270,odds:[50,30,14,5,1],tenMin:2,hard:30,cap:99,refund:[3,6,15,40,100],craft:[10,20,35,60,100],max:12,
+  lvMax:10,enh:[100,95,90,80,70,60,50,40,35,30],enhG:[0,3,6,9,12],failB:8,failMax:4,pity:5,enhC0:25,enhCK:20,
+  main:[2,3,4,5,6],off:[1,1,2,2,3],lvAdd:.4,k:{pow:.6,chg:1.2,spr:2,pass:.6},histMax:30};
+// style: P 파워 · S 스피드 · C 컨트롤; art: base colour, accent, texture
+var STK_ST={P:{n:__L(__L('파워')),i:'💥',c:'#ff7a59'},S:{n:__L(__L('스피드')),i:'⚡',c:'#ffd34d'},C:{n:__L(__L('컨트롤')),i:'🎯',c:'#5fd0ff'}};
+var STK_M={
+  s0:{n:__L(__L('자작나무')),g:0,st:'P',c:'#ece4d2',a:'#3b3530',t:'birch'},
+  s1:{n:__L(__L('대나무')),g:0,st:'S',c:'#cfc66a',a:'#6f7f22',t:'bamboo'},
+  s2:{n:__L(__L('알루미늄')),g:0,st:'C',c:'#c9d2db',a:'#7d8a98',t:'metal'},
+  s3:{n:__L(__L('참나무')),g:1,st:'P',c:'#a8743f',a:'#5e3b1a',t:'grain'},
+  s4:{n:__L(__L('유리섬유')),g:1,st:'S',c:'#e6f0f3',a:'#93b2c0',t:'weave'},
+  s5:{n:__L(__L('흑단')),g:1,st:'C',c:'#2f2724',a:'#6a564c',t:'grain'},
+  s6:{n:__L(__L('티타늄')),g:2,st:'P',c:'#9aa7bc',a:'#4b5870',t:'metal'},
+  s7:{n:__L(__L('카본')),g:2,st:'S',c:'#2a2d33',a:'#545b65',t:'carbon'},
+  s8:{n:__L(__L('오로라 크리스탈')),g:3,st:'C',c:'#5ee7d0',a:'#8a5cff',t:'aurora'},
+  s9:{n:__L(__L('운석')),g:4,st:'P',c:'#3b3431',a:'#ff8a3d',t:'meteor'},
+  b0:{n:__L(__L('무쇠')),g:0,st:'P',c:'#50565f',a:'#2a2d33',t:'hammer'},
+  b1:{n:__L(__L('고무')),g:0,st:'S',c:'#30353b',a:'#5d6670',t:'dots'},
+  b2:{n:__L(__L('포플러')),g:0,st:'C',c:'#efe2c4',a:'#b39b6e',t:'grain'},
+  b3:{n:__L(__L('흑요석')),g:1,st:'P',c:'#1f1d27',a:'#7a68a6',t:'glass'},
+  b4:{n:__L(__L('빙하 얼음')),g:1,st:'S',c:'#c4ebff',a:'#4fa9dd',t:'ice'},
+  b5:{n:__L(__L('산호')),g:1,st:'C',c:'#ff8f7d',a:'#ffd6c0',t:'coral'},
+  b6:{n:__L(__L('그래핀')),g:2,st:'S',c:'#2a3038',a:'#7fd3ff',t:'hex'},
+  b7:{n:__L(__L('진주')),g:2,st:'C',c:'#f5f2ec',a:'#c6b4e8',t:'pearl'},
+  b8:{n:__L(__L('심해 사파이어')),g:3,st:'P',c:'#2050d8',a:'#86c6ff',t:'gem'},
+  b9:{n:__L(__L('북극성 조각')),g:4,st:'S',c:'#fff3c4',a:'#ffc233',t:'star'}
+};
+var STK_PART={s:{n:__L(__L('샤프트')),sub:__L(__L('스틱 자루'))},b:{n:__L(__L('블레이드')),sub:__L(__L('스틱 날'))}};
+// abilities: shaft style + blade style → [key, name, base, per grade, per level]
+var STK_AB={
+  PP:{k:'cannon',n:__L(__L('대포알 슛')),v:[3,1,.4]},
+  PS:{k:'onetime',n:__L(__L('원타이머 장인')),v:[4,1.5,.5],w:[.1,.05]},
+  PC:{k:'wrist',n:__L(__L('손목 스냅')),v:[6,2,.6]},
+  SP:{k:'quick',n:__L(__L('퀵 릴리스')),v:[5,2,.6]},
+  SS:{k:'bolt',n:__L(__L('번개 패스')),v:[5,2,.6]},
+  SC:{k:'reach',n:__L(__L('긴 팔')),v:[.1,.04,.015]},
+  CP:{k:'sniper',n:__L(__L('스나이퍼')),v:[15,4,1.5]},
+  CS:{k:'poke',n:__L(__L('포크 체크')),v:[6,2,.8]},
+  CC:{k:'tech',n:__L(__L('테크니션')),v:[4,1.5,.5]}
+};
+function stkAbDesc(ab){const v=ab.v,w=ab.w;switch(ab.k){
+  case 'cannon':return fmtL(__L(__L('80% 이상 충전한 강슛 위력 +{v}%')),{v});
+  case 'onetime':return fmtL(__L(__L('원타이머 위력 +{v}% · 원타이머 시간 +{w}초')),{v,w});
+  case 'wrist':return fmtL(__L(__L('톡 슛(짧게 누른 슛) 위력 +{v}%')),{v});
+  case 'quick':return fmtL(__L(__L('슛 충전 속도 +{v}%')),{v});
+  case 'bolt':return fmtL(__L(__L('패스 속도 +{v}%')),{v});
+  case 'reach':return fmtL(__L(__L('상대 패스·슛 가로채기 범위 +{v}m')),{v});
+  case 'sniper':return fmtL(__L(__L('80% 이상 충전한 강슛 오차 -{v}%')),{v});
+  case 'poke':return fmtL(__L(__L('뺏기 성공률 +{v}%')),{v});
+  case 'tech':return fmtL(__L(__L('특수 기술 쿨다운 -{v}%')),{v});}return '';}
+const stkR1=x=>Math.round(x*10)/10,stkR2=x=>Math.round(x*100)/100;
+function stkIds(part){return Object.keys(STK_M).filter(k=>k[0]===part);}
+function stkGradeIds(part,g){return stkIds(part).filter(k=>STK_M[k].g===g);}
+// --- save (save.stk is created by the save default / loader; this keeps it whole) ---
+function stk(){const o=save.stk||(save.stk={});if(!o.m||typeof o.m!=='object')o.m={};if(!Array.isArray(o.list))o.list=[];if(!(o.nu>=1))o.nu=1;
+  if(!o.pity||typeof o.pity!=='object')o.pity={s:0,b:0};if(!(o.pulls>=0))o.pulls=0;if(typeof o.free!=='string')o.free='';if(!Array.isArray(o.hist))o.hist=[];
+  if(o.list.length&&!o.list.some(x=>x.u===o.eq))o.eq=0;return o;}
+function stkGet(u){return stk().list.find(x=>x.u===u)||null;}
+function stkEq(){const o=stk();return o.eq?stkGet(o.eq):null;}
+// --- one stick's numbers (the screen and the game both read this) ---
+function stkGrade(s,b){return Math.round((STK_M[s].g+STK_M[b].g)/2);}
+function stkCalc(x){
+  const S=STK_M[x.s],B=STK_M[x.b],lv=Math.max(0,Math.min(STK.lvMax,x.lv|0)),g=stkGrade(x.s,x.b),pt={P:0,S:0,C:0};
+  for(const m of[S,B])for(const k of['P','S','C'])pt[k]+=k===m.st?STK.main[m.g]:STK.off[m.g];
+  for(const k of['P','S','C'])pt[k]=stkR1(pt[k]+STK.lvAdd*lv);
+  const fx={pow:stkR1(pt.P*STK.k.pow),chg:stkR1(pt.S*STK.k.chg),spr:stkR1(pt.C*STK.k.spr),pass:stkR1(pt.C*STK.k.pass)};
+  const A=STK_AB[S.st+B.st],v=A.v,ab={k:A.k,n:A.n,key:S.st+B.st,v:(A.k==='reach'?stkR2:stkR1)(v[0]+v[1]*g+v[2]*lv)};
+  if(A.w)ab.w=stkR2(A.w[0]+A.w[1]*g);
+  return {g,lv,pt,fx,ab,name:fmtL(__L(__L('{a} 스틱')),{a:A.n}),mats:fmtL(__L(__L('{s} 샤프트 · {b} 블레이드')),{s:S.n,b:B.n})};
+}
+// the stick on top of the penguin's own personality (TT): multipliers multiply, ranges add
+function stkTT(type,c){
+  const o=Object.assign({},TT[type]||{}),mul=(k,v)=>{o[k]=(o[k]||1)*v;},f=c.fx,a=c.ab;
+  mul('pow',1+f.pow/100);mul('tap',1+f.pow/100);mul('chg',1+f.chg/100);mul('spread',1-f.spr/100);mul('pass',1+f.pass/100);
+  if(a.k==='cannon')mul('pow80',1+a.v/100);else if(a.k==='onetime'){mul('ot',1+a.v/100);o.otw=(o.otw||0)+a.w;}
+  else if(a.k==='wrist')mul('tap',1+a.v/100);else if(a.k==='quick')mul('chg',1+a.v/100);else if(a.k==='bolt')mul('pass',1+a.v/100);
+  else if(a.k==='reach')o.reach=(o.reach||0)+a.v;else if(a.k==='sniper')mul('spread80',1-a.v/100);
+  else if(a.k==='poke')mul('steal',1+a.v/100);else if(a.k==='tech')mul('cd',1-a.v/100);
+  return o;
+}
+// in a match: the captain carries the equipped stick (stats offline only; online friend matches are flat)
+function stkApply(p,cfg){
+  const x=stkEq();if(!p||p.goalie||!x)return false;
+  p.stk=x;p.stkC=stkCalc(x);if(!(cfg&&cfg.flat))p.tt=stkTT(p.type,p.stkC);
+  try{stkLook(p.pg,p.team.key,x);}catch(e){}
+  return true;
+}
+// --- the 3D stick in the materials' colours (same shape as pkStickGeo; the team band stays) ---
+function stkGeo(teamKey,x){const ck=(pkHi()?'U':'')+'skc'+teamKey+TEAM[teamKey].color+x.s+x.b;if(pkGeoC[ck])return pkGeoC[ck];
+  const L=1.2,tc=pkRGB(TEAM[teamKey].color),list=[],sh=pkRGB(parseInt(STK_M[x.s].c.slice(1),16)),sa=pkRGB(parseInt(STK_M[x.s].a.slice(1),16)),
+    bl=pkRGB(parseInt(STK_M[x.b].c.slice(1),16)),ba=pkRGB(parseInt(STK_M[x.b].a.slice(1),16)),tape=[.05,.05,.06],wht=[.95,.96,.97];
+  const seg=(z0,z1,w,h,col)=>{const b=new T.BoxGeometry(w,h,z1-z0);b.translate(0,0,(z0+z1)/2);list.push([b,col]);};
+  seg(0,.1,.05,.04,tape);seg(.1,L*.3,.042,.03,sh);seg(L*.3,L*.34,.043,.031,sa);seg(L*.34,L*.46,.043,.031,tc);seg(L*.46,L*.5,.043,.031,sa);seg(L*.5,L,.042,.03,sh);
+  const bln=.34,bh=.075,b=new T.BoxGeometry(.02,bh,bln);b.translate(0,bh*.25,bln/2);b.rotateX(-.62);b.translate(0,0,L);list.push([b,bl]);
+  const s1=new T.BoxGeometry(.022,.014,bln*.9);s1.translate(0,bh*.25,bln/2);s1.rotateX(-.62);s1.translate(0,0,L);list.push([s1,ba]);
+  return pkGeoC[ck]=pkMerge(list);}
+function stkLook(P,teamKey,x){if(!P||!P.stick||!x)return;const m=P.stick.children[0];if(m&&m.isMesh)m.geometry=stkGeo(teamKey,x);}
+// --- the draw: grade first (STK.odds), then one material of that grade in the chosen part, all equally likely ---
+// hard pity: the STK.hard-th draw of a part since its last 신화 or better is 신화 or better (신화 : 전설 = their odds);
+// 10 draws: when the first nine have nothing of STK.tenMin or better, the tenth is at least that (odds renormalised)
+function stkProbs(part,minG){
+  const o=STK.odds.slice(),pity=(stk().pity[part]|0)+1>=STK.hard;let lo=minG|0;if(pity)lo=Math.max(lo,3);
+  for(let i=0;i<lo;i++)o[i]=0;const s=o.reduce((a,v)=>a+v,0);return o.map(v=>v/s*100);
+}
+function stkMatRate(id,minG){const m=STK_M[id];return stkProbs(id[0],minG)[m.g]/stkGradeIds(id[0],m.g).length;}
+// long-run rates with the pity included, drawing one at a time (exact: the pity counter is a Markov chain)
+function stkEff(){const o=STK.odds,hi=(o[3]+o[4])/100;let e=0,q=1;for(let k=0;k<STK.hard;k++){e+=q;q*=k===STK.hard-1?0:(1-hi);}
+  const ph=1/e,lo=o[0]+o[1]+o[2];return [o[0]/lo*(1-ph)*100,o[1]/lo*(1-ph)*100,o[2]/lo*(1-ph)*100,o[3]/(o[3]+o[4])*ph*100,o[4]/(o[3]+o[4])*ph*100];}
+function stkRoll(part,minG){
+  const p=stkProbs(part,minG),r=Math.random()*100;let acc=0,g=4;
+  for(let i=0;i<5;i++){acc+=p[i];if(p[i]>0&&r<acc){g=i;break;}}
+  const ids=stkGradeIds(part,g);return ids[Math.floor(Math.random()*ids.length)]||ids[0];
+}
+function stkGrant(id){const o=stk(),n=o.m[id]|0;if(n>=STK.cap){save.points+=STK.refund[STK_M[id].g];return {id,isNew:false,ovf:STK.refund[STK_M[id].g]};}
+  o.m[id]=n+1;const isNew=!o.seen||!o.seen[id];(o.seen||(o.seen={}))[id]=1;return {id,isNew,ovf:0};}
+function stkDrawOnce(part,minG){
+  const o=stk(),id=stkRoll(part,minG),g=STK_M[id].g;o.pulls++;
+  if(g>=3)o.pity[part]=0;else o.pity[part]=(o.pity[part]|0)+1;
+  const r=stkGrant(id);o.hist.unshift([id,g]);if(o.hist.length>STK.histMax)o.hist.length=STK.histMax;r.g=g;return r;
+}
+function stkFreeReady(){return stk().free!==todayKey();}
+// n = 1 or 10; returns the results (or null when the points are short)
+function stkDraw(part,n){
+  if(part!=='s'&&part!=='b')return null;const o=stk(),free=n===1&&stkFreeReady(),cost=free?0:n===1?STK.cost1:STK.cost10;
+  if(save.points<cost){lackMsg(cost);return null;}
+  save.points-=cost;if(free)o.free=todayKey();
+  const res=[];for(let i=0;i<n;i++)res.push(stkDrawOnce(part,i===9&&!res.some(r=>r.g>=STK.tenMin)?STK.tenMin:0));
+  persist();return res;
+}
+// --- craft / upgrade / equip / take apart ---
+function stkCraftCost(s,b){return STK.craft[stkGrade(s,b)];}
+function stkCanCraft(s,b){const o=stk();return !!(STK_M[s]&&STK_M[b]&&s[0]==='s'&&b[0]==='b'&&(o.m[s]|0)>0&&(o.m[b]|0)>0&&o.list.length<STK.max);}
+function stkCraft(s,b){
+  const o=stk();if(!stkCanCraft(s,b))return null;const c=stkCraftCost(s,b);if(save.points<c){lackMsg(c);return null;}
+  save.points-=c;o.m[s]--;o.m[b]--;const x={u:o.nu++,s,b,lv:0,f:0};o.list.push(x);if(!o.eq)o.eq=x.u;persist();return x;
+}
+function stkEnhCost(lv){return STK.enhC0+STK.enhCK*lv;}
+function stkEnhRate(x){if(x.lv>=STK.lvMax)return 0;if((x.f|0)>=STK.pity)return 100;
+  return Math.min(100,STK.enh[x.lv]+STK.enhG[stkGrade(x.s,x.b)]+Math.min(STK.failMax,x.f|0)*STK.failB);}
+function stkEnhance(u){
+  const x=stkGet(u);if(!x||x.lv>=STK.lvMax)return null;const c=stkEnhCost(x.lv);if(save.points<c){lackMsg(c);return null;}
+  save.points-=c;const rate=stkEnhRate(x),ok=Math.random()*100<rate;
+  if(ok){x.lv++;x.f=0;}else x.f=(x.f|0)+1;persist();return {ok,rate,lv:x.lv,cost:c};
+}
+function stkEquip(u){const o=stk();if(u&&!stkGet(u))return false;o.eq=u|0;persist();return true;}
+// taking a stick apart gives both materials back (when there is room) — its level is lost
+function stkBreak(u){const o=stk(),i=o.list.findIndex(x=>x.u===u);if(i<0)return null;const x=o.list[i];o.list.splice(i,1);if(o.eq===u)o.eq=0;
+  let pts=0;for(const id of[x.s,x.b]){if((o.m[id]|0)>=STK.cap){pts+=STK.refund[STK_M[id].g];}else o.m[id]=(o.m[id]|0)+1;}save.points+=pts;persist();return {x,pts};}
+// spare materials → points
+function stkSell(id,n){const o=stk(),have=o.m[id]|0;n=Math.max(0,Math.min(have,n|0));if(!n||!STK_M[id])return 0;o.m[id]=have-n;const p=n*STK.refund[STK_M[id].g];save.points+=p;persist();return p;}
+// --- art: every material has its own texture (SVG pattern), used on the swatches and on the stick drawing ---
+var stkUid=0;
+function stkPat(id,pid){
+  const m=STK_M[id],c=m.c,a=m.a,P=(w,h,body,extra)=>'<pattern id="'+pid+'" patternUnits="userSpaceOnUse" width="'+w+'" height="'+h+'"'+(extra||'')+'><rect width="'+w+'" height="'+h+'" fill="'+c+'"/>'+body+'</pattern>';
+  switch(m.t){
+    case 'birch':return P(44,14,'<rect x="3" y="3" width="8" height="1.7" rx=".85" fill="'+a+'" opacity=".85"/><rect x="22" y="9" width="5" height="1.5" rx=".75" fill="'+a+'" opacity=".75"/><rect x="33" y="4.5" width="3" height="1.2" rx=".6" fill="'+a+'" opacity=".6"/><rect x="14" y="11.5" width="11" height=".7" fill="#b9ad98" opacity=".7"/><rect x="0" y="7" width="44" height=".5" fill="#fff" opacity=".35"/>');
+    case 'bamboo':return P(46,14,'<rect x="0" y="0" width="1.6" height="14" fill="'+a+'"/><rect x="1.6" y="0" width="1.2" height="14" fill="#f4f0b0" opacity=".8"/><rect x="2.8" y="0" width=".8" height="14" fill="'+a+'" opacity=".5"/><path d="M8 4h14M26 10h12" stroke="'+a+'" stroke-width=".6" opacity=".35"/>');
+    case 'metal':return P(30,6,'<path d="M0 1.5h30M0 3.5h30M0 5h30" stroke="#fff" stroke-width=".35" opacity=".35"/><path d="M0 2.5h30M0 4.3h30" stroke="'+a+'" stroke-width=".35" opacity=".3"/>');
+    case 'grain':return P(64,12,'<path d="M0 3c10-2 20 2 32 0s22-2 32 0M0 7.5c12 1.5 22-1.5 34 0s20 1.5 30 0M0 10.5c8-1 18 1 30-.5s24 1 34 .5" fill="none" stroke="'+a+'" stroke-width=".8" opacity=".55"/><ellipse cx="44" cy="5.2" rx="3.2" ry="1.1" fill="none" stroke="'+a+'" stroke-width=".6" opacity=".45"/>');
+    case 'weave':return P(8,8,'<rect width="4" height="4" fill="#fff" opacity=".55"/><rect x="4" y="4" width="4" height="4" fill="#fff" opacity=".55"/><path d="M0 2h4M4 6h4M6 0v4M2 4v4" stroke="'+a+'" stroke-width=".5" opacity=".7"/>');
+    case 'carbon':return P(8,8,'<rect width="4" height="4" fill="'+a+'"/><rect x="4" y="4" width="4" height="4" fill="'+a+'"/><path d="M0 .8h4M4 4.8h4" stroke="#8a929c" stroke-width=".5" opacity=".6"/><path d="M4.8 0v4M.8 4v4" stroke="#11141a" stroke-width=".6" opacity=".7"/>');
+    case 'aurora':return '<linearGradient id="'+pid+'" x1="0" y1="0" x2="1" y2=".35"><stop offset="0" stop-color="'+c+'"/><stop offset=".45" stop-color="#7fb8ff"/><stop offset=".7" stop-color="'+a+'"/><stop offset="1" stop-color="'+c+'"/></linearGradient>';
+    case 'meteor':return P(26,14,'<circle cx="5" cy="4" r="1.3" fill="'+a+'"/><circle cx="5" cy="4" r="2.6" fill="'+a+'" opacity=".25"/><circle cx="17" cy="10" r=".9" fill="#ffc06b"/><circle cx="21" cy="3" r=".6" fill="'+a+'" opacity=".8"/><path d="M8 8l4 1.5 3-2.5M1 12l3-1" stroke="'+a+'" stroke-width=".6" fill="none" opacity=".8"/><circle cx="12" cy="2" r="1.6" fill="#2a2523"/>');
+    case 'hammer':return P(10,10,'<circle cx="3" cy="3" r="2.2" fill="'+a+'" opacity=".55"/><circle cx="2.4" cy="2.4" r="1.2" fill="#8a929c" opacity=".35"/><circle cx="8" cy="8" r="2" fill="'+a+'" opacity=".5"/><circle cx="7.5" cy="7.4" r="1" fill="#8a929c" opacity=".3"/>');
+    case 'dots':return P(5,5,'<circle cx="1.25" cy="1.25" r=".6" fill="'+a+'"/><circle cx="3.75" cy="3.75" r=".6" fill="'+a+'"/>');
+    case 'glass':return '<linearGradient id="'+pid+'" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="'+c+'"/><stop offset=".38" stop-color="'+c+'"/><stop offset=".5" stop-color="'+a+'"/><stop offset=".6" stop-color="'+c+'"/><stop offset="1" stop-color="#0c0b10"/></linearGradient>';
+    case 'ice':return P(40,16,'<rect width="40" height="5" fill="#fff" opacity=".35"/><path d="M4 16l5-7 6 2 4-8M24 0l3 6 7 1 3 9M15 11l-3 5" fill="none" stroke="#fff" stroke-width=".7" opacity=".9"/><path d="M9 9l-2-4" stroke="'+a+'" stroke-width=".5" opacity=".6"/>');
+    case 'coral':return P(10,10,'<circle cx="2.5" cy="2.5" r="1.3" fill="'+a+'" opacity=".8"/><circle cx="7.5" cy="7" r="1.6" fill="'+a+'" opacity=".7"/><circle cx="7.8" cy="2" r=".6" fill="#e2604f" opacity=".6"/><circle cx="2" cy="8" r=".7" fill="#e2604f" opacity=".5"/>');
+    case 'hex':return P(12,20.78,'<path d="M3 0l-3 5.2 3 5.2h6l3-5.2L9 0M3 10.4l-3 5.2 3 5.2M9 10.4l3 5.2-3 5.2M3 20.78h6M3 10.4h6" fill="none" stroke="'+a+'" stroke-width=".55" opacity=".65"/>',' patternTransform="scale(.7)"');
+    case 'pearl':return '<linearGradient id="'+pid+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".3" stop-color="#f7ecff"/><stop offset=".55" stop-color="#e6f5ff"/><stop offset=".8" stop-color="#fff0ee"/><stop offset="1" stop-color="'+a+'"/></linearGradient>';
+    case 'gem':return P(16,12,'<path d="M0 0l8 6L0 12z" fill="#163a9e" opacity=".55"/><path d="M8 6l8-6v12z" fill="'+a+'" opacity=".35"/><path d="M0 0h16L8 6z" fill="#fff" opacity=".18"/><path d="M0 0l8 6 8-6M0 12l8-6 8 6" fill="none" stroke="#bfe0ff" stroke-width=".4" opacity=".7"/>');
+    case 'star':return P(22,16,'<rect width="22" height="16" fill="'+a+'" opacity=".22"/><path d="M6 3l.8 2.2L9 6l-2.2.8L6 9l-.8-2.2L3 6l2.2-.8z" fill="#fff"/><path d="M16 9.5l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5z" fill="'+a+'"/><circle cx="17" cy="3" r=".7" fill="#fff"/><circle cx="2" cy="13" r=".5" fill="#fff"/>');
+  }
+  return '';
+}
+function stkTeamHex(){try{return '#'+(TEAM[save.team||'blue'].color>>>0).toString(16).padStart(6,'0');}catch(e){return '#2f7bff';}}
+// a material swatch (square tile)
+function stkSwatch(id,sz){
+  const u='sp'+(++stkUid),m=STK_M[id];sz=sz||48;
+  return '<svg class="stk-sw" viewBox="0 0 48 48" width="'+sz+'" height="'+sz+'" aria-hidden="true"><defs>'+stkPat(id,u)+'<linearGradient id="'+u+'g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>'
+    +'<rect x="2" y="2" width="44" height="44" rx="10" fill="'+m.c+'"/><rect x="2" y="2" width="44" height="44" rx="10" fill="url(#'+u+')"/><rect x="2" y="2" width="44" height="44" rx="10" fill="url(#'+u+'g)"/>'
+    +'<rect x="2.6" y="2.6" width="42.8" height="42.8" rx="9.5" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".9"/>'
+    +'<path d="M6 12c10-6 26-7 36-2" stroke="#fff" stroke-opacity=".28" stroke-width="2.2" stroke-linecap="round" fill="none"/>'
+    +'</svg>';
+}
+// the whole stick (o.hi = 's' | 'b' dims the other part; o.dim draws a silhouette)
+function stkSvg(x,o){
+  o=o||{};const u='sk'+(++stkUid),S=STK_M[x.s],B=STK_M[x.b],tc=o.team||stkTeamHex(),c=x.s&&x.b?stkCalc(x):null,gc=c?GRADES[c.g].c:'#9fb4c8';
+  const ds=o.hi==='b'?' opacity=".32"':'',db=o.hi==='s'?' opacity=".32"':'';
+  const glow=c&&c.g>=3&&!o.dim?' filter="url(#'+u+'f)"':'';
+  const bp='M198 57 C207 62 214 68 222 69 L280 69 C291 69 296 73 295 79 C294 84 288 86 281 86 L226 86 C214 86 204 80 199 70 C196 64 195 60 198 57 Z';
+  let h='<svg class="stk-svg" viewBox="0 0 300 92" aria-hidden="true"><defs>'+stkPat(x.s,u+'s')+stkPat(x.b,u+'b')
+    +'<linearGradient id="'+u+'l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".42" stop-color="#fff" stop-opacity=".05"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>'
+    +'<linearGradient id="'+u+'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>'
+    +'<pattern id="'+u+'t" patternUnits="userSpaceOnUse" width="5" height="12" patternTransform="rotate(28)"><rect width="5" height="12" fill="#15181d"/><rect width="1" height="12" fill="#3a3f47"/></pattern>'
+    +'<clipPath id="'+u+'c"><path d="'+bp+'"/></clipPath><pattern id="'+u+'w" patternUnits="userSpaceOnUse" width="4" height="40" patternTransform="rotate(-24)"><rect width="4" height="40" fill="#f4f6f9"/><rect width=".9" height="40" fill="#c3ccd6"/></pattern>'
+    +(glow?'<filter id="'+u+'f" x="-10%" y="-40%" width="120%" height="180%"><feDropShadow dx="0" dy="0" stdDeviation="2.4" flood-color="'+gc+'" flood-opacity=".9"/></filter>':'')
+    +'</defs><g'+glow+'>';
+  // shaft: drawn flat, then tilted 15.3° from the butt (16,12) — it ends at the heel (~214,66)
+  h+='<g transform="translate(16,14) rotate(15.3)"'+ds+'>'
+    +'<rect x="0" y="-6" width="206" height="12" rx="3" fill="'+(o.dim?'#7b8fa6':S.c)+'"/>'
+    +(o.dim?'':'<rect x="0" y="-6" width="206" height="12" rx="3" fill="url(#'+u+'s)"/>')
+    +'<rect x="94" y="-6.3" width="30" height="12.6" fill="'+(o.dim?'#8da0b6':tc)+'"/><rect x="94" y="-6.3" width="2" height="12.6" fill="'+(o.dim?'#a7b6c8':S.a)+'"/><rect x="122" y="-6.3" width="2" height="12.6" fill="'+(o.dim?'#a7b6c8':S.a)+'"/>'
+    +'<rect x="0" y="-6.4" width="30" height="12.8" rx="3" fill="url(#'+u+'t)"/><rect x="-1" y="-6.6" width="5" height="13.2" rx="2.4" fill="#0f1216"/>'
+    +'<rect x="0" y="-6" width="206" height="12" rx="3" fill="url(#'+u+'l)"/>'
+    +'<rect x="0" y="-6" width="206" height="12" rx="3" fill="none" stroke="#06121f" stroke-opacity=".55" stroke-width=".8"/>'
+    +'</g>';
+  // blade: heel under the shaft end, flat to a rounded toe
+  h+='<g'+db+'><path d="'+bp+'" fill="'+(o.dim?'#7b8fa6':B.c)+'"/>'+(o.dim?'':'<path d="'+bp+'" fill="url(#'+u+'b)"/>')
+    +(o.dim?'':'<path d="M222 69 L280 69 C288 69 293 71 294.5 75" fill="none" stroke="'+B.a+'" stroke-width="1.6" opacity=".9"/>')
+    +'<path d="'+bp+'" fill="url(#'+u+'k)"/><path d="'+bp+'" fill="none" stroke="#06121f" stroke-opacity=".55" stroke-width=".8"/>'
+    +'<g clip-path="url(#'+u+'c)" opacity="'+(o.dim?'.3':'1')+'"><rect x="196" y="54" width="26" height="36" fill="url(#'+u+'w)"/><rect x="221" y="54" width="1.2" height="36" fill="#9aa7b4"/></g>'
+    +'</g></g></svg>';
+  return h;
+}
+// ---------------- the 🏒 스틱 공방 screen ----------------
+let stkTop=false,stkTab='',stkPart='s',stkSelS=null,stkSelB=null,stkSel=0,stkMsg='',stkLast=null,stkFxOn=false,stkHit=null;
+const stkGradeChip=g=>'<b class="stk-g" style="--gc:'+GRADES[g].c+'">'+GRADES[g].n+'</b>';
+const stkPct=v=>(Math.round(v*100)/100).toFixed(2)+'%';
+function stkStatsHtml(c,nx){
+  const row=(k,v,txt,nv)=>'<div class="stk-st"><span class="stk-sn">'+STK_ST[k].i+' '+STK_ST[k].n+'</span><i class="stk-bar"><u style="width:'+Math.min(100,v/14*100).toFixed(1)+'%;background:'+STK_ST[k].c+'"></u></i><b>'+v.toFixed(1)+(nv!=null&&nv!==v?'<em>→'+nv.toFixed(1)+'</em>':'')+'</b><small>'+txt+'</small></div>';
+  return '<div class="stk-stats">'+row('P',c.pt.P,fmtL(__L(__L('슛 위력 +{v}%')),{v:c.fx.pow}),nx&&nx.pt.P)+row('S',c.pt.S,fmtL(__L(__L('충전 속도 +{v}%')),{v:c.fx.chg}),nx&&nx.pt.S)
+    +row('C',c.pt.C,fmtL(__L(__L('슛 오차 -{v}% · 패스 +{p}%')),{v:c.fx.spr,p:c.fx.pass}),nx&&nx.pt.C)+'</div>';
+}
+function stkAbHtml(c,nx){const k=c.ab.key;
+  return '<div class="stk-ab"><span class="stk-abk">'+STK_ST[k[0]].i+STK_ST[k[1]].i+'</span><div><b>'+c.ab.n+'</b><small>'+stkAbDesc(c.ab)+'</small>'
+    +(nx&&nx.ab.v!==c.ab.v?'<small class="stk-nx">'+fmtL(__L(__L('다음 단계: {d}')),{d:stkAbDesc(nx.ab)})+'</small>':'')+'</div></div>';}
+function stkPullHtml(){
+  const o=stk(),part=stkPart,free=stkFreeReady(),n=(o.pity[part]|0)+1,P=stkProbs(part,0),hi=P[3]+P[4];
+  const demo={s:part==='s'?'s7':'s1',b:part==='b'?'b6':'b2'};
+  let h='<div class="stk-parts">'+['s','b'].map(p=>'<button class="stk-part'+(p===part?' on':'')+'" data-sk="part" data-p="'+p+'">'+stkSvg({s:p==='s'?'s7':'s2',b:p==='b'?'b6':'b1'},{hi:p})
+    +'<b>'+STK_PART[p].n+'</b><small>'+STK_PART[p].sub+' · '+fmtL(__L(__L('{n}종')),{n:stkIds(p).length})+'</small></button>').join('')+'</div>';
+  h+='<div class="gpity"><div class="gpity-row"><b>'+fmtL(__L(__L('{p} 신화 이상 천장')),{p:STK_PART[part].n})+'</b><span>'+(o.pity[part]|0)+' / '+STK.hard+'</span></div><div class="gpity-bar"><i style="width:'+((o.pity[part]|0)/STK.hard*100).toFixed(1)+'%"></i></div>'
+    +'<div class="gpity-sub">'+(n>=STK.hard?__L(__L('🎯 이번 뽑기 신화 이상 확정!')):fmtL(__L(__L('다음 뽑기 신화 이상 {p}')),{p:'<b>'+stkPct(hi)+'</b>'})+' · '+fmtL(__L(__L('{h}회차 확정')),{h:STK.hard}))+'</div></div>';
+  const b=(act,cls,title,cost,sub)=>{const lack=save.points<cost;return '<button class="btn gb-b'+cls+(lack?' lack':'')+'" data-sk="'+act+'"><b>'+title+'</b><small>'+sub+'</small>'+(lack?'<em>'+fmtL(__L(__L('{p}P 부족')),{p:cost-save.points})+'</em>':'')+'</button>';};
+  h+='<div class="gpbtn">'+b('d1','',free?__L(__L('무료 1회 🎁')):__L(__L('1회 뽑기')),free?0:STK.cost1,free?__L(__L('오늘의 무료 뽑기')):'⭐ '+STK.cost1+'P')
+    +b('d10',' primary',__L(__L('10회 뽑기')),STK.cost10,'⭐ '+fmtL(__L(__L('{c}P · {r} 이상 1개 보장')),{c:STK.cost10,r:GRADES[STK.tenMin].n}))+'</div>';
+  h+='<div class="gb-bal"><span>'+fmtL(__L(__L('보유 ⭐ {p}P')),{p:'<b>'+save.points+'</b>'})+'</span><span>'+__L(__L('현금 결제 없이 포인트로만 뽑아요'))+'</span></div>';
+  if(stkLast&&stkLast.part===part)h+='<div class="lbl" style="text-align:center">'+__L(__L('지난 결과'))+'</div><div class="stk-res">'+stkLast.res.map(r=>stkTile(r.id,{tag:r.isNew?'NEW':''})).join('')+'</div>';
+  h+='<div class="lbl">'+fmtL(__L(__L('{p} 도감 ({a}/{b})')),{p:STK_PART[part].n,a:stkIds(part).filter(k=>o.seen&&o.seen[k]).length,b:stkIds(part).length})+'</div><div class="stk-col">'+stkIds(part).map(k=>stkTile(k,{dex:1})).join('')+'</div>';
+  return h+stkOddsBox(part);
+}
+function stkOddsBox(part){
+  const o=STK.odds,e=stkEff(),hi=o[3]+o[4],ten=stkProbs(part,STK.tenMin),pp=[0,0,0,o[3]/hi*100,o[4]/hi*100];
+  return '<details class="odds stk-odds"><summary>📊 '+__L(__L('확률 정보'))+' <small>'+fmtL(__L(__L('신화 이상 {a} · 전설 {b} (눌러서 전체 보기)')),{a:stkPct(hi),b:stkPct(o[4])})+'</small></summary><small>'
+    +__L(__L('화면의 숫자는 게임이 실제로 쓰는 값이에요.'))+'<br>'+__L(__L('뽑기 1회는 먼저 등급을 정하고, 고른 부위(샤프트 또는 블레이드)에서 그 등급 재료 중 하나가 똑같은 확률로 나와요.'))
+    +'<br>'+__L(__L('등급 확률: '))+GRADES.map((g,i)=>g.n+' '+o[i]+'%').join(' · ')
+    +'<br><b>'+fmtL(__L(__L('{p} 재료별 확률 (1회당)')),{p:STK_PART[part].n})+'</b>'
+    +GRADES.map((G_,g)=>'<br>'+stkGradeChip(g)+' '+stkGradeIds(part,g).map(k=>STK_M[k].n+' '+stkPct(o[g]/stkGradeIds(part,g).length)).join(' · ')).join('')
+    +'<br>'+fmtL(__L(__L('천장: 부위마다 신화 이상이 {h}회 연속 안 나오면 {h}번째는 신화 이상 확정 (신화 {m} / 전설 {l}) · 신화 이상이 나오면 0으로 돌아가요')),{h:STK.hard,m:stkPct(pp[3]),l:stkPct(pp[4])})
+    +'<br>'+fmtL(__L(__L('천장 포함 실제 확률 (1회씩 뽑을 때): {r}')),{r:GRADES.map((g,i)=>g.n+' '+stkPct(e[i])).join(' · ')})
+    +'<br>'+fmtL(__L(__L('10회 뽑기: 앞 9개에 {r} 이상이 없으면 10번째는 {r} 이상 보장 ({a})')),{r:GRADES[STK.tenMin].n,a:[2,3,4].map(g=>GRADES[g].n+' '+stkPct(ten[g])).join(' · ')})
+    +'<br>'+fmtL(__L(__L('재료는 종류별 {n}개까지 보관 (넘치면 {r} 자동 환급)')),{n:STK.cap,r:STK.refund.map((p,i)=>GRADES[i].n+' '+p+'P').join(' · ')})
+    +'<br>'+__L(__L('오늘의 무료 뽑기는 하루 1번, 샤프트·블레이드 중 원하는 쪽에 써요.'))+'</small></details>';
+}
+// a material tile: swatch, name, grade, count
+function stkTile(id,op){op=op||{};const o=stk(),m=STK_M[id],n=o.m[id]|0,seen=o.seen&&o.seen[id],hide=op.dex&&!seen;
+  return '<div class="stk-tile'+(op.on?' on':'')+(hide?' unk':'')+(op.act?' act':'')+'" style="--gc:'+GRADES[m.g].c+'"'+(op.act?' data-sk="'+op.act+'" data-id="'+id+'"':'')+'>'
+    +(hide?'<span class="stk-q">?</span>':stkSwatch(id,op.sz||44))+'<b>'+(hide?'???':m.n)+'</b><small>'+GRADES[m.g].n+(hide?'':' · '+STK_ST[m.st].i+STK_ST[m.st].n)+'</small>'
+    +(op.tag?'<em>'+op.tag+'</em>':(!op.dex&&!op.noN?'<i>×'+n+'</i>':(op.dex&&seen?'<i>×'+n+'</i>':'')))+'</div>';}
+function stkCraftHtml(){
+  const o=stk(),s=stkSelS&&(o.m[stkSelS]|0)>0?stkSelS:null,b=stkSelB&&(o.m[stkSelB]|0)>0?stkSelB:null;stkSelS=s;stkSelB=b;
+  let h='<div class="stk-bench"><div class="stk-prev">'+(s&&b?stkSvg({s,b,lv:0}):stkSvg({s:s||'s2',b:b||'b1'},{dim:!(s||b),hi:s&&!b?'s':!s&&b?'b':''}))+'</div>';
+  h+='<div class="stk-slots">'+['s','b'].map(p=>{const id=p==='s'?s:b;return '<div class="stk-slot'+(id?' fill':'')+'"'+(id?' style="--gc:'+GRADES[STK_M[id].g].c+'"':'')+'>'+(id?stkSwatch(id,40)+'<b>'+STK_M[id].n+'</b><small>'+STK_PART[p].n+'</small>':'<span class="stk-q">+</span><b>'+STK_PART[p].n+'</b><small>'+__L(__L('아래에서 골라요'))+'</small>')+'</div>';}).join('<span class="stk-x">×</span>')+'</div>';
+  if(s&&b){const c=stkCalc({s,b,lv:0}),cost=stkCraftCost(s,b),full=o.list.length>=STK.max;
+    h+='<div class="stk-nm">'+stkGradeChip(c.g)+' <b>'+c.name+'</b><small>'+c.mats+'</small></div>'+stkStatsHtml(c)+stkAbHtml(c);
+    h+='<div class="row"><button class="btn primary stk-go" data-sk="craft"'+(full||save.points<cost?' disabled':'')+'>🔨 '+fmtL(__L(__L('스틱 만들기 · {c}P')),{c:cost})+'</button></div>';
+    if(full)h+='<div class="lbl" style="text-align:center">'+fmtL(__L(__L('스틱은 {n}개까지 가질 수 있어요 · 내 스틱에서 분해해 자리를 만들어요')),{n:STK.max})+'</div>';
+    else h+='<div class="lbl" style="text-align:center">'+__L(__L('만들면 재료 1개씩 써요 · 스틱 등급은 두 재료 등급의 평균(반올림)'))+'</div>';}
+  h+='</div>';
+  for(const p of['s','b']){const own=stkIds(p).filter(k=>(o.m[k]|0)>0),sel=p==='s'?s:b;
+    h+='<div class="lbl">'+fmtL(__L(__L('보유 {p}')),{p:STK_PART[p].n})+'</div><div class="stk-col">'+(own.length?own.map(k=>stkTile(k,{act:'pick',on:k===sel})).join(''):'<small class="stk-none">'+__L(__L('재료 뽑기에서 모아 보세요'))+'</small>')+'</div>';}
+  h+=stkComboBox();
+  return h;
+}
+function stkComboBox(){const ks=['P','S','C'];
+  return '<details class="odds stk-combo"><summary>🧩 '+__L(__L('조합표 — 샤프트 스타일 × 블레이드 스타일 = 능력'))+'</summary><div class="stk-grid"><span></span>'
+    +ks.map(k=>'<span class="hd">'+fmtL(__L(__L('블레이드 {s}')),{s:STK_ST[k].i+STK_ST[k].n})+'</span>').join('')
+    +ks.map(a=>'<span class="hd">'+fmtL(__L(__L('샤프트 {s}')),{s:STK_ST[a].i+STK_ST[a].n})+'</span>'+ks.map(b=>'<span><b>'+STK_AB[a+b].n+'</b></span>').join('')).join('')
+    +'</div><small>'+__L(__L('재료 등급이 높을수록, 강화할수록 능력치와 능력이 커져요.'))+'</small></details>';}
+function stkMineHtml(){
+  const o=stk();if(!o.list.length)return '<div class="stk-empty">'+stkSvg({s:'s2',b:'b1'},{dim:true})+'<b>'+__L(__L('아직 만든 스틱이 없어요'))+'</b><small>'+__L(__L('재료 뽑기로 샤프트와 블레이드를 모은 뒤 제작에서 만들어요'))+'</small><button class="btn primary" data-sk="tab" data-t="craft">🔨 '+__L(__L('제작하러 가기'))+'</button></div>';
+  if(!stkGet(stkSel))stkSel=o.eq||o.list[o.list.length-1].u;
+  const x=stkGet(stkSel),c=stkCalc(x),eq=o.eq===x.u,mx=x.lv>=STK.lvMax,nx=mx?null:stkCalc(Object.assign({},x,{lv:x.lv+1})),rate=stkEnhRate(x),cost=stkEnhCost(x.lv);
+  let h='<div class="stk-list">'+o.list.map(q=>{const cq=stkCalc(q);return '<button class="stk-row'+(q.u===x.u?' on':'')+'" data-sk="sel" data-u="'+q.u+'" style="--gc:'+GRADES[cq.g].c+'">'+stkSvg(q)+'<span><b>'+cq.ab.n+'</b><small>'+GRADES[cq.g].n+' · +'+q.lv+'</small></span>'+(o.eq===q.u?'<em>'+__L(__L('장착중'))+'</em>':'')+'</button>';}).join('')+'</div>';
+  h+='<div class="stk-detail'+(stkHit&&stkHit.u===x.u?(stkHit.ok?' up':' shk'):'')+'"><div class="stk-prev big">'+stkSvg(x)+'<i class="stk-lv">+'+x.lv+'</i></div>';
+  h+='<div class="stk-nm">'+stkGradeChip(c.g)+' <b>'+c.name+'</b><small>'+c.mats+'</small></div>'+stkStatsHtml(c,nx)+stkAbHtml(c,nx);
+  h+='<div class="stk-who">'+(eq?fmtL(__L(__L('🏒 주장 {n}이(가) 경기에서 들어요 (친구 대전 제외)')),{n:TYPES[save.type].name}):__L(__L('장착하면 주장 펭귄이 경기에서 들어요')))+'</div>';
+  h+='<div class="stk-acts"><button class="btn small" data-sk="eq">'+(eq?__L(__L('장착 해제')):__L(__L('장착')))+'</button>'
+    +(mx?'<button class="btn small" disabled>'+fmtL(__L(__L('최대 강화 +{n}')),{n:STK.lvMax})+'</button>':'<button class="btn primary stk-up" data-sk="up"'+(save.points<cost?' disabled':'')+'>⬆ '+fmtL(__L(__L('강화 +{a}→+{b} · 성공 {r}% · {c}P')),{a:x.lv,b:x.lv+1,r:rate,c:cost})+'</button>')
+    +'<button class="btn small" data-sk="brk">'+__L(__L('분해'))+'</button></div>';
+  if(!mx)h+='<div class="lbl" style="text-align:center">'+fmtL(__L(__L('실패해도 단계는 내려가지 않아요 · 실패할 때마다 +{b}%p (최대 {m}번) · {p}번 연속 실패하면 다음은 100%')),{b:STK.failB,m:STK.failMax,p:STK.pity})+((x.f|0)?' · '+fmtL(__L(__L('지금 연속 실패 {n}번')),{n:x.f|0}):'')+'</div>';
+  h+='<details class="odds"><summary>📊 '+__L(__L('강화 확률표'))+'</summary><small>'+fmtL(__L(__L('기본 성공률: {r}')),{r:STK.enh.map((r,i)=>'+'+i+'→+'+(i+1)+' '+r+'%').join(' · ')})+'<br>'
+    +fmtL(__L(__L('스틱 등급 보너스: {r}')),{r:GRADES.map((g,i)=>g.n+' +'+STK.enhG[i]+'%p').join(' · ')})+'<br>'+fmtL(__L(__L('강화 비용: {a}P부터 단계마다 +{b}P · 단계마다 모든 능력치 +{s}')),{a:STK.enhC0,b:STK.enhCK,s:STK.lvAdd})+'</small></details></div>';
+  return h;
+}
+function stkRender(){
+  const el=$('#stkBody');if(!el)return;$('#ptsN').textContent=save.points;
+  if(!stkTab)stkTab=stk().list.length?'mine':'pull';
+  document.querySelectorAll('#stkTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===stkTab));
+  let h=stkMsg?'<div class="odds stk-msg">'+stkMsg+'</div>':'';
+  h+=stkTab==='pull'?stkPullHtml():stkTab==='craft'?stkCraftHtml():stkMineHtml();
+  const keep=stkRender.tab===stkTab?el.scrollTop:0;stkRender.tab=stkTab;el.innerHTML=h;el.scrollTop=stkTop?0:keep;stkTop=false;
+  el.querySelectorAll('[data-sk]').forEach(b=>{b.onclick=()=>{try{SFX.init();SFX.ui();}catch(e){}stkAct(b.dataset.sk,b);};});
+}
+async function stkAct(a,b){
+  const o=stk();stkMsg='';stkHit=null;
+  if(a==='tab'){stkTab=b.dataset.t;}
+  else if(a==='part'){stkPart=b.dataset.p;stkLast=null;}
+  else if(a==='d1'||a==='d10'){if(stkFxOn)return;const part=stkPart,res=stkDraw(part,a==='d1'?1:10);if(!res)return;stkLast={part,res};stkRender();stkReveal(part,res,a);return;}
+  else if(a==='pick'){const id=b.dataset.id;if(id[0]==='s')stkSelS=stkSelS===id?null:id;else stkSelB=stkSelB===id?null:id;}
+  else if(a==='craft'){const x=stkCraft(stkSelS,stkSelB);if(x){const c=stkCalc(x);stkSel=x.u;stkTab='mine';stkTop=true;stkMsg='🔨 '+fmtL(__L(__L('{n} 완성!')),{n:c.name})+(o.eq===x.u?' '+__L(__L('바로 장착했어요.')):'');try{SFX.win();}catch(e){}stkSelS=stkSelB=null;}}
+  else if(a==='sel'){stkSel=+b.dataset.u;}
+  else if(a==='eq'){const x=stkGet(stkSel);if(x){stkEquip(o.eq===x.u?0:x.u);stkMsg=o.eq?fmtL(__L(__L('{n} 장착!')),{n:stkCalc(x).name}):__L(__L('기본 팀 스틱으로 바꿨어요'));}}
+  else if(a==='up'){const x=stkGet(stkSel);if(!x)return;const r=stkEnhance(x.u);if(!r)return;stkHit={u:x.u,ok:r.ok};
+    if(r.ok){stkMsg='✨ '+fmtL(__L(__L('강화 성공! +{n}')),{n:r.lv});try{SFX.win();vib([30,30,60]);}catch(e){}}
+    else{stkMsg=fmtL(__L(__L('강화 실패… 단계는 그대로예요. 다음 성공률 {r}%')),{r:stkEnhRate(x)});try{SFX.lose();}catch(e){}}}
+  else if(a==='brk'){const x=stkGet(stkSel);if(!x)return;const c=stkCalc(x);
+    const ok=await askConfirm(__L(__L('스틱 분해')),'<p>'+fmtL(__L(__L('{n} (+{l})을(를) 분해하면 {s}와(과) {b}을(를) 돌려받아요. 강화 단계는 사라져요.')),{n:c.name,l:x.lv,s:STK_M[x.s].n,b:STK_M[x.b].n})+'</p>',__L(__L('분해')));
+    if(!ok)return;const r=stkBreak(x.u);if(r){stkSel=0;stkMsg=__L(__L('분해했어요 · 재료를 돌려받았어요'))+(r.pts?' (+'+r.pts+'P)':'');}}
+  stkRender();
+}
+// the draw reveal: tiles flip in one by one, the best grade last; skips the motion with 움직임 줄이기
+function stkReveal(part,res,again){
+  let el=$('#stkFx');if(!el){el=document.createElement('div');el.id='stkFx';document.body.appendChild(el);}
+  if(window.__NOFX){return;}
+  stkFxOn=true;const best=Math.max(...res.map(r=>r.g)),calm=save.set.motion||RM0,flash=save.set.flash!==false&&!calm;
+  el.className='on g'+best+(flash?' fl':'')+(calm?' calm':'')+(res.length>1?' ten':'');
+  el.innerHTML='<div class="stk-fxp"><div class="stk-fxt">'+fmtL(__L(__L('{p} 뽑기 결과')),{p:STK_PART[part].n})+'</div><div class="stk-fxg">'
+    +res.map((r,i)=>'<div class="stk-fxc" style="--d:'+(calm?0:(i*.09+(r.g===best&&best>=3?.35:0))).toFixed(2)+'s;--gc:'+GRADES[r.g].c+'">'+stkSwatch(r.id,56)+'<b>'+STK_M[r.id].n+'</b><small>'+GRADES[r.g].n+'</small>'+(r.isNew?'<em>NEW</em>':'')+(r.ovf?'<em>+'+r.ovf+'P</em>':'')+'</div>').join('')
+    +'</div><div class="row"><button class="btn small" id="stkAgain">'+__L(__L('한 번 더'))+'</button><button class="btn primary" id="stkOk">'+__L(__L('확인'))+'</button></div></div>';
+  try{best>=3?SFX.fanfare():SFX.win();if(best>=3)vib([30,40,80]);}catch(e){}
+  const close=()=>{el.className='';stkFxOn=false;stkRender();};
+  $('#stkOk').onclick=()=>{try{SFX.ui();}catch(e){}close();};
+  $('#stkAgain').onclick=()=>{try{SFX.ui();}catch(e){}close();stkAct(again,{dataset:{}});};
+}
+// the Android back button closes the draw reveal (v28 overlay list)
+if(typeof APP_OV!=='undefined'){APP_OV.push('#stkFx');APP_OVBTN.push('#stkOk');}
+// the home tile badge: the free draw of the day
+function stkBadge(){const e=$('#stkBadge');if(e)e.textContent=stkFreeReady()?__L(__L('무료')):'';}
+
+/* ================= v46: 👕 team kit designer — colours, pattern, mascot, crest (2026-11-14) ================= */
+// The owner: "let the player design our team's uniform — pick the colours and the mascot and customise it". So:
+//  · save.kit: main colour, accent colour, pattern (6), mascot (12, drawn as crest art), crest shape (3); on / off
+//  · the player's team wears it everywhere the team colour shows: jersey (pattern + crest on the chest + number on the back),
+//    scarf stripes, hats, flippers, stick band, goalie gear, the score board, card portraits, the goal light
+//  · the other team keeps its colour unless the two would look alike — then it changes to the most different spare colour
+//  · online friend matches: each player brings their own kit (sent with the player info); both devices pick the same colours
+//  · nothing to buy: every colour, pattern and mascot is free
+var KIT_DEF={blue:0x2f7bff,red:0xff3b4e};
+var KIT={
+  c1:['#2f7bff','#ff3b4e','#0d2f6b','#00a3e0','#14b8a6','#18a058','#0f5a3c','#f59e0b','#ff7a1a','#c8102e','#e8266f','#8a4dff','#4b2a7b','#7a1f3d','#5b6b80','#1f2329'],
+  c2:['#ffffff','#ffd24a','#0b1e33','#c9d2db','#9be7ff','#ff8fb1','#ff7a1a','#35e08a','#ff3b4e','#2f7bff'],
+  alt:[0xff3b4e,0x2f7bff,0x18a058,0x8a4dff,0xff7a1a,0x1f2329],
+  pat:['classic','hoops','stripes','sash','split','chevron'],crest:['circle','shield','hex'],
+  mas:['peng','orca','bear','seal','walrus','fox','owl','fish','narwhal','flake','berg','bolt'],
+  clash:150
+};
+var KIT_PATN={classic:__L(__L('클래식')),hoops:__L(__L('가로 줄무늬')),stripes:__L(__L('세로 줄무늬')),sash:__L(__L('어깨띠')),split:__L(__L('반반')),chevron:__L(__L('브이 라인'))};
+var KIT_CRN={circle:__L(__L('원형')),shield:__L(__L('방패')),hex:__L(__L('육각형'))};
+var KIT_MASN={peng:__L(__L('펭귄')),orca:__L(__L('범고래')),bear:__L(__L('북극곰')),seal:__L(__L('물범')),walrus:__L(__L('바다코끼리')),fox:__L(__L('북극여우')),owl:__L(__L('흰올빼미')),fish:__L(__L('정어리')),narwhal:__L(__L('일각고래')),flake:__L(__L('눈꽃')),berg:__L(__L('빙산')),bolt:__L(__L('번개'))};
+// mascot art in a 100×100 box: d = the dark silhouette, h = cut-outs in the crest field colour, x = accent parts, k = dark details on top
+function kitFlake(){let d='';for(let i=0;i<6;i++){const a=i*Math.PI/3,c=Math.cos(a),s=Math.sin(a),P=(x,y)=>(50+x*c-y*s).toFixed(1)+' '+(50+x*s+y*c).toFixed(1);
+  d+='M'+P(-3.2,0)+'L'+P(-3.2,-36)+'L'+P(0,-40)+'L'+P(3.2,-36)+'L'+P(3.2,0)+'Z';
+  d+='M'+P(1.5,-20)+'L'+P(13,-31)+'L'+P(15.5,-28.5)+'L'+P(4,-17)+'Z'+'M'+P(-1.5,-20)+'L'+P(-13,-31)+'L'+P(-15.5,-28.5)+'L'+P(-4,-17)+'Z';
+  d+='M'+P(1.5,-9)+'L'+P(8,-15.5)+'L'+P(10,-13.5)+'L'+P(3.5,-7)+'Z'+'M'+P(-1.5,-9)+'L'+P(-8,-15.5)+'L'+P(-10,-13.5)+'L'+P(-3.5,-7)+'Z';}
+  return d+'M50 41a9 9 0 1 0 .01 0Z';}
+var KIT_ART={
+  peng:{d:'M50 11C63.5 11 72.5 21.5 72.5 34.5C72.5 39.5 71.6 43.6 70.3 47C78.8 53.6 84.5 64.6 84.5 76.5C84.5 88.5 74.5 94 61 94H39C25.5 94 15.5 88.5 15.5 76.5C15.5 64.6 21.2 53.6 29.7 47C28.4 43.6 27.5 39.5 27.5 34.5C27.5 21.5 36.5 11 50 11Z',
+    h:'M50 45C39.5 45 33 55.5 33 69C33 82.5 40 90 50 90C60 90 67 82.5 67 69C67 55.5 60.5 45 50 45ZM36.5 31.5a6 6.5 0 1 0 12 0a6 6.5 0 1 0-12 0ZM51.5 31.5a6 6.5 0 1 0 12 0a6 6.5 0 1 0-12 0Z',
+    x:'M43.5 39.5C45.5 37.5 54.5 37.5 56.5 39.5C55 43 52.5 45.5 50 46.5C47.5 45.5 45 43 43.5 39.5ZM33 91.5C34.5 87 43 86.5 46 91.5ZM54 91.5C57 86.5 65.5 87 67 91.5Z',
+    k:'M40 32.5a3.4 3.8 0 1 0 6.8 0a3.4 3.8 0 1 0-6.8 0ZM53.2 32.5a3.4 3.8 0 1 0 6.8 0a3.4 3.8 0 1 0-6.8 0Z',
+    w:'M44.2 30.6a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0ZM57.4 30.6a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0Z'},
+  orca:{d:'M8 63C15 44 33 32 55 31C68 30.5 79 35 86 43C90 47.5 92.5 52.5 92 57C91.5 61 87.5 62 84 60.5C81 59 77.5 58.5 74 59.5C66 67 54.5 72 42 73.5C38 79.5 32 84.5 24.5 87.5C27.5 81.5 29.5 77 30 72.5C22.5 70.5 14.5 67.5 8 63ZM47 32.5C48.5 21 53 12 60.5 6C60 15 60.5 24.5 63 32Z',
+    h:'M68 42.5C71.5 39.5 77 39.5 80 42.5C77.5 45.5 72 46 68 42.5ZM28.5 67C41 67.5 55 65 66.5 58.5C61 66.5 51 71 39.5 71.5C34.5 71 30.5 69.5 28.5 67Z',
+    x:'M10 63.5L1.5 54.5C5.5 56 9.5 57.5 12.5 60ZM10 63.5L3 73.5C7 72 10.5 70 13.5 67Z'},
+  bear:{d:'M27 17a10 10 0 1 0 .01 0ZM73 17a10 10 0 1 0 .01 0ZM50 20C67 20 80 31 81.5 46C83 59 77 71 66.5 77.5C62 80.5 56.5 82 50 82C43.5 82 38 80.5 33.5 77.5C23 71 17 59 18.5 46C20 31 33 20 50 20Z',
+    h:'M27 22.5a5 5 0 1 0 .01 0ZM73 22.5a5 5 0 1 0 .01 0ZM50 51C59.5 51 66 57 66 64.5C66 72 59 77 50 77C41 77 34 72 34 64.5C34 57 40.5 51 50 51ZM35 44a4.2 4.6 0 1 0 8.4 0a4.2 4.6 0 1 0-8.4 0ZM56.6 44a4.2 4.6 0 1 0 8.4 0a4.2 4.6 0 1 0-8.4 0Z',
+    k:'M42.5 57.5C43 54 57 54 57.5 57.5C58 61 53.5 64.5 50 64.5C46.5 64.5 42 61 42.5 57.5ZM49 64h2v4.5c2.5 2.5 5.5 3 8 1.5l.9 1.6c-3.2 1.9-7 1.4-9.9-1.1c-2.9 2.5-6.7 3-9.9 1.1l.9-1.6c2.5 1.5 5.5 1 8-1.5ZM37.5 45a2.4 2.7 0 1 0 4.8 0a2.4 2.7 0 1 0-4.8 0ZM57.7 45a2.4 2.7 0 1 0 4.8 0a2.4 2.7 0 1 0-4.8 0Z'},
+  seal:{d:'M50 18C69 18 83 32 83 51C83 70 69 84 50 84C31 84 17 70 17 51C17 32 31 18 50 18Z',
+    h:'M41.5 55C48 55 51 59 51 64C51 69.5 46.5 73 41 73C35 73 31 69.5 31 64.5C31 59 35 55 41.5 55ZM58.5 55C65 55 69 59 69 64.5C69 69.5 65 73 59 73C53.5 73 49 69.5 49 64C49 59 52 55 58.5 55ZM29.5 45a7.5 8.5 0 1 0 15 0a7.5 8.5 0 1 0-15 0ZM55.5 45a7.5 8.5 0 1 0 15 0a7.5 8.5 0 1 0-15 0Z',
+    k:'M31.5 46a5.8 6.8 0 1 0 11.6 0a5.8 6.8 0 1 0-11.6 0ZM56.9 46a5.8 6.8 0 1 0 11.6 0a5.8 6.8 0 1 0-11.6 0ZM45 56.5C45 53.5 55 53.5 55 56.5C55 59.5 52 62 50 62C48 62 45 59.5 45 56.5ZM37 63a1.4 1.4 0 1 0 .01 0ZM42 66.5a1.4 1.4 0 1 0 .01 0ZM63 63a1.4 1.4 0 1 0 .01 0ZM58 66.5a1.4 1.4 0 1 0 .01 0Z',
+    w:'M35 43.5a2 2.3 0 1 0 4 0a2 2.3 0 1 0-4 0ZM60.4 43.5a2 2.3 0 1 0 4 0a2 2.3 0 1 0-4 0Z'},
+  walrus:{d:'M50 16C68 16 81 28.5 81 45C81 55 75.5 62 68.5 64.5C66.5 71 59.5 75.5 50 75.5C40.5 75.5 33.5 71 31.5 64.5C24.5 62 19 55 19 45C19 28.5 32 16 50 16ZM38.2 64L35.5 97.5L48 94L49.6 65.5ZM61.8 64L64.5 97.5L52 94L50.4 65.5Z',
+    h:'M41 49C50 49 52.5 54 52.5 59.5C52.5 65.5 47.5 69 41.5 69C34.5 69 30 65 30 59C30 53 33.5 49 41 49ZM59 49C66.5 49 70 53 70 59C70 65 65.5 69 58.5 69C52.5 69 47.5 65.5 47.5 59.5C47.5 54 50 49 59 49ZM40.6 67L38.4 94.2L45.8 92L47.2 68.2ZM59.4 67L61.6 94.2L54.2 92L52.8 68.2ZM34 38a3.6 3.9 0 1 0 7.2 0a3.6 3.9 0 1 0-7.2 0ZM58.8 38a3.6 3.9 0 1 0 7.2 0a3.6 3.9 0 1 0-7.2 0Z',
+    k:'M43.5 50.5C43.5 47.5 56.5 47.5 56.5 50.5C56.5 53.5 53 55.5 50 55.5C47 55.5 43.5 53.5 43.5 50.5ZM36 58.5a1.4 1.4 0 1 0 .01 0ZM40.5 62a1.4 1.4 0 1 0 .01 0ZM45 58.5a1.4 1.4 0 1 0 .01 0ZM64 58.5a1.4 1.4 0 1 0 .01 0ZM59.5 62a1.4 1.4 0 1 0 .01 0ZM55 58.5a1.4 1.4 0 1 0 .01 0ZM35.8 38.6a1.9 2.1 0 1 0 3.8 0a1.9 2.1 0 1 0-3.8 0ZM60.6 38.6a1.9 2.1 0 1 0 3.8 0a1.9 2.1 0 1 0-3.8 0Z'},
+  fox:{d:'M50 85C39.5 85 29.5 77.5 23.5 67L12.5 27C11.5 19 18.5 17 24 22.5L38 36.5C42 35 46 34.3 50 34.3C54 34.3 58 35 62 36.5L76 22.5C81.5 17 88.5 19 87.5 27L76.5 67C70.5 77.5 60.5 85 50 85Z',
+    h:'M23 58C32 55.5 42.5 60 50 70.5C57.5 60 68 55.5 77 58C72.5 72.5 62 82.5 50 85C38 82.5 27.5 72.5 23 58ZM19.5 28.5L32.5 41L25.5 46.5ZM80.5 28.5L67.5 41L74.5 46.5Z',
+    x:'M32.5 51.5C35.5 47 41.5 46.5 45.5 50C42 54 36.5 55 32.5 51.5ZM67.5 51.5C64.5 47 58.5 46.5 54.5 50C58 54 63.5 55 67.5 51.5Z',
+    k:'M45.5 72.5C45.5 70 54.5 70 54.5 72.5C54.5 75 52 77.5 50 77.5C48 77.5 45.5 75 45.5 72.5ZM37 51a2.3 2.3 0 1 0 .01 0ZM63 51a2.3 2.3 0 1 0 .01 0Z'},
+  owl:{d:'M50 12C35 12 23.5 22 21 36L17 30C16 37 17 41 19.5 45C18 60 23 75 34 84C38.5 88 44 90 50 90C56 90 61.5 88 66 84C77 75 82 60 80.5 45C83 41 84 37 83 30L79 36C76.5 22 65 12 50 12Z',
+    h:'M37.5 28C46 28 51.5 35 50 44C51.5 35 54 28 62.5 28C71.5 28 77.5 35.5 77.5 44C77.5 53 71 59 62.5 59C56.5 59 52 56 50 51C48 56 43.5 59 37.5 59C29 59 22.5 53 22.5 44C22.5 35.5 28.5 28 37.5 28ZM36 68l4 3 4-3v2.6l-4 3-4-3ZM46 68l4 3 4-3v2.6l-4 3-4-3ZM56 68l4 3 4-3v2.6l-4 3-4-3ZM41 77l4 3 4-3v2.6l-4 3-4-3ZM51 77l4 3 4-3v2.6l-4 3-4-3Z',
+    x:'M29.5 44a8.5 8.5 0 1 0 17 0a8.5 8.5 0 1 0-17 0ZM53.5 44a8.5 8.5 0 1 0 17 0a8.5 8.5 0 1 0-17 0Z',
+    k:'M33 44a5 5 0 1 0 10 0a5 5 0 1 0-10 0ZM57 44a5 5 0 1 0 10 0a5 5 0 1 0-10 0ZM45.5 51.5L54.5 51.5L50 61Z',
+    w:'M38.6 41.6a1.7 1.7 0 1 0 3.4 0a1.7 1.7 0 1 0-3.4 0ZM62.6 41.6a1.7 1.7 0 1 0 3.4 0a1.7 1.7 0 1 0-3.4 0Z'},
+  fish:{d:'M15 50C26 34 47 27.5 67 32.5C76 35 83 41 88 48.5C83 56 76 61.5 67 64C47 69 26 63.5 15 50ZM18 50L4 34C7 43 7 57 4 66Z',
+    h:'M70.5 46a5 5 0 1 0 10 0a5 5 0 1 0-10 0ZM61 37.5C65 43.5 65 53 61 59C62.5 52.5 62.5 44 61 37.5ZM24 55C37 61.5 55 62 70 57C56 64 37 64 24 55Z',
+    x:'M28 45.5a3 3 0 1 0 6 0a3 3 0 1 0-6 0ZM38 43a3 3 0 1 0 6 0a3 3 0 1 0-6 0ZM48 42a3 3 0 1 0 6 0a3 3 0 1 0-6 0ZM40 34L48 22L58 31C52 30.5 46 31.5 40 34ZM44 64L50 74L58 64.5C53 65.5 48.5 65.5 44 64Z',
+    k:'M73 46.3a2.8 2.8 0 1 0 5.6 0a2.8 2.8 0 1 0-5.6 0Z'},
+  narwhal:{d:'M12 62C17 48 33 39 54 39C67 39 77.5 44.5 82 52.5C84 56.5 82 61 77.5 62.5C65.5 68.5 46.5 70.5 30 68.5C24.5 74.5 18 77 11 79C13.5 73 15.5 68.5 17.5 64.5C15.5 64 13.5 63 12 62Z',
+    h:'M70 50a3.4 3.4 0 1 0 6.8 0a3.4 3.4 0 1 0-6.8 0ZM30 65C44 66 60 64.5 73 60C62 66.5 45 68.5 32 67.5Z',
+    x:'M79.5 47.5L98.5 27.5L83 51ZM14 64L4 55C7.5 56 11.5 57.5 15 60.5ZM14 64L6 73.5C9.5 72 13 70 16 67ZM38 48a2.2 2.2 0 1 0 .01 0ZM46 45a2.2 2.2 0 1 0 .01 0ZM54 47.5a2.2 2.2 0 1 0 .01 0ZM44 54a2.2 2.2 0 1 0 .01 0ZM60 43.5a2 2 0 1 0 .01 0Z',
+    k:'M72 50.3a2 2 0 1 0 4 0a2 2 0 1 0-4 0Z'},
+  flake:{d:kitFlake(),h:'M50 45.5L53.9 47.75V52.25L50 54.5L46.1 52.25V47.75Z'},
+  berg:{d:'M8 72L32 30L42 42L56 17L92 72Z',
+    h:'M56 17L65.5 31.5L59 29.5L53 37L48.5 32ZM32 30L39 39.5L35 38.5L31 43L28.5 37Z',
+    x:'M4 79C12 74.5 20 83.5 28 79S44 74.5 52 79S68 83.5 76 79S92 74.5 96 77.5V86H4ZM10 90C18 86.5 26 93.5 34 90S50 86.5 58 90S74 93.5 82 90S94 87.5 96 89V94H10Z'},
+  bolt:{d:'M60 6L20 57H45L36 94L80 39H54L66 6Z',x:'M60 6L66 6L54 39H48ZM45 57L36 94L41 87L49 57Z'}
+};
+var KIT_SHAPE={circle:'M50 2a48 48 0 1 0 .01 0Z',shield:'M50 2L93 13.5V47C93 72 75 89.5 50 98C25 89.5 7 72 7 47V13.5Z',hex:'M50 2L91.6 26V74L50 98L8.4 74V26Z'};
+const kitHex=n=>'#'+(n>>>0).toString(16).padStart(6,'0').slice(-6),kitNum=h=>parseInt(String(h).slice(1),16)>>>0;
+function kitRGB(h){const n=typeof h==='number'?h:kitNum(h);return [(n>>16)&255,(n>>8)&255,n&255];}
+function kitLum(h){const c=kitRGB(h);return (c[0]*.299+c[1]*.587+c[2]*.114)/255;}
+function kitDist(a,b){const p=kitRGB(a),q=kitRGB(b),r=(p[0]+q[0])/2,dr=p[0]-q[0],dg=p[1]-q[1],db=p[2]-q[2];return Math.sqrt((2+r/256)*dr*dr+4*dg*dg+(2+(255-r)/256)*db*db);}
+function kitMix(a,b,t){const p=kitRGB(a),q=kitRGB(b);return '#'+p.map((v,i)=>Math.round(v+(q[i]-v)*t).toString(16).padStart(2,'0')).join('');}
+const KIT_FIELD='#f7fafd',KIT_INK='#0b1e33';
+// the accent used on the white crest field / the jersey: the chosen one, unless it would not show there
+function kitAcc(k){return kitLum(k.c2)>.8||kitDist(k.c2,KIT_INK)<90?k.c1:k.c2;}
+// a clean copy of any kit (own save, or what a friend sent): unknown values fall back to the defaults
+function kitClean(q){q=q&&typeof q==='object'?q:{};const hx=v=>typeof v==='string'&&/^#[0-9a-f]{6}$/i.test(v)?v.toLowerCase():null;
+  return {on:q.on?1:0,c1:KIT.c1.includes(hx(q.c1))?hx(q.c1):KIT.c1[0],c2:KIT.c2.includes(hx(q.c2))?hx(q.c2):KIT.c2[0],
+    pat:KIT.pat.includes(q.pat)?q.pat:'classic',crest:KIT.crest.includes(q.crest)?q.crest:'circle',mas:KIT.mas.includes(q.mas)?q.mas:'peng'};}
+function kit(){const k=kitClean(save.kit);save.kit=k;return k;}
+function kitSig(k){return k?[k.c1,k.c2,k.pat,k.crest,k.mas].join(''):'';}
+// the crest (shape + rings + mascot) as SVG
+function kitCrestSvg(k,sz,cls){
+  const A=KIT_ART[k.mas]||KIT_ART.peng,S=KIT_SHAPE[k.crest]||KIT_SHAPE.circle,acc=kitAcc(k),sc=k.crest==='shield'?.68:k.crest==='hex'?.68:.72;
+  const t=s=>'translate(50 50) scale('+s+') translate(-50 -50)',ring2=kitLum(k.c2)>.8&&kitLum(k.c1)>.6?KIT_INK:k.c2;
+  return '<svg class="kit-crest'+(cls?' '+cls:'')+'" viewBox="-3 -3 106 106"'+(sz?' width="'+sz+'" height="'+sz+'"':'')+' aria-hidden="true">'
+    +'<path d="'+S+'" fill="'+k.c1+'" stroke="#fff" stroke-width="3"/><path d="'+S+'" fill="'+ring2+'" transform="'+t(.88)+'"/><path d="'+S+'" fill="'+KIT_FIELD+'" transform="'+t(.82)+'"/>'
+    +'<g transform="'+t(sc)+(k.crest==='shield'?' translate(0 -2)':'')+'"><path d="'+A.d+'" fill="'+KIT_INK+'"/>'+(A.h?'<path d="'+A.h+'" fill="'+KIT_FIELD+'"/>':'')+(A.x?'<path d="'+A.x+'" fill="'+acc+'"/>':'')+(A.k?'<path d="'+A.k+'" fill="'+KIT_INK+'"/>':'')+(A.w?'<path d="'+A.w+'" fill="'+KIT_FIELD+'"/>':'')+'</g>'
+    +'<path d="'+S+'" fill="none" stroke="'+kitMix(k.c1,'#000000',.35)+'" stroke-width="1.2" transform="'+t(.82)+'"/></svg>';
+}
+// --- the jersey, as an SVG sweater (front / back) for the designer ---
+const KIT_SW='M38 10L50 6C54 12 66 12 70 6L82 10L110 30Q114 33 112 37L100 58Q98 61 95 59L88 54V112Q88 116 84 116H36Q32 116 32 112V54L25 59Q22 61 20 58L8 37Q6 33 10 30Z';
+function kitPatSvg(k,back){const a=k.c2,dk=kitMix(k.c1,'#000000',.38),p=k.pat;
+  if(p==='classic')return '<path d="M0 0H120V22H0Z" fill="'+dk+'"/><path d="M0 22H120V25H0Z" fill="'+a+'"/><path d="M0 94H120V99H0ZM0 106H120V110H0Z" fill="'+a+'"/><path d="M0 99H120V106H0Z" fill="'+dk+'"/><path d="M8 37L20 58L26 54L14 33ZM112 37L100 58L94 54L106 33Z" fill="'+a+'"/>';
+  if(p==='hoops')return '<path d="M0 36H120V46H0ZM0 60H120V70H0ZM0 84H120V94H0Z" fill="'+a+'"/><path d="M0 0H120V14H0Z" fill="'+dk+'"/>';
+  if(p==='stripes'){let d='';for(let x=4;x<120;x+=12)d+='M'+x+' 0h3.4v124H'+x+'Z';return '<path d="'+d+'" fill="'+a+'"/><path d="M0 0H120V12H0Z" fill="'+dk+'"/>';}
+  if(p==='sash')return back?'<path d="M90 8L106 8L44 124L28 124Z" fill="'+a+'"/><path d="M0 104H120V110H0Z" fill="'+dk+'"/>':'<path d="M30 8L46 8L108 124L92 124Z" fill="'+a+'"/><path d="M0 104H120V110H0Z" fill="'+dk+'"/>';
+  if(p==='split')return '<path d="M60 0H120V124H60Z" fill="'+a+'"/><path d="M0 0H120V12H0Z" fill="'+dk+'" opacity=".85"/><path d="M58.5 0h3v124h-3Z" fill="'+dk+'"/>';
+  if(p==='chevron')return back?'<path d="M0 100H120V108H0Z" fill="'+a+'"/><path d="M0 0H120V14H0Z" fill="'+dk+'"/>':'<path d="M18 24L60 62L102 24V38L60 76L18 38Z" fill="'+a+'"/><path d="M0 0H120V14H0Z" fill="'+dk+'"/><path d="M0 100H120V108H0Z" fill="'+a+'"/>';
+  return '';}
+function kitJerseySvg(k,back,num,club){
+  const u='kj'+(++stkUid),lite=kitMix(k.c1,'#ffffff',.16),dk=kitMix(k.c1,'#000000',.38),n=String(num==null?7:num),nc=kitLum(k.c2)>.8||kitDist(k.c2,k.c1)>200?k.c2:'#ffffff';
+  let h='<svg class="kit-jer" viewBox="0 0 120 124" aria-hidden="true"><defs><clipPath id="'+u+'c"><path d="'+KIT_SW+'"/></clipPath><linearGradient id="'+u+'g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+lite+'"/><stop offset="1" stop-color="'+k.c1+'"/></linearGradient>'
+    +'<linearGradient id="'+u+'s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>'
+    +'<pattern id="'+u+'k" patternUnits="userSpaceOnUse" width="3" height="3"><path d="M0 0l1.5 3L3 0" fill="none" stroke="#fff" stroke-opacity=".07" stroke-width=".6"/></pattern></defs>'
+    +'<g clip-path="url(#'+u+'c)"><rect width="120" height="124" fill="url(#'+u+'g)"/>'+kitPatSvg(k,back)+'<rect width="120" height="124" fill="url(#'+u+'k)"/><rect width="120" height="124" fill="url(#'+u+'s)"/></g>';
+  h+=back?'<path d="M50 6C54 10 66 10 70 6" fill="none" stroke="'+dk+'" stroke-width="3"/>':'<path d="M50 6C53 13 67 13 70 6L66 5.4C63 10 57 10 54 5.4Z" fill="'+dk+'"/><path d="M50 6C53 13 67 13 70 6" fill="none" stroke="'+k.c2+'" stroke-width="1.4"/>';
+  h+='<path d="'+KIT_SW+'" fill="none" stroke="#06121f" stroke-opacity=".55" stroke-width="1.2"/>';
+  if(back){if(club)h+='<text x="60" y="38" text-anchor="middle" font-size="9" font-weight="900" fill="'+nc+'" stroke="'+dk+'" stroke-width="2" paint-order="stroke" font-family="Arial,sans-serif">'+String(club).replace(/[<>&"]/g,'').slice(0,12).toUpperCase()+'</text>';
+    h+='<text x="60" y="80" text-anchor="middle" font-size="40" font-weight="900" fill="'+nc+'" stroke="'+dk+'" stroke-width="4.5" paint-order="stroke" font-family="Arial Black,Arial,sans-serif">'+n+'</text>';}
+  else h+='<g transform="translate(43 30) scale(.34)">'+kitCrestSvg(k).replace('<svg ','<svg width="100" height="100" ')+'</g>';
+  return h+'</svg>';
+}
+// --- the jersey in 3D: same canvas layout as pkJerseyMat (front centre at x = 0 / 512, back at 256, neck at the top) ---
+function kitCrestDraw(x,k,cx,cy,r,ry){ry=ry||r;
+  if(typeof Path2D==='undefined')return;const A=KIT_ART[k.mas]||KIT_ART.peng,S=new Path2D(KIT_SHAPE[k.crest]||KIT_SHAPE.circle),acc=kitAcc(k),
+    sc=k.crest==='shield'?.68:k.crest==='hex'?.68:.72,ring2=kitLum(k.c2)>.8&&kitLum(k.c1)>.6?KIT_INK:k.c2;
+  x.save();x.translate(cx-r,cy-ry);x.scale(r/50,ry/50);
+  x.fillStyle='#ffffff';x.save();x.translate(50,50);x.scale(1.07,1.07);x.translate(-50,-50);x.fill(S);x.restore();
+  x.fillStyle=k.c1;x.fill(S);
+  const sub=(s,col)=>{x.save();x.translate(50,50);x.scale(s,s);x.translate(-50,-50);x.fillStyle=col;x.fill(S);x.restore();};
+  sub(.88,ring2);sub(.82,KIT_FIELD);
+  x.translate(50,50);x.scale(sc,sc);x.translate(-50,k.crest==='shield'?-52:-50);
+  for(const [p,c] of[[A.d,KIT_INK],[A.h,KIT_FIELD],[A.x,acc],[A.k,KIT_INK],[A.w,KIT_FIELD]])if(p){x.fillStyle=c;x.fill(new Path2D(p));}
+  x.restore();
+}
+function kitPaint(x,k,num){
+  const c1=k.c1,a=k.c2,dk=kitMix(c1,'#000000',.4),lite=kitMix(c1,'#ffffff',.16),p=k.pat;
+  const gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,lite);gr.addColorStop(1,c1);x.fillStyle=gr;x.fillRect(0,0,512,256);
+  const band=(y,h,c)=>{x.fillStyle=c;x.fillRect(0,y,512,h);},twice=f=>{for(const o of[0,512]){x.save();x.translate(o,0);f();x.restore();}};
+  if(p==='classic'){band(0,40,dk);band(40,7,a);band(192,15,a);band(211,11,dk);band(226,9,a);}
+  else if(p==='hoops'){band(0,26,dk);band(66,22,a);band(116,22,a);band(196,22,a);}
+  else if(p==='stripes'){band(0,24,dk);x.fillStyle=a;for(let i=0;i<512;i+=32)x.fillRect(i+11,24,10,232);}
+  else if(p==='sash'){band(212,12,dk);x.fillStyle=a;twice(()=>{x.beginPath();x.moveTo(-96,0);x.lineTo(-40,0);x.lineTo(120,256);x.lineTo(64,256);x.closePath();x.fill();});}
+  else if(p==='split'){x.fillStyle=a;x.fillRect(256,0,256,256);band(0,24,dk);x.fillStyle=dk;x.fillRect(253,0,6,256);x.fillRect(0,0,3,256);x.fillRect(509,0,3,256);}
+  else if(p==='chevron'){band(0,26,dk);band(206,14,a);x.fillStyle=a;twice(()=>{x.beginPath();x.moveTo(-170,44);x.lineTo(0,150);x.lineTo(170,44);x.lineTo(170,76);x.lineTo(0,182);x.lineTo(-170,76);x.closePath();x.fill();});}
+  x.textAlign='center';x.textBaseline='middle';x.lineJoin='round';
+  const nc=kitLum(a)>.8||kitDist(a,c1)>200?a:'#ffffff';
+  x.font='900 100px "Arial Black",Arial,sans-serif';x.lineWidth=14;x.strokeStyle=dk;x.strokeText(String(num),256,124);x.fillStyle=nc;x.fillText(String(num),256,124);
+  // the texture wraps round the body: ~3.2× more pixels per unit up than across, so the crest is drawn tall to look round
+  for(const cx of[0,512])kitCrestDraw(x,k,cx,112,20,64);
+}
+function kitJerseyMat(teamKey,num,k){const lo=pkLo(),key='jk'+teamKey+num+lo+kitSig(k);if(pkMatC[key])return pkMatC[key];
+  const c=document.createElement('canvas');c.width=lo?256:512;c.height=lo?128:256;const x=c.getContext('2d');if(lo)x.scale(.5,.5);
+  kitPaint(x,k,num);
+  for(let i=0;i<1400;i++){x.fillStyle='rgba(255,255,255,'+(pkRand()*.05)+')';x.fillRect(pkRand()*512,pkRand()*256,2,1);}
+  const t=new T.CanvasTexture(c);t.anisotropy=Math.min(4,maxAniso||1);
+  return pkMatC[key]=rimify(new T.MeshStandardMaterial({map:t,roughness:.82,side:T.DoubleSide}),.9);
+}
+// --- which kit each side wears right now, and the colours that go with it ---
+const KIT_CUR={blue:null,red:null,net:null,sig:''};
+function kitFor(teamKey){return KIT_CUR[teamKey]||null;}
+function kitPick(other,used){let best=KIT.alt[0],bd=-1;for(const c of KIT.alt){const d=Math.min(kitDist(c,other),used!=null?kitDist(c,used):1e9);if(d>=KIT.clash)return c;if(d>bd){bd=d;best=c;}}return best;}
+// cfg: the match being set up (or none for the menus). Online, cfg.net + NET.peer.kit give both sides their owner's kit
+function kitSync(cfg){
+  const own=(cfg&&cfg.netTeam)||save.team||'blue',k=kit(),mine=k.on?k:null,kits={blue:null,red:null};
+  if(cfg&&cfg.net){const pk=typeof NET!=='undefined'&&NET.peer&&NET.peer.kit?kitClean(NET.peer.kit):null,host=cfg.net==='host';
+    kits.blue=host?mine:(pk&&pk.on?pk:null);kits.red=host?(pk&&pk.on?pk:null):mine;}
+  else kits[own]=mine;
+  const col={blue:kits.blue?kitNum(kits.blue.c1):KIT_DEF.blue,red:kits.red?kitNum(kits.red.c1):KIT_DEF.red};
+  if(kitDist(col.blue,col.red)<KIT.clash){
+    // the side without a custom kit gives way; with two custom kits the red side (the guest online) does
+    const side=kits.red&&!kits.blue?'blue':'red',oth=side==='blue'?'red':'blue',kk=kits[side];
+    if(kk&&kitDist(kitNum(kk.c2),col[oth])>=KIT.clash&&kitLum(kk.c2)<.8){col[side]=kitNum(kk.c2);kits[side]=Object.assign({},kk,{c1:kk.c2,c2:kk.c1});}
+    else{col[side]=kitPick(col[oth]);if(kk)kits[side]=Object.assign({},kk,{c1:kitHex(col[side])});}
+  }
+  const sig=kitHex(col.blue)+kitHex(col.red)+kitSig(kits.blue)+'|'+kitSig(kits.red);
+  KIT_CUR.blue=kits.blue;KIT_CUR.red=kits.red;
+  if(sig!==KIT_CUR.sig){KIT_CUR.sig=sig;TEAM.blue.color=col.blue;TEAM.red.color=col.red;kitPurge();}
+  kitBoard();return col;
+}
+// cached meshes that baked the old team colours
+// (what nothing on screen uses any more is disposed, so changing the kit many times does not pile up GPU memory)
+function kitPurge(){
+  const used=new Set();try{scene.traverse(o=>{if(o.isMesh){used.add(o.geometry);for(const m of[].concat(o.material))used.add(m);}});}catch(e){}
+  for(const C of[pkGeoC,pkMatC])for(const key of Object.keys(C))if(/blue|red/.test(key)){const v=C[key];delete C[key];
+    if(v&&!used.has(v))try{if(v.map&&v.map.dispose)v.map.dispose();if(v.dispose)v.dispose();}catch(e){}}
+  try{if(typeof P3!=='undefined'&&P3){P3.url={};P3.team=null;}}catch(e){}
+}
+// the score board halves in the teams' colours
+function kitBoard(){
+  for(const [sel,key,dir] of[['#board .tm.b','blue',90],['#board .tm.r','red',270]]){const e=document.querySelector(sel);if(!e||!e.style)continue;const c=TEAM[key].color;
+    if(c===KIT_DEF[key]){e.style.background='';continue;}
+    const h=kitHex(c);e.style.background='radial-gradient(circle,rgba(255,255,255,.1) 0 .6px,transparent .75px) 0 0/3px 3px,linear-gradient('+dir+'deg,'+kitMix(h,'#ffffff',.08)+','+kitMix(h,'#000000',.3)+')';}
+}
+// what goes to a friend with the player info (online)
+function kitNet(){const k=kit();return {on:k.on,c1:k.c1,c2:k.c2,pat:k.pat,crest:k.crest,mas:k.mas};}
+// ---------------- the 👕 유니폼 디자인 screen ----------------
+let kitTab='col',kitShotT=0,kitShotUrl='',kitShotSig='';
+function kitClub(){return String((save.profile&&save.profile.club)||'').slice(0,12);}
+function kitNumOf(){try{return pkNum({key:save.team||'blue'},save.type,false);}catch(e){return 7;}}
+function kitSet(ch){const k=Object.assign(kit(),ch);if(!('on' in ch))k.on=1;save.kit=kitClean(k);persist();kitSync();kitRender();kitShotSoon();}
+function kitShotSoon(){clearTimeout(kitShotT);if(window.__NOFX||typeof p3Shot!=='function')return;kitShotT=setTimeout(kitShot,380);}
+function kitShot(){const sig=kitSig(kit())+kit().on+save.team+save.type;if(sig===kitShotSig&&kitShotUrl){kitImg();return;}
+  let u='';try{u=p3Shot(save.type)||'';}catch(e){u='';}kitShotUrl=u;kitShotSig=sig;kitImg();}
+function kitImg(){const e=$('#kit3d');if(!e)return;e.innerHTML=kitShotUrl?'<img alt="" src="'+kitShotUrl+'">':'<span class="kit-wait">🐧</span>';}
+function kitRender(){
+  const el=$('#kitBody');if(!el)return;$('#ptsN').textContent=save.points;const k=kit(),on=!!k.on,num=kitNumOf();
+  let h='<div class="kit-prev'+(on?'':' off')+'"><div class="kit-jw">'+kitJerseySvg(k,false,num)+'<small>'+__L(__L('앞'))+'</small></div><div class="kit-jw">'+kitJerseySvg(k,true,num,kitClub())+'<small>'+__L(__L('뒤'))+'</small></div>'
+    +'<div class="kit-3w"><div id="kit3d" class="kit-3d"></div><small>'+fmtL(__L(__L('주장 {n}')),{n:TYPES[save.type].name})+'</small></div></div>';
+  h+='<div class="kit-on"><label class="gb-tog"><input type="checkbox" data-kt="on"'+(on?' checked':'')+'> '+__L(__L('경기에서 이 유니폼 입기'))+'</label>'
+    +'<small>'+(on?__L(__L('우리 팀 색이 이 유니폼으로 바뀌어요 · 상대 팀 색이 비슷하면 상대가 다른 색을 입어요')):__L(__L('지금은 기본 팀 색(블루/레드)으로 경기해요')))+'</small></div>';
+  h+='<div class="seg kit-tabs" id="kitTabs">'+[['col',__L(__L('색깔'))],['pat',__L(__L('무늬'))],['mas',__L(__L('마스코트'))],['crest',__L(__L('엠블럼'))]].map(t=>'<button data-kt="tab" data-v="'+t[0]+'"'+(kitTab===t[0]?' class="on"':'')+'>'+t[1]+'</button>').join('')+'</div>';
+  if(kitTab==='col'){
+    h+='<div class="lbl">'+__L(__L('메인 색'))+'</div><div class="kit-sw">'+KIT.c1.map(c=>'<button class="kit-c'+(c===k.c1?' on':'')+'" data-kt="c1" data-v="'+c+'" style="--c:'+c+'"><i></i></button>').join('')+'</div>';
+    h+='<div class="lbl">'+__L(__L('포인트 색'))+'</div><div class="kit-sw">'+KIT.c2.map(c=>'<button class="kit-c'+(c===k.c2?' on':'')+'" data-kt="c2" data-v="'+c+'" style="--c:'+c+'"><i></i></button>').join('')+'</div>';
+  }else if(kitTab==='pat'){
+    h+='<div class="kit-grid">'+KIT.pat.map(p=>'<button class="kit-opt'+(p===k.pat?' on':'')+'" data-kt="pat" data-v="'+p+'">'+kitJerseySvg(Object.assign({},k,{pat:p}),false,num)+'<b>'+KIT_PATN[p]+'</b></button>').join('')+'</div>';
+  }else if(kitTab==='mas'){
+    h+='<div class="kit-grid mas">'+KIT.mas.map(m=>'<button class="kit-opt'+(m===k.mas?' on':'')+'" data-kt="mas" data-v="'+m+'">'+kitCrestSvg(Object.assign({},k,{mas:m}))+'<b>'+KIT_MASN[m]+'</b></button>').join('')+'</div>';
+  }else{
+    h+='<div class="kit-grid cr">'+KIT.crest.map(c=>'<button class="kit-opt'+(c===k.crest?' on':'')+'" data-kt="crest" data-v="'+c+'">'+kitCrestSvg(Object.assign({},k,{crest:c}))+'<b>'+KIT_CRN[c]+'</b></button>').join('')+'</div>';
+  }
+  h+='<div class="row kit-acts"><button class="btn small" data-kt="reset">'+__L(__L('처음 디자인으로'))+'</button><button class="btn small" data-kt="rand">🎲 '+__L(__L('랜덤 디자인'))+'</button></div>';
+  h+='<div class="lbl kit-note">'+__L(__L('모든 색·무늬·마스코트는 무료예요 · 친구 대전에서는 서로의 유니폼이 보여요'))+'</div>';
+  el.innerHTML=h;kitImg();
+  el.querySelectorAll('[data-kt]').forEach(b=>{const f=()=>{try{SFX.init();SFX.ui();}catch(e){}kitAct(b.dataset.kt,b);};if(b.tagName==='INPUT')b.onchange=f;else b.onclick=f;});
+  if(!kitShotUrl||kitShotSig!==kitSig(k)+k.on+save.team+save.type)kitShotSoon();
+}
+function kitAct(a,b){const v=b.dataset.v;
+  if(a==='tab'){kitTab=v;kitRender();return;}
+  if(a==='on'){kitSet({on:b.checked?1:0});return;}
+  if(a==='c1'||a==='c2'||a==='pat'||a==='mas'||a==='crest'){kitSet({[a]:v});return;}
+  if(a==='reset'){kitSet({c1:KIT.c1[save.team==='red'?1:0],c2:KIT.c2[0],pat:'classic',crest:'circle',mas:'peng'});return;}
+  if(a==='rand'){const r=l=>l[Math.floor(Math.random()*l.length)];let c1=r(KIT.c1),c2=r(KIT.c2);for(let i=0;i<20&&kitDist(c1,c2)<120;i++)c2=r(KIT.c2);
+    kitSet({c1,c2,pat:r(KIT.pat),crest:r(KIT.crest),mas:r(KIT.mas)});return;}
+}
+// the white stripes of the scarf take the accent colour of a custom kit
+function kitStripe(teamKey){const k=KIT_CUR[teamKey];if(!k)return [.96,.97,.98];const c=kitRGB(k.c2);return [c[0]/255,c[1]/255,c[2]/255];}
+// effects that used fixed blue / red: the same values while the colours are standard, the real team colour (a little lighter) otherwise
+function kitC3(key,def){const c=TEAM[key]&&TEAM[key].color;if(c==null||c===KIT_DEF[key])return def;const r=kitRGB(kitMix(kitHex(c),'#ffffff',.25));return [r[0]/255,r[1]/255,r[2]/255];}
+function kitCssC(key,def){const c=TEAM[key]&&TEAM[key].color;return c==null||c===KIT_DEF[key]?def:kitMix(kitHex(c),'#ffffff',.25);}
+function kitRgba(key,def){const c=TEAM[key]&&TEAM[key].color;if(c==null||c===KIT_DEF[key])return def;const r=kitRGB(kitMix(kitHex(c),'#ffffff',.2));return 'rgba('+r.join(',')+',';}
+function kitHexN(key,def){const c=TEAM[key]&&TEAM[key].color;return c==null||c===KIT_DEF[key]?def:c;}
+
 /* ================= INIT ================= */
 SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';applyFxSettings();uiPanels();
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();safe(accInit);safe(dlyInit);safe(dlyAuto);safe(ctlInit);
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,CO,coach,coachNeed,coachReward,coachStreakBonus,coachFwReady,coachMatch,coachRowsHtml,coachBarHtml,coachLevelUp,coachRow,coachPlace,showResultScreen,leagueMenuRefresh,pkHeadGeo,PKV,pk43,pk43D,pk43Geo,pk43HeadR,pk43ScarfGeo,pk43Light,gaugeFit,LEGAL,legalUrl,legalLinks,legalRow,P3,P3V,p3Can,p3Shot,p3Url,p3Html,p3Warm,p3Frame,p3Stick,MT,mtHuman,mtMate,mtOpen,mtCalled,mtCarrier,mtCarry,mtPace,mtCallPress,mtCallPass,aiCarrier,aiThink,shotQ,applyFxSettings,LX,LXV,lxr,lxOn,lxNight,lxBuild,lxRing,lxGoal,lxHit,lxRays,lxFrame,scored,bigHit,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,KIT,KIT_ART,KIT_CUR,KIT_DEF,kit,kitClean,kitSig,kitSync,kitFor,kitPick,kitDist,kitLum,kitAcc,kitHex,kitMix,kitCrestSvg,kitJerseySvg,kitJerseyMat,kitPaint,kitPurge,kitBoard,kitNet,kitStripe,kitRender,kitSet,TEAM,pkJerseyMat,netInfo,setupMatch,NET,pkGeoC,pkMatC,STK,STK_M,STK_AB,STK_ST,STK_PART,stk,stkGet,stkEq,stkGrade,stkCalc,stkTT,stkApply,stkGeo,stkProbs,stkMatRate,stkEff,stkRoll,stkDraw,stkDrawOnce,stkFreeReady,stkCraft,stkCraftCost,stkCanCraft,stkEnhCost,stkEnhRate,stkEnhance,stkEquip,stkBreak,stkSell,stkAbDesc,stkSvg,stkSwatch,stkRender,stkOddsBox,stkPullHtml,stkCraftHtml,stkMineHtml,stkBadge,ttOf,performShot,CO,coach,coachNeed,coachReward,coachStreakBonus,coachFwReady,coachMatch,coachRowsHtml,coachBarHtml,coachLevelUp,coachRow,coachPlace,showResultScreen,leagueMenuRefresh,pkHeadGeo,PKV,PKE,pk43EyeGeos,pk43,pk43D,pk43Geo,pk43HeadR,pk43ScarfGeo,pk43Light,gaugeFit,LEGAL,legalUrl,legalLinks,legalRow,P3,P3V,p3Can,p3Shot,p3Url,p3Html,p3Warm,p3Frame,p3Stick,MT,mtHuman,mtMate,mtOpen,mtCalled,mtCarrier,mtCarry,mtPace,mtCallPress,mtCallPass,aiCarrier,aiThink,shotQ,applyFxSettings,LX,LXV,lxr,lxOn,lxNight,lxBuild,lxRing,lxGoal,lxHit,lxRays,lxFrame,scored,bigHit,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

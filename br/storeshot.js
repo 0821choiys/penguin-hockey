@@ -9,10 +9,12 @@ const fontCss=u=>{const f=[];if(/Fredoka|Jua/.test(u))f.push('jua/index.css','fr
 const ALL=['basic','fast','little','balanced','african','humboldt','magellanic','defense','macaroni','fiordland','galapagos','royal','yelloweye','strong','king','auk'];
 const OWN=ALL.filter(k=>k!=='little'&&k!=='galapagos');const lv={};OWN.forEach((k,i)=>lv[k]=1+(i*3)%10);
 const SAVE=JSON.stringify({v:10,news18:true,points:900,types:OWN,type:'strong',team:'blue',lv,tut:{done:true,asked:true},hat:'none',rl:{intro:1},brk:{king:5},
+  stk:{m:{s0:3,s2:1,s3:2,s6:1,b1:2,b4:1,b5:1,b6:1},seen:{s0:1,s1:1,s2:1,s3:1,s4:1,s6:1,s7:1,s8:1,s9:1,b0:1,b1:1,b2:1,b4:1,b5:1,b6:1,b7:1,b8:1},list:[{u:1,s:'s9',b:'b8',lv:7,f:0},{u:2,s:'s7',b:'b4',lv:3,f:0},{u:3,s:'s8',b:'b7',lv:5,f:0},{u:4,s:'s4',b:'b6',lv:1,f:0}],eq:1,nu:5,pity:{s:8,b:14},pulls:60,free:'x',hist:[]},
   set:{quality:'ultra',cond:false,events:false,items:false,rules:'off',cine:'off',tod:'day',lang}});
 const OUT=path.join(__dirname,'shots','store');fs.mkdirSync(OUT,{recursive:true});
 // Play Store screenshots from the real game: node storeshot.js <ko|en> [scene,...]
 //   landscape 1920×1080: land_match, land_goal, land_skill, land_cards     portrait 1080×1920: port_home, port_match, port_cards, port_card
+//   portrait extras: port_stick (스틱 공방, my sticks), port_kit (유니폼 디자인)
 //   feature graphic 1024×500: feature
 const LAND={width:960,height:540,isMobile:true,hasTouch:true,isLandscape:true,deviceScaleFactor:2};
 const PORT={width:540,height:960,isMobile:true,hasTouch:true,deviceScaleFactor:2};
@@ -119,11 +121,16 @@ const want=n=>!ONLY.length||ONLY.includes(n);
     await wait(600);await page.screenshot({path:path.join(OUT,lang+'_feature.png')});console.log('saved feature');await page.close();
   }
   // ---------------- portrait ----------------
-  if(['port_home','port_match','port_cards','port_card'].some(want)){
+  if(['port_home','port_match','port_cards','port_card','port_stick','port_kit'].some(want)){
     const {page,E}=await open(PORT);
     if(want('port_home')){await wait(500);await E(()=>{for(const a of document.getAnimations())a.finish&&a.effect&&a.effect.getComputedTiming().iterations!==Infinity&&a.finish();});await snap(page,E,'port_home');await freeAnim(E);}
     if(want('port_cards')){await cards(page,E,true);await snap(page,E,'port_cards');await freeAnim(E);}
     if(want('port_card')){await E(()=>window.__PH.openCard('king'));await wait(800);await snap(page,E,'port_card');await freeAnim(E);await E(()=>{const d=document.getElementById('cardDlg');if(d)d.classList.remove('on');});}
+    if(want('port_stick')){await E(()=>{const P=window.__PH;P.goScreen('sStick');document.querySelector('#stkTabs [data-t=mine]').click();});await wait(700);
+      await E(()=>{for(const a of document.getAnimations())a.finish&&a.effect&&a.effect.getComputedTiming().iterations!==Infinity&&a.finish();});await snap(page,E,'port_stick');await freeAnim(E);}
+    if(want('port_kit')){await E(()=>{const P=window.__PH;P.save.kit={on:1,c1:'#0d2f6b',c2:'#ffd24a',pat:'chevron',crest:'shield',mas:'orca'};P.goScreen('sKit');document.querySelector('[data-kt=tab][data-v=mas]').click();});
+      for(let i=0;i<30;i++){await wait(400);if(await E(()=>{const i=document.querySelector('#kit3d img');return !!(i&&i.complete&&i.naturalWidth>100);}))break;}
+      await wait(400);await snap(page,E,'port_kit');await freeAnim(E);await E(()=>{const P=window.__PH;P.save.kit.on=0;P.goScreen('sMenu');});}
     if(want('port_match')){console.log(JSON.stringify(await match(E)));await snap(page,E,'port_match');}
     await page.close();
   }

@@ -13,7 +13,7 @@ save.achNew=0;save.ach={};save.stats.wins=1;PH.achCheck();
 ok(save.achNew>=1,'earning an achievement marks it as new ('+save.achNew+')');
 PH.hypeMenuRefresh();const b=els['#goalBadge'];ok(b.style.display==='inline-block'&&(b.textContent==='NEW'||+b.textContent>0),'menu 목표 button shows a badge ('+b.textContent+')');
 // SVG gradient ids are unique in the shipped file
-{const h=require('fs').readFileSync('penguin-hockey-improved.html','utf8');const ids=[...h.matchAll(/<linearGradient id="([^"]+)"/g)].map(m=>m[1]);ok(new Set(ids).size===ids.length,'SVG gradient ids are unique ('+ids.join(',')+')');
+{const h=require('fs').readFileSync('penguin-hockey-improved.html','utf8');const ids=[...h.matchAll(/<linearGradient id="([^"]+)"/g)].map(m=>m[1]).filter(i=>!i.includes("'+"));/* ids built in JS with a per-drawing counter (v45 / v46) are unique at run time */ok(new Set(ids).size===ids.length,'SVG gradient ids are unique ('+ids.join(',')+')');
  ok(!/'포인트가 부족해요!'/.test(h),'no generic "not enough points" message left');}
 console.log('runtime errors: '+errs.length);if(errs.length){fails++;errs.slice(0,5).forEach(e=>console.log(e));}
 console.log('TOTAL: '+passes+' passed, '+fails+' failed');process.exit(fails?1:0);

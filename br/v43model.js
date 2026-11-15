@@ -46,6 +46,34 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(r.scarfR>r.headR,'the scarf ('+r.scarfR+') wraps the head at the neck ('+r.headR+')');
   ok(Math.abs(r.cacheTop-1.708)<.002,'the cached head geometry still tops out at 1.708 (the rounding works on a copy)');
   ok(r.basic&&r.basic.v<30000&&r.basic.d<45,'cost of one penguin on 최고: '+JSON.stringify(r.basic));
+  // the character eyes (owner 2026-11-14: "the eyes are creepy"): flat white oval, a pupil ≈ 80 % of it, the left one mirrored,
+  // and the size lives on the meshes so the blink (which writes the eye group's scale.y every frame) keeps the eye round
+  const ey=await E(()=>{const P=window.__PH,T=window.THREE,V=P.PKV,K=P.PKE,out={bad:[]};
+    for(const k of Object.keys(P.TYPES)){const g=P.buildPenguin(k,'blue','none',{num:7});
+      for(const [e,s] of[[g.eyeL,-1],[g.eyeR,1]]){if(e.scale.x!==1||e.scale.z!==1)out.bad.push(k+' group scale '+e.scale.x);
+        if(e.children.length!==2)out.bad.push(k+' parts '+e.children.length);
+        const base=e.children[0],gz=e.children[1],pm=gz.children[0].children[0];
+        if(Math.abs(base.scale.x-s*V.eye)>1e-9||Math.abs(base.scale.y-V.eye)>1e-9)out.bad.push(k+' white scale');
+        // the pupil's world size equals the white's scale (the holder squeeze K.gz is undone on the mesh)
+        if(Math.abs(pm.scale.x*gz.scale.x-s*V.eye)>1e-9||Math.abs(pm.scale.y*gz.scale.y-V.eye)>1e-9)out.bad.push(k+' pupil scale');}
+      if(g.pupR!==g.eyeR.children[1].children[0]||g.pupL!==g.eyeL.children[1].children[0])out.bad.push(k+' pupils');
+      const geo=P.pk43EyeGeos(k);geo.base.computeBoundingBox();geo.pupil.computeBoundingBox();const b=geo.base.boundingBox,p=geo.pupil.boundingBox;
+      const fw=(p.max.x-p.min.x)/(b.max.x-b.min.x),fh=(p.max.y-p.min.y)/(b.max.y-b.min.y);if(!(fw>.75&&fw<.9&&fh>.75&&fh<.9))out.bad.push(k+' pupil '+fw.toFixed(2));
+      if(p.min.x<b.min.x||p.max.x>b.max.x||p.min.y<b.min.y||p.max.y>b.max.y)out.bad.push(k+' pupil outside');
+      // the widest gaze animatePenguin writes (.034 sideways, -.025 for the sad look) keeps the pupil on the white (≤ .002 over)
+      const gx=.034*K.gz/V.eye,gy=.025*K.gz/V.eye;if(p.min.x-gx<b.min.x-.002||p.max.x+gx>b.max.x+.002||p.min.y-gy<b.min.y-.002)out.bad.push(k+' gaze leaves the white');
+      // the white really is white; the pupil has a black centre and its iris is darker than the white (the yellow-eyed keeps a yellow iris)
+      const cb=geo.base.attributes.color,cp=geo.pupil.attributes.color;if(cb&&cb.getX(0)<.9)out.bad.push(k+' base not white');
+      if(cp){let mn=9;for(let j=0;j<cp.count;j++)mn=Math.min(mn,cp.getX(j)+cp.getY(j)+cp.getZ(j));const lum=cp.getX(0)*.3+cp.getY(0)*.59+cp.getZ(0)*.11;if(mn>.1||lum>.8)out.bad.push(k+' pupil '+mn.toFixed(2)+'/'+lum.toFixed(2));}
+      out.fw=fw;}
+    return out;});
+  ok(ey.bad.length===0,'16 species: flat white eye, pupil '+(ey.fw*100|0)+' % of it, left eye mirrored, size on the meshes (blink-proof), gaze stays on the white '+ey.bad.slice(0,4).join(' | '));
+  // in a real match: the blink squashes the eye group (scale.y < 1 at some point) and its x / z stay 1
+  const bl=await E(()=>{const P=window.__PH,G=P.G;
+    P.startMatch({mode:'free',size:3,time:0,diff:'normal',tag:'T',oppTypes:['basic','fast','strong']});for(let i=0;i<60*4&&G.state!=='play';i++)P.step(1/60);
+    const pg=G.player.pg;let minY=9,maxY=0,badX=0;for(let i=0;i<60*12;i++){P.step(1/60);const e=pg.eyeR;minY=Math.min(minY,e.scale.y);maxY=Math.max(maxY,e.scale.y);if(e.scale.x!==1||pg.eyeL.scale.x!==1)badX++;}
+    const m=pg.eyeR.children[0];return {minY:+minY.toFixed(2),maxY:+maxY.toFixed(2),badX,mesh:+m.scale.y.toFixed(3),state:G.state};});
+  ok(bl.minY<.5&&bl.maxY<=1.0001&&bl.badX===0&&Math.abs(bl.mesh-1.16)<1e-3,'12 s of play: the eyes blink (scale.y '+bl.minY+'…'+bl.maxY+'), never stretched sideways, eye meshes ×'+bl.mesh+' ('+bl.state+')');
   // a close-up of three penguins for the eye
   await page.setViewport({width:1200,height:800,deviceScaleFactor:1});
   await E(()=>{const P=window.__PH;window.requestAnimationFrame=()=>0;document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));

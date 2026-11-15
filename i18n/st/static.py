@@ -1,5 +1,14 @@
 # static markup: Korean text node / attribute value -> (en, zh, ja)
-S={
+S={"스틱 공방":("Stick Workshop","球杆工坊","スティック工房"),
+"뽑기 · 제작 · 강화":("Draw · craft · upgrade","抽取 · 制作 · 强化","ガチャ · 制作 · 強化"),
+"유니폼":("Uniform","队服","ユニフォーム"),
+"색 · 무늬 · 마스코트":("Colours · pattern · mascot","颜色 · 图案 · 吉祥物","カラー · 柄 · マスコット"),
+"🏒 스틱 공방":("🏒 Stick Workshop","🏒 球杆工坊","🏒 スティック工房"),
+"재료 뽑기":("Materials","抽取材料","素材ガチャ"),
+"제작":("Craft","制作","制作"),
+"내 스틱":("My sticks","我的球杆","マイスティック"),
+"👕 유니폼 디자인":("👕 Uniform designer","👕 队服设计","👕 ユニフォームデザイン"),
+
 "친구 대전":("Friend match","好友对战","フレンド対戦"),
 "친구 코드로 1대1":("1 vs 1 with a friend code","用好友代码1对1","フレンドコードで1対1"),
 "🐧 경기장을 준비하는 중…":("🐧 Getting the rink ready…","🐧 正在准备冰场…","🐧 リンクを準備しています…"),
