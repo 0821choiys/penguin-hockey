@@ -33,6 +33,9 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   const tap=async(pg,sel)=>{const b=await pg.evaluate(s=>{const e=document.querySelector(s);if(!e)return null;e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};},sel);
     if(!b)return false;if(VP.hasTouch)await pg.touchscreen.tap(b.x,b.y);else await pg.mouse.click(b.x,b.y);return true;};
   const until=async(pg,f,ms,arg)=>{const t0=Date.now();while(Date.now()-t0<ms){if(await pg.evaluate(f,arg))return true;await wait(150);}return false;};
+  // v46: each player brings a custom kit (host green / orca, friend purple / fox)
+  await EA(()=>{window.__PH.save.kit={on:1,c1:'#18a058',c2:'#ffffff',pat:'hoops',crest:'circle',mas:'orca'};});
+  await EB(()=>{window.__PH.save.kit={on:1,c1:'#8a4dff',c2:'#ffd24a',pat:'sash',crest:'shield',mas:'fox'};});
   // ---- lobby: 경기 모드 → 친구 대전 → 방 만들기 ----
   await EA(()=>window.__PH.goScreen('sMode'));await wait(300);
   ok(await tap(A,'#modeFriend'),'경기 모드 has a 친구 대전 card');await wait(400);
@@ -53,6 +56,8 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(RELAY?tr.relay:tr.p2p,'transport: '+JSON.stringify(tr));
   const types=await Promise.all([EA(()=>window.__PH.G.pengs.map(p=>p.team.key+':'+p.type).join(',')),EB(()=>window.__PH.G.pengs.map(p=>p.team.key+':'+p.type).join(','))]);
   ok(types[0]===types[1]&&/blue:king/.test(types[0])&&/red:macaroni/.test(types[0]),'both devices build the same teams: '+types[0]);
+  {const kc=f=>()=>{const P=window.__PH;return [P.TEAM.blue.color.toString(16),P.TEAM.red.color.toString(16),(P.kitFor('blue')||{}).mas,(P.kitFor('red')||{}).mas].join(',');};
+   const k=await Promise.all([EA(kc()),EB(kc())]);ok(k[0]===k[1]&&k[0]==='18a058,8a4dff,orca,fox','both devices dress both teams in their owners’ kits: '+k.join(' | '));}
   ok(await EA(()=>{const G=window.__PH.G;return G.mine===G.teams.blue&&G.teams.red.skaters[0].remote&&!G.teams.red.skaters[0].human;}),'host: blue is mine, red skater 1 is the remote human');
   ok(await EB(()=>{const G=window.__PH.G;return G.mine===G.teams.red&&G.player===G.teams.red.skaters[0];}),'friend: red is mine, steering red skater 1');
   ok(await EA(()=>{const G=window.__PH.G;return G.teams.blue.goalie.type===G.teams.red.goalie.type;}),'both goalies the same type (fair)');
