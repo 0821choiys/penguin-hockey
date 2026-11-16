@@ -44,6 +44,9 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
     return {a:!!a,inside:inside(a)&&inside(b),hit:[a,b].filter(Boolean).reduce((n,q)=>n+others.filter(o=>ov(q,o)).length,0)+(a&&b&&ov(a,b)?1:0),
       badge:(document.getElementById('stkBadge')||{}).textContent,t:(document.querySelector('#sMenu .hm-stk')||{}).innerText+' | '+(document.querySelector('#sMenu .hm-kit')||{}).innerText};});
   ok(h.a&&h.inside&&h.hit===0,'home: the 스틱 공방 and 유니폼 tiles are on screen and cover nothing '+JSON.stringify(h));
+  const gd=await E(()=>{const g=document.getElementById('menuGoals'),d=document.querySelector('#sMenu .dock');const a=g&&g.getBoundingClientRect(),b=d&&d.getBoundingClientRect();
+    return {shown:!!a&&a.height>0,gb:a?Math.round(a.bottom):0,dt:b?Math.round(b.top):0,qw:Math.round(document.querySelector('#sMenu .hm-quick').getBoundingClientRect().width)};});
+  ok(!gd.shown||gd.gb<=gd.dt,'home: 오늘의 목표 is not hidden behind the dock (it was at 1000×620 after the two new tiles, 2026-11-15) '+JSON.stringify(gd));
   ok(!!h.badge&&!hangul(h.t),'home: the stick tile shows the free-draw badge ('+h.badge+') · '+h.t.replace(/\n/g,' '));
   await shot('home');
   // ---------- stick workshop: draw tab ----------
@@ -65,6 +68,8 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   await E(()=>{document.querySelector('[data-sk=d1]').click();});await wait(1400);
   const f1=await E(()=>{const e=document.getElementById('stkFx');return {on:!!e&&e.classList.contains('on'),n:e?e.querySelectorAll('.stk-fxc').length:0,pts:window.__PH.save.points,free:window.__PH.stkFreeReady()};});
   ok(f1.on&&f1.n===1&&f1.pts===pts0&&!f1.free,'the free draw: one material revealed, no points spent, the free draw is used '+JSON.stringify(f1));
+  const ag=await E(()=>{const t=document.getElementById('stkAgain').textContent,P=window.__PH;return {t,c:P.stkCostOf(1)};});
+  ok(ag.c===30&&/30/.test(ag.t),'after the free draw, 한 번 더 shows the 30 P it will cost '+JSON.stringify(ag));
   const bk=await E(()=>{const r=window.phBack();const e=document.getElementById('stkFx');return {r,on:e.classList.contains('on'),ui:window.__PH.G.ui};});
   ok(bk.r==='ok'&&!bk.on&&bk.ui==='sStick','the back button closes the reveal and stays in the workshop '+JSON.stringify(bk));
   await E(()=>{document.querySelector('[data-sk=d10]').click();});await wait(2600);
@@ -80,6 +85,16 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(c1.name&&c1.ab&&c1.cost,'craft preview: the stick name, its ability text and the cost are the code’s '+JSON.stringify(c1).slice(0,200));
   L=await layout();ok(L.sw<=1&&L.bad.length===0&&!hangul(L.txt),'craft tab: nothing spills out, translated '+JSON.stringify({sw:L.sw,bad:L.bad}));
   await E(()=>{document.getElementById('stkBody').scrollTop=0;});await shot('stick_craft');
+  // 남는 재료 팔기 (2026-11-15): the list opens, fits the panel, and a sale pays the shown price
+  await E(()=>{const d=document.querySelector('.stk-sell');d.open=true;d.scrollIntoView({block:'start'});});await wait(250);
+  L=await layout();ok(L.sw<=1&&L.bad.length===0&&!hangul(L.txt),'sell list: nothing spills out, translated '+JSON.stringify({sw:L.sw,bad:L.bad}));
+  await shot('stick_sell');
+  const sl=await E(()=>{const P=window.__PH,b=document.querySelector('[data-sk=sell1]'),id=b.dataset.id,n0=P.stk().m[id],p0=P.save.points,price=P.STK.refund[P.STK_M[id].g],shown=b.textContent.includes('+'+price+'P');
+    window.__NOFX_=window.__NOFX;window.__NOFX=1;b.click();return {id,n0,p0,price,shown};});
+  await wait(400);
+  const sl2=await E(s=>{const P=window.__PH;window.__NOFX=window.__NOFX_;return {n:P.stk().m[s.id],p:P.save.points};},sl);
+  ok(sl.shown&&sl2.n===sl.n0-1&&sl2.p===sl.p0+sl.price,'selling one '+sl.id+' pays the '+sl.price+' P on its button '+JSON.stringify({sl,sl2}));
+  await E(()=>{document.getElementById('stkBody').scrollTop=0;});
   await E(()=>{document.querySelector('[data-sk=craft]').click();});await wait(500);
   const m1=await E(()=>{const P=window.__PH,o=P.stk(),x=o.list[o.list.length-1],t=document.getElementById('stkBody').innerText;return {n:o.list.length,eq:o.eq===x.u,tab:document.querySelector('#stkTabs .on').dataset.t,rate:t.includes(P.stkEnhRate(x)+'%'),u:x.u};});
   ok(m1.n===1&&m1.eq&&m1.tab==='mine'&&m1.rate,'crafted: one stick, equipped, the my-stick tab shows its upgrade rate '+JSON.stringify(m1));

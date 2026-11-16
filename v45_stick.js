@@ -115,6 +115,9 @@ function stkProbs(part,minG){
   const o=STK.odds.slice(),pity=(stk().pity[part]|0)+1>=STK.hard;let lo=minG|0;if(pity)lo=Math.max(lo,3);
   for(let i=0;i<lo;i++)o[i]=0;const s=o.reduce((a,v)=>a+v,0);return o.map(v=>v/s*100);
 }
+// the 10-draw guarantee as a rule (odds from STK.tenMin up, renormalised) — independent of where the pity counter stands,
+// so the 확률 정보 box always reads the same (before 2026-11-15 it showed 레어 0% when the next draw was a pity draw)
+function stkTenOdds(){const o=STK.odds.map((v,i)=>i<STK.tenMin?0:v),s=o.reduce((a,v)=>a+v,0);return o.map(v=>v/s*100);}
 function stkMatRate(id,minG){const m=STK_M[id];return stkProbs(id[0],minG)[m.g]/stkGradeIds(id[0],m.g).length;}
 // long-run rates with the pity included, drawing one at a time (exact: the pity counter is a Markov chain)
 function stkEff(){const o=STK.odds,hi=(o[3]+o[4])/100;let e=0,q=1;for(let k=0;k<STK.hard;k++){e+=q;q*=k===STK.hard-1?0:(1-hi);}
@@ -132,9 +135,11 @@ function stkDrawOnce(part,minG){
   const r=stkGrant(id);o.hist.unshift([id,g]);if(o.hist.length>STK.histMax)o.hist.length=STK.histMax;r.g=g;return r;
 }
 function stkFreeReady(){return stk().free!==todayKey();}
+// what the next draw of n costs right now (the free draw counts only for a single draw) — the same rule stkDraw charges
+function stkCostOf(n){return n===1?(stkFreeReady()?0:STK.cost1):STK.cost10;}
 // n = 1 or 10; returns the results (or null when the points are short)
 function stkDraw(part,n){
-  if(part!=='s'&&part!=='b')return null;const o=stk(),free=n===1&&stkFreeReady(),cost=free?0:n===1?STK.cost1:STK.cost10;
+  if(part!=='s'&&part!=='b')return null;const o=stk(),free=n===1&&stkFreeReady(),cost=stkCostOf(n);
   if(save.points<cost){lackMsg(cost);return null;}
   save.points-=cost;if(free)o.free=todayKey();
   const res=[];for(let i=0;i<n;i++)res.push(stkDrawOnce(part,i===9&&!res.some(r=>r.g>=STK.tenMin)?STK.tenMin:0));
@@ -254,7 +259,7 @@ function stkPullHtml(){
   return h+stkOddsBox(part);
 }
 function stkOddsBox(part){
-  const o=STK.odds,e=stkEff(),hi=o[3]+o[4],ten=stkProbs(part,STK.tenMin),pp=[0,0,0,o[3]/hi*100,o[4]/hi*100];
+  const o=STK.odds,e=stkEff(),hi=o[3]+o[4],ten=stkTenOdds(),pp=[0,0,0,o[3]/hi*100,o[4]/hi*100];
   return '<details class="odds stk-odds"><summary>📊 '+__L('확률 정보')+' <small>'+fmtL(__L('신화 이상 {a} · 전설 {b} (눌러서 전체 보기)'),{a:stkPct(hi),b:stkPct(o[4])})+'</small></summary><small>'
     +__L('화면의 숫자는 게임이 실제로 쓰는 값이에요.')+'<br>'+__L('뽑기 1회는 먼저 등급을 정하고, 고른 부위(샤프트 또는 블레이드)에서 그 등급 재료 중 하나가 똑같은 확률로 나와요.')
     +'<br>'+__L('등급 확률: ')+GRADES.map((g,i)=>g.n+' '+o[i]+'%').join(' · ')
@@ -283,9 +288,17 @@ function stkCraftHtml(){
   h+='</div>';
   for(const p of['s','b']){const own=stkIds(p).filter(k=>(o.m[k]|0)>0),sel=p==='s'?s:b;
     h+='<div class="lbl">'+fmtL(__L('보유 {p}'),{p:STK_PART[p].n})+'</div><div class="stk-col">'+(own.length?own.map(k=>stkTile(k,{act:'pick',on:k===sel})).join(''):'<small class="stk-none">'+__L('재료 뽑기에서 모아 보세요')+'</small>')+'</div>';}
+  h+=stkSellHtml();
   h+=stkComboBox();
   return h;
 }
+// 남는 재료 팔기: one at a time, or every spare one (one of each kind stays); the price is STK.refund, what stkSell pays
+function stkSellHtml(){const o=stk(),own=Object.keys(STK_M).filter(k=>(o.m[k]|0)>0);if(!own.length)return '';
+  return '<details class="odds stk-sell"><summary>🪙 '+__L('남는 재료 팔기')+' <small>'+fmtL(__L('개당 {r}'),{r:STK.refund.map((p,i)=>GRADES[i].n+' '+p+'P').join(' · ')})+'</small></summary><div class="stk-sl">'
+    +own.map(k=>{const n=o.m[k]|0,p=STK.refund[STK_M[k].g],sp=n-1;return '<div class="stk-slr" style="--gc:'+GRADES[STK_M[k].g].c+'">'+stkSwatch(k,28)+'<b>'+STK_M[k].n+'</b><i>×'+n+'</i>'
+      +'<span class="stk-slb"><button class="btn small" data-sk="sell1" data-id="'+k+'">'+fmtL(__L('1개 · +{p}P'),{p})+'</button>'
+      +(sp>1?'<button class="btn small" data-sk="sellx" data-id="'+k+'">'+fmtL(__L('남는 {n}개 · +{p}P'),{n:sp,p:sp*p})+'</button>':'')+'</span></div>';}).join('')
+    +'</div><small>'+__L('판 재료는 돌아오지 않아요. 만든 스틱은 그대로예요.')+'</small></details>';}
 function stkComboBox(){const ks=['P','S','C'];
   return '<details class="odds stk-combo"><summary>🧩 '+__L('조합표 — 샤프트 스타일 × 블레이드 스타일 = 능력')+'</summary><div class="stk-grid"><span></span>'
     +ks.map(k=>'<span class="hd">'+fmtL(__L('블레이드 {s}'),{s:STK_ST[k].i+STK_ST[k].n})+'</span>').join('')
@@ -328,11 +341,16 @@ async function stkAct(a,b){
   else if(a==='up'){const x=stkGet(stkSel);if(!x)return;const r=stkEnhance(x.u);if(!r)return;stkHit={u:x.u,ok:r.ok};
     if(r.ok){stkMsg='✨ '+fmtL(__L('강화 성공! +{n}'),{n:r.lv});try{SFX.win();vib([30,30,60]);}catch(e){}}
     else{stkMsg=fmtL(__L('강화 실패… 단계는 그대로예요. 다음 성공률 {r}%'),{r:stkEnhRate(x)});try{SFX.lose();}catch(e){}}}
+  else if(a==='sell1'||a==='sellx'){const id=b.dataset.id,m=STK_M[id];if(!m)return;const n=a==='sell1'?1:Math.max(0,(o.m[id]|0)-1);if(!n)return;
+    if(a==='sellx'||m.g>=3){const ok=await askConfirm(__L('재료 팔기'),'<p>'+fmtL(__L('{m} {n}개를 {p}P에 팔까요?'),{m:m.n,n,p:n*STK.refund[m.g]})+'</p>',__L('팔기'));if(!ok)return;}
+    const p=stkSell(id,n);if(p){stkMsg='🪙 '+fmtL(__L('{m} {n}개를 팔았어요 (+{p}P)'),{m:m.n,n,p});try{SFX.ui();}catch(e){}}}
   else if(a==='brk'){const x=stkGet(stkSel);if(!x)return;const c=stkCalc(x);
     const ok=await askConfirm(__L('스틱 분해'),'<p>'+fmtL(__L('{n} (+{l})을(를) 분해하면 {s}와(과) {b}을(를) 돌려받아요. 강화 단계는 사라져요.'),{n:c.name,l:x.lv,s:STK_M[x.s].n,b:STK_M[x.b].n})+'</p>',__L('분해'));
     if(!ok)return;const r=stkBreak(x.u);if(r){stkSel=0;stkMsg=__L('분해했어요 · 재료를 돌려받았어요')+(r.pts?' (+'+r.pts+'P)':'');}}
   stkRender();
 }
+// 한 번 더 says what it costs (after the free draw the next single draw is paid — 2026-11-15)
+function stkAgainLabel(n){const c=stkCostOf(n);return c?fmtL(__L('한 번 더 · {c}P'),{c}):__L('한 번 더 (무료)');}
 // the draw reveal: tiles flip in one by one, the best grade last; skips the motion with 움직임 줄이기
 function stkReveal(part,res,again){
   let el=$('#stkFx');if(!el){el=document.createElement('div');el.id='stkFx';document.body.appendChild(el);}
@@ -341,7 +359,7 @@ function stkReveal(part,res,again){
   el.className='on g'+best+(flash?' fl':'')+(calm?' calm':'')+(res.length>1?' ten':'');
   el.innerHTML='<div class="stk-fxp"><div class="stk-fxt">'+fmtL(__L('{p} 뽑기 결과'),{p:STK_PART[part].n})+'</div><div class="stk-fxg">'
     +res.map((r,i)=>'<div class="stk-fxc" style="--d:'+(calm?0:(i*.09+(r.g===best&&best>=3?.35:0))).toFixed(2)+'s;--gc:'+GRADES[r.g].c+'">'+stkSwatch(r.id,56)+'<b>'+STK_M[r.id].n+'</b><small>'+GRADES[r.g].n+'</small>'+(r.isNew?'<em>NEW</em>':'')+(r.ovf?'<em>+'+r.ovf+'P</em>':'')+'</div>').join('')
-    +'</div><div class="row"><button class="btn small" id="stkAgain">'+__L('한 번 더')+'</button><button class="btn primary" id="stkOk">'+__L('확인')+'</button></div></div>';
+    +'</div><div class="row"><button class="btn small" id="stkAgain">'+stkAgainLabel(res.length)+'</button><button class="btn primary" id="stkOk">'+__L('확인')+'</button></div></div>';
   try{best>=3?SFX.fanfare():SFX.win();if(best>=3)vib([30,40,80]);}catch(e){}
   const close=()=>{el.className='';stkFxOn=false;stkRender();};
   $('#stkOk').onclick=()=>{try{SFX.ui();}catch(e){}close();};

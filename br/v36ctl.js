@@ -107,6 +107,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
     const want=await E(r=>window.__PH.ctlCurve(r*.4,0,r,'mid')[0],R);
     ok(Math.abs(sm-want)<.02&&sm>.45,'40 % push → '+sm.toFixed(2)+' (curve value '+want.toFixed(2)+', was 0.40)');
     // buttons work in the match; Dash shows a cooldown ring
+    await E(()=>{const p=window.__PH.G.player;p.fall=0;p.getup=0;p.cd.dash=0;});   // a body check can leave the penguin on the ice at this moment (no dash while down) — 2026-11-15
     const db=await rect('#tbDash');await tap(db.x,db.y);await E(()=>{for(let i=0;i<20;i++)window.__PH.step(1/60);});
     const cdr=await E(()=>{const b=document.getElementById('tbDash');return {cd:b.classList.contains('cd'),v:+b.style.getPropertyValue('--cd'),pcd:window.__PH.G.player.cd.dash};});
     ok(cdr.cd&&cdr.v>.5&&cdr.pcd>0,'Dash tapped → cooldown ring '+JSON.stringify(cdr));

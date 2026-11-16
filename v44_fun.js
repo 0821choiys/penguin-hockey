@@ -27,7 +27,7 @@ function coachMatch(R,cfg,win,draw,ms){
   if(c.lv>=CO.max)c.xp=Math.min(c.xp,coachNeed(c.lv));
   const up=ups.reduce((s,u)=>s+u.pts,0);pts=fw+sb+up;
   save.points+=pts;if(R)R.total=(R.total||0)+pts;
-  return {xp,from,to:{lv:c.lv,xp:c.xp},ups,up,fw,sb,streak:c.streak,pts};
+  return {xp,from,to:{lv:c.lv,xp:c.xp},ups,up,fw,sb,streak:c.streak,pts,win1:Math.round(CO.xp.win*mult)};   // win1: the XP of a 0-goal win at this difficulty
 }
 function coachBarIn(lv,xp){return lv>=CO.max?100:Math.max(0,Math.min(100,xp/coachNeed(lv)*100));}
 // rows inside the point table of the result screen (each = what coachMatch paid)
@@ -40,7 +40,7 @@ function coachRowsHtml(R){const o=R&&R.co;if(!o)return '';let h='';
 function coachBarHtml(R){const o=R&&R.co;if(!o)return '';const lv=o.to.lv,a=o.ups.length?0:coachBarIn(o.from.lv,o.from.xp),b=coachBarIn(lv,o.to.xp);
   return '<div class="co-res'+(o.ups.length?' up':'')+'"><div class="co-top"><b>'+fmtL(__L('🏅 감독 Lv.{lv}'),{lv})+'</b><span class="co-xp">+'+o.xp+' XP</span></div>'
     +'<div class="co-bar"><i style="width:'+a.toFixed(1)+'%" data-to="'+b.toFixed(1)+'"></i></div>'
-    +'<div class="co-next">'+(lv>=CO.max?__L('최고 레벨!'):fmtL(__L('다음 레벨까지 {xp} XP · 보상 {pts} P'),{xp:coachNeed(lv)-o.to.xp,pts:coachReward(lv+1)})+(coachNeed(lv)-o.to.xp<=CO.xp.win?'<b class="co-one">'+__L('한 번 더 이기면 레벨 업!')+'</b>':''))+'</div></div>';}
+    +'<div class="co-next">'+(lv>=CO.max?__L('최고 레벨!'):fmtL(__L('다음 레벨까지 {xp} XP · 보상 {pts} P'),{xp:coachNeed(lv)-o.to.xp,pts:coachReward(lv+1)})+(coachNeed(lv)-o.to.xp<=(o.win1||CO.xp.win)?'<b class="co-one">'+__L('한 번 더 이기면 레벨 업!')+'</b>':''))+'</div></div>';}
 function coachResultAnim(R){
   const o=R&&R.co;if(!o)return;
   setTimeout(()=>{const i=document.querySelector('.co-res .co-bar i');if(i)i.style.width=i.dataset.to+'%';},450);

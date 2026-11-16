@@ -3,7 +3,7 @@ const PH=require('./harness.js');const {G,save,step,startMatch}=PH;
 let fails=0,passes=0;const ok=(c,m)=>{if(c)passes++;else fails++;console.log((c?'PASS ':'FAIL ')+m);};
 const run=s=>{for(let i=0;i<Math.round(s*60);i++)step(1/60);};
 const W=24,D=13;
-save.set.events=true;save.set.items=true;
+save.set.events=true;save.set.items=true;save.set.rules='off';   // no referee: a whistle pauses events and stops play (made seal / gust / golden checks flaky, 2026-11-15)
 startMatch({mode:'quick',size:3,time:120,diff:'normal'});run(3.4);
 ok(PH.eventsOn()&&G.evT>30,'events on in quick match, first one after ~35-50 s');
 // seal
@@ -18,7 +18,7 @@ ok(PH.eventsOn()&&G.evT>30,'events on in quick match, first one after ~35-50 s')
 {PH.funReset&&0;const n0=G.items.length;for(const it of G.items){}PH.evStart('fish');ok(G.items.length>=Math.min(3,n0+2),'🐟 fish rain drops items on the ice ('+G.items.length+')');}
 // golden puck
 {G.teams.blue.noScore=false;G.teams.red.noScore=false;let g=0;while(G.state!=='play'&&g++<600)step(1/60);PH.evStart('golden');ok(G.goldenT>14,'⭐ golden puck starts (15 s)');
- const s0=G.mine.score;G.carry=null;G.puck.x=G.mine.dir*(W+.6);G.puck.z=0;G.puck.vx=G.puck.vz=0;step(1/60);   // nobody may be carrying the puck at that moment (made the test flaky)
+ const s0=G.mine.score;G.carry=null;G.puck.x=G.mine.dir*(W+.6);G.puck.z=0;G.puck.vx=G.puck.vz=0;for(let i=0;i<30&&G.mine.score===s0;i++){G.carry=null;G.puck.x=G.mine.dir*(W+.6);G.puck.z=0;G.puck.vx=G.puck.vz=0;step(1/60);}   // (a hit-stop frame can skip the simulation: allow up to 0.5 s, 2026-11-15) nobody may be carrying the puck at that moment (made the test flaky)
  ok(G.mine.score===s0+2&&!(G.goldenT>0),'golden-puck goal counts 2 points, then the puck is normal again');}
 startMatch({mode:'ranked',size:3,time:120,diff:'normal',oppR:1200,oppName:'x'});run(3.4);ok(!PH.eventsOn(),'no surprise events in ranked');
 save.set.events=false;startMatch({mode:'quick',size:3,time:120,diff:'normal'});run(1);ok(!PH.eventsOn(),'events can be switched off');save.set.events=true;

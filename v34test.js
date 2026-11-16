@@ -8,7 +8,7 @@ const start=(mode)=>{startMatch({mode:mode||'quick',size:3,time:120,diff:'normal
 const hold=()=>{for(const p of G.pengs){p.x=p.x;}G.puck.x=0;G.puck.z=0;G.puck.vx=0;G.puck.vz=0;};
 // keep the match from scoring by itself while we step: freeze the puck in the middle
 const run=(sec)=>{for(let i=0;i<Math.round(sec*60);i++){G.puck.x=0;G.puck.z=0;G.puck.vx=0;G.puck.vz=0;step(1/60);}};
-save.set.motion=false;
+save.set.motion=false;save.set.rules='off';   // no referee: a whistle stops play and the heartbeat (flaky 1-in-2-s check, 2026-11-15)
 start();ok(G.state==='play','match running');
 G.mine.score=0;G.mine.opp.score=1;G.timeLeft=40;run(.5);ok(!G.hype.chase,'1 goal down with 40 s left: no chase yet');
 G.timeLeft=28;beats=0;run(2);

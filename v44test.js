@@ -43,6 +43,10 @@ if(G.result){PH.showResultScreen();const Rr=G.result;
   const x=save.coach.xp,l=save.coach.lv;PH.showResultScreen();ok(save.coach.xp===x&&save.coach.lv===l&&save.points-p0===Rr.total,'showing the result screen again pays nothing twice');
   {const f={co:{xp:10,from:{lv:3,xp:100},to:{lv:3,xp:PH.coachNeed(3)-CO.xp.win},ups:[],up:0,fw:0,sb:0,streak:0}},g={co:{xp:10,from:{lv:3,xp:0},to:{lv:3,xp:PH.coachNeed(3)-CO.xp.win-1},ups:[],up:0,fw:0,sb:0,streak:0}};
    ok(/co-one/.test(PH.coachBarHtml(f))&&!/co-one/.test(PH.coachBarHtml(g)),'"one more win" shows only when a win ('+CO.xp.win+' XP) is really enough');}
+  {const ez=Math.round(CO.xp.win*.7),mk=n=>({co:{xp:10,from:{lv:3,xp:0},to:{lv:3,xp:PH.coachNeed(3)-n},ups:[],up:0,fw:0,sb:0,streak:0,win1:ez}});
+   ok(/co-one/.test(PH.coachBarHtml(mk(ez)))&&!/co-one/.test(PH.coachBarHtml(mk(ez+1))),'easy: "one more win" only when a 0-goal easy win ('+ez+' XP, not '+CO.xp.win+') is enough (2026-11-15)');
+   const sv=JSON.stringify(save.coach),pp=save.points;save.coach.lv=3;save.coach.xp=0;const r=PH.coachMatch(null,{mode:'quick',diff:'easy'},true,false,0);
+   ok(r&&r.win1===ez&&r.xp>=ez,'coachMatch reports the 0-goal win XP of its difficulty (easy '+r.win1+')');save.coach=JSON.parse(sv);save.points=pp;}
   const h=PH.coachRowsHtml(Rr)+PH.coachBarHtml(Rr);ok(/감독 Lv|Coach Lv/.test(h),'the result screen shows the coach bar');}
 else ok(false,'the match did not finish');
 console.log('runtime errors: '+errs.length);if(errs.length){fails++;errs.slice(0,5).forEach(e=>console.log(e));}

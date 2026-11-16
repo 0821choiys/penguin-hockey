@@ -115,5 +115,17 @@ startMatch({mode:'quick',size:3,time:60,diff:'normal',oppTypes:['basic','fast','
  ok(PH.TEAM.blue.color===0x8a4dff&&errs.length===0,'a match in a purple kit runs without errors');
  const svg=PH.kitJerseySvg(PH.kit(),false,7)+PH.kitJerseySvg(PH.kit(),true,7,'펭귄 FC')+PH.kitCrestSvg(PH.kit());ok(/<svg/.test(svg)&&!/undefined|NaN/.test(svg),'jersey and crest drawings build');
  save.kit={on:0,c1:'#2f7bff',c2:'#ffffff',pat:'classic',crest:'circle',mas:'peng'};PH.kitSync();}
+// 2026-11-15 weekly: 10-draw odds in the box do not depend on the pity counter; 한 번 더 shows its cost; spare materials can be sold
+{const o=PH.stk(),ps=o.pity.s,fr=o.free,pt=save.points,m0=JSON.stringify(o.m);
+ o.pity.s=PH.STK.hard-1;const box=PH.stkOddsBox('s'),t=PH.stkTenOdds();
+ ok(Math.abs(t[2]-70)<1e-9&&Math.abs(t[3]-25)<1e-9&&Math.abs(t[4]-5)<1e-9&&box.includes('70.00%')&&!/레어 0\.00%/.test(box),'the 10-draw line reads 레어 70 · 신화 25 · 전설 5 % even when the next draw is a pity draw');
+ o.pity.s=ps;o.free=PH.todayKey?PH.todayKey():o.free;
+ ok(PH.stkCostOf(1)===PH.STK.cost1&&PH.stkCostOf(10)===PH.STK.cost10&&PH.stkAgainLabel(1).includes(PH.STK.cost1+'P')&&PH.stkAgainLabel(10).includes(PH.STK.cost10+'P'),'한 번 더 shows what the next draw costs ('+PH.stkAgainLabel(1)+' / '+PH.stkAgainLabel(10)+')');
+ if(PH.todayKey){o.free='';ok(PH.stkCostOf(1)===0&&PH.stkCostOf(10)===PH.STK.cost10&&!/\dP/.test(PH.stkAgainLabel(1)),'free draw ready: a single draw costs 0 (the label says free), 10 draws still cost '+PH.STK.cost10+'P');}
+ o.m.s3=5;o.m.b9=1;const sh=PH.stkSellHtml();
+ ok(/data-sk="sell1" data-id="s3"/.test(sh)&&/data-sk="sellx" data-id="s3"/.test(sh)&&sh.includes('+'+(4*PH.STK.refund[1])+'P')&&!/data-sk="sellx" data-id="b9"/.test(sh),'the craft tab lists spare materials with their price (4 spare 참나무 = '+(4*PH.STK.refund[1])+'P; one 북극성 조각 has no bulk button)');
+ ok(PH.stkCraftHtml().includes('stk-sell'),'the sell list is on the craft tab');
+ save.points=100;const got=PH.stkSell('s3',4);ok(got===4*PH.STK.refund[1]&&save.points===100+got&&o.m.s3===1,'selling pays exactly the shown price and keeps the last one');
+ o.m=JSON.parse(m0);o.free=fr;save.points=pt;}
 console.log('runtime errors: '+errs.length);errs.slice(0,3).forEach(e=>console.log('  '+e));
 console.log('TOTAL: '+passes+' passed, '+fails+' failed');process.exit(fails?1:0);
