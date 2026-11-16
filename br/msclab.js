@@ -48,11 +48,11 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
         const out=[];let worst=9;
         for(const a of ALL)for(const b of ALL){const A=rig['A'+a],B=rig['B'+b];let md=9,mt='',hornIn=0,ht='';
           for(let i=0;i<=48;i++){const ts=i*2.4/48;const ph=ts<1.7?'shake':'bow',u=ts<1.7?ts/1.7:(ts-1.7)/.7;
-            M.mPose(A,ph,ts,{u});M.mPose(B,ph,ts,{u});const xx=ph==='bow'?X+(.96-X)*(t=>t*t*(3-2*t))(Math.min(1,u*1.6)):X;M.mPlace(A,{x:-xx,z:0,yaw:Math.PI/2});M.mPlace(B,{x:xx,z:0,yaw:-Math.PI/2});A.root.updateMatrixWorld(true);B.root.updateMatrixWorld(true);
-            const ha=A.head.getWorldPosition(V()),hb=B.head.getWorldPosition(V());const d=ha.distanceTo(hb);if(d<md){md=d;mt=ph+' '+u.toFixed(2);}
-            for(const [R,Q] of [[A,B],[B,A]])for(const k of["horn","tusks"])for(const hz of [].concat(R.ex[k]||[])){const hq=Q.head.getWorldPosition(V());
-              hz.traverse(m=>{if(!m.isMesh)return;const pa=m.geometry.attributes.position;for(let j=0;j<pa.count;j+=7){const w=V().fromBufferAttribute(pa,j);m.localToWorld(w);if(w.distanceTo(hq)<.36*Q.head.scale.x){hornIn++;ht=ph+' '+u.toFixed(2);}}});}}
-          if(md<.62||hornIn)out.push(a+'>'+b+' head '+md.toFixed(2)+' @'+mt+(hornIn?' HORN '+hornIn+' @'+ht:''));worst=Math.min(worst,md);}
+            const pu=ph==='bow'?Math.max(0,(u-.2)/.8):u;M.mPose(A,ph,ts,{u:pu});M.mPose(B,ph,ts,{u:pu});const xx=ph==='bow'?X+(1.02-X)*(t=>t*t*(3-2*t))(Math.min(1,u*2.2)):X;M.mPlace(A,{x:-xx,z:0,yaw:Math.PI/2});M.mPlace(B,{x:xx,z:0,yaw:-Math.PI/2});A.root.updateMatrixWorld(true);B.root.updateMatrixWorld(true);
+            const ha=A.head.localToWorld(V().set(0,.35,.02)),hb=B.head.localToWorld(V().set(0,.35,.02));const d=ha.distanceTo(hb);if(d<md){md=d;mt=ph+' '+u.toFixed(2);}
+            for(const [R,Q] of [[A,B],[B,A]])for(const k of["horn","tusks"])for(const hz of [].concat(R.ex[k]||[])){const hq=Q.head.localToWorld(V().set(0,.35,.02));
+              hz.traverse(m=>{if(!m.isMesh)return;const pa=m.geometry.attributes.position;for(let j=0;j<pa.count;j+=7){const w=V().fromBufferAttribute(pa,j);m.localToWorld(w);if(w.distanceTo(hq)<.37){hornIn++;ht=ph+' '+u.toFixed(2);}}});}}
+          if(md<.78||hornIn)out.push(a+'>'+b+' head '+md.toFixed(2)+' @'+mt+(hornIn?' HORN '+hornIn+' @'+ht:''));worst=Math.min(worst,md);}
         return 'worst head gap '+worst.toFixed(2)+' head scale '+rig.Apeng.head.scale.x+'\n'+out.join('\n');}));}
   }
   if(logs.length)console.log('LOGS',logs.slice(0,6).join('\n'));await b.close();})();

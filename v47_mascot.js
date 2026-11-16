@@ -213,7 +213,11 @@ function mShake(R,t,u){const reach=mWin(u,0,.18)*(1-mWin(u,.86,1)),pump=Math.sin
   R.spine.rotation.x=.03+.2*reach;mHead(R,.08*reach,0,0);mHornSafe(R,reach);R.off.y=.02*Math.sin(t*3.2*TAU)*reach*.3;}
 // a horned mascot turns its head aside up close so the horn passes the partner's face (k: 0..1)
 function mHornSafe(R,k){if(!R.ex.horn||!k)return;R.head.rotation.y-=.62*k;R.head.rotation.x-=.3*k;R.head.rotation.z-=.18*k;}
-function mBow(R,u){const b=Math.sin(Math.min(1,u)*Math.PI);R.spine.rotation.x=.03+.55*b;mHead(R,.25*b,0,0);mArm(R,1,.08,-.05,-.15*b);mArm(R,-1,.08,-.05,-.15*b);mLeg(R,1,-.08-.1*b,.16+.1*b);mLeg(R,-1,-.08-.1*b,.16+.1*b);mHornSafe(R,1.35*Math.min(1,u*3)*(1-mWin(u,.85,1)));}
+function mBow(R,u){const b=Math.sin(Math.min(1,u)*Math.PI);
+  // a horned mascot curtsies instead of bowing (a bow would point the horn at the partner): knees, one leg behind, hand on the chest, chin up
+  if(R.ex.horn){R.off.y=-.09*b;R.spine.rotation.x=.03+.1*b;mLeg(R,1,-.08+.2*b,.16+.45*b);mLeg(R,-1,-.08-.38*b,.16+.42*b,-.08*b);
+    mArm(R,-1,.1,.55*b,-1.7*b,0,.55*b);mArm(R,1,.14+.55*b,.05,-.3);mHead(R,-.18*b,-.4*b,-.28*b);return;}
+  R.spine.rotation.x=.03+.48*b;mHead(R,.25*b,0,0);mArm(R,1,.08,-.05,-.15*b);mArm(R,-1,.08,-.05,-.15*b);mLeg(R,1,-.08-.1*b,.16+.1*b);mLeg(R,-1,-.08-.1*b,.16+.1*b);}
 function mWave(R,t,s){mArm(R,s,2.4+.25*Math.sin(t*4*TAU),.2,-.35-.25*Math.sin(t*4*TAU));}
 const mWP=(o,x,y,z)=>o.localToWorld(mV(x||0,y||0,z||0));
 // victory (w) and defeat (l) for every mascot; g = where the short "signature" used in the entrance starts inside w
@@ -376,7 +380,7 @@ function mascFade(v,dur){const f=document.querySelector('#mascFx .ms-fade');if(!
 function mascClear(){if(G.masc)mascEnd(false);}
 function mascEnd(run){const M=G.masc;if(!M)return;G.masc=null;for(const k in MS_RIG){MS_RIG[k].root.visible=false;}mascHideWorld(false);mascUI(false);
   camera.fov=M.fov;camera.updateProjectionMatrix();if(run!==false&&M.cb)try{M.cb();}catch(e){console.error(e);}}
-const MS_X=.64,MS_XB=.96;
+const MS_X=.64,MS_XB=1.02;
 // where everyone stands and what they do at time t
 function mascStep(dt){const M=G.masc;if(!M||G.paused)return;M.t+=dt;M.n++;const t=M.t,A=M.A,B=M.B,W=MS_WL,n=M.n;
   if(M.t>.05&&!M.f0){M.f0=1;mascFade(0,.35);}
@@ -390,7 +394,7 @@ function mascStep(dt){const M=G.masc;if(!M||G.paused)return;M.t+=dt;M.n++;const 
       mPose(A,'skate',t,{k});pl(A,-x,0,Math.PI/2);mPose(B,'skate',t+.31,{k});pl(B,x,0,-Math.PI/2);if(n%4==0&&u<.95){mascFx('snow',mV(-x-.1,0,.1));mascFx('snow',mV(x+.1,0,-.1));}}
     else{const s0=M.quick?0:2.2,ts=t-s0;
       if(ts<1.7){const u=ts/1.7;mPose(A,'shake',ts,{u});mPose(B,'shake',ts,{u});pl(A,-MS_X,0,Math.PI/2);pl(B,MS_X,0,-Math.PI/2);if(Math.abs(u-.3)<.01||Math.abs(u-.45)<.01)o.clap();}
-      else if(ts<2.4){const u=(ts-1.7)/.7,x=mL(MS_X,MS_XB,mSm(Math.min(1,u*1.6)));mPose(A,'bow',ts,{u});mPose(B,'bow',ts,{u});pl(A,-x,0,Math.PI/2);pl(B,x,0,-Math.PI/2);}
+      else if(ts<2.4){const u=(ts-1.7)/.7,x=mL(MS_X,MS_XB,mSm(Math.min(1,u*2.2))),bu=Math.max(0,(u-.2)/.8);mPose(A,'bow',ts,{u:bu});mPose(B,'bow',ts,{u:bu});pl(A,-x,0,Math.PI/2);pl(B,x,0,-Math.PI/2);}
       else if(M.quick){const u=Math.min(1,(ts-2.4)/.35);mPose(A,'wave',ts);mPose(B,'wave',ts+.2);pl(A,-MS_XB,0,turn(Math.PI/2,0,u));pl(B,MS_XB,0,turn(-Math.PI/2,0,u));}
       else if(ts<3.8){const u=Math.min(1,(ts-2.4)/.3);mPose(A,'greet',ts-2.4,o);pl(A,-MS_XB,0,turn(Math.PI/2,.15,u));mPose(B,'idle',ts);pl(B,MS_XB,0,turn(-Math.PI/2,-.45,u));if(ts-dt<2.45)mascVoice(A.sp);}
       else{const u=Math.min(1,(ts-3.8)/.3);mPose(B,'greet',ts-3.8,o);pl(B,MS_XB,0,turn(-.45,-.15,u));mPose(A,'idle',ts);pl(A,-MS_XB,0,.25);if(ts-dt<3.85)mascVoice(B.sp);}}
