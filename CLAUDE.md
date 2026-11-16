@@ -50,6 +50,11 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 - Team kit (owner, 2026-11-14; v46): `save.kit` colours / pattern / mascot / crest, free. Applied through `kitSync` (TEAM colours + cache purge)
   everywhere the team colour shows; the other side gives way when colours look alike; online each player brings their kit (`netInfo().kit`).
   Mascot art = `KIT_ART` SVG paths (also drawn on the 3D jersey with `Path2D`; the crest is drawn ~3.2× taller on the texture to look round).
+- Mascot cut-scenes (owner, 2026-11-16; v47, `mascot-v47.md`): the 12 kit mascots as 3D costume characters (`mBody`, `MS_SP`; team jersey painted with `kitPaint`).
+  Entrance = skate in → two-handed handshake (hands really meet) → bow → each one's signature; end of match = victory / defeat act per mascot (`MS_WL`, e.g. narwhal
+  shows off when it wins, thrashes its horn when it loses). Visual only: the match waits (`G.masc` freezes `step`), skip by tap / back (not in online entrances),
+  setting `save.set.masc` full / short / off. Automated browsers (`navigator.webdriver`) and the Node harness skip the scenes unless `window.PH_MASC=1`.
+  No part may go through the partner (`node msclab.js t col`), every mesh needs a real material (a string `mat` once hid the forearms).
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
@@ -63,7 +68,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -119,6 +124,8 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node p3lab.js <sheet|big|cards> <tag>` (portrait / card sheets with the CURRENT `v41_card.js/.css` swapped into the built game — no rebuild while iterating) and `node cardshot.js <mode> <lang> <tag>`,
   `node v42legal.js <pc|tall|wide|wideS> <lang>` (privacy / deletion links in 설정 and the account window), `node v42gauge.js tall <lang>` (the skill name fits the round gauge for every species; it shrinks to fit since 2026-11-13), `node storeshot.js <ko|en> [scene,…]` (Play Store screenshots + feature graphic → shots/store; convert to RGB before upload),
   `node v43model.js <mode> <lang>` (model on real three.js + close-up), `node mlab.js <tag> close,all,hats,match` (model shots with the CURRENT `v43_model.js`), `node v44fun.js <pc|tall|wide|wideS> <lang>` (coach bar, result rows, level-up moment), `node v45gear.js <pc|tall|wide|wideS> <lang>` (stick workshop + kit designer: odds on screen = code, reveal + back button, craft / upgrade, 3D stick, kit portrait, kit in a match),
+  `node v47masc.js <pc|tall|wide|wideS> <lang>` (mascot cut-scenes: entrance freezes the match, handshake hands meet, skip, short / off, end scene before the result, every mascot × animation, online lock, kit preview),
+  `node msclab.js <tag> <all|row1|row2|sp:…|anim:…|hs:A:B:u|col>` and `node msccut.js <tag> <intro|end:win|end:lose|end:draw|pv:mas:res> <t,…> [mascot] [opp] [tall|pc|wide]` (CURRENT `v47_mascot.js`, no rebuild),
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and
   `node modelab.js` (before/after screenshots), `node v28app.js tall ko` (the game inside the app with a mock of the Android side: purchase taps, back button on every screen, pause, exit).
   Screenshots go to `br/shots/`. Look at them — passing asserts are not enough for visual work.
@@ -139,4 +146,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
 `rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md`, `landscape-v30.md`, `online-account.md`,
-`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md`, `stick-kit-v46.md` (also kept in the claude.ai project).
+`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md`, `stick-kit-v46.md`, `mascot-v47.md` (also kept in the claude.ai project).
