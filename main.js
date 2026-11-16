@@ -1011,6 +1011,7 @@ const SFX=(()=>{
       fi.type='lowpass';fi.frequency.setValueAtTime(500,t);fi.frequency.exponentialRampToValueAtTime(4200,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.06,t+d*.92);g.gain.exponentialRampToValueAtTime(.0001,t+d+.05);
       o.connect(fi);o2.connect(fi);fi.connect(g);g.connect(master);o.start(t);o2.start(t);o.stop(t+d+.1);o2.stop(t+d+.1);noise(d,5200,1.2,.03);},
     cineHit(){tone(78,.7,'sine',.42,30);noise(.55,420,.6,.42,'lowpass');noise(.3,4200,.9,.2);tone(1320,.35,'triangle',.05,330);tone(660,.5,'sawtooth',.04,160,.02);},
+    msc(k){const f={splash(){noise(.5,900,.5,.32,'lowpass');noise(.35,2400,.8,.16,'bandpass',.04);noise(.22,5200,1,.08,'highpass',.1);},plop(){tone(520,.12,'sine',.12,180);noise(.1,1400,1,.08);},thunder(){noise(.09,6000,.7,.45,'highpass');noise(1.7,170,.4,.62,'lowpass',.03);noise(1.1,520,.5,.3,'lowpass',.18);tone(50,1.2,'sine',.3,30,.02);},crack(){noise(.06,3800,2,.38);noise(.25,900,.8,.24,'bandpass',.03);tone(140,.18,'square',.05,60);},roar(){tone(110,.9,'sawtooth',.13,68);tone(166,.8,'sawtooth',.07,90,.03);noise(.9,600,.6,.24);},hoot(){tone(420,.22,'sine',.14,380);tone(420,.42,'sine',.14,350,.32);},blow(){noise(.55,1400,.6,.18);noise(.4,500,.6,.12,'lowpass',.05);},zap(){noise(.2,4000,1.5,.2);tone(1200,.18,'sawtooth',.05,300);},chime(){[1568,2093,2637].forEach((q,i)=>tone(q,.4,'sine',.05,q,i*.07));},yip(){tone(700,.08,'triangle',.1,1100);tone(900,.1,'triangle',.08,1300,.12);},growl(){noise(.6,300,1.5,.2);tone(80,.6,'sawtooth',.06,60);},sob(){tone(520,.25,'sine',.08,380);tone(480,.32,'sine',.07,330,.3);},boop(){tone(660,.08,'sine',.12,880);tone(990,.12,'sine',.07,1320,.06);}};if(f[k])f[k]();else if(this[k])this[k](1);},
     bray(){tone(640,.2,'sawtooth',.1,900);tone(560,.34,'sawtooth',.11,300,.22);noise(.25,900,.8,.08,'bandpass',.22);},
     fanfare(){[392,523,659].forEach((f,i)=>tone(f,.2,'square',.07,f*1.01,i*.1));tone(784,.42,'sawtooth',.07,790,.3);},
     flare(){tone(1700,.5,'sine',.07,2500);tone(2300,.4,'triangle',.05,3300,.08);noise(.45,6000,2,.05);},
@@ -9754,7 +9755,7 @@ function kitRender(){
     h+='<div class="kit-grid">'+KIT.pat.map(p=>'<button class="kit-opt'+(p===k.pat?' on':'')+'" data-kt="pat" data-v="'+p+'">'+kitJerseySvg(Object.assign({},k,{pat:p}),false,num)+'<b>'+KIT_PATN[p]+'</b></button>').join('')+'</div>';
   }else if(kitTab==='mas'){
     h+='<div class="kit-grid mas">'+KIT.mas.map(m=>'<button class="kit-opt'+(m===k.mas?' on':'')+'" data-kt="mas" data-v="'+m+'">'+kitCrestSvg(Object.assign({},k,{mas:m}))+'<b>'+KIT_MASN[m]+'</b></button>').join('')+'</div>';
-    if(typeof mascPreview==='function')h+='<div class="lbl kit-pvl">'+fmtL(__L(__L('3D 마스코트 {m} — 경기 시작에 악수하고, 끝나면 승리·패배 세리머니를 해요')),{m:KIT_MASN[k.mas]})+'</div><div class="row kit-pv"><button class="btn small" data-kt="pvw">▶ '+__L(__L('승리 미리보기'))+'</button><button class="btn small" data-kt="pvl">▶ '+__L(__L('패배 미리보기'))+'</button></div>';
+    if(typeof mascPreview==='function')h+='<div class="lbl kit-pvl">'+fmtL(__L(__L('3D {m} — 경기 시작에 상대 마스코트와 인사하고, 끝나면 승리·패배 세리머니를 해요')),{m:KIT_MASN[k.mas]})+'</div><div class="row kit-pv"><button class="btn small" data-kt="pvw">▶ '+__L(__L('승리 미리보기'))+'</button><button class="btn small" data-kt="pvl">▶ '+__L(__L('패배 미리보기'))+'</button></div>';
   }else{
     h+='<div class="kit-grid cr">'+KIT.crest.map(c=>'<button class="kit-opt'+(c===k.crest?' on':'')+'" data-kt="crest" data-v="'+c+'">'+kitCrestSvg(Object.assign({},k,{crest:c}))+'<b>'+KIT_CRN[c]+'</b></button>').join('')+'</div>';
   }
@@ -9781,345 +9782,545 @@ function kitCssC(key,def){const c=TEAM[key]&&TEAM[key].color;return c==null||c==
 function kitRgba(key,def){const c=TEAM[key]&&TEAM[key].color;if(c==null||c===KIT_DEF[key])return def;const r=kitRGB(kitMix(kitHex(c),'#ffffff',.2));return 'rgba('+r.join(',')+',';}
 function kitHexN(key,def){const c=TEAM[key]&&TEAM[key].color;return c==null||c===KIT_DEF[key]?def:c;}
 
-/*MSC:js*//* ================= v47: 🎭 3D mascots — entrance handshake, victory and defeat cut-scenes (2026-11-16) ================= */
-// The owner: "every mascot gets an entrance cut-scene (the two mascots take hands and greet face to face), a victory and a defeat
-// cut-scene, as real as possible — e.g. the narwhal shows itself off when it wins and swings its horn wildly when it loses; 3D".
-//  · a mascot = a costumed character like real hockey mascots: the team's own jersey (kit or classic), sleeves, hockey pants, socks,
-//    skates, mitten hands, and a species head (+ tail / fin / wings / horn…) for each of the 12 kit mascots
-//  · intro: both skate in to centre ice, shake hands (two-handed), bow to each other, then each shows its signature move
-//  · end: the winner celebrates and the loser reacts, each in its own way (12 × victory, 12 × defeat); a draw ends in a handshake
-//  · the world is frozen while a scene plays (like the skill cinematics); tap / any key skips; 설정 → 마스코트 연출 켜기 / 끄기;
-//    reduced motion turns them off; online the intro cannot be skipped (both devices keep the same timing)
-//  · my mascot = save.kit.mas (펭귄 by default); offline opponents get one picked from their name (always different from mine);
-//    online each side brings its own (NET.peer.kit)
-//  · purely visual: own random numbers, nothing in the match result depends on it
-var MSC={h:2.12,intro:7.4,introQ:3.4,end:5.6,skipAfter:.35,gap:1.35};
-const mT=T,mV=(x,y,z)=>new mT.Vector3(x,y,z),mCol=h=>pkRGB(typeof h==='string'?parseInt(h.slice(1),16):h),mL=(a,b,t)=>a+(b-a)*t;
-const mSm=x=>x<=0?0:x>=1?1:x*x*(3-2*x),mWin=(t,a,b)=>mSm((t-a)/(b-a)),mSin=(t,f,a,p)=>a*Math.sin((t*f+(p||0))*TAU);
+/*MSC:js*//* ================= v47: 🎭 3D mascots — entrance greeting, victory and defeat cut-scenes (2026-11-16) ================= */
+// Owner: "every mascot gets an entrance cut-scene (the two mascots take hands and greet face to face), a victory and a defeat cut-scene,
+// as real as possible — e.g. the narwhal shows itself off when it wins and swings its horn wildly when it loses; 3D".
+// Owner, after the first cut (people in costumes): "they must be animals, not people — the lightning strikes down, the fish does it in the water".
+//  · 9 animals with their own bodies (legs, flippers, fins, wings) + 3 elements: a snowflake that floats down in a snowfall,
+//    an iceberg that rises out of the water, a lightning bolt that strikes down from its storm cloud
+//  · the sea animals and the iceberg live in a hole that cracks open in the ice; land animals walk / waddle / slide / galumph in; the owl flies
+//  · greeting: both reach out (paw / flipper / fin / wing / crystal arm) and really touch at one point (limb IK, or the floating body moves),
+//    hold it with a little shake, bow in their own way, then each one's signature move (the start of its victory act)
+//  · end: the winner celebrates and the loser reacts (12 × 2 acts); a draw = they touch again and shrug happily
+//  · team colours: a knitted team scarf (or a band / ribbon / flag) — no costumes
+//  · the world is frozen while a scene plays; tap / any key / back skips (not online entrances); 설정 → 마스코트 연출; reduced motion → off
+//  · my mascot = save.kit.mas; offline opponents get one picked from their name (never mine); online each side brings its own
+//  · purely visual: nothing in the match depends on it
+var MSC={intro:7.4,introQ:3.4,end:5.6,skipAfter:.35};
+const mT=T,mV=(x,y,z)=>new mT.Vector3(x||0,y||0,z||0),mCol=h=>pkRGB(typeof h==='string'?parseInt(h.slice(1),16):h),mL=(a,b,t)=>a+(b-a)*t;
+const mSm=x=>x<=0?0:x>=1?1:x*x*(3-2*x),mWin=(t,a,b)=>mSm((t-a)/(b-a)),mBmp=(t,a,b)=>t<=a||t>=b?0:Math.sin((t-a)/(b-a)*Math.PI),mPI=Math.PI;
+const mArc=(u,h)=>u<=0||u>=1?0:4*h*u*(1-u),mHop=(t,f,h)=>Math.abs(Math.sin(t*f*mPI))*h,mSn=(t,f,p)=>Math.sin((t*f+(p||0))*TAU);
+const mAt=(o,t,x)=>t>=x&&t-(o.dt||0)<x;   // crossed x this frame (a one-shot event)
 let mRs=1;const mRnd=()=>(mRs=(mRs*16807)%2147483647)/2147483647;
-// fur bump (soft short strokes)
 const MS_FUR=pkTex(128,(x,N)=>{x.fillStyle='#808080';x.fillRect(0,0,N,N);for(let i=0;i<900;i++){const a=mRnd()*N,b=mRnd()*N,l=3+mRnd()*5,g=100+mRnd()*80|0;
   x.strokeStyle='rgb('+g+','+g+','+g+')';x.lineWidth=1;x.beginPath();x.moveTo(a,b);x.lineTo(a+(mRnd()-.5)*2,b+l);x.stroke();}},[3,3]);
+const mPO=(m,f)=>Object.assign(m,{polygonOffset:true,polygonOffsetFactor:f,polygonOffsetUnits:f});
 const MS_M={
-  fur:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.9,bumpMap:MS_FUR,bumpScale:.025}),1.15),
-  skin:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.32,metalness:.06}),.8),
-  cloth:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.92,bumpMap:PK_KNIT,bumpScale:.02}),1),
-  ice:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.12,metalness:.15,emissive:0x2a5a80,emissiveIntensity:.35}),1.3),
-  berg:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.25,metalness:.05,flatShading:true,emissive:0x1d4a6e,emissiveIntensity:.25}),1.2),
-  ivory:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.38,metalness:.02}),.6)
+  fur:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.92,bumpMap:MS_FUR,bumpScale:.03}),1.2),
+  feather:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.85,bumpMap:MS_FUR,bumpScale:.012}),1.1),
+  skin:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.28,metalness:.06}),.85),
+  scale:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.26,metalness:.42}),1),
+  ice:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.1,metalness:.15,emissive:0x2a6a96,emissiveIntensity:.4}),1.3),
+  berg:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.25,metalness:.05,flatShading:true,emissive:0x1d4a6e,emissiveIntensity:.22}),1.2),
+  ivory:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.38,metalness:.02}),.6),
+  cloud:new mT.MeshStandardMaterial({vertexColors:true,roughness:1}),
+  water:mPO(new mT.MeshStandardMaterial({vertexColors:true,roughness:.22,metalness:0,envMapIntensity:.35}),-10),
+  ripple:mPO(new mT.MeshBasicMaterial({color:0xe8f6ff,transparent:true,opacity:.6,depthWrite:false}),-11),
+  crack:mPO(new mT.MeshBasicMaterial({color:0x2d5d86,transparent:true,opacity:.6,depthWrite:false}),-11),
+  scorch:mPO(new mT.MeshBasicMaterial({color:0x14181e,transparent:true,opacity:.55,depthWrite:false}),-11),
+  boltCore:new mT.MeshBasicMaterial({color:0xfffbe6}),boltGlow:new mT.MeshBasicMaterial({color:0x9fd6ff,transparent:true,opacity:.38,depthWrite:false})
 };
 // --- geometry helpers: everything ends up in a few vertex-coloured meshes per part ---
-// ellipsoid (centre c, radii r) with an optional colour function of the unit direction and a displacement
 function mEll(c,r,col,seg,disp){const S=pkLo()?.6:1,U=Math.max(10,(seg||28)*S|0),V=Math.max(8,(seg||28)*.75*S|0),d=[0,0,0];
   return pkSurf(U,V,(u,v,p)=>{const ph=u*TAU,th=v*Math.PI;d[0]=Math.sin(th)*Math.sin(ph);d[1]=-Math.cos(th);d[2]=Math.sin(th)*Math.cos(ph);
     const k=disp?disp(d):1;p[0]=c[0]+r[0]*d[0]*k;p[1]=c[1]+r[1]*d[1]*k;p[2]=c[2]+r[2]*d[2]*k;},
     col?(u,v,p,o)=>{const ph=u*TAU,th=v*Math.PI;d[0]=Math.sin(th)*Math.sin(ph);d[1]=-Math.cos(th);d[2]=Math.sin(th)*Math.cos(ph);const q=typeof col==='function'?col(d,p):col;o[0]=q[0];o[1]=q[1];o[2]=q[2];}:null,1,1,[1,1]);}
-// a tube along +y from y0 to y1 with radius r(v) (elliptical: sz), closed at both ends
+// a tube along +y from y0 to y1 with radius r(v), closed at both ends
 function mTube(y0,y1,rf,col,sz,seg){const S=pkLo()?.6:1,U=Math.max(8,(seg||20)*S|0);
   return pkSurf(U,10,(u,v,p)=>{const a=u*TAU,e=v<.06?v/.06:v>.94?(1-v)/.06:1,r=rf(v)*Math.sqrt(Math.max(0,Math.min(1,e*1.4)));p[0]=Math.sin(a)*r;p[1]=mL(y0,y1,v<.06?.06*mSm(v/.06):v>.94?1-.06*mSm((1-v)/.06):v);p[2]=Math.cos(a)*r*(sz||1);},
     col?(u,v,p,o)=>{const q=typeof col==='function'?col(u,v):col;o[0]=q[0];o[1]=q[1];o[2]=q[2];}:null,1,1,[1,1]);}
-// a cone / horn along a direction, with a twist groove (narwhal)
+// a body of revolution along +z (rear z0 → front z1): r = prof(v, angle); col(u, v, up, side) — up = 1 on the back, -1 on the belly
+function mRev(z0,z1,prof,col,sx,sy,seg,vs){const S=pkLo()?.6:1,U=Math.max(10,(seg||28)*S|0),V=Math.max(10,(vs||26)*S|0);
+  const g=pkSurf(U,V,(u,v,p)=>{const a=u*TAU,r=prof(v,a);p[0]=-Math.sin(a)*r*(sx||1);p[1]=mL(z0,z1,v);p[2]=-Math.cos(a)*r*(sy||1);},
+    col?(u,v,p,o)=>{const q=typeof col==='function'?col(u,v,Math.cos(u*TAU),Math.sin(u*TAU)):col;o[0]=q[0];o[1]=q[1];o[2]=q[2];}:null,1,1,[1,1]);g.rotateX(Math.PI/2);return g;}
 function mHorn(len,r0,col,twist,seg){return pkSurf(seg||18,26,(u,v,p)=>{const a=u*TAU,r=r0*(1-v)*(1+(twist?.12*Math.sin(a*2+v*twist):0))+.002;p[0]=Math.sin(a)*r;p[1]=v*len;p[2]=Math.cos(a)*r;},
   (u,v,p,o)=>{const q=typeof col==='function'?col(u,v):col;o[0]=q[0];o[1]=q[1];o[2]=q[2];},1,1,[0,1]);}
 // a flat fin / flipper / feather from a 2D outline (extruded, bevelled)
 function mFin(pts,th,col){const s=new mT.Shape();pts.forEach((q,i)=>i?s.lineTo(q[0],q[1]):s.moveTo(q[0],q[1]));
   const g=new mT.ExtrudeGeometry(s,{depth:th,bevelEnabled:true,bevelThickness:th*.6,bevelSize:th*.6,bevelSegments:2,curveSegments:8});g.translate(0,0,-th/2);
-  const c=col,n=g.attributes.position.count,a=new Float32Array(n*3);for(let i=0;i<n;i++){a[i*3]=c[0];a[i*3+1]=c[1];a[i*3+2]=c[2];}g.setAttribute('color',new mT.BufferAttribute(a,3));return g.index?g:g;}
+  const n=g.attributes.position.count,a=new Float32Array(n*3);for(let i=0;i<n;i++)a.set(col,i*3);g.setAttribute('color',new mT.BufferAttribute(a,3));return g;}
 function mMesh(list,mat,shadow){const m=new mT.Mesh(list.length===1&&!list[0][1]?list[0][0]:pkMerge(list),mat);m.castShadow=shadow!==false;return m;}
 const mG=(x,y,z)=>{const g=new mT.Group();g.position.set(x||0,y||0,z||0);return g;};
 // character eyes (same family as the players': a flat white oval, a big pupil, two catch-lights)
 function mEye(w,h,iris){const g=new mT.Group(),base=mEll([0,0,0],[w,h,w*.28],[.97,.97,.98],18);
   const pu=mEll([0,-h*.06,w*.22],[w*.8,h*.8,w*.12],d=>{const r=Math.hypot(d[0],d[1]);return r<.55?[.03,.03,.05]:iris;},18);
   const hl=pkMerge([[mEll([w*.28,h*.3,w*.36],[w*.22,w*.22,w*.06],null,10),null],[mEll([-w*.22,-h*.28,w*.34],[w*.11,w*.11,w*.04],null,8),null]]);
-  g.add(new mT.Mesh(base,PK_MAT.eye));const p=new mT.Mesh(pu,PK_MAT.eye);g.add(p);g.add(new mT.Mesh(hl,PK_MAT.hl));g.userData.pu=p;return g;}
-// put a child on the head ellipsoid surface at (yaw, pitch), facing out
-function mOn(head,obj,c,r,yaw,pitch,out){const d=mV(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch));
+  g.add(new mT.Mesh(base,PK_MAT.eye));const p=new mT.Mesh(pu,PK_MAT.eye);g.add(p);g.add(new mT.Mesh(hl,PK_MAT.hl));g.userData.pu=p;g.userData.w=w;return g;}
+// put a child on an ellipsoid surface at (yaw, pitch), facing out
+function mOn(par,obj,c,r,yaw,pitch,out){const d=mV(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch));
   obj.position.set(c[0]+d.x*r[0]*(out||1),c[1]+d.y*r[1]*(out||1),c[2]+d.z*r[2]*(out||1));
-  const n=mV(d.x/r[0],d.y/r[1],d.z/r[2]).normalize();obj.quaternion.setFromUnitVectors(mV(0,0,1),n);head.add(obj);return obj;}
-// --- the costume: the team jersey (with the mascot's own crest), sleeves, hockey pants, socks, skates, mitten hands ---
-function mKitOf(teamKey,mas){const k=kitFor(teamKey);return Object.assign({c1:kitHex(TEAM[teamKey].color),c2:'#ffffff',pat:'classic',crest:'circle'},k||{},{mas});}
-function mJersey(teamKey,mas){const k=mKitOf(teamKey,mas),key='mj'+teamKey+kitSig(k)+pkLo();if(pkMatC[key])return pkMatC[key];
-  const c=document.createElement('canvas');c.width=c.height=pkLo()?256:512;const x=c.getContext('2d');x.scale(c.width/512,c.height/256);
-  // the torso is ~1.3× denser up than across: the crest is drawn a little tall to look round
-  kitPaint(x,k,'00',{cy:96,rx:42,ry:54});const t=new mT.CanvasTexture(c);t.anisotropy=Math.min(4,maxAniso||1);
-  return pkMatC[key]=rimify(new mT.MeshStandardMaterial({map:t,roughness:.85,side:mT.DoubleSide}),.9);}
-const MS_TORSO=[[0,.31],[.1,.36],[.24,.405],[.4,.41],[.52,.385],[.62,.335],[.69,.25],[.73,.15],[.75,.09]];
-function mTorsoR(y){return pkLook(MS_TORSO,y);}
-function mBody(teamKey,sp,mas){
-  const S=MS_SP[mas],k=mKitOf(teamKey,mas),tc=mCol(k.c1),acc=mCol(k.c2),dk=mCol(kitMix(k.c1,'#000000',.55)),fur=mCol(S.fur),hand=mCol(S.hand||S.fur),
-    wh=[.95,.96,.97],blk=[.06,.07,.09],steel=[.82,.85,.9],R={};
-  const root=mG(),hips=mG(0,.84,0),spine=mG(0,.1,0);root.add(hips);hips.add(spine);
-  // pants (puffy hockey shorts) + belt line
-  hips.add(mMesh([[mTube(-.25,.14,v=>.27+.05*Math.sin(v*Math.PI)+.02*v,v=>v>.86?tc:dk,.82,22),null]],MS_M.cloth));
-  // torso: jersey (u around from the front, v up — same layout as the players' jerseys)
-  const tor=pkSurf(pkLo()?26:42,18,(u,v,p)=>{const a=u*TAU,y=v*.75,r=mTorsoR(y);p[0]=Math.sin(a)*r;p[1]=y;p[2]=Math.cos(a)*r*.82+(y>.18&&y<.5?.03*Math.cos(a)*Math.sin((y-.18)/.32*Math.PI):0);},null,1,1,[0,1]);
-  const tm=new mT.Mesh(tor,mJersey(teamKey,mas));tm.castShadow=true;spine.add(tm);
-  // neck collar
-  spine.add(mMesh([[mTube(.7,.8,()=>.17,dk,.9,16),null]],MS_M.cloth));
-  const neck=mG(0,.76,0);spine.add(neck);
-  // arms: shoulder → sleeve (team colour, two stripes) → elbow → forearm (species colour) → mitten
-  for(const s of[1,-1]){
-    const sh=mG(s*.4,.58,0),fa=mG(0,-.3,0),hd=mG(0,-.27,0);spine.add(sh);sh.add(fa);fa.add(hd);
-    sh.add(mMesh([[mEll([0,-.02,0],[.135,.13,.12],tc,18),null],[mTube(-.31,0,v=>.105+.02*v,v=>v<.2&&v>.08||v<.32&&v>.24?acc:tc,1,16),null]],MS_M.cloth));
-    fa.add(mMesh([[mEll([0,0,0],[.1,.1,.1],fur,14),null],[mTube(-.25,0,v=>.085+.012*v,fur,1,14),null],[mTube(-.26,-.19,()=>.098,tc,1,14),null]],MS_M[S.mat]||MS_M.fur));
-    // mitten: palm + four-finger lump + thumb (thumb on the inside)
-    hd.add(mMesh([[mEll([0,-.06,0],[.1,.12,.075],hand,16),null],[mEll([0,-.15,.005],[.088,.07,.07],hand,14),null],[mEll([-s*.075,-.05,.04],[.04,.065,.04],hand,10),null]],MS_M[S.mat]||MS_M.fur));
-    if(S.arm)S.arm(fa,s,R);
-    R[s>0?'aL':'aR']=sh;R[s>0?'fL':'fR']=fa;R[s>0?'hL':'hR']=hd;
-    // legs: thigh (pants) → knee → shin (sock with stripes) → skate
-    const th=mG(s*.15,-.12,0),kn=mG(0,-.33,0),ft=mG(0,-.29,0);hips.add(th);th.add(kn);kn.add(ft);
-    th.add(mMesh([[mTube(-.33,0,v=>.13+.02*v,dk,.95,14),null]],MS_M.cloth));
-    kn.add(mMesh([[mTube(-.29,0,v=>.095+.015*v,v=>v>.55&&v<.66||v>.74&&v<.8?acc:tc,1,14),null]],MS_M.cloth));
-    ft.add(mMesh([[mEll([0,.03,.05],[.1,.1,.17],blk,16),null],[mEll([0,.12,-.02],[.095,.1,.1],blk,14),null],[mEll([0,.035,.17],[.07,.05,.06],wh,10),null]],PK_MAT.vc));
-    const bl=new mT.BoxGeometry(.018,.05,.4);bl.translate(0,-.085,.04);const hold=new mT.BoxGeometry(.05,.03,.32);hold.translate(0,-.055,.04);
-    ft.add(mMesh([[bl,steel],[hold,[.75,.78,.82]]],PK_MAT.metal));
-    R[s>0?'lL':'lR']=th;R[s>0?'kL':'kR']=kn;R[s>0?'tL':'tR']=ft;
-  }
-  const head=mG();head.scale.setScalar(1.22);neck.add(head);const tail=mG(0,-.08,-.25);hips.add(tail);
-  Object.assign(R,{root,hips,spine,neck,head,tail,sp:mas,team:teamKey,eyes:[],ex:{}});
-  S.head(head,R,mas);if(S.tail)S.tail(tail,R);
-  // remember the rest placement of every special part so each frame can start from it
-  for(const k in R.ex){for(const o of[].concat(R.ex[k]))if(o&&o.isObject3D)o.userData.b0=[o.position.clone(),o.rotation.clone(),o.scale.clone()];}
-  root.scale.setScalar(MSC.h/2.58);root.traverse(o=>{if(o.isMesh)o.castShadow=true;});
-  return R;
-}
-// --- faces ---
+  const n=mV(d.x/r[0],d.y/r[1],d.z/r[2]).normalize();obj.quaternion.setFromUnitVectors(mV(0,0,1),n);par.add(obj);return obj;}
 function mEyes(h,R,c,r,yaw,pitch,w,hh,iris,tilt){for(const s of[1,-1]){const e=mEye(w,hh,iris);if(tilt)e.children.forEach(m=>m.rotation.z=s*tilt);mOn(h,e,c,r,s*yaw,pitch,.985);R.eyes.push(e);}}
-function mSmile(h,R,c,r,pitch,w,col){const g=new mT.TorusGeometry(w,w*.13,6,14,Math.PI*.8);g.rotateZ(Math.PI*1.1);const m=new mT.Mesh(g,PK_MAT.vc);
-  const cc=col||[.12,.07,.08],n=g.attributes.position.count,a=new Float32Array(n*3);for(let i=0;i<n;i++)a.set(cc,i*3);g.setAttribute('color',new mT.BufferAttribute(a,3));
-  const o=mG();o.add(m);mOn(h,o,c,r,0,pitch,1.0);R.ex.mouth=m;return m;}
+function mSmile(h,R,c,r,pitch,w,col){const g=new mT.TorusGeometry(w,w*.13,6,14,Math.PI*.8);g.rotateZ(Math.PI*1.1);const n=g.attributes.position.count,a=new Float32Array(n*3);
+  for(let i=0;i<n;i++)a.set(col||[.12,.07,.08],i*3);g.setAttribute('color',new mT.BufferAttribute(a,3));const m=new mT.Mesh(g,PK_MAT.vc),o=mG();o.add(m);mOn(h,o,c,r,0,pitch,1.0);R.ex.mouth=m;return m;}
+function mBlush(h,c,r,yaw,pitch,s){for(const k of[1,-1]){const m=new mT.Mesh(mEll([0,0,0],[s,s*.62,s*.3],[1,.62,.7],10),MS_M.skin);mOn(h,m,c,r,k*yaw,pitch,1.0);}}
 const mHash=d=>{const v=Math.sin(d[0]*91.3+d[1]*57.7+d[2]*113.1)*43758.5;return v-Math.floor(v);};
-const mSpots=(d,base,dark,k)=>{const q=Math.sin(d[0]*k*1.7+3)*Math.sin(d[1]*k*1.3+1)*Math.sin(d[2]*k+2);return q>.55?dark:base;};
-function mFlukes(t,R,col,col2){const a=[[0,0],[.1,.05],[.32,.12],[.42,.06],[.3,-.02],[.08,-.06]],g=new mT.Group();
-  for(const s of[1,-1]){const f=mFin(a.map(q=>[q[0]*s,q[1]]),.03,col);const m=new mT.Mesh(f,MS_M.skin);m.rotation.x=Math.PI/2;g.add(m);}
-  const st=mEll([0,0,0],[.07,.06,.16],col,12);const sm=new mT.Mesh(st,MS_M.skin);sm.position.z=-.08;g.add(sm);g.position.set(0,-.05,-.08);g.rotation.x=.35;t.add(g);R.ex.tail=g;}
-function mFeather(len,w,col){return mFin([[0,0],[w*.5,len*.25],[w*.45,len*.8],[0,len],[-w*.45,len*.8],[-w*.5,len*.25]],.012,col);}
+function mKitOf(teamKey,mas){const k=kitFor(teamKey);return Object.assign({c1:kitHex(TEAM[teamKey].color),c2:'#ffffff',pat:'classic',crest:'circle'},k||{},{mas});}
+// the team mark: a knitted scarf (stripes in the kit's two colours) with two hanging ends; ring in the xz plane around +y
+function mScarf(R,rx,rz,th,pos,tilt,ends){const c1=R.tc,c2=R.acc,g=mG(pos[0],pos[1],pos[2]);
+  const ring=pkSurf(36,8,(u,v,p)=>{const a=u*TAU,b=v*TAU;p[0]=Math.sin(a)*(rx+Math.cos(b)*th);p[1]=Math.sin(b)*th*1.3;p[2]=Math.cos(a)*(rz+Math.cos(b)*th);},
+    (u,v,p,o)=>{const q=(u*12|0)%3===1?c2:c1;o[0]=q[0];o[1]=q[1];o[2]=q[2];},8,1);const L=[[ring,null]];
+  if(ends!==false)for(const s of[1,-1]){const q=mTube(-th*5.5,0,()=>th*.85,v=>(v*5|0)%2?c1:c2,.45,10);q.rotateZ(s*.2);q.translate(s*rx*.3,-th*.4,rz*.95);L.push([q,null]);}
+  const m=new mT.Mesh(pkMerge(L),pkKnitVC([6,1]));m.castShadow=true;g.add(m);if(tilt)g.rotation.x=tilt;return g;}
+function mBand(R,r,th,sx,sz){const g=new mT.TorusGeometry(r,th,6,18);g.rotateX(Math.PI/2);g.scale(sx||1,1,sz||1);const n=g.attributes.position.count,a=new Float32Array(n*3);
+  for(let i=0;i<n;i++){const p=g.attributes.position;a.set(Math.atan2(p.getX(i),p.getZ(i))*3%2>1?R.acc:R.tc,i*3);}g.setAttribute('color',new mT.BufferAttribute(a,3));return new mT.Mesh(g,pkKnitVC([6,1]));}
+// a disc of water (deep in the middle, lighter at the rim)
+function mWaterDisc(r,seg){const g=new mT.CircleGeometry(r,seg||40);g.rotateX(-Math.PI/2);const p=g.attributes.position,n=p.count,a=new Float32Array(n*3);
+  for(let i=0;i<n;i++){const d=Math.min(1,Math.hypot(p.getX(i),p.getZ(i))/r);a.set([mL(.02,.13,d*d*d),mL(.12,.36,d*d*d),mL(.26,.56,d*d*d)],i*3);}g.setAttribute('color',new mT.BufferAttribute(a,3));return g;}
+// --- joints: every animated part is registered so each frame starts again from its rest placement ---
+function mJ(R,n,o){R.j[n]=o;return o;}
+function mRest(R){for(const k in R.j){const o=R.j[k],r=o.userData.r0;o.position.copy(r[0]);o.rotation.copy(r[1]);o.scale.copy(r[2]);}
+  R.off={x:0,y:0,z:0,rx:0,ry:0,rz:0,s:1,px:0,py:0,pz:0};for(const e of R.eyes){e.scale.set(1,1,1);const u=e.userData;if(u.pu)u.pu.position.copy(u.pu0);}if(R.ex.mouth)R.ex.mouth.scale.set(1,1,1);if(R.ex.puck)R.ex.puck.visible=false;if(R.ex.mat)R.ex.mat.emissiveIntensity=.6;}
+function mBlink(R,t,s){const q=(t*.37+(s||0))%3.1,b=q<.12?Math.max(.1,1-Math.sin(q/.12*mPI)):1;for(const e of R.eyes)e.scale.y*=b;}
+function mEyeK(R,k,wink){R.eyes.forEach((e,i)=>{if(!wink||i===0)e.scale.y*=k;});}
+function mLook(R,x,y){for(const e of R.eyes){const u=e.userData;if(u.pu)u.pu.position.set(u.pu0.x+x*u.w*.35,u.pu0.y+y*u.w*.35,u.pu0.z);}}
+const mR=(R,n,x,y,z)=>{const o=R.j[n];if(!o)return;o.rotation.x+=x||0;o.rotation.y+=y||0;o.rotation.z+=z||0;};
+// --- a leg of the four-legged: upper → lower → paw (rest: straight down) ---
+function mLeg4(R,par,n,pos,l1,r1,l2,r2,col,paw,tz){const a=mJ(R,n,mG(pos[0],pos[1],pos[2]));par.add(a);
+  a.add(mMesh([[mTube(-l1,0,v=>mL(r1*.82,r1,v),col,1,14),null],[mEll([0,0,0],[r1,r1,r1],col,12),null]],MS_M.fur));
+  const b=mJ(R,n+'2',mG(0,-l1,0));a.add(b);b.add(mMesh([[mTube(-l2,0,v=>mL(r2*.9,r2,v),col,1,12),null],[mEll([0,0,0],[r2*1.05,r2*1.05,r2*1.05],col,12),null]],MS_M.fur));
+  const p=mG(0,-l2,0);b.add(p);p.add(mMesh(paw,MS_M.fur));const tip=mG(0,.02,tz||.1);p.add(tip);return tip;}
+function mWalk4(R,t,f,k,A){const p=t*f*TAU;A=A||.5;for(const [n,ph] of[['fL',0],['fR',mPI],['hL',mPI*.5],['hR',mPI*1.5]]){
+    const sw=Math.sin(p+ph),lift=Math.max(0,Math.cos(p+ph));mR(R,n,-sw*A*k);mR(R,n+'2',lift*(n[0]==='f'?.9:.6)*k);}
+  R.off.y+=Math.abs(Math.sin(p))*.03*k;mR(R,'body',0,0,Math.sin(p)*.035*k);mR(R,'head',Math.sin(p*2)*.05*k);}
+// sit: the rear goes down around the front shoulders, hind legs fold, front legs stay upright
+function mSit4(R,k,sh,a,hip,knee){R.off.py=sh[1];R.off.pz=sh[2];R.off.rx-=a*k;mR(R,'fL',a*k);mR(R,'fR',a*k);mR(R,'hL',-hip*k);mR(R,'hR',-hip*k);mR(R,'hL2',knee*k);mR(R,'hR2',knee*k);}
+// pinnipeds: a galumph (chest and rear rock in turn)
+function mGalumph(R,t,f,k){const p=t*f*TAU;mR(R,'chest',-Math.max(0,Math.sin(p))*.32*k);mR(R,'rear',Math.max(0,Math.sin(p+mPI*.9))*.22*k);R.off.y+=Math.max(0,Math.sin(p))*.05*k;
+  mR(R,'ffL',-Math.sin(p)*.5*k);mR(R,'ffR',-Math.sin(p)*.5*k);mR(R,'rf',Math.sin(p+1)*.3*k);}
+// swimmers: cetaceans beat up and down, fish side to side
+function mSwim(R,t,f,k,fish){const p=t*f*TAU;if(fish){mR(R,'body',0,Math.sin(p)*.12*k);mR(R,'tail',0,Math.sin(p-1)*.55*k);}
+  else{mR(R,'body',Math.sin(p)*.05*k);mR(R,'tail',Math.sin(p-.9)*.22*k);mR(R,'fluke',Math.sin(p-1.8)*.35*k);}}
+// the puck the seal balances
+function mPuck(R,on){let p=R.ex.puck;if(!on){if(p)p.visible=false;return null;}if(!p){p=new mT.Mesh(new mT.CylinderGeometry(.13,.13,.07,20),PK_MAT.vc);const n=p.geometry.attributes.position.count,a=new Float32Array(n*3);a.fill(.06);
+  p.geometry.setAttribute('color',new mT.BufferAttribute(a,3));R.j.head.add(p);R.ex.puck=p;p.castShadow=true;}p.visible=true;return p;}
+// ---------------- the cast ----------------
+// each: med = 'ice' | 'water' | 'air'; k0 = size; pool = hole radius; cw = width of its close-up; flat = faces the camera while greeting;
+// build(R); idle / enter / touch / bow / wave / win / lose (R, t, o); g = where its signature starts inside the victory act
+const MS_W=[.96,.96,.97],MS_B=[.07,.08,.1];
 var MS_SP={
-  peng:{fur:'#1c2028',mat:null,head(h,R){const c=[0,.36,.02],r=[.37,.36,.35],blk=[.09,.1,.13],wh=[.96,.96,.97];
-      h.add(mMesh([[mEll(c,r,d=>{const face=d[2]>.18&&d[1]<.5-.35*Math.abs(d[0])&&d[1]>-.7;return face?wh:blk;},34,d=>1+.04*Math.max(0,d[1])),null]],PK_MAT.body));
-      mEyes(h,R,c,r,.36,.2,.085,.1,[.25,.18,.12]);
-      const bk=mHorn(.2,.085,(u,v)=>v<.15?[.95,.55,.12]:[1,.62,.15],0,16);bk.scale(1.2,1,.8);const bm=new mT.Mesh(bk,PK_MAT.beak);bm.rotation.x=Math.PI/2+.08;mOn(h,bm,c,r,0,-.04,.95);R.ex.beak=bm;
-      h.add(mMesh([[mEll([.2,.18,.25],[.05,.035,.02],[1,.6,.68],10),null],[mEll([-.2,.18,.25],[.05,.035,.02],[1,.6,.68],10),null]],MS_M.skin));},
-    tail(t){t.add(mMesh([[mFin([[0,0],[.1,-.02],[0,-.16],[-.1,-.02]],.04,[.09,.1,.13]),null]],MS_M.fur));t.children[0].rotation.x=-1.1;}},
-  orca:{fur:'#121418',mat:'skin',head(h,R){const c=[0,.34,.04],r=[.35,.33,.4],blk=[.05,.055,.07],wh=[.96,.97,.98];
-      h.add(mMesh([[mEll(c,r,d=>{const ep=Math.hypot((Math.abs(d[0])-.66)/.26,(d[1]-.3)/.2,(d[2]-.3)/.55)<1,jaw=d[1]<-.12&&d[2]>.05&&Math.abs(d[0])<.75-.4*Math.max(0,d[1]+.12)*4;return ep||jaw?wh:blk;},36,d=>1+.06*Math.max(0,d[2]-.6)),null]],MS_M.skin));
-      mEyes(h,R,c,r,.42,.12,.075,.09,[.2,.25,.32]);mSmile(h,R,c,r,-.24,.16,[.02,.02,.03]);},
-    tail(t,R){mFlukes(t,R,[.05,.055,.07]);const fin=mFin([[0,0],[.34,0],[.06,.62],[-.04,.56],[.02,.3]],.05,[.05,.055,.07]);const fm=new mT.Mesh(fin,MS_M.skin);fm.rotation.y=-Math.PI/2;fm.position.set(0,.88,.08);fm.castShadow=true;R.spine.add(fm);R.ex.fin=fm;}},
-  bear:{fur:'#efe9dc',head(h,R){const c=[0,.35,0],r=[.38,.35,.35],cr=[.94,.91,.84],dk=[.08,.07,.08];
-      h.add(mMesh([[mEll(c,r,cr,34,d=>1+.05*Math.max(0,-d[1])*Math.abs(d[0])),null],
-        ...[1,-1].map(s=>[mEll([s*.25,.66,-.02],[.11,.11,.07],cr,14),null]),...[1,-1].map(s=>[mEll([s*.25,.66,.03],[.065,.065,.03],[.78,.66,.6],12),null]),
-        [mEll([0,.25,.29],[.18,.13,.15],[.98,.96,.9],22),null]],MS_M.fur));
-      h.add(mMesh([[mEll([0,.3,.43],[.065,.045,.04],dk,14),null]],MS_M.skin));mEyes(h,R,c,r,.3,.18,.06,.07,[.22,.15,.1]);mSmile(h,R,[0,.22,.3],[.18,.13,.15],-.2,.07,dk);},
-    tail(t){t.add(mMesh([[mEll([0,0,-.02],[.08,.08,.08],[.94,.91,.84],12),null]],MS_M.fur));}},
-  seal:{fur:'#aeb8c2',mat:'skin',head(h,R){const c=[0,.35,0],r=[.36,.34,.35],g1=[.68,.73,.78],g2=[.46,.51,.57];
-      h.add(mMesh([[mEll(c,r,d=>mSpots(d,d[1]<-.2&&d[2]>0?[.82,.85,.88]:g1,g2,7),34),null],...[1,-1].map(s=>[mEll([s*.085,.22,.31],[.1,.08,.08],[.88,.9,.92],16),null])],MS_M.skin));
-      h.add(mMesh([[mEll([0,.29,.38],[.05,.035,.03],[.1,.08,.09],12),null]],MS_M.skin));
-      mEyes(h,R,c,r,.36,.16,.1,.115,[.12,.1,.12]);
-      const wl=[];for(const s of[1,-1])for(let i=0;i<3;i++){const w=new mT.CylinderGeometry(.004,.004,.24,4);w.rotateZ(Math.PI/2+s*(i-1)*.18);w.translate(s*.2,.23+(i-1)*.025,.33);wl.push([w,[.95,.95,.95]]);}h.add(mMesh(wl,PK_MAT.vc,false));},
-    arm(fa,s){const f=mFin([[0,0],[.07,-.05],[.06,-.2],[0,-.24],[-.06,-.2],[-.07,-.05]],.02,[.6,.66,.72]);const m=new mT.Mesh(f,MS_M.skin);m.position.set(s*.07,-.14,0);m.rotation.y=Math.PI/2;fa.add(m);},
-    tail(t){for(const s of[1,-1]){const m=new mT.Mesh(mFin([[0,0],[.06,-.04],[.04,-.2],[-.04,-.2],[-.06,-.04]],.02,[.55,.6,.66]),MS_M.skin);m.position.x=s*.07;m.rotation.set(-1.2,0,s*.3);t.add(m);}}},
-  walrus:{fur:'#8a5f42',head(h,R){const c=[0,.33,0],r=[.38,.33,.34],br=[.55,.37,.26],lt=[.7,.52,.38];
-      h.add(mMesh([[mEll(c,r,br,34,d=>1+.012*Math.sin(d[1]*40)*(d[2]>0?1:.3)),null],...[1,-1].map(s=>[mEll([s*.115,.19,.27],[.16,.12,.12],d=>mHash(d.map(x=>x*3))>.82?[.32,.2,.14]:lt,18),null])],MS_M.fur));
-      for(const s of[1,-1]){const t=new mT.Mesh(mHorn(.46,.052,(u,v)=>[mL(.92,.98,v),mL(.86,.95,v),mL(.72,.88,v)]),MS_M.ivory);t.rotation.set(Math.PI*.96,0,s*.08);t.position.set(s*.11,.14,.33);h.add(t);(R.ex.tusks=R.ex.tusks||[]).push(t);}
-      h.add(mMesh([[mEll([0,.3,.37],[.07,.04,.03],[.3,.18,.14],12),null]],MS_M.skin));mEyes(h,R,c,r,.36,.32,.05,.058,[.2,.13,.08]);},
-  },
-  fox:{fur:'#f4f3ef',head(h,R){const c=[0,.33,0],r=[.33,.3,.31],w=[.96,.96,.95];
-      h.add(mMesh([[mEll(c,r,w,34,d=>1+.1*Math.max(0,-d[1]-.1)*Math.abs(d[0])*2),null],[mEll([0,.25,.29],[.11,.09,.22],w,20),null]],MS_M.fur));
-      for(const s of[1,-1]){const e=new mT.Mesh(mHorn(.3,.12,(u,v)=>Math.cos(u*TAU)>.35&&v<.8?[.86,.72,.75]:w,0,14),MS_M.fur);e.scale.z=.45;e.position.set(s*.19,.53,-.02);e.rotation.z=-s*.42;h.add(e);(R.ex.ears=R.ex.ears||[]).push(e);}
-      h.add(mMesh([[mEll([0,.27,.5],[.045,.035,.03],[.06,.06,.07],12),null]],MS_M.skin));mEyes(h,R,c,r,.34,.18,.075,.06,[.85,.55,.12],.25);mSmile(h,R,[0,.22,.3],[.11,.09,.22],-.35,.06,[.15,.1,.1]);},
-    tail(t,R){const g=new mT.Group();g.add(mMesh([[mEll([0,.12,-.32],[.15,.17,.36],d=>d[2]<-.75?[.82,.84,.88]:[.97,.97,.96],22),null]],MS_M.fur));g.rotation.x=-.35;t.add(g);R.ex.tail=g;}},
-  owl:{fur:'#f5f4f0',head(h,R){const c=[0,.36,0],r=[.37,.36,.34],w=[.97,.97,.96],sp=[.18,.18,.2];
-      h.add(mMesh([[mEll(c,r,d=>(d[2]<.3||d[1]>.55)&&mHash([d[0]*4|0,d[1]*9|0,d[2]*4|0])>.62&&Math.abs((d[1]*18)%2)<.6?sp:w,34),null],...[1,-1].map(s=>[mEll([s*.13,.38,.27],[.15,.15,.06],[.99,.99,.99],18),null])],MS_M.fur));
-      mEyes(h,R,c,r,.32,.04,.095,.095,[1,.78,.1]);
-      const bk=new mT.Mesh(mHorn(.11,.04,[.13,.12,.14]),PK_MAT.beak);bk.rotation.x=Math.PI*.82;bk.position.set(0,.31,.36);h.add(bk);},
-    arm(fa,s){for(let i=0;i<4;i++){const m=new mT.Mesh(mFeather(.26-i*.03,.07,i%2?[.9,.9,.88]:[.97,.97,.96]),MS_M.fur);m.position.set(s*.08,-.04-i*.06,-.02);m.rotation.set(0,Math.PI/2,s*(1.25+i*.1));fa.add(m);}},
-    tail(t,R){const g=new mT.Group();for(let i=-2;i<=2;i++){const m=new mT.Mesh(mFeather(.26,.08,i%2?[.9,.9,.88]:[.97,.97,.96]),MS_M.fur);m.rotation.set(-1.9,0,i*.28);g.add(m);}t.add(g);R.ex.tail=g;}},
-  fish:{fur:'#8fb4c8',mat:'skin',head(h,R){const c=[0,.36,.06],r=[.33,.34,.42];
-      h.add(mMesh([[mEll(c,r,d=>{if(Math.abs(d[1]-.08)<.06&&d[2]<.4&&d[2]>-.5&&Math.sin(d[2]*22)>.4)return[.12,.2,.3];return d[1]>.25?[.18,.38,.5]:d[1]>-.15?[.66,.78,.86]:[.92,.94,.95];},36),null]],MS_M.skin));
-      h.add(mMesh([[new mT.TorusGeometry(.06,.025,8,16).translate(0,.24,.47),[.55,.3,.35]],[mEll([0,.24,.45],[.05,.04,.02],[.1,.05,.07],10),null]],MS_M.skin));
-      mEyes(h,R,c,r,.5,.18,.1,.1,[.75,.8,.85]);
-      const fin=mFin([[0,0],[.42,0],[.2,.3],[.02,.26]],.025,[.25,.45,.58]);const fm=new mT.Mesh(fin,MS_M.skin);fm.rotation.y=-Math.PI/2;fm.position.set(0,.64,-.2);h.add(fm);R.ex.fin=fm;},
-    arm(fa,s){const m=new mT.Mesh(mFin([[0,0],[.08,-.06],[.04,-.22],[-.04,-.16]],.015,[.6,.72,.8]),MS_M.skin);m.position.set(s*.07,-.1,0);m.rotation.y=Math.PI/2;fa.add(m);},
-    tail(t,R){const g=new mT.Group();const f=mFin([[0,0],[.12,.08],[.3,.26],[.22,0],[.3,-.26],[.12,-.08]],.02,[.3,.5,.62]);const m=new mT.Mesh(f,MS_M.skin);m.rotation.y=Math.PI/2;g.add(m);g.rotation.x=.2;t.add(g);R.ex.tail=g;}},
-  narwhal:{fur:'#8ea2b4',mat:'skin',head(h,R){const c=[0,.35,.02],r=[.36,.34,.37],g1=[.62,.69,.76],g2=[.38,.45,.53];
-      h.add(mMesh([[mEll(c,r,d=>d[1]<-.35&&d[2]>-.2?[.84,.87,.9]:mSpots(d,g1,g2,9),36,d=>1+.05*Math.max(0,d[2]-.5)),null]],MS_M.skin));
-      mEyes(h,R,c,r,.46,.14,.08,.09,[.2,.3,.42]);mSmile(h,R,c,r,-.2,.14,[.12,.12,.16]);
-      const hg=mG(0,.44,.3);const hm=new mT.Mesh(mHorn(1.05,.058,(u,v)=>[mL(.9,.99,v),mL(.86,.97,v),mL(.74,.9,v)],34,22),MS_M.ivory);hm.castShadow=true;hg.add(hm);hg.rotation.x=.98;h.add(hg);R.ex.horn=hg;},
-    tail(t,R){mFlukes(t,R,[.5,.57,.65]);}},
-  flake:{fur:'#cfe6f7',head(h,R){const g=mG(0,.38,0),ic=[.86,.94,1],ic2=[.66,.84,.98],parts=[];
-      const d=new mT.CylinderGeometry(.27,.27,.12,6,1);d.rotateX(Math.PI/2);parts.push([d,ic]);
-      for(let i=0;i<6;i++){const a=i*Math.PI/3+Math.PI/6,arm=new mT.BoxGeometry(.075,.36,.07);arm.translate(0,.42,0);arm.rotateZ(a);parts.push([arm,ic2]);
-        for(const s of[1,-1]){const b=new mT.BoxGeometry(.05,.15,.05);b.translate(0,.08,0);b.rotateZ(s*.8);b.translate(0,.44,0);b.rotateZ(a);parts.push([b,ic]);}
-        const tip=new mT.OctahedronGeometry(.07);tip.translate(0,.62,0);tip.rotateZ(a);parts.push([tip,[.95,.98,1]]);}
-      g.add(mMesh(parts,MS_M.ice));h.add(g);R.ex.spin=g;
-      const fc=mG(0,0,.065);g.add(fc);const cc=[0,0,0],rr=[.27,.27,.06];mEyes(fc,R,cc,rr,.0,0,.06,.07,[.3,.5,.75]);R.eyes.forEach((e,i)=>{e.position.set(i?-.09:.09,.04,.01);e.quaternion.identity();});
-      const m=mSmile(fc,R,cc,rr,0,.07,[.2,.35,.55]);m.parent.position.set(0,-.08,.01);m.parent.quaternion.identity();}},
-  berg:{fur:'#bfe1f2',head(h,R){const g=new mT.IcosahedronGeometry(.38,1),p=g.attributes.position,col=new Float32Array(p.count*3);
-      for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),k=1+.16*Math.sin(x*9+y*5)*Math.cos(z*7-y*3),pk=y>0?1+.9*Math.max(0,y/.38)**2*(.6+.4*Math.sin(x*11+z*6)):1;
-        const Y=y*k*1.1*pk-(y>0?0:.02);p.setXYZ(i,x*k*(1.08-.25*Math.max(0,Y-.2)),Y,z*k*(1.02-.2*Math.max(0,Y-.2)));
-        const c=Y>.24?[.98,.99,1]:Y>-.05?[.74,.89,.98]:[.52,.75,.93];col.set(c,i*3);}
-      g.setAttribute('color',new mT.BufferAttribute(col,3));g.computeVertexNormals();g.translate(0,.38,0);const m=new mT.Mesh(g,MS_M.berg);m.castShadow=true;h.add(m);
-      const ch=new mT.Mesh(new mT.DodecahedronGeometry(.13,0).translate(0,0,0),MS_M.berg);const cc=ch.geometry.attributes.position,c2=new Float32Array(cc.count*3);for(let i=0;i<cc.count;i++)c2.set([.95,.98,1],i*3);ch.geometry.setAttribute('color',new mT.BufferAttribute(c2,3));
-      ch.position.set(.22,.7,.06);ch.castShadow=true;h.add(ch);R.ex.chunk=ch;R.ex.chunk0=ch.position.clone();
-      mEyes(h,R,[0,.38,0],[.4,.42,.38],.32,.1,.075,.085,[.2,.45,.7]);mSmile(h,R,[0,.38,0],[.4,.42,.38],-.22,.11,[.18,.32,.5]);}},
-  bolt:{fur:'#ffd84a',head(h,R){const c=[0,.34,.02],r=[.35,.33,.33];
-      const mat=MS_M.skin.clone();mat.emissive=new mT.Color(0xffa200);mat.emissiveIntensity=.35;R.ex.mat=mat;
-      const hm=new mT.Mesh(mEll(c,r,d=>d[1]<-.3&&d[2]>0?[1,.93,.6]:[1,.82,.18],34),mat);hm.castShadow=true;h.add(hm);
-      const bp=[[.02,.56],[-.2,.12],[-.03,.15],[-.12,-.18],[.2,.22],[.04,.2],[.13,.56]].map(q=>[q[0]*1.3,q[1]*1.25]);
-      const cr=new mT.Mesh(mFin(bp,.09,[1,.9,.35]),mat);cr.position.set(.0,.5,-.02);cr.rotation.z=-.12;cr.castShadow=true;h.add(cr);R.ex.crest=cr;
-      for(const s of[1,-1]){const k=new mT.Mesh(mFin([[0,0],[.1,.06],[.04,.08],[.14,.18],[-.02,.06],[.04,.04]],.04,[1,.9,.35]),mat);k.position.set(s*.3,.42,0);k.rotation.set(0,s*.5,s*-1.1);h.add(k);}
-      mEyes(h,R,c,r,.33,.15,.075,.085,[.5,.32,.04]);mSmile(h,R,c,r,-.18,.12,[.45,.25,.04]);}}
+  // 펭귄 — belly-slides in, waddles; flipper touch; ecstatic display call when it wins, face-flop tantrum when it loses
+  peng:{med:'ice',k0:1.05,cw:2.0,g:0,build(R){const B=[.08,.09,.12],W=MS_W,bd=mJ(R,'body',mG(0,.04,0));R.root.add(bd);
+      bd.add(mMesh([[mEll([0,.5,0],[.37,.5,.34],d=>d[2]>.1+.3*Math.abs(d[0])&&d[1]<.74?(d[1]>.48?[.99,.92,.7]:W):B,34,d=>1+.08*Math.max(0,-d[1])-.05*Math.max(0,d[1]-.5)),null],
+        [mFin([[0,0],[.12,-.02],[0,-.17],[-.12,-.02]],.04,B).rotateX(-1.25).translate(0,.13,-.29),null]],PK_MAT.body));
+      const hd=mJ(R,'head',mG(0,.93,.03));bd.add(hd);const c=[0,.19,.02],r=[.29,.27,.27];
+      hd.add(mMesh([[mEll(c,r,d=>d[2]>.22&&d[1]<.42-.32*Math.abs(d[0])&&d[1]>-.72?W:B,30),null]],PK_MAT.body));
+      mEyes(hd,R,c,r,.38,.2,.075,.088,[.25,.18,.12]);mBlush(hd,c,r,.62,-.12,.045);
+      const bk=mHorn(.17,.075,(u,v)=>v<.15?[.95,.55,.12]:[1,.64,.16],0,14);bk.scale(1.25,1,.8);bk.rotateX(Math.PI/2);const bm=new mT.Mesh(bk,PK_MAT.beak);mOn(hd,bm,c,r,0,-.05,.93);R.ex.beak=bm;
+      for(const s of[1,-1]){const w=mJ(R,s>0?'wL':'wR',mG(s*.355,.74,-.02));bd.add(w);w.rotation.z=s*.16;
+        const f=mFin([[0,.02],[.07,-.04],[.085,-.3],[.045,-.5],[-.02,-.53],[-.065,-.32],[-.06,-.03]],.028,B);f.rotateY(Math.PI/2);w.add(mMesh([[f,null]],PK_MAT.body));
+        const tp=mG(0,-.5,0);w.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[w];
+        const ft=mJ(R,s>0?'fL':'fR',mG(s*.15,.014,.06));R.root.add(ft);
+        const g=mFin([[0,-.03],[.085,.06],[.06,.19],[.02,.15],[0,.2],[-.02,.15],[-.06,.19],[-.085,.06]],.024,[1,.6,.16]);g.rotateX(Math.PI/2);ft.add(mMesh([[g,null]],PK_MAT.beak));}
+      bd.add(mScarf(R,.27,.26,.05,[0,.9,.02],.1));R.head=hd;R.sph=[[bd,[0,.5,0],.37],[hd,c,.28]];},
+    idle(R,t){mR(R,'body',0,0,.03*Math.sin(t*1.3));mR(R,'head',0,.25*Math.sin(t*.7));mR(R,'wL',0,0,.05*Math.sin(t*2));mR(R,'wR',0,0,-.05*Math.sin(t*2+.4));mBlink(R,t,.3);},
+    slide(R,t,k){mR(R,'body',1.32*k);R.off.y+=.19*k;mR(R,'head',-1.05*k);mR(R,'wL',0,0,1.0*k);mR(R,'wR',0,0,-1.0*k);
+      for(const s of[1,-1]){const f=R.j[s>0?'fL':'fR'];f.position.z-=.08*k;f.position.y+=Math.max(0,Math.sin(t*9+(s>0?0:mPI)))*.07*k;f.rotation.x-=.8*k;}},
+    waddle(R,t,k){const p=t*7;mR(R,'body',0,0,.14*Math.sin(p)*k);mR(R,'wL',0,0,.35*k);mR(R,'wR',0,0,-.35*k);
+      for(const s of[1,-1]){const f=R.j[s>0?'fL':'fR'],q=Math.sin(p+(s>0?0:mPI));f.position.z+=q*.07*k;f.position.y+=Math.max(0,q)*.045*k;}},
+    enter(R,t,o){const S=MS_SP.peng,sl=1-mWin(o.u,.7,.84);R.off.z=-o.d;S.slide(R,t,sl);S.waddle(R,t,(1-sl)*(1-mWin(o.u,.97,1)));if(sl>.5&&o.n%3==0)o.fx('snow',R.root,[0,0,-.5]);mBlink(R,t);},
+    touch(R,t,o){mR(R,'body',.08*o.u);mR(R,o.L?'wL':'wR',-1.25*o.u,0,o.s*.15*o.u);mR(R,'head',.1*o.u,0,o.s*.12*o.u);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'body',.42*b);mR(R,'head',.32*b);mR(R,'wL',.3*b);mR(R,'wR',.3*b);},
+    wave(R,t){mR(R,'wR',0,0,-1.9-.35*Math.sin(t*14));mR(R,'head',-.1,0,.12*Math.sin(t*3));mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.peng;
+      if(t<1.1){const u=mWin(t,0,.25)*(1-mWin(t,.95,1.1));mR(R,'head',-.75*u);mR(R,'wL',.35*u,0,1.25*u);mR(R,'wR',.35*u,0,-1.25*u);mR(R,'body',-.12*u);if(mAt(o,t,.15))o.sfx('honk');R.ex.beak.scale.y=1+.25*u*(Math.sin(t*30)>0?1:.4);}
+      else if(t<1.5){R.off.y=mHop(t-1.1,5,.22);mR(R,'wL',0,0,.9+.5*Math.sin(t*30));mR(R,'wR',0,0,-.9-.5*Math.sin(t*30));if(mAt(o,t,1.3))o.sfx('hop');}
+      else if(t<3.6){const u=(t-1.5)/2.1,a=u*TAU,k=mWin(t,1.5,1.75)*(1-mWin(t,3.35,3.6));S.slide(R,t,k);R.off.x=o.side*(1-Math.cos(a))*.6*k;R.off.z=Math.sin(a)*.6*k;R.off.ry=-o.side*a*k;if(o.n%3==0&&k>.5)o.fx('snow',R.root,[0,0,-.4]);}
+      else if(t<4.6){R.off.y=mHop(t-3.6,4,.2);mR(R,'wL',0,0,1.0+.6*Math.sin(t*34));mR(R,'wR',0,0,-1.0-.6*Math.sin(t*34));mEyeK(R,.35);}
+      else{const u=mWin(t,4.6,4.85);mR(R,'body',-.12*u);mR(R,'wL',.6*u,0,.55*u);mR(R,'wR',.6*u,0,-.55*u);mR(R,'head',-.2*u,0,.15*Math.sin(t*4)*u);if(t>5)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.peng;
+      if(t<.8){const u=mWin(t,0,.2);mR(R,'head',-.3*u);mR(R,'wL',0,0,1.4*u);mR(R,'wR',0,0,-1.4*u);R.off.y=mArc(t/.4,.08);mEyeK(R,1.25);}
+      else if(t<3.6){const k=mWin(t,.8,1.15)*(1-mWin(t,3.3,3.6));mR(R,'body',1.4*k);R.off.y+=.16*k;mR(R,'head',-.3*k*(1+.3*Math.sin(t*9)));
+        if(mAt(o,t,1.1)){o.shake(.3);o.sfx('bump');o.fx('snow',R.root,[0,0,.5]);}if(t>1.3&&t<3.3){mR(R,'wL',0,0,(.9+.7*Math.sin(t*16))*k);mR(R,'wR',0,0,-(.9+.7*Math.sin(t*16+1.5))*k);
+          for(const s of[1,-1]){const f=R.j[s>0?'fL':'fR'];f.position.y+=Math.max(0,Math.sin(t*14+(s>0?0:mPI)))*.12;}if(o.n%5==0)o.fx('snow',R.root,[0,0,.3]);}mEyeK(R,.25);}
+      else{const u=mWin(t,3.6,4);mR(R,'head',.5*u);mR(R,'wL',.2*u,0,-.1*u);mR(R,'wR',.2*u,0,.1*u);mR(R,'body',.1*u,0,.06*Math.sin(t*2));S.waddle(R,t*.5,.3*u);mEyeK(R,.55);if(mAt(o,t,4.3))o.sfx('sob');}}},
+  // 범고래 — breaches out of its hole; spy-hops to touch with a pectoral fin; vertical breach + fin slaps + spout when it wins; sulks and slaps its tail when it loses
+  orca:{med:'water',k0:.82,pool:1.35,cw:2.9,g:.5,gt:1.25,build(R){const B=[.05,.06,.08],W=[.97,.97,.98],Gy=[.62,.64,.68],bd=mJ(R,'body',mG(0,-.06,0));R.root.add(bd);
+      bd.add(mMesh([[mRev(-.35,1.25,v=>pkLook([[0,.4],[.3,.45],[.6,.43],[.78,.37],[.88,.3],[.94,.22],[.98,.12],[1,.02]],v),(u,v,up,sd)=>{const ev=(v-.75)/.075,eu=(up-.33)/.24;
+        return Math.abs(sd)>.45&&ev*ev+eu*eu<1?W:up<-.3?W:v<.22&&up>.55?Gy:B;},1,.92),null]],MS_M.skin));
+      const tl=mJ(R,'tail',mG(0,0,-.35));bd.add(tl);tl.add(mMesh([[mRev(-1.25,.02,v=>pkLook([[0,.07],[.12,.1],[.45,.24],[.8,.37],[1,.4]],v),(u,v,up,sd)=>(up<-.3&&v>.45)||(v>.5&&v<.8&&up<.15&&up>-.35&&Math.abs(sd)>.6)?W:B,1,.92),null]],MS_M.skin));
+      const fl=mJ(R,'fluke',mG(0,0,-1.22));tl.add(fl);for(const s of[1,-1]){const g=mFin([[0,.05],[s*.16,.02],[s*.5,-.22],[s*.62,-.13],[s*.44,.02],[s*.12,.1]],.035,B);g.rotateX(Math.PI/2);fl.add(mMesh([[g,null]],MS_M.skin));}
+      const df=mFin([[-.26,0],[.14,0],[.04,.22],[-.1,.52],[-.17,.58],[-.15,.36]],.05,B);df.rotateY(-Math.PI/2);df.translate(0,.36,-.02);bd.add(mMesh([[df,null]],MS_M.skin));
+      const bn=mBand(R,.12,.034,.42,1.45);bn.position.set(0,.46,-.07);bd.add(bn);
+      for(const s of[1,-1]){const p=mJ(R,s>0?'pfL':'pfR',mG(s*.32,-.22,.7));bd.add(p);p.rotation.set(-.5,0,s*.85);
+        const g=mFin([[0,.04],[.1,-.04],[.15,-.25],[.11,-.43],[.03,-.48],[-.05,-.36],[-.06,-.08]],.035,B);g.rotateY(Math.PI/2);p.add(mMesh([[g,null]],MS_M.skin));
+        const tp=mG(0,-.46,0);p.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[p];}
+      const ec=[0,.02,.92],er=[.33,.34,.36];mEyes(bd,R,ec,er,1.0,.24,.055,.065,[.12,.1,.12]);mSmile(bd,R,[0,-.06,.98],[.24,.24,.27],-.22,.1);
+      R.head=mJ(R,'head',mG(0,.12,.95));bd.add(R.head);const bh=mG(0,.43,.72);bd.add(bh);R.ex.spout=bh;R.sph=[[bd,[0,0,.45],.45],[bd,[0,.05,1.0],.34]];},
+    idle(R,t){R.off.y=.035*Math.sin(t*1.6);MS_SP.orca.sw(R,t,.6);mBlink(R,t,.7);},
+    sw(R,t,k){mSwim(R,t,.7,k);},
+    spy(R,k,h){mR(R,'body',-1.25*k);R.off.y+=(h==null?.55:h)*k;mR(R,'tail',.25*k);},
+    enter(R,t,o){const S=MS_SP.orca;
+      if(t<.3){R.off.y=-2.6;}
+      else if(t<1.5){const u=(t-.3)/1.2;R.off.z=mL(-1.15,.1,u);R.off.y=mArc(u,1.25)-.25;mR(R,'body',mL(-1.05,1.15,u));mR(R,'tail',.3*Math.sin(u*mPI));
+        if(mAt(o,t,.32)){o.splash(R,0,-1.0,1.2);o.sfx('splash');}if(mAt(o,t,1.42)){o.splash(R,0,.4,1.4);o.sfx('splash');o.shake(.25);}}
+      else{const u=mWin(t,1.5,2.15);R.off.y=mL(-.8,0,u);mR(R,'body',mL(.5,0,u));S.sw(R,t,1);if(mAt(o,t,2.0)){o.fx('spout',R.ex.spout);o.sfx('blow');}}
+      mBlink(R,t);},
+    touch(R,t,o){const S=MS_SP.orca;S.spy(R,o.u);S.sw(R,t,.4);mR(R,o.L?'pfL':'pfR',-.9*o.u,0,-o.s*.3*o.u);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'body',.45*b);R.off.y-=.15*b;MS_SP.orca.sw(R,o.u*2,.5);},
+    wave(R,t){MS_SP.orca.spy(R,1,.45);mR(R,'pfR',-.4,0,-.5-.4*Math.sin(t*10));mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.orca;
+      if(t<.5){R.off.y=-1.2*mWin(t,0,.45);mR(R,'body',.9*mWin(t,0,.3));S.sw(R,t,1);if(mAt(o,t,.25))o.splash(R,0,.3,.8);}
+      else if(t<1.9){const u=(t-.5)/1.4;R.off.y=mL(-1.6,-1.2,u)+mArc(u,3.3);mR(R,'body',-1.45);R.off.ry=u*mPI*1.2;R.off.rz=mWin(u,.55,1)*1.3;R.off.py=.3;
+        if(mAt(o,t,.6)){o.splash(R,0,0,1.4);o.sfx('splash');}if(mAt(o,t,1.85)){o.splash(R,0,0,2);o.sfx('splash');o.shake(.5);}}
+      else if(t<3.7){const u=mWin(t,1.9,2.2);R.off.rz=1.35*u;R.off.y=-.05;S.sw(R,t,.3);const sl=Math.sin((t-2.2)*7);mR(R,'pfL',0,0,(1.2+sl*.9)*u);
+        if(t>2.2&&Math.sin((t-o.dt-2.2)*7)>=0&&sl<0)o.splash(R,.5,.6,.6);}
+      else{const u=mWin(t,3.7,4.0);S.spy(R,u,.5+.08*Math.sin(t*5));R.ex.mouth.scale.set(1.3,1.6,1);mR(R,'pfL',0,0,.4*Math.sin(t*9)*u);mR(R,'pfR',0,0,-.4*Math.sin(t*9)*u);
+        if(mAt(o,t,4.2)){o.fx('spout',R.ex.spout);o.sfx('blow');}if(t>4.9)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.orca;
+      if(t<1.1){R.off.y=-.3*mWin(t,0,.9);mEyeK(R,.6);S.sw(R,t,.2);if(o.n%7==0)o.fx('bubble',R.head);}
+      else if(t<3.6){const k=mWin(t,1.1,1.4)*(1-mWin(t,3.3,3.6));mR(R,'body',1.15*k);R.off.y=-.3-.3*k;const sl=Math.sin((t-1.4)*6.5);mR(R,'tail',(.55+.5*sl)*k);mR(R,'fluke',.4*sl*k);
+        if(t>1.4&&Math.sin((t-o.dt-1.4)*6.5)>=0&&sl<0){o.splash(R,0,-1.6,1);o.sfx('splash');o.shake(.2);}}
+      else{const u=mWin(t,3.6,4.1);R.off.y=mL(-.3,-.08,u);R.off.rz=.45*u;S.sw(R,t*.5,.3);mEyeK(R,.45);if(mAt(o,t,4.3)){o.fx('spout',R.ex.spout,[0,0,0],.3);o.sfx('sob');}}}},
+  // 북극곰 — lumbers in on all fours; sits and gives a paw; rears up and roars, rolls on its back when it wins; plops down and hides its face when it loses
+  bear:{med:'ice',k0:.86,cw:2.8,g:0,build(R){const F=[.95,.93,.86],D=[.1,.09,.09],bd=mJ(R,'body',mG(0,.98,0));R.root.add(bd);
+      bd.add(mMesh([[mEll([0,0,0],[.47,.46,.84],F,30,d=>1+.07*Math.max(0,d[1])*(1-Math.abs(d[2]))),null],[mEll([0,.03,-.5],[.43,.44,.42],F,22),null],[mEll([0,.05,.48],[.43,.45,.4],F,22),null],[mEll([0,.15,-.86],[.08,.07,.07],F,10),null]],MS_M.fur));
+      const paw=()=>[[mEll([0,.035,.05],[.17,.085,.2],F,16),null],[mEll([0,-.03,.08],[.08,.016,.1],D,10),null]];
+      for(const s of[1,-1]){const tp=mLeg4(R,bd,s>0?'fL':'fR',[s*.3,-.12,.52],.42,.2,.38,.16,F,paw(),.17);R.tips[s>0?'L':'R']=tp;
+        mLeg4(R,bd,s>0?'hL':'hR',[s*.28,-.1,-.55],.45,.24,.38,.17,F,paw(),.17);}
+      R.iks={L:[R.j.fL,R.j.fL2],R:[R.j.fR,R.j.fR2]};
+      const nk=mJ(R,'neck',mG(0,.1,.78));bd.add(nk);nk.add(mMesh([[mEll([0,0,.05],[.3,.3,.28],F,18),null]],MS_M.fur));
+      const hd=mJ(R,'head',mG(0,.08,.22));nk.add(hd);const c=[0,0,0],r=[.29,.26,.28];
+      hd.add(mMesh([[mEll(c,r,F,26),null],[mEll([0,-.02,.24],[.155,.115,.17],[.94,.91,.84],18),null],[mEll([0,.035,.4],[.068,.048,.04],D,12),null],
+        [mEll([.19,.2,-.05],[.08,.075,.05],F,12),null],[mEll([-.19,.2,-.05],[.08,.075,.05],F,12),null],[mEll([.19,.2,-.02],[.045,.045,.02],[.78,.68,.66],10),null],[mEll([-.19,.2,-.02],[.045,.045,.02],[.78,.68,.66],10),null]],MS_M.fur));
+      const jw=mJ(R,'jaw',mG(0,-.1,.17));hd.add(jw);jw.add(mMesh([[mEll([0,-.015,.12],[.12,.05,.13],[.93,.9,.83],14),null],[mEll([0,.012,.12],[.09,.02,.1],[.72,.3,.34],10),null]],MS_M.fur));
+      mEyes(hd,R,c,r,.4,.14,.048,.056,[.12,.1,.1]);nk.add(mScarf(R,.31,.31,.055,[0,-.02,.02],1.25,false));R.head=hd;R.sph=[[bd,[0,0,.1],.6],[hd,c,.3]];},
+    idle(R,t){mR(R,'head',.05*Math.sin(t*1.1),.2*Math.sin(t*.6));R.j.body.scale.y=1+.015*Math.sin(t*2);mBlink(R,t,.5);},
+    sit(R,k){mSit4(R,k,[0,.86,.52],.42,1.0,1.7);mR(R,'neck',-.25*k);},
+    rear(R,k){R.off.py=.88;R.off.pz=-.55;R.off.rx-=1.2*k;mR(R,'hL',1.2*k);mR(R,'hR',1.2*k);mR(R,'fL',.5*k);mR(R,'fR',.5*k);mR(R,'fL2',-.6*k);mR(R,'fR2',-.6*k);mR(R,'neck',.7*k);},
+    enter(R,t,o){R.off.z=-o.d;mWalk4(R,t,1.3,1-mWin(o.u,.9,1),.45);if(o.n%9==0&&o.u<.95)o.fx('snow',R.root,[0,0,.5]);mBlink(R,t);},
+    touch(R,t,o){MS_SP.bear.sit(R,mWin(o.u,0,.6));mR(R,o.L?'fL':'fR',-1.2*o.u);mR(R,'head',0,0,o.s*.15*o.u);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);R.off.py=.88;R.off.pz=-.55;R.off.rx+=.2*b;mR(R,'fL',-.2*b);mR(R,'fR',-.2*b);mR(R,'fL2',.5*b);mR(R,'fR2',.5*b);mR(R,'neck',.55*b);mR(R,'hL',-.2*b);mR(R,'hR',-.2*b);},
+    wave(R,t){MS_SP.bear.sit(R,1);mR(R,'fR',-2.0,0,-.3-.25*Math.sin(t*9));mR(R,'fR2',-.4);mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.bear;
+      if(t<1.5){const k=mWin(t,0,.45)*(1-mWin(t,1.25,1.5));S.rear(R,k);mR(R,'head',-.5*k);mR(R,'jaw',.55*k*mWin(t,.4,.55));if(mAt(o,t,.45)){o.sfx('roar');o.shake(.55);}}
+      else if(t<2.0){if(mAt(o,t,1.55)){o.shake(.6);o.sfx('bump');o.fx('snow',R.root,[0,0,.8],2);}mWalk4(R,t,1,0);}
+      else if(t<3.5){const k=mWin(t,2.0,2.4)*(1-mWin(t,3.15,3.5));R.off.rz=mPI*.98*k;R.off.py=.5;R.off.y-=.12*k;const w=Math.sin(t*11);
+        for(const n of['fL','fR','hL','hR'])mR(R,n,(-.7+.5*w*(n[1]==='L'?1:-1))*k);mR(R,'head',-.3*k,0,.2*Math.sin(t*5)*k);mEyeK(R,mL(1,.3,k));if(o.n%4==0&&k>.5)o.fx('snow',R.root,[0,.1,0]);}
+      else if(t<4.6){const k=mWin(t,3.5,3.8)*(1-mWin(t,4.35,4.6));S.rear(R,k);const b=Math.sin(t*16);mR(R,'fL',-.6*k*(b>0?b:0)-.4*k,0,-.6*k);mR(R,'fR',-.6*k*(b<0?-b:0)-.4*k,0,.6*k);
+        if(Math.sin((t-o.dt)*16)*b<0)o.sfx('heart');}
+      else{const u=mWin(t,4.6,4.9);mR(R,'head',-.25*u,.2*Math.sin(t*2)*u);R.j.body.rotation.z+=.06*Math.sin(t*3)*u;if(t>5.05)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.bear;
+      if(t<.7){mR(R,'head',-.2*mWin(t,0,.2));mEyeK(R,1.2);}
+      else{const k=mWin(t,.7,1.0);S.sit(R,k);if(mAt(o,t,.95)){o.shake(.4);o.sfx('bump');o.fx('snow',R.root,[0,0,-.4]);}
+        if(t>1.3&&t<3.4){const u=mWin(t,1.3,1.6)*(1-mWin(t,3.15,3.4));mR(R,'fL',-1.9*u,0,.25*u);mR(R,'fR',-1.9*u,0,-.25*u);mR(R,'fL2',-1.0*u);mR(R,'fR2',-1.0*u);mR(R,'head',.35*u,.0,.12*Math.sin(t*3.5)*u);R.off.rz+=.05*Math.sin(t*3.5)*u;if(mAt(o,t,1.7)||mAt(o,t,2.6))o.sfx('sob');}
+        if(t>=3.4){const u=mWin(t,3.4,4.0);R.off.rx+=.42*u;R.off.y-=.45*u;for(const n of['fL','fR'])mR(R,n,-1.2*u,0,(n==='fL'?.3:-.3)*u);for(const n of['hL','hR'])mR(R,n,1.0*u);mR(R,'neck',.25*u);
+          R.j.body.scale.y=1+.04*Math.sin(t*1.8)*u;if(mAt(o,t,4.5))o.sfx('sob');if(t>4.2){mR(R,'fR',-.5*mWin(t,4.2,4.6),0,.4*mWin(t,4.2,4.6));}}
+        mEyeK(R,.3);}}},
+  // 물범 — galumphs in; raises its chest and touches with a flipper; claps and balances a puck when it wins; tantrum on its back when it loses
+  seal:{med:'ice',k0:.92,cw:2.3,g:0,build(R){MS_SP.walrus.pinn(R,{base:[.6,.62,.65],dk:[.36,.38,.42],lt:[.84,.84,.82],r:.31,fl:.78,rl:.85,head:[.23,.21,.24],eye:[.42,.17,.07,.08,[.06,.05,.05]],fin:.29,seal:1});},
+    idle(R,t){mR(R,'chest',-.12-.03*Math.sin(t*1.4));mR(R,'head',.1*Math.sin(t*.9),.3*Math.sin(t*.5));mR(R,'rf',.15*Math.sin(t*2));mBlink(R,t,.2);},
+    enter(R,t,o){R.off.z=-o.d;mGalumph(R,t,1.9,1-mWin(o.u,.9,1));mR(R,'chest',-.1);if(o.n%7==0&&o.u<.95)o.fx('snow',R.root,[0,0,0]);mBlink(R,t);},
+    touch(R,t,o){mR(R,'chest',-.55*o.u);mR(R,'head',.35*o.u);mR(R,o.L?'ffL':'ffR',-1.4*o.u,0,o.s*.2*o.u);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'chest',-.1+.18*b);mR(R,'head',.6*b);},
+    wave(R,t){mR(R,'chest',-.45);mR(R,'head',.25);mR(R,'ffR',-1.6,0,-.6-.4*Math.sin(t*10));mBlink(R,t);},
+    win(R,t,o){
+      if(t<1.7){const u=mWin(t,0,.25);mR(R,'chest',-.6*u);mR(R,'head',.4*u);const c=Math.abs(Math.sin(t*9));mR(R,'ffL',-1.2*u,0,(-.2-.9*c)*u);mR(R,'ffR',-1.2*u,0,(.2+.9*c)*u);
+        if(t>.3&&Math.sin((t-o.dt)*9)*Math.sin(t*9)<=0){o.sfx('tap');}}
+      else if(t<3.7){const u=mWin(t,1.7,1.9),p=mPuck(R,1);mR(R,'chest',-.6*u);mR(R,'head',-.45*u+.08*Math.sin(t*7)*u,0,.12*Math.sin(t*5)*u);
+        const up=t<2.4?mArc((t-1.7)/.7,.7):0;p.position.set(0,.3+up+.02*Math.sin(t*9),.14);p.rotation.set(0,t*5,.2*Math.sin(t*6));mR(R,'ffL',-.6*u,0,-.5*u);mR(R,'ffR',-.6*u,0,.5*u);if(mAt(o,t,2.4))o.sfx('tap');}
+      else if(t<4.7){mPuck(R,0);const u=(t-3.7);R.off.rz=mSm(u)*TAU;R.off.py=.3;if(o.n%5==0)o.fx('snow',R.root,[0,0,0]);}
+      else{mR(R,'chest',-.5);mR(R,'head',-.2+.1*Math.sin(t*12));mR(R,'ffR',-1.5,0,-.6-.4*Math.sin(t*10));mR(R,'rf',.4*Math.sin(t*14));if(mAt(o,t,4.8)||mAt(o,t,5.2))o.sfx('honk');if(t>5.1)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){
+      if(t<.6){mR(R,'head',-.3*mWin(t,0,.15));mEyeK(R,1.25);}
+      else if(t<3.4){const k=mWin(t,.6,.9)*(1-mWin(t,3.1,3.4));R.off.rz=mPI*.95*k;R.off.py=.31;const w=Math.sin(t*17);mR(R,'ffL',-1.0*k,0,(.4+.8*w)*k);mR(R,'ffR',-1.0*k,0,-(.4+.8*w)*k);mR(R,'rf',.5*Math.sin(t*15)*k);mR(R,'head',0,.5*Math.sin(t*8)*k);mR(R,'chest',-.2*k);
+        if(mAt(o,t,1.0)||mAt(o,t,1.8)||mAt(o,t,2.6))o.sfx('honk');if(o.n%4==0&&k>.5)o.fx('snow',R.root,[0,.2,0]);mEyeK(R,.3);}
+      else{const u=mWin(t,3.4,3.8);mR(R,'head',.25*u);mR(R,'chest',.06*u);mR(R,'ffR',-1.5*u,0,.9*u);mLook(R,0,.6*u);mEyeK(R,1.1);if(mAt(o,t,4.2))o.sfx('sob');}}},
+  // 바다코끼리 — heavy galumph; flipper touch; bellows and drums its chest when it wins; slaps the ice and flops on its side when it loses
+  walrus:{med:'ice',k0:.82,cw:2.6,g:0,
+    pinn(R,P){const base=P.base,dk=P.dk,lt=P.lt,sl=!!P.seal,col=sl?(u,v,up)=>up<-.45?lt:(Math.sin(u*37+v*29)*Math.sin(v*61-u*11)>.5?dk:base):(u,v,up)=>up<-.45?lt:(Math.sin(v*46+Math.sin(u*TAU*3)*1.5)>.75?dk:base);
+      const r=P.r,ch=mJ(R,'chest',mG(0,r,0)),rr=mJ(R,'rear',mG(0,r,0));R.root.add(ch);R.root.add(rr);
+      ch.add(mMesh([[mRev(0,P.fl,v=>pkLook([[0,r],[.45,r],[.8,r*.8],[1,r*.55]],v),col,1.04,.98),null]],MS_M.skin));
+      rr.add(mMesh([[mRev(-P.rl,.02,v=>pkLook([[0,r*.16],[.15,r*.33],[.55,r*.78],[1,r]],v),col,1.04,.98),null],[mEll([0,0,0],[r*1.02,r*.98,r*1.02],base,18),null]],MS_M.skin));
+      const hd=mJ(R,'head',mG(0,r*.3,P.fl-.02));ch.add(hd);const c=[0,0,.04],hr=P.head,L=[[mEll(c,hr,base,26),null]];
+      if(sl){for(const s of[1,-1])L.push([mEll([s*.07,-.07,.22],[.075,.06,.065],lt,12),null]);L.push([mEll([0,-.025,.27],[.042,.03,.025],[.15,.13,.14],10),null]);}
+      else{for(const s of[1,-1]){L.push([mEll([s*.12,-.1,.24],[.14,.12,.12],lt,16),null]);for(let i=0;i<9;i++)L.push([mEll([s*(.06+(i%3)*.05),-.07-(i/3|0)*.045,.34-(i%3)*.02],[.012,.012,.008],[.35,.24,.2],6),null]);}L.push([mEll([0,0,.31],[.06,.04,.04],[.32,.2,.18],10),null]);}
+      hd.add(mMesh(L,MS_M.skin));const e=P.eye;mEyes(hd,R,c,hr,e[0],e[1],e[2],e[3],e[4]);
+      if(sl){for(const s of[1,-1])for(let i=0;i<3;i++){const w=new mT.CylinderGeometry(.004,.002,.22,4);w.rotateZ(Math.PI/2+(i-1)*.18);w.rotateY(-s*.35);w.translate(s*.2,-.07+(i-1)*.02,.24);hd.add(mMesh([[w,[.92,.92,.9]]],PK_MAT.vc,false));}}
+      else{const tk=mJ(R,'tusks',mG(0,-.17,.27));hd.add(tk);R.ex.tusks=[];for(const s of[1,-1]){const m=new mT.Mesh(mHorn(.55,.05,(u,v)=>[.96-.1*v,.93-.12*v,.84-.15*v],0,14),MS_M.ivory);m.rotation.set(mPI-.18,0,-s*.06);m.position.x=s*.075;tk.add(m);R.ex.tusks.push(m);}}
+      for(const s of[1,-1]){const a=mJ(R,s>0?'ffL':'ffR',mG(s*r*.84,-r*.55,P.fl*.62));ch.add(a);a.rotation.set(.9,0,s*.45);a.add(mMesh([[mTube(-.13,0,()=>r*.2,base,1,10),null]],MS_M.skin));
+        const b=mJ(R,(s>0?'ffL':'ffR')+'2',mG(0,-.13,0));a.add(b);const f=P.fin,g=mFin([[0,.02],[f*.2,-.03],[f*.25,-f*.7],[f*.1,-f],[-f*.1,-f*.95],[-f*.2,-f*.4],[-f*.17,0]],.03,base);g.rotateY(Math.PI/2);b.add(mMesh([[g,null]],MS_M.skin));
+        const tp=mG(0,-f,0);b.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[a,b];}
+      const rf=mJ(R,'rf',mG(0,0,-P.rl+.03));rr.add(rf);for(const s of[1,-1]){const q=P.fin*1.1,g=mFin([[0,0],[s*q*.3,-q*.15],[s*q*.75,-q],[s*q*.2,-q*.95],[0,-q*.3]],.025,dk);g.rotateX(Math.PI/2);rf.add(mMesh([[g,null]],MS_M.skin));}
+      ch.add(mScarf(R,hr[0]*.98,hr[0]*.98,.032,[0,r*.25,P.fl-.06],1.45,false));R.head=hd;R.sph=[[ch,[0,0,P.fl*.4],r],[rr,[0,0,-P.rl*.35],r*.85],[hd,c,hr[0]]];},
+    build(R){MS_SP.walrus.pinn(R,{base:[.64,.44,.36],dk:[.52,.33,.27],lt:[.78,.6,.5],r:.44,fl:.95,rl:1.05,head:[.3,.27,.29],eye:[.62,.32,.04,.046,[.08,.06,.05]],fin:.38});},
+    idle(R,t){mR(R,'chest',-.25-.03*Math.sin(t*1.2));mR(R,'head',.08*Math.sin(t*.8),.22*Math.sin(t*.45));mBlink(R,t,.9);},
+    enter(R,t,o){R.off.z=-o.d;mGalumph(R,t,1.3,1-mWin(o.u,.9,1));mR(R,'chest',-.15);if(o.n%8==0&&o.u<.95){o.fx('snow',R.root,[0,0,0]);}mBlink(R,t);},
+    touch(R,t,o){mR(R,'chest',-.55*o.u);mR(R,'head',.4*o.u);mR(R,o.L?'ffL':'ffR',-1.35*o.u,0,o.s*.2*o.u);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'chest',-.2+.12*b);mR(R,'head',.45*b);},
+    wave(R,t){mR(R,'chest',-.45);mR(R,'head',.25);mR(R,'ffR',-1.5,0,-.6-.35*Math.sin(t*9));mBlink(R,t);},
+    win(R,t,o){
+      if(t<1.4){const u=mWin(t,0,.3);mR(R,'chest',-.75*u);mR(R,'head',-.35*u);mR(R,'ffL',-.4*u,0,.6*u);mR(R,'ffR',-.4*u,0,-.6*u);if(mAt(o,t,.35)){o.sfx('bray');o.shake(.3);}
+        if(t>.5&&o.n%6==0)for(const m of R.ex.tusks)o.fx('sparkle',m,[0,.5,0]);}
+      else if(t<2.8){mR(R,'chest',-.55);mR(R,'head',.1);const b=Math.sin(t*13);mR(R,'ffL',-1.3,0,-(.5+.5*Math.max(0,b)));mR(R,'ffR',-1.3,0,.5+.5*Math.max(0,-b));if(Math.sin((t-o.dt)*13)*b<0)o.sfx('heart');}
+      else if(t<4.1){mR(R,'chest',-.4);mR(R,'head',-.15+.12*Math.sin(t*14),.0,.1*Math.sin(t*7));R.j.chest.position.y+=.02*Math.sin(t*20);mEyeK(R,.3);if(mAt(o,t,2.9))o.sfx('bray');}
+      else{const u=mWin(t,4.1,4.4);mR(R,'chest',-.6*u);mR(R,'head',-.3*u);mR(R,'ffR',-1.5*u,0,-(.6+.35*Math.sin(t*9))*u);if(o.n%7==0)for(const m of R.ex.tusks)o.fx('sparkle',m,[0,.5,0]);if(t>5)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){
+      if(t<.9){const u=mWin(t,0,.8);mR(R,'chest',-.25+.22*u);mR(R,'head',.45*u);mEyeK(R,mL(1,.6,u));if(mAt(o,t,.3))o.sfx('sob');}
+      else if(t<2.7){mR(R,'chest',-.05);mR(R,'head',.4);const sl=Math.sin((t-.9)*8);mR(R,'ffR',-.4-.8*Math.max(0,sl),0,-.3);if(Math.sin((t-o.dt-.9)*8)>0&&sl<=0){o.sfx('bump');o.fx('snow',R.j.ffR2,[0,-.3,0]);}mEyeK(R,.6);}
+      else{const u=mWin(t,2.7,3.3);R.off.rz=-1.0*u;R.off.py=.44;mR(R,'head',.3,0,.3*u);mR(R,'ffL',-.6*u,0,.8*u);if(mAt(o,t,3.2)){o.shake(.45);o.sfx('bump');o.fx('snow',R.root,[0,0,0]);}
+        R.j.chest.scale.y=1+.05*Math.sin(t*1.6)*u;mEyeK(R,.4);if(mAt(o,t,4.4))o.sfx('sob');}}},
+  // 북극여우 — trots in; sits and gives a paw; play-bow; the famous mousing dive + tail chase when it wins; curls up under its tail when it loses
+  fox:{med:'ice',k0:1.25,cw:2.2,g:0,build(R){const F=[.97,.97,.98],D=[.1,.08,.08],bd=mJ(R,'body',mG(0,.6,0));R.root.add(bd);
+      bd.add(mMesh([[mEll([0,0,0],[.22,.23,.44],F,26),null],[mEll([0,-.02,.33],[.2,.22,.18],F,18,d=>1+.1*mHash(d)),null]],MS_M.fur));
+      const paw=()=>[[mEll([0,.032,.03],[.05,.033,.075],F,10),null]];
+      for(const s of[1,-1]){const tp=mLeg4(R,bd,s>0?'fL':'fR',[s*.11,-.1,.3],.26,.068,.24,.05,F,paw(),.09);R.tips[s>0?'L':'R']=tp;mLeg4(R,bd,s>0?'hL':'hR',[s*.12,-.05,-.3],.29,.09,.25,.056,F,paw(),.09);}
+      R.iks={L:[R.j.fL,R.j.fL2],R:[R.j.fR,R.j.fR2]};
+      const nk=mJ(R,'neck',mG(0,.12,.38));nk.rotation.x=-.35;bd.add(nk);nk.add(mMesh([[mEll([0,.05,.02],[.13,.16,.13],F,14),null]],MS_M.fur));
+      const hd=mJ(R,'head',mG(0,.15,.04));hd.rotation.x=.35;nk.add(hd);const c=[0,0,0],r=[.16,.14,.15];
+      const mz=mHorn(.2,.075,F,0,12);mz.scale(1,1,.75);mz.rotateX(Math.PI/2);mz.translate(0,-.045,.1);
+      hd.add(mMesh([[mEll(c,r,F,24),null],[mEll([.1,-.05,.02],[.09,.08,.08],F,12,d=>1+.12*mHash(d)),null],[mEll([-.1,-.05,.02],[.09,.08,.08],F,12,d=>1+.12*mHash(d)),null],[mz,null],[mEll([0,-.04,.3],[.03,.024,.024],D,10),null]],MS_M.fur));
+      for(const s of[1,-1]){const e=mJ(R,s>0?'eL':'eR',mG(s*.085,.1,-.02));e.rotation.z=-s*.25;hd.add(e);e.add(mMesh([[mHorn(.17,.065,F,0,10),null],[mHorn(.13,.042,[.95,.76,.76],0,8).translate(0,.01,.018),null]],MS_M.fur));}
+      const jw=mJ(R,'jaw',mG(0,-.08,.1));hd.add(jw);jw.add(mMesh([[mEll([0,-.01,.07],[.05,.025,.09],F,10),null]],MS_M.fur));
+      mEyes(hd,R,c,r,.48,.15,.042,.048,[.78,.52,.15],.25);
+      const tl=mJ(R,'tail',mG(0,.06,-.4));tl.rotation.x=-.35;bd.add(tl);tl.add(mMesh([[mEll([0,0,-.36],[.13,.13,.4],d=>d[2]<-.72?[1,1,1]:F,20,d=>1+.08*mHash(d)),null]],MS_M.fur));
+      nk.add(mScarf(R,.15,.14,.035,[0,-.0,.02],.25,false));R.head=hd;R.sph=[[bd,[0,0,0],.3],[hd,c,.17]];},
+    idle(R,t){mR(R,'tail',0,.35*Math.sin(t*2.5));mR(R,'head',0,.25*Math.sin(t*.8),.15*Math.sin(t*.6));mR(R,'eL',0,0,.15*Math.max(0,Math.sin(t*3.1)));mBlink(R,t,.1);},
+    sit(R,k){mSit4(R,k,[0,.5,.3],.62,1.25,2.0);mR(R,'neck',-.3*k);mR(R,'tail',.4*k);},
+    enter(R,t,o){R.off.z=-o.d;mWalk4(R,t,2.6,1-mWin(o.u,.9,1),.6);mR(R,'tail',.15,.2*Math.sin(t*16));if(o.n%7==0&&o.u<.95)o.fx('snow',R.root,[0,0,.2]);mBlink(R,t);},
+    touch(R,t,o){MS_SP.fox.sit(R,mWin(o.u,0,.6));mR(R,o.L?'fL':'fR',-1.3*o.u);mR(R,'head',0,0,o.s*.25*o.u);mR(R,'tail',0,.4*Math.sin(t*12));mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);R.off.py=.55;R.off.pz=-.3;R.off.rx+=.42*b;mR(R,'fL',-.9*b);mR(R,'fR',-.9*b);mR(R,'hL',-.4*b);mR(R,'hR',-.4*b);mR(R,'neck',.2*b);mR(R,'tail',.8*b,.6*Math.sin(o.u*30));},
+    wave(R,t){MS_SP.fox.sit(R,1);mR(R,'fR',-1.6-.3*Math.sin(t*10));mR(R,'tail',0,.6*Math.sin(t*12));mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.fox;
+      if(t<.55){const u=mWin(t,0,.3);R.off.py=.5;R.off.pz=-.3;R.off.rx+=.12*u;mR(R,'hL',-.5*u);mR(R,'hR',-.5*u);mR(R,'hL2',.9*u);mR(R,'hR2',.9*u);mR(R,'eL',0,0,.25*u);mR(R,'eR',0,0,-.25*u);mR(R,'head',0,0,.3*Math.sin(t*6)*u);}
+      else if(t<1.55){const u=(t-.55)/.55;if(u<1){R.off.y=mArc(u,1.1);R.off.z=u*.7;R.off.py=.6;R.off.rx=mL(-.6,1.45,u);mR(R,'fL',-1.1);mR(R,'fR',-1.1);mR(R,'tail',.5);}
+        else{R.off.z=.7;R.off.y=-.08;R.off.py=.6;R.off.rx=1.5;mR(R,'tail',.3,.7*Math.sin(t*16));mR(R,'hL',.4*Math.sin(t*15));mR(R,'hR',-.4*Math.sin(t*15));}
+        if(mAt(o,t,1.1)){o.fx('snow',R.root,[0,0,.9],3);o.shake(.25);o.sfx('bump');}}
+      else if(t<2.6){const u=mWin(t,1.55,1.75);R.off.z=.7;R.off.y=mArc((t-1.55)/.25,.25)*(t<1.8?1:0);mR(R,'head',0,.7*Math.sin(t*28)*mBmp(t,1.85,2.45));if(mAt(o,t,1.95))o.fx('snow',R.j.head,[0,.15,0],2);mEyeK(R,mBmp(t,1.85,2.45)>0?.2:1);}
+      else if(t<4.0){const u=(t-2.6)/1.4;R.off.z=.7;R.off.ry=mSm(u)*TAU*2;mWalk4(R,t,3.2,1,.55);mR(R,'tail',0,.6);if(o.n%5==0)o.fx('snow',R.root,[0,0,0]);}
+      else{const u=mWin(t,4.0,4.3);R.off.z=.7;S.sit(R,u);mR(R,'head',-.25*u);mR(R,'tail',0,.6*Math.sin(t*14)*u);if(mAt(o,t,4.4))o.sfx('yip');mR(R,'jaw',.25*mBmp(t,4.4,4.7));if(t>5)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.fox;
+      if(t<.6){const u=mWin(t,0,.3);mR(R,'eL',-.9*u,0,.6*u);mR(R,'eR',-.9*u,0,-.6*u);mR(R,'tail',-.5*u);mR(R,'head',.2*u);}
+      else if(t<1.6){mR(R,'eL',-.9,0,.6);mR(R,'eR',-.9,0,-.6);mR(R,'tail',-.5);const k=Math.max(0,Math.sin((t-.6)*12));mR(R,'hL',.9*k);mR(R,'hR',.9*k);mR(R,'hL2',-.4*k);mR(R,'hR2',-.4*k);if(o.n%3==0)o.fx('snow',R.root,[0,0,-.5]);if(mAt(o,t,.7))o.sfx('growl');}
+      else{const u=mWin(t,1.6,2.3),c=mWin(t,2.6,3.2);R.off.ry=mPI*.9*u;mR(R,'eL',-.9,0,.6);mR(R,'eR',-.9,0,-.6);
+        R.off.y-=.32*c;mR(R,'fL',-1.3*c);mR(R,'fR',-1.3*c);mR(R,'fL2',.4*c);mR(R,'fR2',.4*c);mR(R,'hL',-1.1*c);mR(R,'hR',-1.1*c);mR(R,'hL2',2.0*c);mR(R,'hR2',2.0*c);mR(R,'tail',.2*c,1.6*c);mR(R,'neck',.4*c,.5*c);
+        mEyeK(R,mL(1,.25,c));if(t>4.4){mEyeK(R,1.8,1);mR(R,'tail',0,.15*Math.sin(t*9));}if(mAt(o,t,4.6))o.sfx('sob');}}},
+  // 흰올빼미 — flies in and lands; touches with a wing tip; wings-wide display and a flight circle when it wins; puffs up and turns its head away when it loses
+  owl:{med:'ice',k0:1,cw:2.6,g:0,build(R){const W=[.97,.97,.98],D=[.2,.19,.18],sp=(d,k)=>Math.sin(d[1]*k+Math.sin(d[0]*9)*1.2)>.86&&d[2]<.55?D:W;
+      const bd=mJ(R,'body',mG(0,.1,0));R.root.add(bd);
+      bd.add(mMesh([[mEll([0,.36,0],[.32,.38,.3],d=>sp(d,26),28,d=>1+.06*Math.max(0,-d[1])),null],[mFin([[0,0],[.1,-.05],[.08,-.24],[0,-.27],[-.08,-.24],[-.1,-.05]],.025,W).rotateX(1.25).translate(0,.14,-.24),null]],MS_M.feather));
+      const hd=mJ(R,'head',mG(0,.7,.02));bd.add(hd);const c=[0,.15,0],r=[.28,.25,.26];
+      const bk=mHorn(.1,.04,[.2,.18,.18],0,8);bk.rotateX(Math.PI/2+.7);bk.translate(0,.08,.23);
+      hd.add(mMesh([[mEll(c,r,d=>Math.sin(d[1]*30+d[0]*5)>.93&&d[2]<.3?D:W,26),null],[mEll([0,.13,.14],[.22,.19,.11],W,22),null],[bk,null]],MS_M.feather));
+      mEyes(hd,R,[0,.15,.07],[.24,.21,.2],.36,.12,.075,.085,[.98,.78,.12]);
+      for(const s of[1,-1]){const n=s>0?'wL':'wR',a=mJ(R,n,mG(s*.29,.58,-.03));a.rotation.set(.12,0,s*.05);bd.add(a);
+        const f1=mFin([[0,.03],[.1,-.02],[.14,-.24],[.02,-.31],[-.07,-.15],[-.06,0]],.03,W);f1.rotateY(Math.PI/2);a.add(mMesh([[f1,null]],MS_M.feather));
+        const b=mJ(R,n+'2',mG(0,-.28,0));b.rotation.x=2.75;a.add(b);const f2=mFin([[0,.02],[.12,-.04],[.1,-.3],[.02,-.4],[-.05,-.32],[-.06,-.05]],.025,W);f2.rotateY(Math.PI/2);
+        const bar=[];for(let i=0;i<3;i++){const q=new mT.BoxGeometry(.034,.02,.16);q.translate(0,-.14-i*.08,-.01);bar.push([q,D]);}b.add(mMesh([[f2,null],...bar],MS_M.feather));
+        const tp=mG(0,-.38,0);b.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[a,b];
+        const ft=mJ(R,s>0?'fL':'fR',mG(s*.12,0,.08));R.root.add(ft);const L=[[mEll([0,.05,.02],[.08,.06,.1],W,12),null]];for(let i=-1;i<=1;i++){const q=mHorn(.06,.016,D,0,6);q.rotateX(Math.PI/2+.4);q.translate(i*.035,.02,.1);L.push([q,null]);}ft.add(mMesh(L,MS_M.feather));}
+      bd.add(mScarf(R,.22,.21,.042,[0,.66,.0],.05));R.head=hd;R.sph=[[bd,[0,.36,0],.33],[hd,c,.27]];},
+    idle(R,t){mR(R,'head',0,.9*Math.sin(t*.55)*Math.min(1,Math.abs(Math.sin(t*.55))*2));mBlink(R,t*.6,.4);},
+    unf(R,k,n){mR(R,n||'wL2',-2.75*k);if(!n)mR(R,'wR2',-2.75*k);},
+    fly(R,t,k){const f=Math.sin(t*15);MS_SP.owl.unf(R,k);mR(R,'wL',-.2*k,0,(1.2+1.0*f)*k);mR(R,'wR',-.2*k,0,-(1.2+1.0*f)*k);mR(R,'wL2',-.5*f*k,0,.3*f*k);mR(R,'wR2',-.5*f*k,0,-.3*f*k);mR(R,'body',.35*k);
+      for(const n of['fL','fR'])R.j[n].position.y+=.05*k;},
+    enter(R,t,o){const S=MS_SP.owl,u=o.u,k=1-mWin(u,.86,.97);R.off.z=-o.d*1.1;R.off.y=k*(.2+1.8*(1-u)+.1*Math.sin(t*15));S.fly(R,t,k);
+      if(u>.86&&u<1){const b=mBmp(u,.86,1);MS_SP.owl.unf(R,b);mR(R,'wL',0,0,1.6*b);mR(R,'wR',0,0,-1.6*b);}if(mAt(o,t,1.95))o.fx('snow',R.root,[0,0,0]);mBlink(R,t);},
+    touch(R,t,o){MS_SP.owl.unf(R,o.u,o.L?'wL2':'wR2');mR(R,o.L?'wL':'wR',-1.5*o.u,0,o.s*.5*o.u);mR(R,'head',0,0,o.s*.25*o.u);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'body',.35*b);mR(R,'head',.25*b);mR(R,'wL',0,0,.4*b);mR(R,'wR',0,0,-.4*b);},
+    wave(R,t){MS_SP.owl.unf(R,1,'wR2');mR(R,'wR',0,0,-1.6-.5*Math.sin(t*12));mR(R,'wR2',0,0,-.4);mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.owl;
+      if(t<1.0){const u=mWin(t,0,.3);MS_SP.owl.unf(R,u);mR(R,'wL',0,0,2.1*u);mR(R,'wR',0,0,-2.1*u);mR(R,'wL2',0,0,.4*u);mR(R,'wR2',0,0,-.4*u);R.off.s=1+.08*u;mR(R,'head',-.2*u);if(mAt(o,t,.3))o.sfx('hoot');}
+      else if(t<3.3){const u=(t-1.0)/2.3,a=u*TAU,k=mWin(t,1.0,1.3)*(1-mWin(t,3.0,3.3));R.off.x=o.side*(1-Math.cos(a))*.7*k;R.off.z=-Math.sin(a)*.6*k;R.off.y=1.3*k+.08*Math.sin(t*15);R.off.ry=o.side*a*k;R.off.rz=-o.side*.35*k;S.fly(R,t,k);}
+      else if(t<4.5){const u=mWin(t,3.3,4.5);mR(R,'head',0,Math.sin(u*mPI)*4.2);if(mAt(o,t,4.3))o.sfx('hoot');}
+      else{const u=mWin(t,4.5,4.8);MS_SP.owl.unf(R,u);mR(R,'wL',0,0,2.0*u);mR(R,'wR',0,0,-2.0*u);mR(R,'head',0,0,.15*Math.sin(t*5)*u);if(o.n%6==0)o.fx('sparkle',R.j.head,[0,.4,0]);if(t>5.0)mEyeK(R,.15,1);}
+      mBlink(R,t);},
+    lose(R,t,o){
+      if(t<.8){const u=mWin(t,0,.5);R.off.s=1+.16*u;R.j.body.scale.set(1+.08*u,1-.06*u,1+.08*u);mEyeK(R,mL(1,.45,u));}
+      else{R.off.s=1.16;R.j.body.scale.set(1.08,.94,1.08);const a=mWin(t,.8,1.2),pk=mBmp(t,2.5,3.6);mR(R,'head',0,mPI*.95*a-1.2*pk);mEyeK(R,pk>.3?.9:.45);
+        if(mAt(o,t,.9))o.sfx('growl');if(t>3.6){mR(R,'wL',0,0,-.2);mR(R,'wR',0,0,.2);R.j.body.scale.y*=.95;mEyeK(R,.5);if(mAt(o,t,4.5))o.sfx('sob');}}}},
+  // 정어리 — porpoises in; stands on its tail like a show dolphin to touch fins; jumps and spits a fountain when it wins; floats belly-up when it loses
+  fish:{med:'water',k0:1.15,pool:1.1,cw:2.4,g:0,gt:1.2,build(R){const col=(u,v,up)=>{if(up>.5)return [.1,.28,.42];if(up>.12)return Math.abs(up-.3)<.09&&v>.42&&v<.86&&(v*17|0)%2?[.08,.14,.22]:[.32,.56,.7];return up>-.5?[.8,.85,.9]:[.93,.95,.97];};
+      const bd=mJ(R,'body',mG(0,0,0));R.root.add(bd);bd.add(mMesh([[mRev(-.45,.55,v=>pkLook([[0,.08],[.1,.15],[.35,.26],[.62,.27],[.82,.21],[.93,.14],[1,.03]],v),col,.52,1),null]],MS_M.scale));
+      mEyes(bd,R,[0,.05,.33],[.13,.2,.2],1.2,.15,.075,.085,[.12,.22,.36]);
+      const mo=mJ(R,'mouth',mG(0,-.03,.545));bd.add(mo);mo.add(mMesh([[new mT.TorusGeometry(.045,.018,8,16),[.88,.48,.52]],[mEll([0,0,-.005],[.04,.04,.01],[.25,.05,.08],10),null]],MS_M.skin));
+      const fc=[.62,.76,.86],df=mFin([[-.13,0],[.1,0],[-.03,.17],[-.11,.14]],.02,fc);df.rotateY(-Math.PI/2);df.translate(0,.25,.02);const af=mFin([[-.1,0],[.06,0],[-.08,-.1]],.02,fc);af.rotateY(-Math.PI/2);af.translate(0,-.24,-.15);
+      bd.add(mMesh([[df,null],[af,null]],MS_M.scale));
+      for(const s of[1,-1]){const p=mJ(R,s>0?'pfL':'pfR',mG(s*.12,-.08,.26));p.rotation.set(-.9,0,s*.6);bd.add(p);const g=mFin([[0,.02],[.05,-.03],[.04,-.16],[-.01,-.19],[-.04,-.06]],.015,fc);g.rotateY(Math.PI/2);p.add(mMesh([[g,null]],MS_M.scale));
+        const tp=mG(0,-.18,0);p.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[p];}
+      const tl=mJ(R,'tail',mG(0,0,-.42));bd.add(tl);const cf=mFin([[0,.04],[-.12,.07],[-.34,.3],[-.29,.1],[-.22,0],[-.29,-.1],[-.34,-.3],[-.12,-.07],[0,-.04]],.02,[.4,.6,.75]);cf.rotateY(-Math.PI/2);tl.add(mMesh([[cf,null]],MS_M.scale));
+      const bn=mBand(R,.075,.022,.55,1);bn.rotation.x=Math.PI/2;bn.position.z=-.36;bd.add(bn);
+      R.head=mJ(R,'head',mG(0,.05,.35));bd.add(R.head);R.sph=[[bd,[0,0,.05],.3]];},
+    idle(R,t){R.off.y=.03*Math.sin(t*2);mSwim(R,t,1.4,.6,1);R.j.mouth.scale.setScalar(1+.25*Math.max(0,Math.sin(t*4)));mBlink(R,t,.6);},
+    upright(R,t,k,h){mR(R,'body',-1.45*k);R.off.y+=(h==null?.42:h)*k;R.off.py=0;mR(R,'tail',.35*Math.sin(t*22)*k);},
+    enter(R,t,o){
+      if(t<.35)R.off.y=-2.5;
+      else if(t<2.0){const n=3,u=(t-.35)/1.65*n,i=Math.min(n-1,u|0),f=u-i;R.off.z=mL(-.95,.05,(t-.35)/1.65);R.off.y=mArc(f,.45+.15*(i===1))-.12;mR(R,'body',mL(-.9,.9,f));mSwim(R,t,2.2,1,1);
+        if(f<.06&&o.n%2==0)o.splash(R,0,0,.5);if(mAt(o,t,.36)||mAt(o,t,.9)||mAt(o,t,1.45))o.sfx('plop');}
+      else{mSwim(R,t,1.6,.8,1);}mBlink(R,t);},
+    touch(R,t,o){MS_SP.fish.upright(R,t,o.u);mR(R,o.L?'pfL':'pfR',-.8*o.u,0,o.s*.3*o.u);if(o.u>.5&&o.n%4==0)o.splash(R,0,0,.25);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'body',.7*b);R.off.y-=.12*b;mR(R,'tail',0,.6*Math.sin(o.u*25)*b);},
+    wave(R,t){MS_SP.fish.upright(R,t,1,.36);mR(R,'pfR',-.5,0,-.4-.5*Math.sin(t*14));mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.fish;
+      if(t<2.4){const n=3,u=t/2.4*n,i=Math.min(n-1,u|0),f=u-i,dir=i%2?-1:1;R.off.x=mL(-.55*dir,.55*dir,f);R.off.y=mArc(f,1.0)-.1;R.off.ry=dir*mPI/2;mR(R,'body',mL(-1.0,1.0,f));R.off.rz=f*TAU*(i===1?1:0);mSwim(R,t,2.6,1,1);
+        if(f<.04||f>.96){if(o.n%2==0)o.splash(R,0,0,.6);}if(mAt(o,t,.05)||mAt(o,t,.85)||mAt(o,t,1.65))o.sfx('plop');}
+      else if(t<3.6){const u=(t-2.4)/1.2;S.upright(R,t,mWin(t,2.4,2.6)*(1-mWin(t,3.4,3.6)),.5);R.off.z=mL(.3,-.4,u)*.6;if(o.n%2==0)o.splash(R,0,0,.4);}
+      else{const u=mWin(t,3.6,3.9);S.upright(R,t,u,.25);mR(R,'body',.6*u);mEyeK(R,mL(1,.3,u));if(t>3.9&&t<5.2&&o.n%2==0)o.fx('fountain',R.j.mouth);R.j.mouth.scale.setScalar(1.3);}
+      mBlink(R,t);},
+    lose(R,t,o){
+      if(t<.8){mEyeK(R,1.3);R.off.y=.03*Math.sin(t*20);}
+      else if(t<2.7){const u=mWin(t,.8,1.2);R.off.rz=mPI*u+.25*Math.sin(t*2)*u;R.off.y=.06*u;R.off.ry=.6*Math.sin(t*.9)*u;mEyeK(R,.15+.85*(1-u));if(o.n%9==0)o.fx('bubble',R.j.mouth);}
+      else if(t<3.4){const u=mWin(t,2.7,2.9);R.off.rz=mPI*(1-u);R.off.y=mArc((t-2.7)/.45,.35);if(mAt(o,t,2.95)){o.splash(R,0,0,1);o.sfx('splash');}}
+      else{const u=mWin(t,3.4,3.9);R.off.y=-.16*u;R.off.ry=-.7*u;mR(R,'tail',0,.2*Math.sin(t*3));mEyeK(R,.6);if(o.n%10==0)o.fx('bubble',R.j.mouth);R.j.mouth.scale.setScalar(1+.3*Math.max(0,Math.sin(t*5)));}}},
+  // 일각고래 — leaps in; spy-hops (horn to the sky) to touch with a fin; shows itself off when it wins; thrashes its horn wildly when it loses
+  narwhal:{med:'water',k0:.85,pool:1.3,cw:2.8,g:0,gt:1.25,build(R){const base=[.58,.63,.69],dk=[.33,.37,.43],lt=[.86,.88,.9],col=(u,v,up)=>up<-.35?lt:(Math.sin(u*41+v*67)*Math.sin(v*53+u*13)>.42&&up>-.1?dk:base);
+      const bd=mJ(R,'body',mG(0,-.05,0));R.root.add(bd);bd.add(mMesh([[mRev(-.3,1.0,v=>pkLook([[0,.36],[.3,.4],[.62,.38],[.8,.33],[.9,.28],[.96,.2],[.99,.1],[1,.02]],v),col,1,.95),null],
+        ...[0,1,2,3].map(i=>[mEll([0,.36-.01*i,-.05-i*.12],[.03,.025,.05],dk,8),null])],MS_M.skin));
+      const tl=mJ(R,'tail',mG(0,0,-.3));bd.add(tl);tl.add(mMesh([[mRev(-1.05,.02,v=>pkLook([[0,.06],[.15,.09],[.5,.21],[.85,.34],[1,.36]],v),col,1,.95),null]],MS_M.skin));
+      const fl=mJ(R,'fluke',mG(0,0,-1.03));tl.add(fl);for(const s of[1,-1]){const g=mFin([[0,.03],[s*.14,0],[s*.38,-.08],[s*.52,.03],[s*.47,-.2],[s*.1,-.08]],.03,dk);g.rotateX(Math.PI/2);fl.add(mMesh([[g,null]],MS_M.skin));}
+      for(const s of[1,-1]){const p=mJ(R,s>0?'pfL':'pfR',mG(s*.3,-.2,.55));p.rotation.set(-.5,0,s*.85);bd.add(p);const g=mFin([[0,.03],[.08,-.03],[.1,-.2],[.13,-.31],[.02,-.3],[-.05,-.07]],.03,dk);g.rotateY(Math.PI/2);p.add(mMesh([[g,null]],MS_M.skin));
+        const tp=mG(0,-.3,0);p.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[p];}
+      const hn=mJ(R,'horn',mG(.06,.07,.95));hn.rotation.x=Math.PI/2-.2;bd.add(hn);hn.add(mMesh([[mHorn(1.3,.055,(u,v)=>{const q=.86+.08*Math.sin(u*TAU*2+v*44);return [q,q*.97,q*.88];},44,22),null]],MS_M.ivory));
+      const hb=mBand(R,.07,.02);hb.position.y=.04;hn.add(hb);const ht=mG(0,1.3,0);hn.add(ht);R.ex.horn=hn;R.ex.hornTip=ht;
+      mEyes(bd,R,[0,.02,.72],[.34,.33,.3],.95,.22,.05,.06,[.1,.1,.12]);mSmile(bd,R,[0,-.05,.86],[.22,.22,.18],-.3,.08);
+      R.head=mJ(R,'head',mG(0,.1,.75));bd.add(R.head);const bh=mG(0,.36,.55);bd.add(bh);R.ex.spout=bh;R.sph=[[bd,[0,0,.35],.4],[bd,[0,.05,.8],.3]];},
+    idle(R,t){R.off.y=.035*Math.sin(t*1.5);mSwim(R,t,.75,.6);mBlink(R,t,.8);},
+    spy(R,k,h){mR(R,'body',-1.3*k);R.off.y+=(h==null?.5:h)*k;mR(R,'tail',.25*k);},
+    enter(R,t,o){
+      if(t<.3)R.off.y=-2.6;
+      else if(t<1.9){const u=(t-.3)/1.6,i=u<.5?0:1,f=(u-i*.5)*2;R.off.z=mL(-1.05,.05,u);R.off.y=mArc(f,.75)-.2;mR(R,'body',mL(-.85,.85,f));mSwim(R,t,1.4,.8);
+        if(mAt(o,t,.32)||mAt(o,t,1.1)||mAt(o,t,1.88)){o.splash(R,0,0,.9);o.sfx('splash');}}
+      else{mSwim(R,t,1,1);}mBlink(R,t);},
+    touch(R,t,o){MS_SP.narwhal.spy(R,o.u);mSwim(R,t,.6,.3);mR(R,o.L?'pfL':'pfR',-1.0*o.u,0,-o.s*.35*o.u);mBlink(R,t);},
+    // a horned whale salutes instead of nodding (a nod would point the horn at the partner): spy-hop, horn up, a little dip of the whole body
+    bow(R,o){const b=Math.sin(o.u*mPI);MS_SP.narwhal.spy(R,b,.35);R.off.y-=.18*Math.sin(o.u*mPI*2)*b;mR(R,'pfL',0,0,.5*b);mR(R,'pfR',0,0,-.5*b);},
+    wave(R,t){MS_SP.narwhal.spy(R,1,.4);mR(R,'pfR',-.4,0,-.5-.45*Math.sin(t*10));mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.narwhal;
+      if(t<1.2){const u=mWin(t,0,.5);S.spy(R,u,.95);mR(R,'body',.18*u);mR(R,'pfL',0,0,.9*u);mR(R,'pfR',0,0,-.9*u);mEyeK(R,mL(1,.55,u));if(mAt(o,t,.5)){o.sfx('chime');}if(t>.45&&o.n%2==0)o.fx('sparkle',R.ex.hornTip);}
+      else if(t<2.6){const u=(t-1.2)/1.4;S.spy(R,1,.95);R.off.ry=mSm(u)*TAU*2;R.off.rz=.22*Math.sin(u*TAU*2);R.off.rx=.12*Math.cos(u*TAU*2);mR(R,'pfL',0,0,1.0);mR(R,'pfR',0,0,-1.0);if(o.n%2==0)o.fx('sparkle',R.ex.hornTip);
+        if(o.n%5==0)o.splash(R,0,0,.25);}
+      else if(t<3.8){const u=(t-2.6)/1.2;R.off.x=mL(-.6,.6,u);R.off.ry=-mPI/2;R.off.y=mArc(u,1.3)-.15;mR(R,'body',mL(-1.1,1.1,u));mSwim(R,t,1.8,1);if(mAt(o,t,2.62)||mAt(o,t,3.75)){o.splash(R,0,0,1.2);o.sfx('splash');}}
+      else{const u=mWin(t,3.8,4.2);S.spy(R,u,.9);R.off.x=.6*(1-u);mR(R,'body',.15*u);mR(R,'pfL',0,0,.7*u);mR(R,'pfR',.0,0,-(.6+.35*Math.sin(t*9))*u);R.off.rz=.12*Math.sin(t*2.5)*u;if(o.n%3==0)o.fx('sparkle',R.ex.hornTip);if(t>4.6){mEyeK(R,.15,1);mR(R,'body',0,0,0);}if(mAt(o,t,4.7))o.sfx('chime');}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.narwhal;
+      if(t<.6){const u=mWin(t,0,.3);S.spy(R,u*.6,.4);mEyeK(R,1.3);}
+      else if(t<3.4){const k=mWin(t,.6,.8)*(1-mWin(t,3.2,3.4));S.spy(R,.55,.42);const a=Math.sin((t-.6)*3.1*TAU),b=Math.sin((t-.6)*2.6*TAU+1);
+        R.off.rz=.75*a*k;R.off.ry=.6*b*k;mR(R,'body',.2*Math.sin((t-.6)*4.4*TAU)*k);mR(R,'pfL',0,0,(.6+.8*a)*k);mR(R,'pfR',0,0,-(.6-.8*a)*k);mR(R,'tail',.5*Math.sin(t*20)*k);
+        mEyeK(R,.6);if(o.n%2==0)o.splash(R,mL(-.5,.5,mRnd()),mL(-.2,.6,mRnd()),.5*k);if(Math.sin((t-o.dt-.6)*3.1*TAU)*a<0){o.sfx('splash');o.shake(.18);}}
+      else{const u=mWin(t,3.4,4.0);R.off.y=mL(-.05,-.22,u)+.025*Math.sin(t*14);mR(R,'body',.28*u);mR(R,'pfL',0,0,-.2*u);mR(R,'pfR',0,0,.2*u);mEyeK(R,.45);
+        if(t>4.6&&t<5.2){R.off.rz=.3*mBmp(t,4.6,5.2);}if(mAt(o,t,4.3))o.sfx('sob');if(o.n%9==0)o.fx('bubble',R.head);}}},
+  // 눈꽃 — floats down in a snowfall; touches with a crystal arm; spins, grows and flips when it wins; melts into a puddle when it loses
+  flake:{med:'air',k0:1,cw:2.2,g:0,flat:1,build(R){const I=[.8,.92,1],I2=[.95,.99,1],bd=mJ(R,'body',mG(0,1.15,0));R.root.add(bd);
+      const hx=new mT.CylinderGeometry(.24,.24,.13,6);hx.rotateX(Math.PI/2);hx.rotateZ(Math.PI/6);bd.add(mMesh([[hx,I2]],MS_M.ice));
+      for(const s of[1,-1]){const e=mEye(.045,.052,[.2,.45,.75]);e.position.set(s*.085,.035,.072);bd.add(e);R.eyes.push(e);}
+      const sm=new mT.TorusGeometry(.05,.008,6,12,Math.PI*.8);sm.rotateZ(Math.PI*1.1);sm.translate(0,-.045,.075);const sme=new mT.Mesh(sm,PK_MAT.vc);const sa=new Float32Array(sm.attributes.position.count*3);sa.fill(.15);sm.setAttribute('color',new mT.BufferAttribute(sa,3));bd.add(sme);R.ex.mouth=sme;
+      const rg=mJ(R,'ring',mG());bd.add(rg);const arm=[[mFin([[0,0],[.05,.1],[.035,.48],[0,.6],[-.035,.48],[-.05,.1]],.035,I),null]];
+      for(const y of[.2,.36])for(const s of[1,-1]){const b=mFin([[0,0],[.022,.04],[0,.17-y*.18],[-.022,.04]],.025,I2);b.rotateZ(-s*.95);b.translate(0,y,0);arm.push([b,null]);}
+      const ag=pkMerge(arm);for(let k=0;k<6;k++){const a=mJ(R,'a'+k,mG(Math.cos(k*mPI/3)*.2,Math.sin(k*mPI/3)*.2,0));a.rotation.z=k*mPI/3-mPI/2;rg.add(a);const m=new mT.Mesh(ag,MS_M.ice);m.castShadow=true;a.add(m);const tp=mG(0,.6,0);a.add(tp);R.ex['tip'+k]=tp;}
+      const bw=[];for(const s of[1,-1]){const q=new mT.TorusGeometry(.04,.016,6,10);q.scale(1.3,.8,1);q.translate(s*.05,0,0);bw.push([q,R.tc]);}bw.push([mEll([0,0,0],[.025,.025,.025],R.acc,8),null]);const bwm=mMesh(bw,MS_M.skin);bwm.position.set(0,.3,.04);R.j.a1.add(bwm);
+      const pd=mJ(R,'puddle',new mT.Mesh(mWaterDisc(.55,28),MS_M.water));pd.position.y=.01;pd.scale.setScalar(.001);R.root.add(pd);
+      R.tips={L:R.ex.tip0,R:R.ex.tip3};R.iks={L:[rg],R:[rg]};R.head=bd;R.sph=[[bd,[0,0,0],.75]];},
+    idle(R,t,o){R.off.y=.06*Math.sin(t*1.6);mR(R,'ring',0,0,t*.35);mR(R,'body',.08*Math.sin(t*1.1));mBlink(R,t,.2);if(o&&o.n%25==0)o.fx('sparkle',R.ex['tip'+(o.n/25%6|0)]);},
+    enter(R,t,o){const u=mWin(t,.2,2.0);R.off.y=mL(5.5,0,1-Math.pow(1-u,2));mR(R,'ring',0,0,(1-u)*14+t*.4);R.off.rz=.3*Math.sin(t*3)*(1-u);if(mAt(o,t,2.0)){o.fx('sparkle',R.j.body,[0,0,0],12);o.sfx('chime');}mBlink(R,t);},
+    touch(R,t,o){R.off.y=.04*Math.sin(t*2);mR(R,'body',0,0,(o.side<0?-1:1)*.15*o.u);mBlink(R,t);if(o.n%8==0)o.fx('sparkle',R.touch);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'body',.55*b);mR(R,'ring',0,0,o.u*mPI/3);},
+    wave(R,t,o){mR(R,'ring',0,0,t*3);R.off.y=.08*Math.sin(t*4);mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.flake;
+      if(t<2.0){const u=t/2;mR(R,'ring',0,0,mSm(u)*TAU*4);R.off.y=.45*mSm(u);if(o.n%2==0)o.fx('sparkle',R.ex['tip'+(o.n%6)]);if(mAt(o,t,.1))o.sfx('chime');}
+      else if(t<3.2){const u=mWin(t,2.0,2.5);R.off.y=.45;for(let k=0;k<6;k++)R.j['a'+k].scale.y=1+.38*u;if(mAt(o,t,2.2)){o.sfx('chime');o.flash();o.fx('sparkle',R.j.body,[0,0,0],16);}}
+      else if(t<4.4){const u=(t-3.2)/1.2;R.off.y=.45;for(let k=0;k<6;k++)R.j['a'+k].scale.y=1.38;mR(R,'body',mSm(u)*TAU);mR(R,'ring',0,0,u*2);}
+      else{R.off.y=.45+.06*Math.sin(t*3);for(let k=0;k<6;k++){R.j['a'+k].scale.y=1.38-.38*mWin(t,5.0,5.5);mR(R,'a'+k,0,0,.15*Math.sin(t*6+k));}mEyeK(R,.35);if(o.n%3==0)o.fx('sparkle',R.ex['tip'+(o.n%6)]);}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.flake;
+      if(t<.8){R.off.x=.02*Math.sin(t*60);mEyeK(R,1.2);if(o.n%6==0)o.fx('drip',R.j.body,[0,-.2,0]);}
+      else{const u=mWin(t,.8,3.6);R.off.y=-.62*u;R.off.s=1-.3*u;for(let k=0;k<6;k++){const a=R.j['a'+k],side=Math.cos(k*mPI/3+mPI/2);mR(R,'a'+k,0,0,side*.7*u);a.scale.y=1-.25*u;}
+        R.j.puddle.scale.setScalar((.05+1.0*u)/R.off.s);R.j.puddle.position.y=(.012-R.off.y)/(R.off.s*R.k0);mEyeK(R,mL(1,.5,u));R.ex.mouth.scale.y=-1;
+        if(o.n%3==0&&t<3.8)o.fx('drip',R.ex['tip'+(o.n%6)]);if(mAt(o,t,4.4))o.sfx('sob');}}},
+  // 빙산 — rises out of the water; touches with an ice ledge; grows a crystal spire when it wins; cracks and calves when it loses
+  berg:{med:'water',k0:.8,pool:1.2,cw:2.6,g:0,build(R){const bd=mJ(R,'body',mG(0,0,0));R.root.add(bd);
+      const pk=(c,r,s,det)=>{const g=new mT.IcosahedronGeometry(1,det==null?1:det);g.scale(r[0],r[1],r[2]);const p=g.attributes.position,n=p.count,a=new Float32Array(n*3);
+        for(let i=0;i<n;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),q=mHash([x*3+s,y*3,z*3])*.16-.08;p.setXYZ(i,x*(1+q)+c[0],y*(1+q)+c[1],z*(1+q)+c[2]);
+          const Y=y*(1+q)+c[1];a.set(Y>1.05||(Y>.8&&mHash([x,y,z])>.6)?[.97,.99,1]:[mL(.42,.74,Math.max(0,Math.min(1,(Y+.3)/1.3))),mL(.68,.9,Math.max(0,Math.min(1,(Y+.3)/1.3))),mL(.86,.99,Math.max(0,Math.min(1,(Y+.3)/1.3)))],i*3);}
+        g.setAttribute('color',new mT.BufferAttribute(a,3));g.computeVertexNormals();return g;};
+      bd.add(mMesh([[pk([0,.55,0],[.78,.95,.68],1),null],[pk([.52,.38,.14],[.42,.6,.42],2),null],[pk([-.5,.3,.05],[.46,.55,.45],3),null],[pk([.05,1.22,-.05],[.3,.38,.28],4),null]],MS_M.berg));
+      const ck=mJ(R,'chunk',mG(-.42,.95,.12));bd.add(ck);ck.add(mMesh([[pk([0,0,0],[.26,.3,.24],6,0),null]],MS_M.berg));
+      for(const s of[1,-1]){const e=mEye(.07,.08,[.15,.35,.6]);e.position.set(s*.17,.86,.63);e.rotation.y=s*.18;bd.add(e);R.eyes.push(e);}
+      const sm=new mT.TorusGeometry(.09,.014,6,14,Math.PI*.8);sm.rotateZ(Math.PI*1.1);sm.translate(0,.7,.66);const sa=new Float32Array(sm.attributes.position.count*3);sa.fill(.12);sm.setAttribute('color',new mT.BufferAttribute(sa,3));const sme=new mT.Mesh(sm,PK_MAT.vc);bd.add(sme);R.ex.mouth=sme;
+      for(const s of[1,-1]){const l=mJ(R,s>0?'lL':'lR',mG(s*.72,.45,.12));bd.add(l);l.add(mMesh([[pk([s*.08,0,0],[.22,.16,.22],5+s,0),null]],MS_M.berg));const tp=mG(s*.26,0,.04);l.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[l];}
+      const fg=mJ(R,'flag',mG(.05,1.52,-.05));bd.add(fg);const pole=new mT.CylinderGeometry(.015,.015,.6,6);pole.translate(0,.3,0);
+      const fs=new mT.Shape();fs.moveTo(0,0);fs.lineTo(.36,-.1);fs.lineTo(0,-.22);const fgeo=new mT.ShapeGeometry(fs);fgeo.translate(.015,.6,0);const fa=new Float32Array(fgeo.attributes.position.count*3);
+      for(let i=0;i<fgeo.attributes.position.count;i++)fa.set(fgeo.attributes.position.getY(i)>.49&&fgeo.attributes.position.getY(i)<.53?R.acc:R.tc,i*3);fgeo.setAttribute('color',new mT.BufferAttribute(fa,3));
+      fg.add(mMesh([[pole,[.75,.78,.82]]],PK_MAT.metal));const fm=new mT.Mesh(fgeo,new mT.MeshStandardMaterial({vertexColors:true,side:mT.DoubleSide,roughness:.8}));fm.castShadow=true;fg.add(fm);R.ex.flagCloth=fm;
+      const sp=mJ(R,'spire',mG(-.1,1.45,0));bd.add(sp);sp.add(mMesh([[mHorn(.75,.14,(u,v)=>[.85+.15*v,.95,1],0,8),null]],MS_M.ice));sp.scale.setScalar(.001);
+      R.head=mJ(R,'head',mG(0,.82,.55));bd.add(R.head);R.sph=[[bd,[0,.6,0],.75]];},
+    idle(R,t){R.off.y=.035*Math.sin(t*1.2);R.off.rz=.03*Math.sin(t*.9);mR(R,'flag',0,.3*Math.sin(t*3));mBlink(R,t,.5);},
+    enter(R,t,o){const u=mWin(t,.3,1.9);R.off.y=mL(-2.3,0,1-Math.pow(1-u,2))+.06*Math.sin(t*4)*u;R.off.rz=.08*Math.sin(t*3)*(1-u);if(mAt(o,t,.35)){o.sfx('crack');o.shake(.3);}
+      if(t>.6&&t<1.9&&o.n%2==0)o.fx('cascade',R.root,[mL(-.7,.7,mRnd()),1.1*u,mL(-.5,.5,mRnd())]);if(mAt(o,t,1.85)){o.splash(R,0,0,1.2);o.sfx('splash');}mR(R,'flag',0,.4*Math.sin(t*5));mBlink(R,t);},
+    touch(R,t,o){R.off.rz=-o.s*.12*o.u;mR(R,o.L?'lL':'lR',0,-o.s*.3*o.u,o.s*.5*o.u);mR(R,'flag',0,.3*Math.sin(t*3));mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);R.off.rx=.3*b;R.off.py=.2;if(b>.6&&o.n%6==0)o.fx('snow',R.j.body,[0,1.3,.3]);},
+    wave(R,t){mR(R,'lR',0,0,-.9-.4*Math.sin(t*9));mR(R,'flag',0,.3*Math.sin(t*3));mBlink(R,t);},
+    win(R,t,o){
+      if(t<1.5){const u=mWin(t,0,.6);R.off.y=.5*u;R.off.rz=.1*Math.sin(t*5)*u;mR(R,'flag',0,.8*Math.sin(t*9));if(t>.2&&t<1.2&&o.n%3==0)o.fx('cascade',R.root,[mL(-.6,.6,mRnd()),.9,mL(-.4,.4,mRnd())]);}
+      else if(t<3.0){R.off.y=.5;const u=mWin(t,1.5,2.4);R.j.spire.scale.setScalar(.001+u);if(mAt(o,t,1.6))o.sfx('chime');if(o.n%2==0&&u<1)o.fx('sparkle',R.j.spire,[0,.7*u,0]);if(mAt(o,t,2.4)){o.flash();o.fx('sparkle',R.j.spire,[0,.75,0],14);}mR(R,'flag',0,.5*Math.sin(t*7));}
+      else if(t<4.4){R.j.spire.scale.setScalar(1);const b=Math.abs(Math.sin((t-3)*5));R.off.y=.5-.4*b;if(Math.sin((t-o.dt-3)*5)*Math.sin((t-3)*5)<0){o.splash(R,0,0,1);o.sfx('splash');o.shake(.25);}}
+      else{R.j.spire.scale.setScalar(1);const u=mWin(t,4.4,4.7);R.off.y=.5;mR(R,'lL',0,0,1.0*u+.2*Math.sin(t*8)*u);mR(R,'lR',0,0,-1.0*u-.2*Math.sin(t*8)*u);mEyeK(R,.35);if(o.n%4==0)o.fx('sparkle',R.j.spire,[0,.75,0]);}
+      mBlink(R,t);},
+    lose(R,t,o){
+      if(t<.8){R.off.x=.02*Math.sin(t*70)*mWin(t,0,.3);if(mAt(o,t,.2)){o.sfx('crack');o.shake(.25);}mEyeK(R,1.25);}
+      else if(t<2.6){const u=mWin(t,.8,2.3),c=R.j.chunk;c.position.x-=.3*u;c.position.y-=1.25*u*u;c.rotation.z+=1.4*u;c.rotation.x+=.6*u;if(mAt(o,t,1.0))o.sfx('crack');if(mAt(o,t,2.25)){o.splash(R,-.6,.2,1.3);o.sfx('splash');o.shake(.4);}mEyeK(R,1.2);}
+      else{const c=R.j.chunk;c.position.x-=.3;c.position.y-=1.12;c.rotation.z+=1.4;c.rotation.x+=.6;c.position.y+=.03*Math.sin(t*2);const u=mWin(t,2.6,3.8);R.off.rz=.3*u;R.off.y=-.45*u+.03*Math.sin(t*1.5);mR(R,'flag',.5*u,0,.6*u);mEyeK(R,.5);R.ex.mouth.scale.y=-1;if(mAt(o,t,4.2))o.sfx('sob');}}},
+  // 번개 — strikes down from its storm cloud; touches with a zigzag spike (a spark); calls down a ring of strikes when it wins; its cloud rains it out when it loses
+  bolt:{med:'air',k0:1,cw:2.6,g:.6,flat:1,build(R){const mat=rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.35,emissive:0xffb400,emissiveIntensity:.6}),.8);R.ex.mat=mat;
+      const bd=mJ(R,'body',mG(0,.12,0));R.root.add(bd);const s=new mT.Shape();[[-.05,1.36],[.4,1.36],[.13,.86],[.37,.86],[-.2,-.02],[.0,.62],[-.25,.62]].forEach((q,i)=>i?s.lineTo(q[0]-.07,q[1]):s.moveTo(q[0]-.07,q[1]));
+      const g=new mT.ExtrudeGeometry(s,{depth:.16,bevelEnabled:true,bevelThickness:.05,bevelSize:.045,bevelSegments:3,curveSegments:4});g.translate(0,0,-.08);const p=g.attributes.position,a=new Float32Array(p.count*3);
+      for(let i=0;i<p.count;i++){const k=Math.max(0,Math.min(1,p.getY(i)/1.36));a.set([1,mL(.7,.93,k),mL(.08,.38,k)],i*3);}g.setAttribute('color',new mT.BufferAttribute(a,3));const bm=new mT.Mesh(g,mat);bm.castShadow=true;bd.add(bm);
+      for(const x of[.03,.2]){const e=mEye(.045,.052,[.35,.2,.05]);e.position.set(x,1.12,.135);bd.add(e);R.eyes.push(e);}
+      const sm=new mT.TorusGeometry(.055,.01,6,12,Math.PI*.8);sm.rotateZ(Math.PI*1.1);sm.translate(.115,1.0,.14);const sa=new Float32Array(sm.attributes.position.count*3);sa.fill(.25);sm.setAttribute('color',new mT.BufferAttribute(sa,3));const sme=new mT.Mesh(sm,PK_MAT.vc);bd.add(sme);R.ex.mouth=sme;
+      const tp=mG(.33,.86,0),tn=mG(-.35,.62,0);bd.add(tp);bd.add(tn);R.ex.tipP=tp;R.ex.tipN=tn;R.tips={L:tp,R:tn};R.iks={L:[bd],R:[bd]};
+      const cl=mJ(R,'cloud',mG(.06,2.05,0));R.root.add(cl);const C=[.42,.45,.53],C2=[.58,.61,.68];cl.add(mMesh([[mEll([0,0,0],[.34,.2,.22],C,16),null],[mEll([.3,-.03,.02],[.23,.16,.18],C,14),null],[mEll([-.29,-.04,0],[.21,.15,.17],C,14),null],[mEll([.06,.12,0],[.23,.16,.18],C2,14),null]],MS_M.cloud));
+      bd.add(mScarf(R,.14,.11,.034,[.07,.95,0],0,false));R.head=mJ(R,'head',mG(.11,1.08,.1));bd.add(R.head);R.sph=[[bd,[.05,.7,0],.42]];},
+    glow(R,v,t){R.ex.mat.emissiveIntensity=v;},
+    idle(R,t,o){R.off.y=.05*Math.sin(t*2);MS_SP.bolt.glow(R,.55+.15*Math.sin(t*9));R.j.cloud.position.x+=.05*Math.sin(t*.7);if(o&&o.n%17==0)o.fx('spark',R.j.body,[mL(-.2,.3,mRnd()),mL(.1,1.3,mRnd()),0]);mBlink(R,t,.4);},
+    enter(R,t,o){const S=MS_SP.bolt;const c=mWin(t,.05,.45);R.j.cloud.scale.setScalar(.001+c);R.j.cloud.position.y+=(1-c)*2;
+      if(t<.55){R.off.s=.001;}else{R.off.s=Math.min(1,.4+(t-.55)*4);S.glow(R,mL(2.5,.6,mWin(t,.55,1.3)));if(o.n%3==0&&t<1.3)o.fx('spark',R.j.body,[0,.4,0]);}
+      if(mAt(o,t,.55))o.strike(R,0,0);mBlink(R,t);},
+    touch(R,t,o){const S=MS_SP.bolt;mR(R,'body',0,0,(o.side<0?-1:1)*.12*o.u);S.glow(R,.6+.4*o.u);if(o.u>.9&&o.n%3==0)o.fx('spark',R.touch);mBlink(R,t);},
+    bow(R,o){const b=Math.sin(o.u*mPI);mR(R,'body',.45*b);},
+    wave(R,t,o){mR(R,'body',0,0,.15*Math.sin(t*10));MS_SP.bolt.glow(R,.8);mBlink(R,t);},
+    win(R,t,o){const S=MS_SP.bolt;
+      if(t<.6){S.glow(R,.6+2*t);R.off.x=.02*Math.sin(t*70);if(o.n%2==0)o.fx('spark',R.j.body,[0,.6,0]);}
+      else if(t<3.0){const i=Math.floor((t-.6)/.6),f=(t-.6)/.6-i;S.glow(R,1.2+1.2*(1-f));R.off.y=mArc(f,.25);const SP=[[0,-1.0],[-1.0,.35],[.85,.5],[.2,1.0]];for(let k=0;k<4;k++)if(mAt(o,t,.6+k*.6))o.strike(R,SP[k][0],SP[k][1]);}
+      else if(t<4.2){const u=(t-3)/1.2;R.off.x=.45*Math.sign(Math.sin(u*mPI*5))*mSm(Math.abs(Math.sin(u*mPI*5)));R.off.y=.15*Math.abs(Math.sin(u*mPI*5));S.glow(R,1.4);if(o.n%2==0)o.fx('spark',R.j.body,[0,.6,0]);if(mAt(o,t,3.1))o.sfx('zap');}
+      else{S.glow(R,1.0+.3*Math.sin(t*12));mR(R,'body',0,0,.12*Math.sin(t*4));mEyeK(R,.35);if(o.n%4==0)o.fx('spark',R.j.body,[mL(-.2,.3,mRnd()),mL(.2,1.3,mRnd()),0]);if(t>5)mEyeK(R,.4,1);}
+      mBlink(R,t);},
+    lose(R,t,o){const S=MS_SP.bolt;
+      if(t<.6){S.glow(R,(t*20|0)%2?.1:.8);mEyeK(R,1.2);}
+      else{const u=mWin(t,.6,3.4);S.glow(R,mL(.6,.04,u)*((t*14|0)%5===0&&u<.9?.2:1));mR(R,'body',.3*u);R.off.y=-.06*u;R.j.body.scale.y=1-.1*u;R.j.cloud.position.y-=.25*mWin(t,.6,1.2);
+        if(o.n%1==0&&t<4.8)o.fx('rain',R.j.cloud,[mL(-.35,.35,mRnd()),-.1,mL(-.15,.15,mRnd())]);if(t>3.4&&t<4.4&&o.n%4==0)o.fx('smoke',R.j.body,[.1,1.4,0]);if(mAt(o,t,3.6))o.sfx('zap');if(mAt(o,t,4.4))o.sfx('sob');mEyeK(R,.45);R.ex.mouth.scale.y=-1;}}}
 };
-// ---------------- poses & animations ----------------
-// every frame: back to the rest pose, then the animation writes joint angles. R.off = local offsets the scene adds to its own
-// placement: x / y / z (metres; z = forward), rx (tip forward), ry (turn), rz (lean), s (squash: y scale)
-function mRest(R){const J=['hips','spine','neck','head','aL','aR','fL','fR','hL','hR','lL','lR','kL','kR','tL','tR','tail'];for(const j of J)if(R[j])R[j].rotation.set(0,0,0);
-  R.hips.position.y=.84;R.off={x:0,y:0,z:0,rx:0,ry:0,rz:0,s:1};
-  mArm(R,1,.14,.06,-.3);mArm(R,-1,.14,.06,-.3);mLeg(R,1,-.08,.16);mLeg(R,-1,-.08,.16);R.spine.rotation.x=.03;
-  for(const e of R.eyes){e.scale.y=1;if(e.userData.pu)e.userData.pu.position.set(0,0,0);}if(R.ex.mouth)R.ex.mouth.rotation.z=0;
-  if(R.ex.mat)R.ex.mat.emissiveIntensity=.35;R.root.visible=true;
-  for(const k in R.ex)for(const o of[].concat(R.ex[k]))if(o&&o.userData&&o.userData.b0){const b=o.userData.b0;o.position.copy(b[0]);o.rotation.copy(b[1]);o.scale.copy(b[2]);o.visible=true;}}
-// arm s (1 = left, -1 = right): out = raised sideways, fw = swung forward, el = elbow bend (negative bends forward), tw = twist
-function mArm(R,s,out,fw,el,tw,ez){const a=R[s>0?'aL':'aR'],f=R[s>0?'fL':'fR'];a.rotation.set(-(fw||0),(tw||0)*s,s*(out||0));f.rotation.set(el||0,0,-s*(ez||0));}
-function mLeg(R,s,fw,kn,out){const l=R[s>0?'lL':'lR'],k=R[s>0?'kL':'kR'],t=R[s>0?'tL':'tR'];l.rotation.set(-(fw||0),0,s*(out||0));k.rotation.set(kn||0,0,0);t.rotation.set(-(kn||0)*.5+(fw||0)*.3,0,0);}
-function mHead(R,nod,turn,tilt){R.head.rotation.set(nod||0,turn||0,tilt||0);}
-function mSad(R,k){for(const e of R.eyes)if(e.userData.pu)e.userData.pu.position.y=-.025*k;if(R.ex.mouth)R.ex.mouth.rotation.z=k>.5?Math.PI:0;}
-function mBlink(R,t,seed){const q=(t*.37+(seed||0))%3.1;const b=q<.12?1-Math.sin(q/.12*Math.PI):1;for(const e of R.eyes)e.scale.y=Math.max(.08,b);}
-const mHop=(t,f,h)=>Math.abs(Math.sin(t*f*Math.PI))*h;
-// skating stride (speed 0..1): long side pushes, lean, opposite arm swing
-function mSkate(R,t,k){const ph=t*1.6*TAU,a=Math.sin(ph),b=Math.cos(ph);R.spine.rotation.x=.18*k+.03;R.off.y=-.04*k;
-  for(const s of[1,-1]){const q=s*a;mLeg(R,s,-.15*k+(q>0?.35*q*k:.15*q*k),.25*k+.25*Math.max(0,-q)*k,(.12+.18*Math.max(0,q))*k);mArm(R,s,.2,.45*q*k,-.4);}
-  R.off.rz=.06*a*k;R.spine.rotation.y=.12*b*k;}
-// the two-handed handshake (R stands facing the partner; side: the hand reaching across). u: 0..1 through the shake
-function mShake(R,t,u){const reach=mWin(u,0,.18)*(1-mWin(u,.86,1)),pump=Math.sin(t*3.2*TAU)*.13*mWin(u,.2,.3)*(1-mWin(u,.72,.8)),cover=mWin(u,.3,.42)*(1-mWin(u,.78,.9));
-  mArm(R,-1,mL(.14,-.5,reach),mL(.06,1.42+pump,reach),mL(-.3,-.08,reach),0,mL(0,.22,reach));mArm(R,1,mL(.14,-.72,cover),mL(.06,1.36+pump*.8,cover),mL(-.3,-.4,cover),0,mL(0,.3,cover));
-  R.spine.rotation.x=.03+.2*reach;mHead(R,.08*reach,0,0);mHornSafe(R,reach);R.off.y=.02*Math.sin(t*3.2*TAU)*reach*.3;}
-// a horned mascot turns its head aside up close so the horn passes the partner's face (k: 0..1)
-function mHornSafe(R,k){if(!R.ex.horn||!k)return;R.head.rotation.y-=.62*k;R.head.rotation.x-=.3*k;R.head.rotation.z-=.18*k;}
-function mBow(R,u){const b=Math.sin(Math.min(1,u)*Math.PI);
-  // a horned mascot curtsies instead of bowing (a bow would point the horn at the partner): knees, one leg behind, hand on the chest, chin up
-  if(R.ex.horn){R.off.y=-.09*b;R.spine.rotation.x=.03+.1*b;mLeg(R,1,-.08+.2*b,.16+.45*b);mLeg(R,-1,-.08-.38*b,.16+.42*b,-.08*b);
-    mArm(R,-1,.1,.55*b,-1.7*b,0,.55*b);mArm(R,1,.14+.55*b,.05,-.3);mHead(R,-.18*b,-.4*b,-.28*b);return;}
-  R.spine.rotation.x=.03+.48*b;mHead(R,.25*b,0,0);mArm(R,1,.08,-.05,-.15*b);mArm(R,-1,.08,-.05,-.15*b);mLeg(R,1,-.08-.1*b,.16+.1*b);mLeg(R,-1,-.08-.1*b,.16+.1*b);}
-function mWave(R,t,s){mArm(R,s,2.4+.25*Math.sin(t*4*TAU),.2,-.35-.25*Math.sin(t*4*TAU));}
-const mWP=(o,x,y,z)=>o.localToWorld(mV(x||0,y||0,z||0));
-// victory (w) and defeat (l) for every mascot; g = where the short "signature" used in the entrance starts inside w
-var MS_WL={
-  peng:{g:0,w(R,t,o){const hop=t<1.5?mHop(t,2,.28):0,fl=Math.sin(t*14)*.5;R.off.y=hop;
-      if(t<1.5){mArm(R,1,.7+fl,0,-.1);mArm(R,-1,.7-fl,0,-.1);mHead(R,-.15,0,Math.sin(t*6)*.1);mLeg(R,1,-.1,.25*(1-hop*3));mLeg(R,-1,-.1,.25*(1-hop*3));}
-      else if(t<2.2){const u=mWin(t,1.5,2.2);R.spine.rotation.x=.4*u;mArm(R,1,.5,-.8*u,-.2);mArm(R,-1,.5,-.8*u,-.2);mSkate(R,t,.8);R.off.z=.5*u;}
-      else if(t<3.6){const u=mWin(t,2.2,2.5),v=1-Math.pow(1-mWin(t,2.2,3.6),2);R.off.rx=1.38*u;R.off.y=.36*u;R.off.z=.5+2.1*v;mArm(R,1,.3,-1.4,0);mArm(R,-1,.3,-1.4,0);mLeg(R,1,-.2,0);mLeg(R,-1,-.2,0);mHead(R,-.9*u,0,0);
-        if(t<3.4&&o.n%3==0)o.fx('snow',mWP(R.root,0,.1,1.1));}
-      else{const u=mWin(t,3.6,4),j=mHop(Math.max(0,t-4),2.2,.18);R.off.rx=1.38*(1-u);R.off.y=.36*(1-u)+j;R.off.z=2.6;mArm(R,1,mL(.3,2.5,u),0,-.2);mArm(R,-1,mL(.3,2.5,u),0,-.2);mHead(R,-.2*u,0,0);}
-      mBlink(R,t,.3);},
-    l(R,t,o){if(t<1.3){const st=Math.sin(t*9);mLeg(R,1,.45*Math.max(0,st),.6*Math.max(0,st));mLeg(R,-1,.45*Math.max(0,-st),.6*Math.max(0,-st));mArm(R,1,.35,.1+.1*st,-.9);mArm(R,-1,.35,.1-.1*st,-.9);mHead(R,.1,.3*Math.sin(t*12),0);R.off.y=.04*Math.abs(st);
-        if(Math.abs(st)>.98&&o.n%2==0)o.fx('snow',mWP(R.root,st>0?.15:-.15,0,.2));}
-      else{const u=mWin(t,1.3,2.1),e=u*u;R.off.rx=1.46*e;R.off.y=.34*mWin(t,1.6,2.1);mArm(R,1,.25+.3*Math.max(0,Math.sin(t*3))*(t>2.4?1:0),-.2,0);mArm(R,-1,.25+.3*Math.max(0,Math.sin(t*3+1))*(t>2.4?1:0),-.2,0);
-        mLeg(R,1,-.2,.7*Math.max(0,Math.sin(t*5))*(t>2.4?1:0));mLeg(R,-1,-.2,.7*Math.max(0,Math.sin(t*5+2))*(t>2.4?1:0));mHead(R,-.7*u,.25*Math.sin(t*4)*(t>2.4?1:0),0);if(t>2.08&&t<2.13)o.shake(.25);}
-      mSad(R,1);mBlink(R,t,.7);}},
-  orca:{g:2.4,w(R,t,o){if(t<.8){const u=mWin(t,0,.8);R.off.y=-.16*u;R.spine.rotation.x=.3*u;mLeg(R,1,.35*u,.8*u);mLeg(R,-1,.35*u,.8*u);mArm(R,1,.3,-.6*u,-.2);mArm(R,-1,.3,-.6*u,-.2);}
-      else if(t<2.1){const u=(t-.8)/1.3;R.off.y=4.2*u*(1-u)*1.1;R.off.rx=-TAU*mSm(u);R.off.ph=.72;mArm(R,1,.3,1.4,-1.8);mArm(R,-1,.3,1.4,-1.8);mLeg(R,1,.9,1.6);mLeg(R,-1,.9,1.6);R.spine.rotation.x=.5;if(u>.97)o.fx('splash',mWP(R.root,0,0,0));}
-      else if(t<2.4){const u=mWin(t,2.1,2.4);R.off.y=-.15*(1-u);mLeg(R,1,.3*(1-u),.7*(1-u));mLeg(R,-1,.3*(1-u),.7*(1-u));if(t<2.14)o.shake(.3);}
-      else{const u=mWin(t,2.4,2.9);mArm(R,1,mL(.14,-.35,u),mL(.06,.95,u),mL(-.3,-1.7,u),.3*u);mArm(R,-1,mL(.14,-.35,u),mL(.06,.82,u),mL(-.3,-1.75,u),.3*u);mHead(R,-.22*u,.25*Math.sin(t*1.2),0);R.spine.rotation.x=-.08*u;
-        if(R.ex.fin)R.ex.fin.rotation.z=.12*Math.sin(t*6);}
-      if(R.ex.tail)R.ex.tail.rotation.x=.35+.3*Math.sin(t*5);mBlink(R,t,.1);},
-    l(R,t,o){const u=mWin(t,0,.7);R.off.y=-.48*u;mLeg(R,1,mL(-.08,-1.35,u),mL(.16,2.3,u));mLeg(R,-1,mL(-.08,-1.35,u),mL(.16,2.3,u));R.spine.rotation.x=.45*u;
-      if(t>.7){const p=Math.sin(t*7);mArm(R,1,.2,.9+.5*Math.max(0,p),-.4);mArm(R,-1,.2,.9+.5*Math.max(0,-p),-.4);if(Math.abs(p)>.99)o.fx('snow',mWP(R.root,p>0?.3:-.3,0,.5));
-        if(R.ex.tail)R.ex.tail.rotation.x=.35+1.1*Math.abs(Math.sin(t*4.5));if(Math.abs(Math.sin(t*4.5))>.995&&o.n%2==0)o.shake(.12);}
-      mHead(R,.35*u,.25*Math.sin(t*3),0);mSad(R,1);mBlink(R,t,.5);}},
-  bear:{g:3,w(R,t,o){if(t<1){const u=mWin(t,0,1);R.spine.rotation.x=-.18*u;mArm(R,1,mL(.14,2.2,u),.1,-.9*u);mArm(R,-1,mL(.14,2.2,u),.1,-.9*u);mHead(R,-.35*u,0,0);if(t>.6&&t<.65)o.shake(.35);}
-      else if(t<3){const b=Math.sin((t-1)*4*Math.PI);mArm(R,1,.25,1.1+.25*Math.max(0,b),-1.9,.2);mArm(R,-1,.25,1.1+.25*Math.max(0,-b),-1.9,.2);mHead(R,-.15,.1*Math.sin(t*3),0);R.spine.rotation.x=-.1;if(Math.abs(b)>.995)o.shake(.1);}
-      else{const u=mWin(t,3,3.4);mArm(R,1,mL(.25,1.55,u),mL(1.1,.1,u),mL(-1.9,-2,u));mArm(R,-1,mL(.25,1.55,u),mL(1.1,.1,u),mL(-1.9,-2,u));R.spine.rotation.y=.3*Math.sin((t-3)*3);mHead(R,-.1,.2*Math.sin((t-3)*3),0);}
-      mLeg(R,1,-.1,.2,.18);mLeg(R,-1,-.1,.2,.18);mBlink(R,t,.2);},
-    l(R,t,o){const u=mWin(t,0,1),e=u*u;R.off.y=-.66*e;mLeg(R,1,mL(-.08,1.45,u),mL(.16,.25,u),.25*u);mLeg(R,-1,mL(-.08,1.45,u),mL(.16,.25,u),.25*u);R.off.rx=-.08*u;if(t>.98&&t<1.03){o.shake(.35);o.fx('snow',mWP(R.root,0,0,0));}
-      if(t>1.2){const c=mWin(t,1.2,1.7);mArm(R,1,mL(.14,.3,c),mL(.06,2.15,c),mL(-.3,-1.95,c));mArm(R,-1,mL(.14,.3,c),mL(.06,2.15,c),mL(-.3,-1.95,c));R.off.rz=.09*Math.sin((t-1.2)*3.6)*c;mHead(R,.32*c,0,0);R.spine.rotation.x=.25*c;}
-      mSad(R,1);mBlink(R,t,.9);}},
-  seal:{g:0,w(R,t,o){if(t<2.4){const c=Math.abs(Math.sin(t*4*Math.PI));mArm(R,1,.08+.55*c,1.15,-.25);mArm(R,-1,.08+.55*c,1.15,-.25);R.off.y=mHop(t,2,.07);mHead(R,-.15+.08*Math.sin(t*8),0,0);if(c<.06&&o.n%3==0)o.clap();}
-      else{const u=mWin(t,2.4,2.9);mHead(R,-.65*u,0,.08*Math.sin(t*5)*u);mArm(R,1,1.2*u+.14,.1,-.2);mArm(R,-1,1.2*u+.14,.1,-.2);R.off.rz=.04*Math.sin(t*5);mPuck(R,u>.5);}
-      if(t<2.4)mPuck(R,false);mBlink(R,t,.4);},
-    l(R,t,o){const u=mWin(t,0,1);R.off.rx=-1.42*u*u;R.off.y=.33*mWin(t,.4,1);if(t>.95&&t<1){o.shake(.25);o.fx('snow',mWP(R.root,0,0,0));}
-      if(t>1){const f=Math.sin(t*16);mArm(R,1,.9+.4*f,.3,-.2);mArm(R,-1,.9-.4*f,.3,-.2);mLeg(R,1,.3+.3*Math.sin(t*11),.4);mLeg(R,-1,.3-.3*Math.sin(t*11),.4);R.off.rz=.35*Math.sin((t-1)*2.4*Math.PI);mHead(R,0,.4*Math.sin(t*9),0);}
-      mPuck(R,false);mSad(R,1);mBlink(R,t,.6);}},
-  walrus:{g:0,w(R,t,o){if(t<1.6){mArm(R,-1,.3,1.75,-1.85,.4*Math.sin(t*5));mArm(R,1,.75,-.15,-.3,0,1.7);mHead(R,-.18,.1*Math.sin(t*3),0);R.spine.rotation.x=-.1;}
-      else if(t<2.5){const q=Math.sin(t*38)*.06;R.spine.rotation.x=-.18+q;mArm(R,1,.4,.4,-1.9);mArm(R,-1,.4,.4,-1.9);mHead(R,-.35+q,0,0);R.off.y=Math.abs(q)*.5;}
-      else{const w=Math.sin((t-2.5)*2.6*Math.PI);R.spine.rotation.x=-.25;R.off.z=(t-2.5)*.35;mLeg(R,1,.35*w,.2+.3*Math.max(0,w));mLeg(R,-1,-.35*w,.2+.3*Math.max(0,-w));mArm(R,1,.5,-.4*w,-1.5);mArm(R,-1,.5,.4*w,-1.5);R.off.rz=.07*w;
-        if(R.ex.tusks&&o.n%5==0)o.fx('sparkle',mWP(R.ex.tusks[o.n%2],0,.3,0));}
-      mBlink(R,t,.8);},
-    l(R,t,o){const u=mWin(t,0,1.2),sg=.5+.5*Math.sin(t*2.4);R.spine.rotation.x=.55*u+.05*sg;mHead(R,.45*u,.38*Math.sin(t*4.2)*mWin(t,1,1.5),0);mArm(R,1,.05+.08*sg,.15,-.1);mArm(R,-1,.05+.08*sg,.15,-.1);
-      mLeg(R,1,-.15,.3);mLeg(R,-1,-.15,.3);R.off.y=-.05*u;mSad(R,1);mBlink(R,t,.2);}},
-  fox:{g:0,w(R,t,o){const wag=Math.sin(t*30);if(R.ex.tail)R.ex.tail.rotation.y=.7*wag;
-      if(t<1.5){R.off.y=mHop(t,3,.08);mArm(R,1,.3,.6,-1.2);mArm(R,-1,.3,.6,-1.2);mHead(R,-.1,0,.2*Math.sin(t*6));}
-      else if(t<2.5){const u=mWin(t,1.5,2.5);R.off.ry=TAU*u;mArm(R,1,1.4,0,-.2);mArm(R,-1,1.4,0,-.2);mLeg(R,1,-.1,.2,.3);}
-      else if(t<3.6){const u=(t-2.5)/1.1,c=t<2.8?mWin(t,2.5,2.8):1;if(t<2.8){R.off.y=-.15*c;mLeg(R,1,.4*c,.9*c);mLeg(R,-1,.4*c,.9*c);}else{const v=(t-2.8)/.8;R.off.y=Math.max(0,3.2*v*(1-v)*.55);R.off.z=1.1*mSm(v);R.off.rx=.55*Math.sin(v*Math.PI);mArm(R,1,.2,1.6,-.2);mArm(R,-1,.2,1.6,-.2);mLeg(R,1,-.6,.3);mLeg(R,-1,-.6,.3);if(v>.97)o.fx('snow',mWP(R.root,0,0,.3));}}
-      else{R.off.z=1.1;mArm(R,1,.2,.4,-.9);mArm(R,-1,.2,.4,-.9);mHead(R,-.08,0,.15);}
-      mBlink(R,t,.5);},
-    l(R,t,o){const u=mWin(t,0,.5);if(R.ex.ears)R.ex.ears.forEach((e,i)=>e.rotation.x=-.9*u);if(R.ex.tail){R.ex.tail.rotation.x=-.35+1.05*u;R.ex.tail.rotation.y=.2*Math.sin(t*2);}
-      const k1=t>.5&&t<1.1?Math.sin((t-.5)/.6*Math.PI):0,k2=t>1.3&&t<1.9?Math.sin((t-1.3)/.6*Math.PI):0;mLeg(R,-1,.9*k1-.08,.16);mLeg(R,1,.9*k2-.08,.16);if(k1>.97||k2>.97)o.fx('snow',mWP(R.root,k1?-.15:.15,0,.6));
-      if(t>2){const v=mWin(t,2,3);R.off.ry=Math.PI*v;mHead(R,.35*v,0,0);R.spine.rotation.x=.2*v;mArm(R,1,.05,-.1,-.6);mArm(R,-1,.05,-.1,-.6);}else{mArm(R,1,.3,.2,-1.1);mArm(R,-1,.3,.2,-1.1);}
-      mSad(R,1);mBlink(R,t,.1);}},
-  owl:{g:0,w(R,t,o){if(t<1.6||t>3.2){const f=Math.sin(t*3*TAU);mArm(R,1,1.35+.45*f,0,-.15);mArm(R,-1,1.35+.45*f,0,-.15);R.off.y=t>3.2?mHop(t-3.2,2,.12):.05*Math.max(0,f);mHead(R,t>3.2?.15*Math.sin(t*10):0,0,0);}
-      else{const u=mWin(t,1.6,3.2);mHead(R,0,TAU*u,0);mArm(R,1,.5,0,-.3);mArm(R,-1,.5,0,-.3);}
-      mBlink(R,t,.15);},
-    l(R,t,o){const u=mWin(t,0,1),pk=t>2.2&&t<3?Math.sin((t-2.2)/.8*Math.PI):0;mHead(R,.1,Math.PI*u-1.1*pk,0);mArm(R,1,.04,-.1,-.05);mArm(R,-1,.04,-.1,-.05);
-      R.off.rz=.03*Math.sin(t*60)*mWin(t,1,1.3);R.spine.rotation.x=.2*u;mSad(R,1);mBlink(R,t,.35);}},
-  fish:{g:0,w(R,t,o){const d=Math.sin(t*2*TAU);R.spine.rotation.z=.25*d;R.hips.rotation.z=-.18*d;mArm(R,1,.8+.5*Math.sin(t*5),.3,-.6);mArm(R,-1,.8+.5*Math.sin(t*5+1.6),.3,-.6);if(R.ex.tail)R.ex.tail.rotation.y=.6*Math.sin(t*14);
-      mLeg(R,1,.15*d,.2+.15*d,.15);mLeg(R,-1,-.15*d,.2-.15*d,.15);
-      if(t>2.4&&t<3.4){const v=(t-2.4);R.off.y=3.6*v*(1-v)*.7;R.off.rx=mL(-.4,.4,v);if(v>.95&&o.n%2==0)o.fx('splash',mWP(R.root,0,0,0));}
-      mBlink(R,t,.6);},
-    l(R,t,o){const u=mWin(t,0,.8),sd=o.side>0?-1:1;R.off.rz=1.5*u*u*sd;R.off.y=.32*u;
-      if(t>.8){const b=Math.abs(Math.sin((t-.8)*2.6*Math.PI))*Math.max(.25,1-(t-.8)/4);R.off.y=.32+.25*b;R.off.rz=1.5*sd;R.spine.rotation.z=.3*Math.sin(t*9);if(R.ex.tail)R.ex.tail.rotation.y=.8*Math.sin(t*13);if(b>.95&&o.n%3==0)o.fx('splash',mWP(R.root,0,0,0));
-        if(R.ex.mouth)R.ex.mouth.scale.setScalar(1+.35*Math.max(0,Math.sin(t*7)));}
-      mArm(R,1,.6+.4*Math.sin(t*8),.2,-.3);mArm(R,-1,.6+.4*Math.sin(t*8+2),.2,-.3);mSad(R,1);mBlink(R,t,.9);}},
-  narwhal:{g:0,w(R,t,o){if(t<1.4){const u=mWin(t,0,.6);mArm(R,1,.62*u+.14,-.15*u,-.3,0,1.7*u);mArm(R,-1,.62*u+.14,-.15*u,-.3,0,1.7*u);R.spine.rotation.x=-.18*u;mHead(R,-.25*u,0,0);mLeg(R,1,-.08,.1,.12*u);mLeg(R,-1,-.08,.1,.12*u);}
-      else if(t<2.9){const a=(t-1.4)*1.4*TAU;mArm(R,1,.76,-.15,-.3,0,1.7);mArm(R,-1,.76,-.15,-.3,0,1.7);R.spine.rotation.x=-.18;mHead(R,-.25+.2*Math.sin(a),.25*Math.cos(a),.1*Math.sin(a));
-        if(R.ex.horn&&o.n%2==0)o.fx('sparkle',mWP(R.ex.horn,0,.25+((o.n*.137)%1)*.8,0));}
-      else{const u=mWin(t,2.9,4.4);R.off.ry=TAU*u;mArm(R,-1,1.5,.2,-2.1);mArm(R,1,.76,-.15,-.3,0,1.7);mHead(R,-.2,0,.1);if(t>4)R.eyes[0].scale.y=.08;if(R.ex.horn&&o.n%4==0)o.fx('sparkle',mWP(R.ex.horn,0,1,0));}
-      mBlink(R,t,.25);},
-    l(R,t,o){const k=Math.min(1,t/.4)*(t>4?Math.max(.15,1-(t-4)*1.2):1),a=t*3.2*TAU;mHead(R,.15*k*Math.sin(a*.5),1.05*k*Math.sin(a),.42*k*Math.sin(a+1));R.spine.rotation.z=-.25*k*Math.sin(a);R.spine.rotation.x=.12;
-      mArm(R,1,.9+1.1*k*Math.sin(a*.8),.3,-.6);mArm(R,-1,.9+1.1*k*Math.sin(a*.8+2.2),.3,-.6);const st=Math.sin(t*10);mLeg(R,1,.35*Math.max(0,st)*k,.6*Math.max(0,st)*k);mLeg(R,-1,.35*Math.max(0,-st)*k,.6*Math.max(0,-st)*k);
-      if(Math.abs(st)>.99&&k>.5)o.fx('snow',mWP(R.root,st>0?.15:-.15,0,.2));if(t>4){R.spine.rotation.x=.35;mArm(R,1,.1,.3,-.3);mArm(R,-1,.1,.3,-.3);R.off.y=.02*Math.sin(t*10);}
-      mSad(R,1);mBlink(R,t,.45);}},
-  flake:{g:0,w(R,t,o){const u=t<3?1-Math.pow(1-t/3,2):1;R.off.ry=u*TAU*4;mArm(R,1,2.6,0,-.2);mArm(R,-1,2.6,0,-.2);if(R.ex.spin)R.ex.spin.rotation.z=t*9;mLeg(R,1,0,.05);mLeg(R,-1,-.4,.8);
-      if(o.n%2==0)o.fx('sparkle',mWP(R.head,(Math.random()-.5)*.8,.4+Math.random()*.4,0));if(t>3)R.off.y=mHop(t-3,1.6,.1);mBlink(R,t,.55);},
-    l(R,t,o){const u=mWin(t,0,3.2);R.off.s=1-.24*u;R.spine.rotation.x=.35*u;mHead(R,.3*u,0,.15*u);mArm(R,1,.05,.05,-.05);mArm(R,-1,.05,.05,-.05);mLeg(R,1,-.1,.4*u);mLeg(R,-1,-.1,.4*u);
-      if(R.ex.spin)R.ex.spin.scale.set(1+.05*u,1-.15*u,1);if(o.n%3==0)o.fx('drip',mWP(R.head,(Math.random()-.5)*.6,.25,.2));mSad(R,1);mBlink(R,t,.85);}},
-  berg:{g:0,w(R,t,o){const u=mWin(t,0,.5);mLeg(R,1,-.05,.15,.3*u);mLeg(R,-1,-.05,.15,.3*u);
-      if(t<1.2||t>2.6){mArm(R,1,1.5,.05,-1.95);mArm(R,-1,1.5,.05,-1.95);if(t>2.6){const v=mWin(t,2.6,2.9);if(t<3.1){mArm(R,1,.3,1.2,-2);}mHead(R,.1*Math.sin(t*3),0,0);}}
-      else{const st=(t-1.2)/.7,ph=st%1,leg=st<1?1:-1,lift=Math.sin(Math.min(1,ph/.75)*Math.PI);mLeg(R,leg,.7*lift,1.1*lift,.3);mArm(R,1,1.2,.2,-1.6);mArm(R,-1,1.2,.2,-1.6);R.off.rz=-.06*leg*lift;
-        if(ph>.74&&ph<.8){o.shake(.4);o.fx('snow',mWP(R.root,leg*.2,0,.1));}}
-      mBlink(R,t,.65);},
-    l(R,t,o){const tr=t<1.4?.025*Math.sin(t*70):0;R.off.rz=tr;const ch=R.ex.chunk;
-      if(ch&&t>1.4){const v=Math.min(t-1.4,.8),b=ch.userData.b0;ch.position.set(b[0].x+.5*v,b[0].y+2*v-5.6*v*v,b[0].z+.35*v);ch.rotation.set(v*4,v*2,v*5);if(t>2.2){ch.position.y=Math.max(ch.position.y,-1.6);}if(t>2.15&&t<2.2){o.shake(.2);o.fx('snow',mWP(ch,0,0,0));}}
-      if(t>1.4&&t<1.45)o.crack();
-      const v=mWin(t,2.2,2.8);mHead(R,.5*v,-.5*v,0);mArm(R,1,mL(.14,.9,mWin(t,1.4,1.7))*(1-v)+.08*v,.3,-.5);mArm(R,-1,mL(.14,.9,mWin(t,1.4,1.7))*(1-v)+.08*v,.3,-.5);R.spine.rotation.x=.3*v;
-      mSad(R,mWin(t,1.4,1.6));mBlink(R,t,.15);}},
-  bolt:{g:1,w(R,t,o){const m=R.ex.mat;if(t<1){const u=mWin(t,0,1);R.off.y=-.12*u;mArm(R,1,.2,.9*u,-2*u);mArm(R,-1,.2,.9*u,-2*u);mLeg(R,1,.3*u,.7*u);mLeg(R,-1,.3*u,.7*u);if(m)m.emissiveIntensity=.35+.8*u;}
-      else if(t<2.2){const u=mWin(t,1,1.15);mArm(R,1,2.5*u,0,-.2);mArm(R,-1,2.5*u,0,-.2);R.off.y=.15*mHop(t-1,1.6,1);if(m)m.emissiveIntensity=1.6-.5*mWin(t,1.2,2.2);if(t<1.05)o.flash();if(o.n%1==0)o.fx('spark',mWP(R.head,(Math.random()-.5)*.9,.3+Math.random()*.6,0));}
-      else{const z=Math.floor((t-2.2)*3.2),f=(t-2.2)*3.2-z,dir=z%2?1:-1;R.off.x=dir*.45*mSm(Math.min(1,f*3))-dir*.45*(1-mSm(Math.min(1,f*3)));R.off.rz=-.15*dir;mArm(R,dir,2.2,0,-.3);mArm(R,-dir,.4,.3,-1);if(m)m.emissiveIntensity=.9+.3*Math.sin(t*20);if(f<.1)o.fx('spark',mWP(R.root,0,.6,0));}
-      mBlink(R,t,.95);},
-    l(R,t,o){const m=R.ex.mat,u=mWin(t,0,3.5),fl=Math.random()<.25?.1:1;if(m)m.emissiveIntensity=Math.max(.04,(.4*(1-u))*fl);R.spine.rotation.x=.45*u;mHead(R,.3*u,0,.2*u);mArm(R,1,.04,.05,-.05);mArm(R,-1,.04,.05,-.05);mLeg(R,1,-.1,.35*u);mLeg(R,-1,-.1,.35*u);
-      if(o.n%4==0)o.fx('smoke',mWP(R.head,0,.7,0));if(o.n%17==0)o.fx('spark',mWP(R.head,.2,.4,.2));mSad(R,1);mBlink(R,t,.05);}}
-};
-// the seal's puck (balanced on its nose)
-function mPuck(R,on){let p=R.ex.puck;if(!on){if(p)p.visible=false;return;}if(!p){p=new mT.Mesh(new mT.CylinderGeometry(.16,.16,.09,20),PK_MAT.vc);const n=p.geometry.attributes.position.count,a=new Float32Array(n*3);a.fill(.06);p.geometry.setAttribute('color',new mT.BufferAttribute(a,3));
-  p.position.set(0,.42,.42);R.head.add(p);R.ex.puck=p;p.castShadow=true;}p.visible=true;p.rotation.set(-.6,0,0);}
-// one call per frame: the named animation at time t
-function mPose(R,name,t,o){o=o||{};o.fx=o.fx||(()=>{});o.shake=o.shake||(()=>{});o.clap=o.clap||(()=>{});o.crack=o.crack||(()=>{});o.flash=o.flash||(()=>{});o.n=o.n||0;
-  mRest(R);const W=MS_WL[R.sp];
-  if(name==='idle'){R.spine.rotation.x=.03+.02*Math.sin(t*2.2);mArm(R,1,.14+.03*Math.sin(t*2.2),.06,-.3);mArm(R,-1,.14+.03*Math.sin(t*2.2+.5),.06,-.3);mBlink(R,t,R.sp.length*.31);}
-  else if(name==='skate'){mSkate(R,t,o.k==null?1:o.k);mBlink(R,t);}
-  else if(name==='shake'){mShake(R,t,o.u||0);mBlink(R,t);}
-  else if(name==='bow'){mBow(R,o.u||0);}
-  else if(name==='wave'){mWave(R,t,-1);mHead(R,-.1,0,.12*Math.sin(t*3));mBlink(R,t);}
-  else if(name==='greet'){W.w(R,W.g+t,o);}
-  else if(name==='win')W.w(R,t,o);
-  else if(name==='lose')W.l(R,t,o);
-  else if(name==='draw'){mShake(R,t,Math.min(1,t/2.2));if(t>2.4){const u=mWin(t,2.4,2.9);mArm(R,1,.5*u+.14,.3,-1.5*u-.3,-.4*u);mArm(R,-1,.5*u+.14,.3,-1.5*u-.3,-.4*u);mHead(R,0,0,.22*u*Math.sin(t*2));}mBlink(R,t);}
-}
-// put the rig where the scene wants it (b: x, z, yaw) plus the animation's own offsets
-// o.ph: turn around a point that high instead of the feet (a flip turns around the hips)
-function mPlace(R,b){const o=R.off,y=b.yaw||0,fx=Math.sin(y),fz=Math.cos(y),ph=o.ph||0,oz=o.z*(b.zk==null?1:b.zk)-ph*Math.sin(o.rx);R.root.position.set(b.x+fx*oz+fz*o.x,o.y+ph*(1-Math.cos(o.rx)),b.z+fz*oz-fx*o.x);
-  R.root.rotation.set(o.rx,y+o.ry,o.rz,'YXZ');const k=MSC.h/2.58;R.root.scale.set(k,k*o.s,k);}
+// --- build one mascot (cached per team + kit + mascot) ---
+function mBody(teamKey,_,mas){const S=MS_SP[mas],k=mKitOf(teamKey,mas),R={root:mG(),sp:mas,team:teamKey,j:{},eyes:[],ex:{},sph:[],tips:{},iks:{},tc:mCol(k.c1),acc:mCol(k.c2),k0:S.k0||1,med:S.med};
+  mRs=7+KIT.mas.indexOf(mas)*13;S.build(R,k);if(!R.iks.L)R.iks=null;
+  for(const n in R.j){const o=R.j[n];o.userData.r0=[o.position.clone(),o.rotation.clone(),o.scale.clone()];}
+  for(const e of R.eyes)if(e.userData.pu)e.userData.pu0=e.userData.pu.position.clone();
+  R.root.traverse(o=>{if(o.isMesh&&o.castShadow!==false)o.castShadow=true;});mRest(R);R.root.scale.setScalar(R.k0);return R;}
+// one call per frame: the named animation at time t (o: side, u, d, n, dt and the effect hooks)
+const mNop=()=>{};
+function mPose(R,name,t,o){o=o||{};for(const k of['fx','sfx','splash','shake','flash','strike'])if(!o[k])o[k]=mNop;if(o.dt==null)o.dt=0;if(o.n==null)o.n=0;if(o.side==null)o.side=-1;if(o.u==null)o.u=0;if(o.d==null)o.d=0;const S=MS_SP[R.sp];mRest(R);o.L=o.side<0;o.s=o.L?1:-1;const sd=o.L?'L':'R';R.touch=R.tips[sd];R.ik=R.iks?R.iks[sd]:null;
+  if(name==='draw'){if(t<2.2)S.touch(R,t,Object.assign({},o,{u:mWin(t,0,.3)*(1-mWin(t,1.9,2.2))}));else{S.idle(R,t,o);R.off.y+=mHop(t-2.2,2.5,.08)*(R.med==='ice'?1:.5);mEyeK(R,.4);}return;}
+  if(name==='sig'){S.win(R,(S.g||0)+t,o);return;}
+  if(name==='bow'){S.bow(R,o);return;}
+  const f=S[name]||S.idle;f(R,t,o);}
+// put the rig where the scene wants it (b: x, z, yaw) plus the animation's own offsets; px/py/pz = the point it turns around
+const mE1=new mT.Euler(),mV1=mV(),mV2=mV(),mV3=mV(),mQ1=new mT.Quaternion(),mQ2=new mT.Quaternion(),mQ3=new mT.Quaternion();
+function mPlace(R,b){const o=R.off,y=b.yaw||0,c=Math.cos(y),s=Math.sin(y),zk=b.zk==null?1:b.zk,k=R.k0*o.s;mE1.set(o.rx,o.ry,o.rz,'YXZ');mV1.set(o.px,o.py,o.pz).multiplyScalar(k).applyEuler(mE1);
+  const lx=o.x+o.px*k-mV1.x,ly=o.y+o.py*k-mV1.y,lz=o.z*zk+o.pz*k-mV1.z;R.root.position.set((b.x||0)+c*lx+s*lz,(b.y||0)+ly,(b.z||0)-s*lx+c*lz);
+  R.root.rotation.set(o.rx,y+o.ry,o.rz,'YXZ');R.root.scale.setScalar(k);}
+// the greeting: move the touching tip to M — a limb bends (CCD over its chain; what it cannot reach, the feet shuffle across the ice),
+// a swimmer / floater moves its whole body; k blends it in
+function mTouchTo(R,M,k,lim,still){if(k<=0)return;R.root.updateMatrixWorld(true);
+  if(R.ik){const ch=R.ik,pre=ch.map(b=>b.quaternion.clone());
+    for(let it=0;it<10;it++)for(let i=ch.length-1;i>=0;i--){const b=ch[i];b.getWorldPosition(mV1);R.touch.getWorldPosition(mV2);mV2.sub(mV1);mV3.copy(M).sub(mV1);
+      if(mV2.lengthSq()<1e-8||mV3.lengthSq()<1e-8)continue;mQ1.setFromUnitVectors(mV2.normalize(),mV3.normalize());b.getWorldQuaternion(mQ2);mQ2.premultiply(mQ1);b.parent.getWorldQuaternion(mQ3);b.quaternion.copy(mQ3.invert().multiply(mQ2));b.updateMatrixWorld(true);}
+    if(k<1){ch.forEach((b,i)=>{mQ1.copy(b.quaternion);b.quaternion.copy(pre[i]).slerp(mQ1,k);});R.root.updateMatrixWorld(true);}
+    if(still)return;R.touch.getWorldPosition(mV2);mV3.copy(M).sub(mV2).multiplyScalar(k);if(R.med==='ice')mV3.y=0;else{mV3.x=mV3.z=0;}if(mV3.lengthSq()>1e-6){R.root.position.add(mV3);if(lim)lim(R);R.root.updateMatrixWorld(true);}}
+  else{R.touch.getWorldPosition(mV2);mV3.copy(M).sub(mV2).multiplyScalar(k);R.root.position.add(mV3);if(lim)lim(R);R.root.updateMatrixWorld(true);}}
 // ---------------- the scenes ----------------
 const MS_SESS={};   // matchups already shown in full this session → the short version next time
 function mascMode(){const m=save.set.masc;return m==='short'||m==='off'?m:'full';}
@@ -10132,15 +10333,46 @@ function mascPair(cfg){const mine=G.mine&&G.mine.key||save.team||'blue',oth=mine
   if(!op||op===my){const key=String(cfg&&(cfg.oppName||cfg.label||cfg.tag||'')+'|'+((cfg&&cfg.oppTypes)||[]).join(','));let h=7;for(const ch of key)h=(h*31+ch.charCodeAt(0))>>>0;
     const L=KIT.mas.filter(m=>m!==my);op=L[h%L.length];}
   return {mine,oth,my,op};}
-function mascFx(k,p){const E=(n,f)=>{for(let i=0;i<n;i++)f();};
-  if(k==='snow')E(9,()=>emit(p.x,p.y+.05,p.z,rnd(-1.6,1.6),rnd(.6,2.2),rnd(-1.6,1.6),rnd(.35,.6),rnd(.08,.16),.92,.97,1));
-  else if(k==='splash')E(26,()=>{const a=rnd(TAU),v=rnd(1.5,3.5);emit(p.x,p.y+.1,p.z,Math.cos(a)*v,rnd(2,4.5),Math.sin(a)*v,rnd(.5,.9),rnd(.1,.2),.75,.9,1);});
-  else if(k==='sparkle')emit(p.x,p.y,p.z,rnd(-.3,.3),rnd(.3,.9),rnd(-.3,.3),rnd(.5,.9),rnd(.06,.12),1,.95,.7);
-  else if(k==='spark')E(3,()=>emit(p.x,p.y,p.z,rnd(-2.5,2.5),rnd(-1,2.5),rnd(-2.5,2.5),rnd(.15,.32),rnd(.05,.1),1,.85,.25));
+// effects (all purely visual)
+const MS_CYL=new mT.CylinderGeometry(1,1,1,6,1),MS_SCG=new mT.CircleGeometry(.45,20).rotateX(-Math.PI/2);let MS_BOLTS=[],MS_SNOW=null;
+function mascFx(k,p,n){const E=(c,f)=>{for(let i=0;i<c;i++)f();};n=n||1;
+  if(k==='snow')E(9*n,()=>emit(p.x,p.y+.05,p.z,rnd(-1.6,1.6),rnd(.6,2.2),rnd(-1.6,1.6),rnd(.35,.6),rnd(.08,.16),.92,.97,1));
+  else if(k==='splash')E(Math.round(26*n),()=>{const a=rnd(TAU),v=rnd(1.2,3.2)*Math.sqrt(n);emit(p.x+Math.cos(a)*.2,p.y+.08,p.z+Math.sin(a)*.2,Math.cos(a)*v,rnd(2.2,4.8)*Math.sqrt(n),Math.sin(a)*v,rnd(.5,.9),rnd(.1,.2),.62,.82,.98);});
+  else if(k==='spout')E(Math.round(22*n),()=>emit(p.x,p.y,p.z,rnd(-.35,.35),rnd(4,6.2)*Math.sqrt(n),rnd(-.35,.35),rnd(.5,.9),rnd(.1,.18),.86,.94,1));
+  else if(k==='fountain')E(3,()=>emit(p.x,p.y,p.z,rnd(-.3,.3),rnd(3.6,4.6),rnd(.4,.9),rnd(.5,.8),rnd(.06,.11),.7,.88,1));
+  else if(k==='cascade')E(2,()=>emit(p.x,p.y,p.z,rnd(-.3,.3),rnd(-.5,.3),rnd(-.3,.3),rnd(.4,.7),rnd(.07,.13),.7,.88,1));
+  else if(k==='bubble')E(2,()=>emit(p.x+rnd(-.1,.1),p.y,p.z+rnd(-.1,.1),0,rnd(2.2,3),0,rnd(.2,.32),rnd(.05,.09),.85,.95,1));
+  else if(k==='sparkle')E(n,()=>emit(p.x,p.y,p.z,rnd(-.4,.4)*(n>1?3:1),rnd(.3,.9)*(n>1?3:1),rnd(-.4,.4)*(n>1?3:1),rnd(.5,.9),rnd(.06,.12),1,.95,.7));
+  else if(k==='spark')E(3*n,()=>emit(p.x,p.y,p.z,rnd(-2.5,2.5),rnd(-1,2.5),rnd(-2.5,2.5),rnd(.15,.32),rnd(.05,.1),1,.85,.25));
   else if(k==='smoke')emit(p.x,p.y,p.z,rnd(-.15,.15),rnd(.4,.8),rnd(-.15,.15),rnd(.9,1.4),rnd(.18,.3),.45,.45,.48);
+  else if(k==='rain')emit(p.x,p.y,p.z,0,rnd(-3,-2),0,rnd(.35,.5),rnd(.04,.07),.55,.7,.95);
   else if(k==='drip')emit(p.x,p.y,p.z,rnd(-.1,.1),rnd(-.4,0),rnd(-.1,.1),rnd(.5,.8),rnd(.05,.09),.7,.88,1);}
+// a jagged lightning bolt from the sky to (x, z): flicker, a flash, thunder, a scorch mark on the ice, sparks
+function mascStrike(x,z){const N=12,H=9,pts=[],px=x+rnd(-.9,.9),pz=z+rnd(-.6,.6);for(let i=0;i<=N;i++){const k=i/N,j=i&&i<N;pts.push(mV(mL(px,x,k)+(j?rnd(-.32,.32):0),H*(1-k),mL(pz,z,k)+(j?rnd(-.25,.25):0)));}
+  const g=new mT.Group(),seg=(a,b,r,mat)=>{const d=mV().subVectors(b,a),L=d.length(),c=new mT.Mesh(MS_CYL,mat);c.scale.set(r,L,r);c.position.copy(a).add(b).multiplyScalar(.5);c.quaternion.setFromUnitVectors(mV(0,1,0),d.normalize());g.add(c);};
+  for(let i=0;i<N;i++){seg(pts[i],pts[i+1],.035,MS_M.boltCore);seg(pts[i],pts[i+1],.13,MS_M.boltGlow);}
+  let q=pts[3+(rnd(0,4)|0)].clone();for(let i=0;i<4;i++){const nq=q.clone().add(mV(rnd(-.5,.5),-rnd(.4,.8),rnd(-.4,.4)));seg(q,nq,.02,MS_M.boltCore);q=nq;}
+  const sc=new mT.Mesh(MS_SCG,MS_M.scorch.clone());sc.position.set(x,.008,z);g.add(sc);scene.add(g);MS_BOLTS.push({g,t:0,sc});
+  mascFx('spark',mV(x,.06,z),6);mascFx('snow',mV(x,0,z));mascFlash();try{SFX.msc('thunder');}catch(e){}if(G.masc)G.masc.shake=Math.max(G.masc.shake,.6);}
+function mascBolts(dt){for(let i=MS_BOLTS.length-1;i>=0;i--){const b=MS_BOLTS[i];b.t+=dt;for(const c of b.g.children)if(c!==b.sc)c.visible=b.t<.3&&((b.t*30|0)%3!==1);
+  b.sc.material.opacity=.55*(1-mWin(b.t,.7,1.8));if(b.t>1.9){scene.remove(b.g);b.sc.material.dispose();MS_BOLTS.splice(i,1);}}}
+// a light snowfall around a point (the snowflake's scenes)
+function mascSnow(dt,on,c){if(!MS_SNOW){const N=pkLo()?90:180,g=new mT.BufferGeometry(),p=new Float32Array(N*3);for(let i=0;i<N;i++){p[i*3]=rnd(-3.2,3.2);p[i*3+1]=rnd(0,5);p[i*3+2]=rnd(-2.6,2.6);}
+    g.setAttribute('position',new mT.BufferAttribute(p,3));MS_SNOW=new mT.Points(g,new mT.PointsMaterial({color:0xffffff,size:.075,transparent:true,opacity:.9,depthWrite:false}));MS_SNOW.visible=false;MS_SNOW.frustumCulled=false;MS_SNOW.userData.k=0;scene.add(MS_SNOW);}
+  const S=MS_SNOW,U=S.userData;U.k=Math.max(0,Math.min(1,U.k+(on?dt*1.2:-dt*2)));S.visible=U.k>.01;if(!S.visible)return;S.material.opacity=.9*U.k;
+  const p=S.geometry.attributes.position;for(let i=0;i<p.count;i++){let y=p.getY(i)-dt*(.45+(i%5)*.1);if(y<0)y+=5;p.setY(i,y);p.setX(i,p.getX(i)+Math.sin(y*2+i)*dt*.18);}p.needsUpdate=true;if(c)S.position.set(c.x,0,c.z);}
+// the hole in the ice for the sea animals and the iceberg: water, broken ice around the rim, cracks, ripples
+function mascPool(R){if(R.pool)return R.pool;const r=MS_SP[R.sp].pool||1.2,g=new mT.Group();const w=new mT.Mesh(mWaterDisc(r,44),MS_M.water);w.position.y=.012;w.receiveShadow=true;g.add(w);
+  mRs=31;const L=[];for(let i=0;i<24;i++){const a=i/24*TAU+mRnd()*.2,rr=r+mRnd()*.07,s=.07+mRnd()*.11,q=new mT.IcosahedronGeometry(s,0);q.scale(1,.42+mRnd()*.3,1+mRnd()*.6);q.rotateY(mRnd()*3);q.translate(Math.cos(a)*rr,s*.18,Math.sin(a)*rr);L.push([q,[.86,.94,1]]);}
+  g.add(mMesh(L,MS_M.berg,false));const C=[];for(let i=0;i<10;i++){const a=mRnd()*TAU,len=.35+mRnd()*.8,q=new mT.PlaneGeometry(.02+mRnd()*.02,len);q.rotateX(-Math.PI/2);q.translate(0,.006,-(r+len/2-.05));q.rotateY(a);C.push([q,null]);}
+  const cm=new mT.Mesh(pkMerge(C),MS_M.crack);g.add(cm);const rip=[];for(let i=0;i<4;i++){const q=new mT.Mesh(new mT.RingGeometry(.9,1,40).rotateX(-Math.PI/2),MS_M.ripple.clone());q.position.y=.02;q.visible=false;q.userData.a=9;g.add(q);rip.push(q);}
+  g.userData={r,rip,cm,open:1};g.visible=false;scene.add(g);R.pool=g;return g;}
+function mascRipple(P,wx,wz,s){const R=P.userData.rip.reduce((a,b)=>a.userData.a>b.userData.a?a:b);const k=P.scale.x||1;R.position.set((wx-P.position.x)/k,.02,(wz-P.position.z)/k);R.userData.a=0;R.userData.s=s||1;R.visible=true;}
+function mascPools(dt){for(const k in MS_RIG){const P=MS_RIG[k].pool;if(!P||!P.visible)continue;const U=P.userData,o=Math.max(.001,U.open)*(U.base||1);P.scale.set(o,1,o);U.cm.material.opacity=.6*Math.min(1,U.open*1.5);
+  for(const q of U.rip){const a=q.userData.a+=dt;q.visible=a<1.1;if(!q.visible)continue;const s=(.15+a*1.3)*q.userData.s;q.scale.set(s,1,s);q.material.opacity=.6*(1-a/1.1);}}}
 let MS_RIG={};
-function mascRig(key,team,mas){const k=team+mas+kitSig(mKitOf(team,mas))+pkLo();let R=MS_RIG[key];if(R&&R.k===k)return R;if(R){scene.remove(R.root);}R=mBody(team,null,mas);R.k=k;R.root.visible=false;scene.add(R.root);MS_RIG[key]=R;return R;}
+function mascRig(key,team,mas){const k=team+mas+kitSig(mKitOf(team,mas))+pkLo();let R=MS_RIG[key];if(R&&R.k===k)return R;if(R){scene.remove(R.root);if(R.pool)scene.remove(R.pool);}
+  R=mBody(team,null,mas);R.k=k;R.root.visible=false;scene.add(R.root);if(R.med==='water')mascPool(R);MS_RIG[key]=R;return R;}
 function mascHideWorld(on){const L=[];for(const p of G.pengs||[])if(p.pg)L.push(p.pg.root);for(const o of[typeof puckG!=='undefined'&&puckG,typeof puckRing!=='undefined'&&puckRing,typeof puckTrail!=='undefined'&&puckTrail,typeof marker!=='undefined'&&marker,typeof markerRing!=='undefined'&&markerRing,typeof passRing!=='undefined'&&passRing,typeof comboRing!=='undefined'&&comboRing,typeof aimTgt!=='undefined'&&aimTgt,typeof aimLine!=='undefined'&&aimLine,typeof aimArrow!=='undefined'&&aimArrow])if(o&&o.isObject3D)L.push(o);
   for(const o of L){if(on){if(o.userData.mscV==null)o.userData.mscV=o.visible;o.visible=false;}else if(o.userData.mscV!=null){o.visible=o.userData.mscV;delete o.userData.mscV;}}}
 function mascUI(on,cap,sub){let e=$('#mascFx');if(!e){e=document.createElement('div');e.id='mascFx';e.innerHTML='<i class="ms-bar t"></i><i class="ms-bar b"></i><div class="ms-cap"><b></b><small></small></div><button id="mascSkip" class="ms-skip"></button><i class="ms-fade"></i><i class="ms-flash"></i>';document.body.appendChild(e);
@@ -10148,65 +10380,97 @@ function mascUI(on,cap,sub){let e=$('#mascFx');if(!e){e=document.createElement('
   document.body.classList.toggle('mascOn',!!on);e.classList.toggle('on',!!on);if(!on)return;
   e.querySelector('.ms-cap b').innerHTML=cap||'';e.querySelector('.ms-cap small').textContent=sub||'';const sk=$('#mascSkip');sk.textContent=G.masc&&G.masc.lock?'':__L(__L('탭해서 건너뛰기 ›'));sk.style.visibility=G.masc&&G.masc.lock?'hidden':'visible';}
 function mascCapOf(a,b,tA,tB){const c=k=>kitHex(TEAM[k].color);return '<span style="color:'+kitMix(c(tA),'#ffffff',.35)+'">'+KIT_MASN[a]+'</span><em>VS</em><span style="color:'+kitMix(c(tB),'#ffffff',.35)+'">'+KIT_MASN[b]+'</span>';}
+// where both stand to greet: each one's touching tip lands exactly at the centre (measured from its own touch pose)
+const mascYaw=(R,side)=>{const S=MS_SP[R.sp];if(S.flat)return 0;const a=mPI/2-(S.gt==null?.85:S.gt);return side<0?a:-a;};
+// the closest the two bodies come (their spheres), negative = overlapping
+function mascGap(A,B){let g=9;for(const a of A.sph)for(const b of B.sph){const p=a[0].localToWorld(mV1.set(a[1][0],a[1][1],a[1][2])).clone(),q=b[0].localToWorld(mV2.set(b[1][0],b[1][1],b[1][2]));
+  if(p.y<-.15&&q.y<-.15)continue;g=Math.min(g,p.distanceTo(q)-a[2]*A.root.scale.x-b[2]*B.root.scale.x);}return g;}
+function mascSpots(A,B){const L=[[A,-1],[B,1]],O=side=>({u:1,side,n:0,dt:0});
+  for(const [R,side] of L){mPose(R,'touch',.8,O(side));mPlace(R,{x:0,z:0,yaw:mascYaw(R,side)});R.root.updateMatrixWorld(true);const p=R.touch.getWorldPosition(mV());R.gs={x:-p.x,z:-p.z,y:p.y};}
+  const y=Math.max(.45,Math.min(1.25,(A.gs.y+B.gs.y)/2)),M=mV(0,y,0);
+  const fit=()=>{for(const [R,side] of L){mPose(R,'touch',.8,O(side));mPlace(R,{x:R.gs.x,z:R.gs.z,yaw:mascYaw(R,side)});mTouchTo(R,M,1,null,true);}};
+  // limbs: where the bent limb really ends up at that height, so nobody has to shuffle while touching
+  for(let k=0;k<4;k++){for(let it=0;it<3;it++){fit();for(const [R] of L){const p=R.touch.getWorldPosition(mV());R.gs.x-=p.x;R.gs.z-=p.z;}}
+    fit();const g=mascGap(A,B);if(g>=.1)break;const d=(.13-g)/2;A.gs.x-=d;B.gs.x+=d;}
+  return {y};}
 // kind: 'intro' | 'end' | 'preview'; o.res: 'win' | 'lose' | 'draw' (my side), o.cb when it is over
 function mascStart(kind,cfg,o){o=o||{};if(G.masc)mascEnd(false);
   const pr=o.pair||mascPair(cfg),A=mascRig('A',pr.mine,pr.my),B=mascRig('B',pr.oth,pr.op),key=pr.my+'|'+pr.op;
   let quick=!!(kind==='intro'&&(mascMode()==='short'||MS_SESS[key]));if(kind==='intro')MS_SESS[key]=1;
-  const dur=kind==='intro'?(quick?MSC.introQ:MSC.intro):kind==='preview'?(o.dur||MSC.end+.6):MSC.end;
-  G.masc={kind,quick,t:0,dur,A,B,pr,res:o.res||'win',cb:o.cb||null,lock:!!(kind==='intro'&&cfg&&cfg.net),skip:false,n:0,shake:0,fov:camera.fov,cam:null,
-    from:{p:camera.position.clone(),q:camera.quaternion.clone()},prev:o.prev||null};
+  const dur=kind==='intro'?(quick?MSC.introQ:MSC.intro):kind==='preview'?(o.dur||MSC.end+.6):MSC.end,res=o.res||'win';
+  const sp=mascSpots(A,B),gr=kind==='intro'||res==='draw';
+  // stage: greeting spots in the middle, or side by side towards the camera for the end
+  for(const [R,side] of[[A,-1],[B,1]]){const S=MS_SP[R.sp];R.side=side;
+    if(gr){R.at={x:R.gs.x,z:R.gs.z,yaw:mascYaw(R,side)};}else R.at={x:side*(R.med==='water'?1.45:1.3),z:0,yaw:-side*.12};
+    if(R.pool){const r=S.pool*(gr?1:Math.min(1,1.1/S.pool));R.pool.userData.r=r;const off=gr?side*r*.45:0;R.pool.position.set(R.at.x+off,0,R.at.z);R.pool.scale.set(1,1,1);R.pool.userData.open=kind==='intro'&&!quick?0:1;R.pool.visible=true;
+      R.pool.userData.base=r/S.pool;R.lim=Q=>{const P=R.pool,dx=Q.root.position.x-P.position.x,dz=Q.root.position.z-P.position.z,d=Math.hypot(dx,dz),m=P.userData.r*.75;if(d>m){Q.root.position.x=P.position.x+dx/d*m;Q.root.position.z=P.position.z+dz/d*m;}};}}
+  G.masc={kind,quick,t:0,dur,A,B,pr,res,my:sp.y,cb:o.cb||null,lock:!!(kind==='intro'&&cfg&&cfg.net),skip:false,n:0,shake:0,fov:camera.fov,
+    snow:A.sp==='flake'||B.sp==='flake',fxq:[]};
   A.root.visible=B.root.visible=true;mascHideWorld(true);
-  const sub=kind==='intro'?__L(__L('우리 팀 마스코트 등장')):kind==='preview'?(o.sub||''):G.masc.res==='win'?__L(__L('승리 세리머니')):G.masc.res==='lose'?__L(__L('아쉬운 패배')):__L(__L('무승부 — 서로 악수'));
+  const sub=kind==='intro'?__L(__L('우리 팀 마스코트 등장')):kind==='preview'?(o.sub||''):res==='win'?__L(__L('승리 세리머니')):res==='lose'?__L(__L('아쉬운 패배')):__L(__L('무승부 — 서로 악수'));
   mascUI(true,mascCapOf(pr.my,pr.op,pr.mine,pr.oth),sub);mascFade(1,0);try{SFX.whoosh();SFX.crowd(.6);}catch(e){}
   return true;}
 function mascFade(v,dur){const f=document.querySelector('#mascFx .ms-fade');if(!f)return;f.style.transition=dur?'opacity '+dur+'s':'none';f.style.opacity=v;if(!dur)void f.offsetWidth;}
 function mascClear(){if(G.masc)mascEnd(false);}
-function mascEnd(run){const M=G.masc;if(!M)return;G.masc=null;for(const k in MS_RIG){MS_RIG[k].root.visible=false;}mascHideWorld(false);mascUI(false);
-  camera.fov=M.fov;camera.updateProjectionMatrix();if(run!==false&&M.cb)try{M.cb();}catch(e){console.error(e);}}
-const MS_X=.64,MS_XB=1.02;
-// where everyone stands and what they do at time t
-function mascStep(dt){const M=G.masc;if(!M||G.paused)return;M.t+=dt;M.n++;const t=M.t,A=M.A,B=M.B,W=MS_WL,n=M.n;
+function mascEnd(run){const M=G.masc;if(!M)return;G.masc=null;for(const k in MS_RIG){MS_RIG[k].root.visible=false;if(MS_RIG[k].pool)MS_RIG[k].pool.visible=false;}
+  for(const b of MS_BOLTS){scene.remove(b.g);b.sc.material.dispose();}MS_BOLTS=[];if(MS_SNOW){MS_SNOW.visible=false;MS_SNOW.userData.k=0;}
+  mascHideWorld(false);mascUI(false);camera.fov=M.fov;camera.updateProjectionMatrix();if(run!==false&&M.cb)try{M.cb();}catch(e){console.error(e);}}
+// the hooks every animation gets (effects are queued and fired after the rigs are placed, at their real positions)
+function mascHooks(M,dt){const q=M.fxq;return {n:M.n,dt,
+  fx:(k,obj,p,n)=>q.push(()=>{const w=obj?obj.localToWorld(mV(...(p||[0,0,0]))):mV();mascFx(k,w,n);}),
+  splash:(R,x,z,s)=>q.push(()=>{const w=R.root.localToWorld(mV(x/R.k0,0,z/R.k0));w.y=.02;mascFx('splash',w,s||1);if(R.pool)mascRipple(R.pool,w.x,w.z,s||1);}),
+  sfx:k=>{try{SFX.msc(k);}catch(e){}},shake:a=>{M.shake=Math.max(M.shake,a);},flash:()=>mascFlash(),
+  strike:(R,x,z)=>q.push(()=>{const w=R.root.localToWorld(mV(x/R.k0,0,z/R.k0));mascStrike(w.x,w.z);})};}
+// where everyone is and what they do at time t
+function mascStep(dt){const M=G.masc;if(!M||G.paused)return;M.t+=dt;M.n++;const t=M.t,A=M.A,B=M.B;
   if(M.t>.05&&!M.f0){M.f0=1;mascFade(0,.35);}
   if(M.skip){M.skip=false;if(M.t<M.dur-.42){M.t=M.dur-.42;}}
   if(M.t>=M.dur-.4&&!M.f1){M.f1=1;mascFade(1,.35);}
   if(M.t>=M.dur){mascEnd(true);return;}
-  const o={n,fx:mascFx,shake:a=>{M.shake=Math.max(M.shake,a);},clap:()=>{try{SFX.tap();}catch(e){}},crack:()=>{try{SFX.hit(1);SFX.bump();}catch(e){}},flash:()=>mascFlash()};
-  const pl=(R,x,z,yaw)=>mPlace(R,{x,z,yaw,zk:M.kind==='intro'?1:.35}),turn=(a,b,u)=>a+(b-a)*mSm(u);
+  const H=mascHooks(M,dt),turn=(a,b,u)=>a+(b-a)*mSm(u),zk=M.kind==='intro'||M.res==='draw'?1:.35;
+  const P=(R,name,tt,x)=>{const o=Object.assign({},H,{side:R.side},x||{});mPose(R,name,tt,o);mPlace(R,{x:R.at.x,z:R.at.z,yaw:x&&x.yaw!=null?x.yaw:R.at.yaw,zk});};
+  const both=(name,tt,x)=>{P(A,name,tt,x);P(B,name,tt,x);};
+  let touchK=0,My=M.my;
   if(M.kind==='intro'){
-    if(!M.quick&&t<2.2){const u=1-Math.pow(1-Math.min(1,t/2.1),2.2),x=mL(5.4,MS_X,u),k=Math.max(.25,1-u*.9);
-      mPose(A,'skate',t,{k});pl(A,-x,0,Math.PI/2);mPose(B,'skate',t+.31,{k});pl(B,x,0,-Math.PI/2);if(n%4==0&&u<.95){mascFx('snow',mV(-x-.1,0,.1));mascFx('snow',mV(x+.1,0,-.1));}}
+    if(!M.quick&&t<2.2){const u=Math.min(1,t/2.1),e=1-Math.pow(1-u,2.2);
+      for(const R of[A,B]){if(R.pool)R.pool.userData.open=mWin(t,.05,.45);if(R.pool&&mAt(H,t,.06)){try{SFX.msc('crack');}catch(e){}M.shake=Math.max(M.shake,.2);}}
+      both('enter',t,{u:e,d:(1-e)*4.8});}
     else{const s0=M.quick?0:2.2,ts=t-s0;
-      if(ts<1.7){const u=ts/1.7;mPose(A,'shake',ts,{u});mPose(B,'shake',ts,{u});pl(A,-MS_X,0,Math.PI/2);pl(B,MS_X,0,-Math.PI/2);if(Math.abs(u-.3)<.01||Math.abs(u-.45)<.01)o.clap();}
-      else if(ts<2.4){const u=(ts-1.7)/.7,x=mL(MS_X,MS_XB,mSm(Math.min(1,u*2.2))),bu=Math.max(0,(u-.2)/.8);mPose(A,'bow',ts,{u:bu});mPose(B,'bow',ts,{u:bu});pl(A,-x,0,Math.PI/2);pl(B,x,0,-Math.PI/2);}
-      else if(M.quick){const u=Math.min(1,(ts-2.4)/.35);mPose(A,'wave',ts);mPose(B,'wave',ts+.2);pl(A,-MS_XB,0,turn(Math.PI/2,0,u));pl(B,MS_XB,0,turn(-Math.PI/2,0,u));}
-      else if(ts<3.8){const u=Math.min(1,(ts-2.4)/.3);mPose(A,'greet',ts-2.4,o);pl(A,-MS_XB,0,turn(Math.PI/2,.15,u));mPose(B,'idle',ts);pl(B,MS_XB,0,turn(-Math.PI/2,-.45,u));if(ts-dt<2.45)mascVoice(A.sp);}
-      else{const u=Math.min(1,(ts-3.8)/.3);mPose(B,'greet',ts-3.8,o);pl(B,MS_XB,0,turn(-.45,-.15,u));mPose(A,'idle',ts);pl(A,-MS_XB,0,.25);if(ts-dt<3.85)mascVoice(B.sp);}}
+      if(ts<1.7){touchK=mWin(ts,0,.32)*(1-mWin(ts,1.38,1.7));both('touch',ts,{u:touchK});My+=Math.sin(ts*3.2*TAU)*.045*mWin(ts,.4,.55)*(1-mWin(ts,1.2,1.35));
+        if(mAt(H,ts,.34)){try{SFX.msc('boop');}catch(e){}M.fxq.push(()=>mascFx('sparkle',mV(0,My,0),10));}}
+      else if(ts<2.4){both('bow',ts,{u:(ts-1.7)/.7});}
+      else if(M.quick){const u=Math.min(1,(ts-2.4)/.35);P(A,'wave',ts,{yaw:turn(A.at.yaw,.2,u)});P(B,'wave',ts+.2,{yaw:turn(B.at.yaw,-.2,u)});}
+      else if(ts<3.8){const u=Math.min(1,(ts-2.4)/.3);P(A,'sig',ts-2.4,{yaw:turn(A.at.yaw,.15,u)});P(B,'idle',ts,{yaw:turn(B.at.yaw,-.5,u)});if(mAt(H,ts,2.45))mascVoice(A.sp);}
+      else{const u=Math.min(1,(ts-3.8)/.3);P(B,'sig',ts-3.8,{yaw:turn(-.5,-.15,u)});P(A,'idle',ts,{yaw:turn(.15,.5,u)});if(mAt(H,ts,3.85))mascVoice(B.sp);}}
   }else{
-    // end / preview: my mascot on the left, the other on the right, both towards the camera (a draw starts with a handshake)
-    const res=M.res,aN=res==='draw'?'draw':res==='win'?'win':'lose',bN=res==='draw'?'draw':res==='win'?'lose':'win',dr=res==='draw'&&t<2.4,X=dr?MS_X:1.05;
-    o.side=-1;mPose(A,aN,t,o);o.side=1;mPose(B,bN,t,o);pl(A,-X,0,dr?Math.PI/2:turn(Math.PI/2,.12,Math.min(1,t*4)+(res==='draw'?0:1)));pl(B,X,0,dr?-Math.PI/2:turn(-Math.PI/2,-.12,Math.min(1,t*4)+(res==='draw'?0:1)));
-    if(res==='draw'&&t>=2.4){const u=Math.min(1,(t-2.4)/.4);pl(A,-mL(MS_X,1.05,u),0,turn(Math.PI/2,.12,u));pl(B,mL(MS_X,1.05,u),0,turn(-Math.PI/2,-.12,u));}
-    if(Math.abs(t-.05)<dt*1.01){try{if(M.kind==='end'){res==='win'?SFX.fanfare():res==='lose'?SFX.bray():SFX.honk();}}catch(e){}}
+    // end / preview: my mascot on the left, the other on the right (a draw starts with the greeting again)
+    const res=M.res,aN=res==='draw'?'draw':res==='win'?'win':'lose',bN=res==='draw'?'draw':res==='win'?'lose':'win';
+    if(res==='draw'){touchK=t<2.2?mWin(t,0,.3)*(1-mWin(t,1.9,2.2)):0;const u=mWin(t,2.2,2.6);P(A,aN,t,{u:touchK,yaw:turn(A.at.yaw,.2,u)});P(B,bN,t,{u:touchK,yaw:turn(B.at.yaw,-.2,u)});}
+    else{P(A,aN,t);P(B,bN,t);}
+    if(mAt(H,t,.05)){try{if(M.kind==='end'){res==='win'?SFX.fanfare():res==='lose'?SFX.bray():SFX.honk();}}catch(e){}}
   }
-  for(const R of[A,B])R.root.updateMatrixWorld(true);
+  if(touchK>0){const T0=mV(0,My,0);for(const R of[A,B])mTouchTo(R,T0,touchK,R.lim);const g=mascGap(A,B);if(g<.02){const d=(.02-g)/2;A.root.position.x-=d;B.root.position.x+=d;}}
+  for(const R of[A,B]){if(R.lim&&!touchK)R.lim(R);R.root.updateMatrixWorld(true);}
+  const q=M.fxq;M.fxq=[];for(const f of q)try{f();}catch(e){}
+  mascBolts(dt);mascPools(dt);mascSnow(dt,M.snow,(A.sp==='flake'?A:B).root.position);
   M.shake*=Math.exp(-dt*6);
 }
-function mascVoice(sp){try{({peng:'honk',walrus:'bray',seal:'honk',bear:'bump',berg:'bump',bolt:'flare',flake:'flare',narwhal:'flare',owl:'heart',fox:'hop',fish:'hop',orca:'whoosh'})[sp]&&SFX[({peng:'honk',walrus:'bray',seal:'honk',bear:'bump',berg:'bump',bolt:'flare',flake:'flare',narwhal:'flare',owl:'heart',fox:'hop',fish:'hop',orca:'whoosh'})[sp]]();}catch(e){}}
+function mascVoice(sp){const v={peng:'honk',orca:'blow',bear:'roar',seal:'honk',walrus:'bray',fox:'yip',owl:'hoot',fish:'plop',narwhal:'chime',flake:'chime',berg:'crack',bolt:'zap'}[sp];try{v&&SFX.msc(v);}catch(e){}}
 function mascFlash(){if(save.set.flash===false||RM0)return;const f=document.querySelector('#mascFx .ms-flash');if(!f)return;f.classList.remove('on');void f.offsetWidth;f.classList.add('on');}
 // the camera: framed shots (a point of interest, how much must fit across / up, and the side the camera sits on) — the distance
 // follows the screen shape, so a tall phone sees the same framing as a wide screen; shots blend over 0.3 s
 function mascFrame(c,w,h,dir,fov){const vf=fov*Math.PI/180,hf=2*Math.atan(Math.tan(vf/2)*camera.aspect),bar=Math.min(innerHeight*(camera.aspect>1.3?.07:.09),64),fr=Math.max(.5,1-2*bar/innerHeight-36/innerHeight),
   d=Math.max(h/2/(Math.tan(vf/2)*fr),w/2/Math.tan(hf/2))*1.06,
   L=Math.hypot(dir[0],dir[1],dir[2]);return {p:[c[0]+dir[0]/L*d,c[1]+dir[1]/L*d,c[2]+dir[2]/L*d],l:c,fov};}
-function mascShot(M){const t=M.t,A=M.A,B=M.B,ap=A.root.position,bp=B.root.position,hy=R=>R.head.getWorldPosition(mV(0,0,0)).y,cy=R=>Math.max(.55,Math.min(1.5,hy(R)*.78));
+function mascShot(M){const t=M.t,A=M.A,B=M.B,ap=A.root.position,bp=B.root.position,hy=R=>R.head.getWorldPosition(mV()).y,cy=R=>Math.max(.5,Math.min(1.5,hy(R)*.75+.12)),cw=R=>MS_SP[R.sp].cw||2,my=M.my;
   const S=(a,b,c0,c1,w0,w1,h,dir,fov)=>({a,b,f:u=>{const w=mL(w0,w1,u);return mascFrame(c0.map((v,i)=>mL(v,c1[i],u)),w,h*w,dir,fov||38);}});let L;
   if(M.kind==='intro'){
-    if(M.quick)L=[S(0,2.4,[0,1.2,0],[0,1.2,0],2.9,2.5,.78,[.5,.2,1]),S(2.4,3.4,[0,1.15,0],[0,1.15,0],3.4,3.6,.75,[0,.2,1])];
-    else L=[S(0,2.2,[0,1.1,0],[0,1.1,0],3.9,3.3,.72,[0,.17,1],42),S(2.2,3.9,[0,1.25,0],[0,1.25,0],2.8,2.4,.78,[.55,.2,1]),S(3.9,4.6,[0,1.0,0],[0,1.0,0],3.1,3.0,.8,[0,.48,1]),
-      S(4.6,6.0,[ap.x,cy(A),ap.z],[ap.x,cy(A),ap.z],1.75,1.45,1.05,[.35,.1,1],34),S(6.0,7.0,[bp.x,cy(B),bp.z],[bp.x,cy(B),bp.z],1.75,1.5,1.05,[-.35,.1,1],34),S(7.0,7.4,[0,1.1,0],[0,1.1,0],3.6,4.6,.72,[0,.3,1],42)];}
+    if(M.quick)L=[S(0,2.4,[0,my,0],[0,my,0],3.0,2.7,.78,[.12,.2,1]),S(2.4,3.4,[0,.95,0],[0,.95,0],3.6,3.9,.72,[0,.2,1])];
+    else L=[S(0,2.2,[0,.95,0],[0,.95,0],5.0,4.2,.62,[0,.24,1],42),S(2.2,3.9,[0,my,0],[0,my,0],2.9,2.6,.8,[.12,.2,1]),S(3.9,4.6,[0,.85,0],[0,.85,0],3.6,3.4,.75,[0,.42,1]),
+      S(4.6,6.0,[ap.x,cy(A),ap.z],[ap.x,cy(A),ap.z],cw(A),cw(A)*.86,.95,[.35,.12,1],36),S(6.0,7.0,[bp.x,cy(B),bp.z],[bp.x,cy(B),bp.z],cw(B),cw(B)*.88,.95,[-.35,.12,1],36),S(7.0,7.4,[0,1.0,0],[0,1.0,0],4.2,5.0,.66,[0,.3,1],42)];}
   // end / preview: the pair, then each mascot up close (mine first, then the other one's reaction), then the pair again
-  else{const cw=camera.aspect<.8?1.5:1.85;L=[S(0,2.2,[0,1.1,.3],[0,1.1,.3],4.2,3.7,.7,[0,.15,1],40),S(2.2,3.6,[ap.x,cy(A),ap.z+.1],[ap.x,cy(A),ap.z+.1],cw,cw*.88,1.05,[.32,.12,1],36),
-    S(3.6,4.8,[bp.x,cy(B),bp.z+.1],[bp.x,cy(B),bp.z+.1],cw,cw*.88,1.05,[-.32,.12,1],36),S(4.8,M.dur,[0,1.0,.2],[0,1.0,.2],4.0,4.8,.7,[0,.28,1],42)];}
+  else{const k=camera.aspect<.8?.85:1;L=[S(0,2.2,[0,1.0,.2],[0,1.0,.2],4.7,4.2,.66,[0,.18,1],40),S(2.2,3.6,[ap.x,cy(A),ap.z+.1],[ap.x,cy(A),ap.z+.1],cw(A)*k,cw(A)*k*.9,1.0,[.3,.12,1],36),
+    S(3.6,4.8,[bp.x,cy(B),bp.z+.1],[bp.x,cy(B),bp.z+.1],cw(B)*k,cw(B)*k*.9,1.0,[-.3,.12,1],36),S(4.8,M.dur,[0,1.0,.2],[0,1.0,.2],4.4,5.2,.66,[0,.28,1],42)];}
   let i=0;while(i<L.length-1&&t>=L[i].b)i++;const c=L[i],now=c.f(mSm((t-c.a)/(c.b-c.a)));
   if(i>0&&t-c.a<.3){const pv=L[i-1].f(1),k=mSm((t-c.a)/.3);return {p:pv.p.map((v,j)=>mL(v,now.p[j],k)),l:pv.l.map((v,j)=>mL(v,now.l[j],k)),fov:mL(pv.fov,now.fov,k)};}
   return now;}
@@ -10220,7 +10484,7 @@ function mascOutro(cb){const cfg=G.cfg,R=G.result;if(!R||!mascCan(cfg)||mascMode
 if(typeof APP_OV!=='undefined'){APP_OV.push('#mascFx');APP_OVBTN.push('#mascSkip');}
 document.addEventListener('keydown',e=>{if(G.masc&&!G.masc.lock&&G.masc.t>MSC.skipAfter&&e.key!=='Shift'){G.masc.skip=true;}},true);
 document.addEventListener('click',e=>{if(e.target&&e.target.id==='mascSkip'&&G.masc&&!G.masc.lock)G.masc.skip=true;},true);
-// the kit designer's preview: the chosen mascot's victory or defeat over the menu's ice (both played back to back)
+// the kit designer's preview: the chosen mascot's victory or defeat over the menu's ice (with another mascot reacting next to it)
 function mascPreview(mas,res){if(G.masc||!mascPossible())return false;const scr=document.querySelector('.screen.on'),id=scr&&scr.id;
   const L=KIT.mas.filter(m=>m!==mas);const pr={mine:save.team||'blue',oth:(save.team||'blue')==='blue'?'red':'blue',my:mas,op:L[(KIT.mas.indexOf(mas)+3)%L.length]};
   if(scr)scr.classList.remove('on');
@@ -10232,7 +10496,7 @@ SFX.setOn(save.set.sound);$('#bSound').textContent=save.set.sound?'🔊':'🔇';
 applyQuality();
 enterDemo();setTOD(.1,10);updateEnv(true);tutMaybeAsk();safe(accInit);safe(dlyInit);safe(dlyAuto);safe(ctlInit);
 document.body.classList.add('menuish');$('#ptsN').textContent=save.points;
-window.__PH={trialOppNames,doPull,pullOnce,MSC,MS_SP,MS_WL,MS_RIG,mBody,mPose,mPlace,mascCan,mascPair,mascStart,mascEnd,mascClear,mascIntro,mascOutro,mascStep,mascShot,mascMode,mascPreview,KIT,KIT_ART,KIT_CUR,KIT_DEF,kit,kitClean,kitSig,kitSync,kitFor,kitPick,kitDist,kitLum,kitAcc,kitHex,kitMix,kitCrestSvg,kitJerseySvg,kitJerseyMat,kitPaint,kitPurge,kitBoard,kitNet,kitStripe,kitRender,kitSet,TEAM,pkJerseyMat,netInfo,setupMatch,NET,pkGeoC,pkMatC,STK,STK_M,STK_AB,STK_ST,STK_PART,stk,stkGet,stkEq,stkGrade,stkCalc,stkTT,stkApply,stkGeo,stkProbs,stkMatRate,stkEff,stkRoll,stkDraw,stkDrawOnce,stkFreeReady,stkCraft,stkCraftCost,stkCanCraft,stkEnhCost,stkEnhRate,stkEnhance,stkEquip,stkBreak,stkSell,stkAbDesc,stkSvg,stkSwatch,stkRender,stkOddsBox,stkPullHtml,stkCraftHtml,stkMineHtml,stkBadge,ttOf,performShot,CO,coach,coachNeed,coachReward,coachStreakBonus,coachFwReady,coachMatch,coachRowsHtml,coachBarHtml,coachLevelUp,coachRow,coachPlace,showResultScreen,leagueMenuRefresh,pkHeadGeo,PKV,PKE,pk43EyeGeos,pk43,pk43D,pk43Geo,pk43HeadR,pk43ScarfGeo,pk43Light,gaugeFit,LEGAL,legalUrl,legalLinks,legalRow,P3,P3V,p3Can,p3Shot,p3Url,p3Html,p3Warm,p3Frame,p3Stick,MT,mtHuman,mtMate,mtOpen,mtCalled,mtCarrier,mtCarry,mtPace,mtCallPress,mtCallPass,aiCarrier,aiThink,shotQ,applyFxSettings,LX,LXV,lxr,lxOn,lxNight,lxBuild,lxRing,lxGoal,lxHit,lxRays,lxFrame,scored,bigHit,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
+window.__PH={trialOppNames,doPull,pullOnce,MSC,MS_SP,MS_M,MS_RIG,mTouchTo,mascSpots,mascGap,mBody,mPose,mPlace,mascCan,mascPair,mascStart,mascEnd,mascClear,mascIntro,mascOutro,mascStep,mascShot,mascMode,mascPreview,KIT,KIT_ART,KIT_CUR,KIT_DEF,kit,kitClean,kitSig,kitSync,kitFor,kitPick,kitDist,kitLum,kitAcc,kitHex,kitMix,kitCrestSvg,kitJerseySvg,kitJerseyMat,kitPaint,kitPurge,kitBoard,kitNet,kitStripe,kitRender,kitSet,TEAM,pkJerseyMat,netInfo,setupMatch,NET,pkGeoC,pkMatC,STK,STK_M,STK_AB,STK_ST,STK_PART,stk,stkGet,stkEq,stkGrade,stkCalc,stkTT,stkApply,stkGeo,stkProbs,stkMatRate,stkEff,stkRoll,stkDraw,stkDrawOnce,stkFreeReady,stkCraft,stkCraftCost,stkCanCraft,stkEnhCost,stkEnhRate,stkEnhance,stkEquip,stkBreak,stkSell,stkAbDesc,stkSvg,stkSwatch,stkRender,stkOddsBox,stkPullHtml,stkCraftHtml,stkMineHtml,stkBadge,ttOf,performShot,CO,coach,coachNeed,coachReward,coachStreakBonus,coachFwReady,coachMatch,coachRowsHtml,coachBarHtml,coachLevelUp,coachRow,coachPlace,showResultScreen,leagueMenuRefresh,pkHeadGeo,PKV,PKE,pk43EyeGeos,pk43,pk43D,pk43Geo,pk43HeadR,pk43ScarfGeo,pk43Light,gaugeFit,LEGAL,legalUrl,legalLinks,legalRow,P3,P3V,p3Can,p3Shot,p3Url,p3Html,p3Warm,p3Frame,p3Stick,MT,mtHuman,mtMate,mtOpen,mtCalled,mtCarrier,mtCarry,mtPace,mtCallPress,mtCallPass,aiCarrier,aiThink,shotQ,applyFxSettings,LX,LXV,lxr,lxOn,lxNight,lxBuild,lxRing,lxGoal,lxHit,lxRays,lxFrame,scored,bigHit,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,passFull,goalFishTxt,CTLV,CL,CJ,CE,ctl,ctlLoad,ctlCurve,ctlEasy,ctlCarve,ctlBuf,ctlApply,ctlDefaults,ctlFrame,ctlRow,ctlEdOpen,ctlEdClose,ctlEdAct,ctlEdRange,ctlEdHtml,ctlEditing,ctlJoyIdle,ctlJoyDown,ctlJoyMove,ctlJoyEnd,humanAim,canHit,ACC,accOn,accSigned,accWithIdToken,accUpload,accSync,accUseCloud,accUseLocal,accSignOut,accDelete,accOpen,accBody,accHash,accMeta,accSum,accDirty,SFX,CLUTCH,clutchOn,clutchFrame,clutchGoal,clutchClear,hypeGoal,DLY,DLY_DUP,dlyDay,dlyCan,dlyClaim,dlyNext,dlyBody,dlyCardHtml,dlyOpen,dlyAuto,claimable,bondJ,BOND_LV,BOND_PTS,BOND_TXT,bondAdd,bondOf,bondRowHtml,bondCardHtml,bondNick,openCard,NET,FB,fbOn,fbToken,dbReq,netHost,netJoin,netClose,netSnap,netGuestApply,netBegin,frRender,remoteControl,NETCFG,landZoom,shFit,shState,shMapSize,pkHi,pkS,APP,appInit,appMsg,appCall,phBack,phPause,phResume,appOverlay,PRO,BILL,billInit,proBuy,proGrant,proRestore,proBtnHtml,proNoteHtml,proPriceTxt,proFmt,passProOn,passGoldOn,passGain,passReward,input,SIGCAM,SG,sgP,sigFrame,sigProps,sigEnd,sgWorld,sgWaveSet,waveProfile,CINE,cineMode,cineOk,cineStart,cineStep,cineSkip,cineCastU,cineEnd,cineClear,cineCam,cineCamBlend,cineAngle,cineShots,cineInside,cineWorld,PASS,passLoad,passTheme,passName,passTier,passCan,passCount,passGrant,passClaim,passClaimAll,passCheck,passAdd,passMatch,passRowHtml,rulesRowHtml,passBuy,renderPass,passMenu,howV24,claimGoal,renderGoals,goalsEnsure,showResultScreen,hypeMenuRefresh,goScreen,seasonNow,TRAILS,CAST,castShout,castStart,castFlip,castPost,castFrame,castProps,cxS,cxD,setHuman,autoSwitch,teamRoles,aiFormation,bestMate,RULE,RULE_K,rulesMode,rulesOn,rulesActive,penSecs,penFor,boxMax,onIce,shortH,rulesReset,boxSend,boxRelease,boxPlace,foulKind,breakaway,rulesFoul,rulesContact,stopPlay,rulesResume,foSetup,psStart,psFrame,psEnd,rulesScored,rulesSim,rulesAI,rulesMateOk,rulesIcingRisk,rulesSlideOk,rulesPathClear,rulesHud,rulesCall,refFrame,refSig,howV22,v22Frame,playing,checkGoal,bumpFx,ram18,useSpecial,resetPositions,endMatch,scored,RAR,rarCls,tierTypes,typeRate,typeShare,grantTier,grantCard,rarLoad,MK_BUY,MK_SELL,MK_GW,ENH_CARD_BONUS,BRK,epicChance,gradeProbs,gachaEff,pickType,gfxRender,gfxTier,gfxApply,gfxStepDown,GFX,RFL,PP,CSH,GLOW_L,iceMat,updateCamera,perfSample,perf,applyQuality,SPX,NEW18,spec18,spDesc,PFACT,ai18,keen18,royal18,tick18,sim18,dbl18,ram18,hopY18,pengSVG18,pkCrest18,pkW18,pkC18,decals18,sil18,news18Popup,news18Html,news18Soon,oppMix18,demo18,chip18,spLine18,fact18,PREF,SPECIALS,SPEC,STATK,TYPE_W,SEASON,seasonLoad,seasonBadge,seasonNow,seasonLeft,seasonDate,seasonSoft,seasonCheck,seasonAdd,seasonRulesTxt,seasonBoxHtml,seasonMiniHtml,seasonNote,seasonPopup,seasonRewTxt,COND,COND_W,COND_BONUS,CF,CF0,CV,condAllowed,condRoll,condPick,condStart,condClear,condBonus,condBonusRow,condIntroHtml,condFrame,PC,pcBonus,pcOn,pcReady,pcGiveGo,pcPass,pcShotMul,pcReset,pcBreak,pcPopText,howV17,fmtL,movePeng,puckStep,aiCarrier,aiGoalie,showTourIntro,showResultScreen,renderSettings,SETDEF,todTarget,setTOD,v17Frame,passDone,toMenu,enterDemo,doEnhance,doFuse,enhRate,cardTotal,applyLevel,renderScout,TYPES,renderSqStyle,sqBuy,devCheck,devReveal,aukSVG,TIER_IC,NATIONS,useSpecial,rankedStart,rankedDiff,trialStart,trialPlay,trialAfterMatch,trialLock,trialLeft,trialDayRefresh,TRIALS,titleText,renderRanked,goRanked,mgrRivals,mkGen,mkBuy,mkSell,mkRefresh,mkSellPrice,mkKey,MK_BUY,MK_SELL,MK_TMUL,MK_SLOT,clubValue,clubTable,penguinValue,mgrTable,mgrApply,mgrMatchEnd,mgrReset,mgrFrame,oppRating,tierOf,TIERS,isRated,renderMarket,renderProfile,leagueMenuRefresh,escH,cleanName,TUT,TUT_STEPS,tutStart,tutEvent,tutFrame,tutMaybeAsk,hypeNew,cbAdd,hypeGoal,classifyGoal,mxInfo,grantXp,goalsEnsure,gp,claimGoal,claimLong,GDEFS,LDEFS,TRAITS,recUpdate,hypeMatchEnd,renderGoals,hypeFrame,hypeReset,rollGrade,playPackOpen,playFuseFx,renderSquad,computeChem,applyChem,teamOvr,cardOvr,cardHtml,SYN,autoFuseSel,squadTypes,sqAuto,sqAssign,PULL_ODDS,PITY_AT,FUSE_DEF,ENH_RATE,GRADES,G,step,input,startMatch,launch,setupMatch,TOUR,CHALLENGES,save,frame:step,HM_IC,hypeMenuRefresh,leagueMenuRefresh,RK,RK_MATS,RK_AD,RK_BAY,rinkLoop,uiPanels,uiTidy,applyQuality,iceMat,rinkPath,rinkRuns,lamps,renderer,buildPenguin,pkNum,setTOD,PK_MAT,pkGeoC,crowdBodyGeo,buildPenguinV9,animatePenguin,makePeng,TEAM,sun,hemi,GACHA,BRK,ENH_PITY,epicChance,gradeProbs,gachaEff,pickupNow,pickupRate,pickType,rollGrade,grantCard,brkPlan,brkAvail,doBreak,askBreak,openCard,scPullHtml,scEnhHtml,scDexHtml,statVal,cardOvr,oddsBox,playEnhFx,lackMsg,hypeMenuRefresh,achCheck,buyConfirm,sqBuy,persist,ACH,achHtml,statGrid,realMatch,trailCol,autoSwitch,carryStep,carryRelease,bigHit,CARRY,evStart,evFrame,eventsOn,EVENTS,spawnItem,applyItem,itemFrame,itemsOn,feverStart,soStart,soResult,soFrame,soAllowed,funReset,ITEMS,redeemCode,buildPenguin,scene,camera,pengSVG,simulate,resetPositions,checkGoal,aiShoot,FIXED,DIFF,gkRead,challengeDone,TT,arenaPick,ARENAS,passLost,touchPuck,pengCollisions,doDash,humanControl,shakeK,togglePause,aiIntercept,updateObjective,buildChal,chalMeta,performShot,doPass,useSpecial,knock,swapNearest,endMatch,scored};
 requestAnimationFrame(frame);
 }
 __loadThree(function(ok){

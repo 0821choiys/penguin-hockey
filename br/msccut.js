@@ -17,11 +17,13 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
   const r=await p.evaluate((KIND,OPN)=>{const P=window.__PH,G=P.G;window.requestAnimationFrame=()=>0;
     if(KIND.startsWith('pv:')){const [,mas,res]=KIND.split(':');P.goScreen('sKit');P.mascPreview(mas,res);}
     else{P.startMatch({mode:'quick',size:3,time:60,diff:'normal',oppTypes:['basic','fast','king'],tag:'q',oppName:OPN,label:'vs '+OPN});
-      if(KIND.startsWith('end')){P.mascClear();const res=KIND.split(':')[1];G.result={win:res==='win',draw:res==='draw',ms:2,os:1,note:''};G.state='over';P.mascOutro(()=>{});}}
+      const pr=OPN[0]==='@'?{mine:'blue',oth:'red',my:P.kit().mas,op:OPN.slice(1)}:null;   // '@seal' forces the other mascot
+      if(KIND.startsWith('end')){P.mascClear();const res=KIND.split(':')[1];G.result={win:res==='win',draw:res==='draw',ms:2,os:1,note:''};G.state='over';if(pr)P.mascStart('end',G.cfg,{pair:pr,res,cb:()=>{}});else P.mascOutro(()=>{});}
+      else if(pr){P.mascClear();P.mascStart('intro',G.cfg,{pair:pr});}}
     return {masc:!!G.masc,kind:G.masc&&G.masc.kind,quick:G.masc&&G.masc.quick,dur:G.masc&&G.masc.dur,pair:G.masc&&G.masc.pr};},KIND,OPN);
   console.log(JSON.stringify(r));let t=0;
   for(const T of TS){await p.evaluate((dt)=>{const P=window.__PH;let left=dt;while(left>1e-6){const d=Math.min(1/30,left);P.step(d);left-=d;}P.gfxRender();},T-t);t=T;
-    console.log(T,JSON.stringify(await p.evaluate(()=>{const c=window.__PH.camera;return {fov:c.fov,asp:+c.aspect.toFixed(3),pos:c.position.toArray().map(v=>+v.toFixed(2)),view:!!(c.view&&c.view.enabled),ih:innerHeight,iw:innerWidth,zoom:c.zoom};})));
+    console.log(T,JSON.stringify(await p.evaluate(()=>{const c=window.__PH.camera,M=window.__PH.G.masc;return {rigs:M?[M.A,M.B].map(R=>R.root.visible+' '+R.root.position.toArray().map(v=>+v.toFixed(2))+' s'+R.root.scale.x.toFixed(2)+' at'+JSON.stringify(R.at)+' off'+JSON.stringify(R.off)+' nanJ'+Object.keys(R.j).filter(k=>!isFinite(R.j[k].quaternion.x)||!isFinite(R.j[k].position.x)).join('/')):'',fov:c.fov,asp:+c.aspect.toFixed(3),pos:c.position.toArray().map(v=>+v.toFixed(2)),view:!!(c.view&&c.view.enabled),ih:innerHeight,iw:innerWidth,zoom:c.zoom};})));
     await p.evaluate(()=>{for(const a of document.getAnimations())try{a.finish();}catch(e){}});await wait(60);
     await p.screenshot({path:path.join(OUT,TAG+'_'+KIND.replace(/:/g,'-')+'_'+T.toFixed(2)+'.jpg'),type:'jpeg',quality:82});}
   console.log('masc still on:',await p.evaluate(()=>!!window.__PH.G.masc),'state',await p.evaluate(()=>window.__PH.G.state));

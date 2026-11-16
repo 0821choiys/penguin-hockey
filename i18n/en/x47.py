@@ -8,5 +8,5 @@ X={
 "탭해서 건너뛰기 ›":("Tap to skip ›","点击跳过 ›","タップでスキップ ›"),
 "무승부 — 서로 악수":("Draw: a handshake","平局：互相握手","引き分け：握手"),
 "우리 팀 마스코트 등장":("Here come the mascots","吉祥物登场","マスコット登場"),
-"3D 마스코트 {m} — 경기 시작에 악수하고, 끝나면 승리·패배 세리머니를 해요":("3D mascot {m}: shakes hands before the match and celebrates or sulks after it","3D吉祥物 {m}：赛前握手，赛后进行胜利或落败表演","3Dマスコット {m}：試合前に握手、試合後に勝利・敗戦セレモニー"),
+"3D {m} — 경기 시작에 상대 마스코트와 인사하고, 끝나면 승리·패배 세리머니를 해요":("3D {m}: greets the other mascot before the match and celebrates or sulks after it","3D {m}：赛前和对方吉祥物打招呼，赛后进行胜利或落败表演","3D {m}：試合前に相手のマスコットとあいさつ、試合後に勝利・敗戦セレモニー"),
 }

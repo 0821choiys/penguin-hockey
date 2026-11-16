@@ -210,7 +210,7 @@ function kitRender(){
     h+='<div class="kit-grid">'+KIT.pat.map(p=>'<button class="kit-opt'+(p===k.pat?' on':'')+'" data-kt="pat" data-v="'+p+'">'+kitJerseySvg(Object.assign({},k,{pat:p}),false,num)+'<b>'+KIT_PATN[p]+'</b></button>').join('')+'</div>';
   }else if(kitTab==='mas'){
     h+='<div class="kit-grid mas">'+KIT.mas.map(m=>'<button class="kit-opt'+(m===k.mas?' on':'')+'" data-kt="mas" data-v="'+m+'">'+kitCrestSvg(Object.assign({},k,{mas:m}))+'<b>'+KIT_MASN[m]+'</b></button>').join('')+'</div>';
-    if(typeof mascPreview==='function')h+='<div class="lbl kit-pvl">'+fmtL(__L('3D 마스코트 {m} — 경기 시작에 악수하고, 끝나면 승리·패배 세리머니를 해요'),{m:KIT_MASN[k.mas]})+'</div><div class="row kit-pv"><button class="btn small" data-kt="pvw">▶ '+__L('승리 미리보기')+'</button><button class="btn small" data-kt="pvl">▶ '+__L('패배 미리보기')+'</button></div>';
+    if(typeof mascPreview==='function')h+='<div class="lbl kit-pvl">'+fmtL(__L('3D {m} — 경기 시작에 상대 마스코트와 인사하고, 끝나면 승리·패배 세리머니를 해요'),{m:KIT_MASN[k.mas]})+'</div><div class="row kit-pv"><button class="btn small" data-kt="pvw">▶ '+__L('승리 미리보기')+'</button><button class="btn small" data-kt="pvl">▶ '+__L('패배 미리보기')+'</button></div>';
   }else{
     h+='<div class="kit-grid cr">'+KIT.crest.map(c=>'<button class="kit-opt'+(c===k.crest?' on':'')+'" data-kt="crest" data-v="'+c+'">'+kitCrestSvg(Object.assign({},k,{crest:c}))+'<b>'+KIT_CRN[c]+'</b></button>').join('')+'</div>';
   }

@@ -6,8 +6,10 @@ save.set.rules='off';save.set.items=false;save.set.events=false;
 // ---------- the cast ----------
 const sp=Object.keys(PH.MS_SP),km=PH.KIT.mas;
 ok(sp.length===12&&km.every(m=>sp.includes(m))&&sp.every(m=>km.includes(m)),'a 3D mascot for every kit mascot ('+sp.join(', ')+')');
-ok(sp.every(m=>PH.MS_WL[m]&&typeof PH.MS_WL[m].w==='function'&&typeof PH.MS_WL[m].l==='function'&&typeof PH.MS_WL[m].g==='number'),'every mascot has its own victory and defeat act (+ the signature start used in the entrance)');
-ok(new Set(sp.map(m=>PH.MS_WL[m].w.toString())).size===12&&new Set(sp.map(m=>PH.MS_WL[m].l.toString())).size===12,'12 different victory acts and 12 different defeat acts');
+const F=['build','idle','enter','touch','bow','wave','win','lose'];
+ok(sp.every(m=>F.every(f=>typeof PH.MS_SP[m][f]==='function')&&['ice','water','air'].includes(PH.MS_SP[m].med)),'every mascot has its own body, entrance, greeting, bow, wave, victory and defeat ('+F.join(', ')+')');
+ok(new Set(sp.map(m=>PH.MS_SP[m].win.toString())).size===12&&new Set(sp.map(m=>PH.MS_SP[m].lose.toString())).size===12,'12 different victory acts and 12 different defeat acts');
+const med=m=>PH.MS_SP[m].med;ok(['orca','narwhal','fish','berg'].every(m=>med(m)==='water')&&['peng','bear','seal','walrus','fox','owl'].every(m=>med(m)==='ice')&&['flake','bolt'].every(m=>med(m)==='air'),'animals, not costumes: the sea animals + iceberg live in the water, the rest on the ice, the snowflake and the bolt in the air');
 ok(PH.MSC.intro>PH.MSC.introQ&&PH.MSC.introQ>=3&&PH.MSC.end>=5&&PH.MSC.end<=7,'timing: entrance '+PH.MSC.intro+' s (short '+PH.MSC.introQ+' s), end scene '+PH.MSC.end+' s');
 // ---------- the setting ----------
 const s0=save.set.masc;ok(PH.mascMode()==='full','the setting starts at 전체 (full)');

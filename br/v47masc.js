@@ -46,10 +46,10 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(i1.st==='ready'&&Math.abs(i1.stT-i0.stT)<.01,'the match waits while the scene plays (ready, clock '+i1.stT+' s unchanged)');
   ok(i1.pl===0&&i1.board==='hidden'&&i1.A&&i1.B,'players, puck and score board are hidden; both mascots are on the ice');
   ok(/VS/.test(i1.cap)&&!hangul(i1.cap),'caption: '+i1.cap.replace(/\n/g,' · '));
-  await run(1.85);   // ≈ 2.85 s: the handshake
-  const hs=await E(()=>{const P=window.__PH,A=P.MS_RIG.A,B=P.MS_RIG.B,a=A.hR.getWorldPosition(new A.root.position.constructor()),b=B.hR.getWorldPosition(new A.root.position.constructor());
-    return {d:+a.distanceTo(b).toFixed(2),ay:+a.y.toFixed(2),ax:+A.root.position.x.toFixed(2),bx:+B.root.position.x.toFixed(2)};});
-  ok(hs.d<.42&&hs.ay>.8,'handshake: the two right hands meet in the middle ('+hs.d+' m apart at '+hs.ay+' m high; mascots at '+hs.ax+' / '+hs.bx+')');
+  await run(1.85);   // ≈ 2.85 s: the greeting touch
+  const hs=await E(()=>{const P=window.__PH,A=P.MS_RIG.A,B=P.MS_RIG.B,V=()=>new A.root.position.constructor(),a=A.touch.getWorldPosition(V()),b=B.touch.getWorldPosition(V());
+    return {d:+a.distanceTo(b).toFixed(3),ay:+a.y.toFixed(2),ax:+A.root.position.x.toFixed(2),bx:+B.root.position.x.toFixed(2),gap:+P.mascGap(A,B).toFixed(2)};});
+  ok(hs.d<.12&&hs.ay>.4&&hs.gap>-.02,'greeting: the 일각고래’s fin and the other mascot’s paw / flipper / fin really touch ('+hs.d+' m apart at '+hs.ay+' m high; bodies '+hs.gap+' m apart; mascots at '+hs.ax+' / '+hs.bx+')');
   await shot('intro_shake');
   await run(2.0);await shot('intro_sig');
   // tap to skip
@@ -77,14 +77,18 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   const fin=await E(()=>{const P=window.__PH,A=P.MS_RIG.A.root,B=P.MS_RIG.B.root;return [A.position.x,A.position.y,B.position.x,B.position.y].every(Number.isFinite);});ok(fin,'both mascots placed sensibly while they act');
   await run(5);
   ok(await E(()=>!window.__PH.G.masc&&document.getElementById('sResult').classList.contains('on')),'…then the result screen');
-  // ---------- every mascot, every animation: finite, on or above the ice, not flying away ----------
-  const all=await E(()=>{const P=window.__PH,bad=[];const R0=P.MS_RIG.A,T=[];
-    for(const sp of Object.keys(P.MS_SP)){const R=P.mBody('blue',null,sp);P.scene.add(R.root);R.root.traverse(m=>{if(m.isMesh&&!(m.material&&m.material.isMaterial))bad.push(sp+' mesh without a material');});
-      for(const an of['idle','skate','shake','bow','wave','greet','win','lose','draw'])for(let t=0;t<=5.6;t+=.2){P.mPose(R,an,t,{u:Math.min(1,t/2),n:Math.round(t*30),side:1});P.mPlace(R,{x:0,z:0,yaw:0});R.root.updateMatrixWorld(true);
-        const p=R.root.position,h=R.head.getWorldPosition(p.clone());if(![p.x,p.y,p.z,h.x,h.y,h.z].every(Number.isFinite)||p.y<-.75||p.y>2.6||Math.hypot(p.x,p.z)>3.2||h.y<.12)bad.push(sp+' '+an+' '+t.toFixed(1)+' y'+p.y.toFixed(2)+' head'+h.y.toFixed(2));}
+  // ---------- every mascot, every animation: finite, near its spot, the head where it can be (sea animals may dive) ----------
+  const all=await E(()=>{const P=window.__PH,bad=[];
+    for(const sp of Object.keys(P.MS_SP)){const R=P.mBody('blue',null,sp),S=P.MS_SP[sp],wet=S.med==='water';P.scene.add(R.root);R.root.traverse(m=>{if(m.isMesh&&!(m.material&&m.material.isMaterial))bad.push(sp+' mesh without a material');});
+      for(const an of['idle','enter','touch','bow','wave','sig','win','lose','draw'])for(let t=0;t<=5.6;t+=.2){P.mPose(R,an,t,{u:Math.min(1,t/2),d:Math.max(0,4-t),n:Math.round(t*30),dt:.2,side:sp.length%2?1:-1});P.mPlace(R,{x:0,z:0,yaw:0});R.root.updateMatrixWorld(true);
+        const p=R.root.position,h=R.head.getWorldPosition(p.clone());if(![p.x,p.y,p.z,h.x,h.y,h.z].every(Number.isFinite)||p.y<(wet?-3:-.8)||p.y>(an==='enter'?7:3.2)||Math.hypot(p.x,p.z)>(an==='enter'?5:2.2)||h.y<(wet?-3:-.35))bad.push(sp+' '+an+' '+t.toFixed(1)+' y'+p.y.toFixed(2)+' head'+h.y.toFixed(2));}
       P.scene.remove(R.root);}
     return bad;});
-  ok(all.length===0,'12 mascots: every part has a real material; × 9 animations × 29 moments: finite, the body near its spot and the head above the ice '+all.slice(0,4).join(' | '));
+  ok(all.length===0,'12 mascots: every part has a real material; × 9 animations × 29 moments: finite, near its spot, head never deep in the ice '+all.slice(0,4).join(' | '));
+  // ---------- the sea animals get a hole in the ice; the bolt strikes ----------
+  const sea=await E(()=>{const P=window.__PH,G=P.G,pr={mine:'blue',oth:'red',my:'orca',op:'bolt'};P.mascStart('intro',{mode:'quick'},{pair:pr});const M=G.masc;
+    let l=1.2;while(l>0){P.step(1/30);l-=1/30;}const pool=M.A.pool&&M.A.pool.visible,bolts=P.MS_RIG.B.root.scale.x>.5;P.mascEnd(false);return {pool,bolts,pv:M.A.pool&&!M.A.pool.visible};});
+  ok(sea.pool&&sea.bolts&&sea.pv,'범고래 comes out of a hole that cracks open in the ice; 번개 has struck and stands there; the hole goes away with the scene '+JSON.stringify(sea));
   // ---------- online: the entrance cannot be skipped ----------
   const lk=await E(()=>{const P=window.__PH,G=P.G;P.mascStart('intro',{mode:'friend',net:'host'});const M=G.masc;M.t=1;document.getElementById('mascFx').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));
     const r={lock:M.lock,skip:M.skip,btn:getComputedStyle(document.getElementById('mascSkip')).visibility};P.mascEnd(false);return r;});
