@@ -126,7 +126,7 @@ function kitCrestDraw(x,k,cx,cy,r,ry){ry=ry||r;
   for(const [p,c] of[[A.d,KIT_INK],[A.h,KIT_FIELD],[A.x,acc],[A.k,KIT_INK],[A.w,KIT_FIELD]])if(p){x.fillStyle=c;x.fill(new Path2D(p));}
   x.restore();
 }
-function kitPaint(x,k,num){
+function kitPaint(x,k,num,o){o=o||{};
   const c1=k.c1,a=k.c2,dk=kitMix(c1,'#000000',.4),lite=kitMix(c1,'#ffffff',.16),p=k.pat;
   const gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,lite);gr.addColorStop(1,c1);x.fillStyle=gr;x.fillRect(0,0,512,256);
   const band=(y,h,c)=>{x.fillStyle=c;x.fillRect(0,y,512,h);},twice=f=>{for(const o of[0,512]){x.save();x.translate(o,0);f();x.restore();}};
@@ -140,7 +140,7 @@ function kitPaint(x,k,num){
   const nc=kitLum(a)>.8||kitDist(a,c1)>200?a:'#ffffff';
   x.font='900 100px "Arial Black",Arial,sans-serif';x.lineWidth=14;x.strokeStyle=dk;x.strokeText(String(num),256,124);x.fillStyle=nc;x.fillText(String(num),256,124);
   // the texture wraps round the body: ~3.2× more pixels per unit up than across, so the crest is drawn tall to look round
-  for(const cx of[0,512])kitCrestDraw(x,k,cx,112,20,64);
+  for(const cx of[0,512])kitCrestDraw(x,k,cx,o.cy||112,o.rx||20,o.ry||64);
 }
 function kitJerseyMat(teamKey,num,k){const lo=pkLo(),key='jk'+teamKey+num+lo+kitSig(k);if(pkMatC[key])return pkMatC[key];
   const c=document.createElement('canvas');c.width=lo?256:512;c.height=lo?128:256;const x=c.getContext('2d');if(lo)x.scale(.5,.5);
@@ -210,6 +210,7 @@ function kitRender(){
     h+='<div class="kit-grid">'+KIT.pat.map(p=>'<button class="kit-opt'+(p===k.pat?' on':'')+'" data-kt="pat" data-v="'+p+'">'+kitJerseySvg(Object.assign({},k,{pat:p}),false,num)+'<b>'+KIT_PATN[p]+'</b></button>').join('')+'</div>';
   }else if(kitTab==='mas'){
     h+='<div class="kit-grid mas">'+KIT.mas.map(m=>'<button class="kit-opt'+(m===k.mas?' on':'')+'" data-kt="mas" data-v="'+m+'">'+kitCrestSvg(Object.assign({},k,{mas:m}))+'<b>'+KIT_MASN[m]+'</b></button>').join('')+'</div>';
+    if(typeof mascPreview==='function')h+='<div class="lbl kit-pvl">'+fmtL(__L('3D 마스코트 {m} — 경기 시작에 악수하고, 끝나면 승리·패배 세리머니를 해요'),{m:KIT_MASN[k.mas]})+'</div><div class="row kit-pv"><button class="btn small" data-kt="pvw">▶ '+__L('승리 미리보기')+'</button><button class="btn small" data-kt="pvl">▶ '+__L('패배 미리보기')+'</button></div>';
   }else{
     h+='<div class="kit-grid cr">'+KIT.crest.map(c=>'<button class="kit-opt'+(c===k.crest?' on':'')+'" data-kt="crest" data-v="'+c+'">'+kitCrestSvg(Object.assign({},k,{crest:c}))+'<b>'+KIT_CRN[c]+'</b></button>').join('')+'</div>';
   }
@@ -221,6 +222,7 @@ function kitRender(){
 }
 function kitAct(a,b){const v=b.dataset.v;
   if(a==='tab'){kitTab=v;kitRender();return;}
+  if(a==='pvw'||a==='pvl'){try{mascPreview(kit().mas,a==='pvw'?'win':'lose');}catch(e){}return;}
   if(a==='on'){kitSet({on:b.checked?1:0});return;}
   if(a==='c1'||a==='c2'||a==='pat'||a==='mas'||a==='crest'){kitSet({[a]:v});return;}
   if(a==='reset'){kitSet({c1:KIT.c1[save.team==='red'?1:0],c2:KIT.c2[0],pat:'classic',crest:'circle',mas:'peng'});return;}
