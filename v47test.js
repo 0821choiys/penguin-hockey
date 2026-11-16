@@ -10,6 +10,13 @@ const F=['build','idle','enter','touch','bow','wave','win','lose'];
 ok(sp.every(m=>F.every(f=>typeof PH.MS_SP[m][f]==='function')&&['ice','water','air'].includes(PH.MS_SP[m].med)),'every mascot has its own body, entrance, greeting, bow, wave, victory and defeat ('+F.join(', ')+')');
 ok(new Set(sp.map(m=>PH.MS_SP[m].win.toString())).size===12&&new Set(sp.map(m=>PH.MS_SP[m].lose.toString())).size===12,'12 different victory acts and 12 different defeat acts');
 const med=m=>PH.MS_SP[m].med;ok(['orca','narwhal','fish','berg'].every(m=>med(m)==='water')&&['peng','bear','seal','walrus','fox','owl'].every(m=>med(m)==='ice')&&['flake','bolt'].every(m=>med(m)==='air'),'animals, not costumes: the sea animals + iceberg live in the water, the rest on the ice, the snowflake and the bolt in the air');
+// ---------- real animals (owner, 2026-11-16 evening: "more real — they look too much like toys") ----------
+{const src=m=>Object.values(PH.MS_SP[m]).filter(f=>typeof f==='function').map(f=>f.toString()).join('\n')+(m==='seal'?PH.MS_SP.walrus.pinn.toString():'');
+ const toy=sp.filter(m=>/mScarf|mBand|mSmile|mBlush|mEyes\(|mEye\(|mPuck/.test(src(m)));
+ ok(toy.length===0,'no scarves, bands, smiles, blush or cartoon eyes and no puck trick on any mascot'+(toy.length?' ('+toy.join(', ')+')':''));
+ ok(['bear','fox','owl'].every(m=>/mFur\(/.test(src(m)))&&['peng','bear','fox','owl','seal','walrus','orca','narwhal'].every(m=>/mEye[RG]\(/.test(src(m))),'fur drawn strand by strand on the polar bear, the arctic fox and the snowy owl; real eyes (iris + pupil, no white) on every animal');
+ ok(/InstancedMesh/.test(src('fish'))&&PH.MS_SP.fish.ty>0&&PH.MS_SP.fish.ty<.3,'정어리 = a school of sardines that greets at the water line ('+PH.MS_SP.fish.ty+' m)');
+ ok(['flake','berg','bolt'].every(m=>!/mEye/.test(src(m))),'the snowflake, the iceberg and the storm cloud have no face');}
 ok(PH.MSC.intro>PH.MSC.introQ&&PH.MSC.introQ>=3&&PH.MSC.end>=5&&PH.MSC.end<=7,'timing: entrance '+PH.MSC.intro+' s (short '+PH.MSC.introQ+' s), end scene '+PH.MSC.end+' s');
 // ---------- the setting ----------
 const s0=save.set.masc;ok(PH.mascMode()==='full','the setting starts at 전체 (full)');

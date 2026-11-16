@@ -1,0 +1,6 @@
+{
+  "name": "ph-build-tools",
+  "private": true,
+  "description": "Build helpers: terser minifies the v47 mascot module inside the built game (tools/minjs.js, called by v47_mascot.py) so the file stays under 2 MB; the readable source stays in v47_mascot.js. Install once with: cd tools && npm ci",
+  "devDependencies": { "terser": "5.31.0" }
+}

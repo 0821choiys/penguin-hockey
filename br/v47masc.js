@@ -87,8 +87,13 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(all.length===0,'12 mascots: every part has a real material; × 9 animations × 29 moments: finite, near its spot, head never deep in the ice '+all.slice(0,4).join(' | '));
   // ---------- the sea animals get a hole in the ice; the bolt strikes ----------
   const sea=await E(()=>{const P=window.__PH,G=P.G,pr={mine:'blue',oth:'red',my:'orca',op:'bolt'};P.mascStart('intro',{mode:'quick'},{pair:pr});const M=G.masc;
-    let l=1.2;while(l>0){P.step(1/30);l-=1/30;}const pool=M.A.pool&&M.A.pool.visible,bolts=P.MS_RIG.B.root.scale.x>.5;P.mascEnd(false);return {pool,bolts,pv:M.A.pool&&!M.A.pool.visible};});
+    let l=1.2;while(l>0){P.step(1/30);l-=1/30;}const pool=M.A.pool&&M.A.pool.visible,bolts=P.MS_RIG.B.root.scale.x>.5;
+    const ring=[M.A,M.B].map(R=>R.ring&&R.ring.visible?R.ring.material.color.getHexString():null),poolR=M.A.ring&&M.A.pool?+(M.A.ring.scale.x/(P.MS_SP.orca.pool*M.A.pool.scale.x)).toFixed(2):0;
+    P.mascEnd(false);return {pool,bolts,pv:M.A.pool&&!M.A.pool.visible,ring,poolR,ringOff:![M.A,M.B].some(R=>R.ring&&R.ring.visible)};});
+  ok(sea.ring.every(c=>c&&c!=='ffffff')&&sea.ring[0]!==sea.ring[1]&&sea.poolR>1.3&&sea.ringOff,'team colours: a ring of light in each team’s colour on the ice (round the hole for the sea animals), gone with the scene '+JSON.stringify({ring:sea.ring,poolR:sea.poolR}));
   ok(sea.pool&&sea.bolts&&sea.pv,'범고래 comes out of a hole that cracks open in the ice; 번개 has struck and stands there; the hole goes away with the scene '+JSON.stringify(sea));
+  const fur=await E(()=>{const P=window.__PH,R=P.mBody('blue',null,'bear');let sh=0,mx=0;R.root.traverse(m=>{const a=m.geometry&&m.geometry.attributes&&m.geometry.attributes.fsh;if(a){sh++;for(let i=0;i<a.count;i+=97)mx=Math.max(mx,a.getX(i));}});return {sh,mx};});
+  ok(fur.sh>=10&&fur.mx===1,'the polar bear’s fur is drawn in shells ('+fur.sh+' furred parts)');
   // ---------- online: the entrance cannot be skipped ----------
   const lk=await E(()=>{const P=window.__PH,G=P.G;P.mascStart('intro',{mode:'friend',net:'host'});const M=G.masc;M.t=1;document.getElementById('mascFx').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));
     const r={lock:M.lock,skip:M.skip,btn:getComputedStyle(document.getElementById('mascSkip')).visibility};P.mascEnd(false);return r;});

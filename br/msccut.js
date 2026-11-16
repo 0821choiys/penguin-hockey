@@ -19,7 +19,7 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
     else{P.startMatch({mode:'quick',size:3,time:60,diff:'normal',oppTypes:['basic','fast','king'],tag:'q',oppName:OPN,label:'vs '+OPN});
       const pr=OPN[0]==='@'?{mine:'blue',oth:'red',my:P.kit().mas,op:OPN.slice(1)}:null;   // '@seal' forces the other mascot
       if(KIND.startsWith('end')){P.mascClear();const res=KIND.split(':')[1];G.result={win:res==='win',draw:res==='draw',ms:2,os:1,note:''};G.state='over';if(pr)P.mascStart('end',G.cfg,{pair:pr,res,cb:()=>{}});else P.mascOutro(()=>{});}
-      else if(pr){P.mascClear();P.mascStart('intro',G.cfg,{pair:pr});}}
+      else if(pr){P.mascClear();P.mascStart('intro',G.cfg,{pair:pr});const M=G.masc;if(M&&M.quick){M.quick=false;M.dur=P.MSC.intro;for(const R of[M.A,M.B])if(R.pool)R.pool.userData.open=0;}}}   // a forced pair always gets the full entrance
     return {masc:!!G.masc,kind:G.masc&&G.masc.kind,quick:G.masc&&G.masc.quick,dur:G.masc&&G.masc.dur,pair:G.masc&&G.masc.pr};},KIND,OPN);
   console.log(JSON.stringify(r));let t=0;
   for(const T of TS){await p.evaluate((dt)=>{const P=window.__PH;let left=dt;while(left>1e-6){const d=Math.min(1/30,left);P.step(d);left-=d;}P.gfxRender();},T-t);t=T;

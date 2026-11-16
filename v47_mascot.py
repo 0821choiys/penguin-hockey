@@ -1,5 +1,15 @@
 # v47: 3D mascots (real animals + 3 elements) with entrance / victory / defeat cut-scenes (v47_mascot.js / .css)
-R("/* ================= INIT ================= */", "/*MSC:js*/" + rd('v47_mascot.js') + "/*MSC:jsend*/\n/* ================= INIT ================= */")
+# the module goes in minified (terser via tools/minjs.js: comments / whitespace out, local names shortened, top-level names and
+# string quotes kept) so the game stays under 2 MB; the readable source is v47_mascot.js. Without node or terser the build stops
+# with the reason (install once: cd tools && npm ci). The labs (br/msclab.js, br/msccut.js) swap the readable source in between the markers.
+import subprocess as _sp47
+_src47 = rd('v47_mascot.js')
+try:
+    _js47 = _sp47.run(['node', 'tools/minjs.js'], input=_src47.encode('utf-8'), capture_output=True, check=True).stdout.decode('utf-8')
+    assert len(_js47) > 1000
+except Exception as _e47:
+    raise SystemExit('v47: could not minify v47_mascot.js (cd tools && npm ci): %s' % getattr(_e47, 'stderr', _e47))
+R("/* ================= INIT ================= */", "/*MSC:js*/" + _js47 + "/*MSC:jsend*/\n/* ================= INIT ================= */")
 _st_end47 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end47] + rd('v47_mascot.css') + "\n" + s[_st_end47:]
 # the world stands still while a scene plays (like the skill cinematics); particles and the camera keep the real clock

@@ -53,11 +53,13 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 - Mascot cut-scenes (owner, 2026-11-16; v47, `mascot-v47.md`): owner rejected costumed people — "animals, not people; the lightning strikes down,
   the fish does it in the water". So the 12 kit mascots are the real thing (`MS_SP`: `med` ice / water / air): 9 animal bodies + snowflake (floats down
   in a snowfall), iceberg (rises from the water), lightning bolt (strikes down from its cloud); sea animals + iceberg live in a hole that cracks open in the ice.
-  Team colour = knitted scarf / band / ribbon / flag, never a jersey. Entrance = each one's own entrance → both reach out and really touch (paw / flipper / fin /
+  Realism (owner, 2026-11-17: "more real, they look too much like toys"; v1.6.2): real proportions, fur as shells (`mFur`, short near eyes / nose via `mKeep`),
+  real eyes stuck on by a ray (`mEyeG`, no white, no winks), painted skin textures, a sardine school (`InstancedMesh`, greets at the water line `ty`, whales then roll
+  instead of spy-hopping `o.low`), faceless snowflake / iceberg / storm cloud. Team colour = a ring of light on the ice (`mascRing`), no scarves, flags or jerseys. Entrance = each one's own entrance → both reach out and really touch (paw / flipper / fin /
   wing / crystal arm, `mTouchTo` IK; spots from `mascSpots`, bodies kept apart by `mascGap`) → own bow → signature; end = victory / defeat act per mascot
   (narwhal shows off when it wins, thrashes its horn when it loses). Visual only: the match waits (`G.masc` freezes `step`), skip by tap / back (not online
   entrances), setting `save.set.masc`. Automated browsers (`navigator.webdriver`) and the Node harness skip the scenes unless `window.PH_MASC=1`.
-  Check `node msclab.js t col` (no overlaps, tips meet) after pose changes; every mesh needs a real material; bodies of revolution (`mRev`) must face outwards.
+  `v47_mascot.js` is minified by terser at build time (`tools/minjs.js`; install once: `cd tools && npm ci`). Check `node msclab.js t col` (no overlaps, tips meet) after pose changes; every mesh needs a real material; bodies of revolution (`mRev`) must face outwards.
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.

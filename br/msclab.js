@@ -34,7 +34,7 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
       const pairs=v==='col'?null:[v.split(':')[1],v.split(':')[2]],U=v==='col'?null:(v.split(':')[3]||'1').split(',').map(Number);
       const res=await p.evaluate((pairs,U)=>{const P=window.__PH,M=window.__M,V=()=>new P.camera.position.constructor(),ALL=Object.keys(M.MS_SP);if(window.__ab)for(const o of window.__ab)P.scene.remove(o);window.__ab=[];
         const rig={};const get=(k,team,sp)=>rig[k+sp]||(rig[k+sp]=M.mBody(team,null,sp));const yaw=(R,side)=>M.mascYaw(R,side);
-        const run=(A,B,ts,u,ph)=>{A.side=-1;B.side=1;const sp=M.mascSpots(A,B);for(const R of[A,B]){M.mPose(R,ph,ts,{u,side:R.side});M.mPlace(R,{x:R.gs.x,z:R.gs.z,yaw:yaw(R,R.side)});}
+        const run=(A,B,ts,u,ph)=>{A.side=-1;B.side=1;const sp=M.mascSpots(A,B);for(const R of[A,B]){M.mPose(R,ph,ts,{u,side:R.side,low:sp.low});M.mPlace(R,{x:R.gs.x,z:R.gs.z,yaw:yaw(R,R.side)});}
           if(ph==='touch')for(const R of[A,B])M.mTouchTo(R,V().set(0,sp.y,0),u);for(const R of[A,B])R.root.updateMatrixWorld(true);return sp;};
         const sph=R=>R.sph.map(q=>({c:q[0].localToWorld(V().set(...q[1])),r:q[2]*R.root.scale.x}));
         if(pairs){const A=get('A','blue',pairs[0]),B=get('B','red',pairs[1]);P.scene.add(A.root,B.root);window.__ab.push(A.root,B.root);const out=[];
