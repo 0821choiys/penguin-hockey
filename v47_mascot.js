@@ -57,9 +57,10 @@ function mFin(pts,th,col,sm){const s=new mT.Shape();if(sm){s.moveTo(pts[0][0],pt
 function mMesh(list,mat,shadow){const m=new mT.Mesh(list.length===1&&!list[0][1]?list[0][0]:pkMerge(list),mat);m.castShadow=shadow!==false;if(shadow===false)m.userData.ns=1;return m;}
 const mG=(x,y,z)=>{const g=new mT.Group();g.position.set(x||0,y||0,z||0);return g;};
 // put a child on an ellipsoid surface at (yaw, pitch), facing out
+function mFace(obj,f){const z=f.clone().normalize(),x=mV(0,1,0).cross(z);if(x.lengthSq()<1e-6)x.set(1,0,0);x.normalize();const y=z.clone().cross(x);obj.quaternion.setFromRotationMatrix(new mT.Matrix4().makeBasis(x,y,z));}
 function mOn(par,obj,c,r,yaw,pitch,out){const d=mV(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch));
   obj.position.set(c[0]+d.x*r[0]*(out||1),c[1]+d.y*r[1]*(out||1),c[2]+d.z*r[2]*(out||1));
-  const n=mV(d.x/r[0],d.y/r[1],d.z/r[2]).normalize();obj.quaternion.setFromUnitVectors(mV(0,0,1),n);par.add(obj);return obj;}
+  const n=mV(d.x/r[0],d.y/r[1],d.z/r[2]).normalize();mFace(obj,n);par.add(obj);return obj;}
 const mHash=d=>{const v=Math.sin(d[0]*91.3+d[1]*57.7+d[2]*113.1)*43758.5;return v-Math.floor(v);};
 function mKitOf(teamKey,mas){const k=kitFor(teamKey);return Object.assign({c1:kitHex(TEAM[teamKey].color),c2:'#ffffff',pat:'classic',crest:'circle'},k||{},{mas});}
 // a disc of water (deep in the middle, lighter at the rim)
@@ -92,19 +93,40 @@ function mFur(par,g,su,sv,len,kf,ch){const m=new mT.Mesh(mFurGeo(g,su,sv,kf),mFu
 const MS_RC=new mT.Raycaster(),MS_RCM=new mT.MeshBasicMaterial({side:mT.DoubleSide});
 function mStick(par,geo,obj,from,to,out,face){const o=mV(from[0],from[1],from[2]),d=mV(to[0],to[1],to[2]).sub(o).normalize();MS_RC.set(o,d);const h=MS_RC.intersectObject(new mT.Mesh(geo,MS_RCM),false)[0];
   par.add(obj);if(!h){obj.position.copy(o);return obj;}const n=h.face.normal.clone();if(n.dot(d)>0)n.negate();obj.position.copy(h.point).addScaledVector(n,out||0);
-  obj.quaternion.setFromUnitVectors(mV(0,0,1),n.lerp(d.negate(),face==null?.35:face).normalize());return obj;}
+  mFace(obj,n.lerp(d.negate(),face==null?.35:face));return obj;}
 // fur length that fades to 0 near some points (eyes, nose): r0 = bare, r1 = full length; f = another factor
 const mKeep=(pts,r0,r1,f)=>(x,y,z)=>{let k=f?f(x,y,z):1;for(const p of pts)k=Math.min(k,mSm((Math.hypot(x-p[0],y-p[1],z-p[2])-r0)/(r1-r0)));return k;};
 // merge and keep the texture coordinates (for painted skin)
 function mMergeUV(list){const g=pkMerge(list),n=g.attributes.position.count,a=new Float32Array(n*2);let o=0;for(const it of list){const u=it[0].attributes.uv,c=it[0].attributes.position.count;if(u)a.set(u.array.subarray(0,c*2),o*2);o+=c;}g.setAttribute('uv',new mT.BufferAttribute(a,2));return g;}
 // a real eye: glossy, iris + pupil (round or a slit), no white showing, a thin dark lid rim
-function mEyeObj(er,iris,pup,lid){const g=mG(),sl=pup==='slit',pk=sl?0:(pup||.4);
-  g.add(new mT.Mesh(mEll([0,0,0],[er,er,er*.8],d=>{const a=Math.hypot(d[0],d[1]);if(d[2]<.2)return [.03,.02,.02];if(sl?(Math.abs(d[0])<.14&&a<.72):a<pk)return [.008,.008,.01];
-    if(a<.9){const k=mL(1.2,.62,a);return [iris[0]*k,iris[1]*k,iris[2]*k];}return [.05,.04,.04];},14),MS_M.eyeR));
-  const L=new mT.TorusGeometry(er*.98,er*.17,6,18),n=L.attributes.position.count,a=new Float32Array(n*3);for(let i=0;i<n;i++)a.set(lid||[.05,.04,.04],i*3);L.setAttribute('color',new mT.BufferAttribute(a,3));L.translate(0,0,er*.3);g.add(new mT.Mesh(L,MS_M.skin));return g;}
-function mEyeR(h,R,c,r,yaw,pitch,er,iris,pup,lid){for(const s of[1,-1]){const g=mEyeObj(er,iris,pup,lid);mOn(h,g,c,r,s*yaw,pitch,.97);R.eyes.push(g);}}
+// the iris, painted (owner, 2026-11-17 evening: "the eyes look unnatural"): fine radial fibres, lighter towards the pupil, a dark limbal ring,
+// a round or slit pupil and the wet cornea's catch-lights; animals show almost no white, so the rest is dark
+const MS_EYET={},MS_EYEM={};
+function mEyeMat(iris,pup,ir){const key=iris.join()+'|'+pup+'|'+ir;if(MS_EYEM[key])return MS_EYEM[key];
+  const t=pkTex(256,(x,N)=>{const c=N/2,Rr=N/2,ri=Rr*ir,col=(k,a)=>'rgba('+Math.min(255,iris[0]*k*255|0)+','+Math.min(255,iris[1]*k*255|0)+','+Math.min(255,iris[2]*k*255|0)+','+(a==null?1:a)+')';
+    x.fillStyle='#140f0c';x.fillRect(0,0,N,N);const g=x.createRadialGradient(c,c,ri*.12,c,c,ri);g.addColorStop(0,col(1.3));g.addColorStop(.5,col(1.05));g.addColorStop(.85,col(.75));g.addColorStop(1,col(.4));
+    x.fillStyle=g;x.beginPath();x.arc(c,c,ri,0,TAU);x.fill();mRs=17;
+    for(let i=0;i<300;i++){const a=mRnd()*TAU,r0=ri*(.15+mRnd()*.25),r1=ri*(.55+mRnd()*.42),k=.6+mRnd()*.9,b=a+(mRnd()-.5)*.18;x.strokeStyle=col(k,.32);x.lineWidth=.5+mRnd()*1.3;x.beginPath();x.moveTo(c+Math.cos(a)*r0,c+Math.sin(a)*r0);x.lineTo(c+Math.cos(b)*r1,c+Math.sin(b)*r1);x.stroke();}
+    x.strokeStyle='rgba(12,9,7,.85)';x.lineWidth=ri*.09;x.beginPath();x.arc(c,c,ri*.96,0,TAU);x.stroke();
+    x.fillStyle='#040405';x.beginPath();if(pup==='slit')x.ellipse(c,c,ri*.11,ri*.66,0,0,TAU);else x.arc(c,c,Rr*pup,0,TAU);x.fill();
+    const h=(px,py,r,a)=>{const q=x.createRadialGradient(c+px*Rr,c+py*Rr,0,c+px*Rr,c+py*Rr,r*Rr);q.addColorStop(0,'rgba(255,255,255,'+a+')');q.addColorStop(.4,'rgba(255,255,255,'+a*.6+')');q.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=q;x.fillRect(0,0,N,N);};
+    h(-.3,-.32,.15,.9);h(.24,.3,.07,.3);});
+  return MS_EYEM[key]=new mT.MeshStandardMaterial({map:t,roughness:.12,metalness:0});}
+// a real eye: a smooth eyeball (slight cornea bulge) with the painted iris facing +z, and upper / lower lids (thin shells) whose edges make the
+// almond-shaped opening; blinking closes the lids (mLid), looking turns the eyeball. lid: [rim colour] or {r: rim, c: lid skin, i: iris size, o: [up, down] opening, t: slant}
+function mEyeObj(er,iris,pup,lid){const L=Array.isArray(lid)||!lid?{r:lid}:lid,rim=L.r||[.05,.04,.04],lc=L.c||rim,ir=L.i||.86,g=mG();
+  const sg=new mT.SphereGeometry(er,pkLo()?18:28,pkLo()?14:20),P=sg.attributes.position,uv=sg.attributes.uv;
+  for(let i=0;i<P.count;i++){let x=P.getX(i),y=P.getY(i),z=P.getZ(i);const q=(x*x+y*y)/(er*er);if(z>0)z*=1+.05*Math.max(0,1-q);P.setZ(i,z);
+    const h=Math.hypot(x,y)||1e-6,k=z>0?1:1/h*er;uv.setXY(i,.5+x/(2*er)*(z>0?1:k),.5+y/(2*er)*(z>0?1:k));}
+  sg.computeVertexNormals();const ball=new mT.Mesh(sg,mEyeMat(iris,pup,ir));g.add(ball);
+  const lidG=up=>{const rr=er*(up?1.12:1.09),q=new mT.SphereGeometry(rr,pkLo()?16:24,8,0,TAU,up?0:mPI/2,mPI/2),A=q.attributes.position,n=A.count,c=new Float32Array(n*3);
+    for(let i=0;i<n;i++){const t=Math.abs(A.getY(i))/rr,k=mSm((t-.06)/.2);c.set([mL(rim[0],lc[0],k),mL(rim[1],lc[1],k),mL(rim[2],lc[2],k)],i*3);}q.setAttribute('color',new mT.BufferAttribute(c,3));return new mT.Mesh(q,MS_M.skin);};
+  const lu=lidG(1),ll=lidG(0);g.add(lu);g.add(ll);const o=L.o||[.5,.42];Object.assign(g.userData,{ball,lu,ll,au:o[0],al:o[1],op:1,tilt:L.t||0});mLid(g);return g;}
+// lids from the eye's openness (1 = open, 0 = shut)
+function mLid(e){const u=e.userData;if(!u.lu)return;const k=Math.max(0,Math.min(1,u.op));u.lu.rotation.x=mL(.26,-u.au,k);u.ll.rotation.x=mL(.06,u.al,k);}   // shut: the upper lid comes down over the lower one
+function mEyeR(h,R,c,r,yaw,pitch,er,iris,pup,lid,out){for(const s of[1,-1]){const g=mEyeObj(er,iris,pup,lid);mOn(h,g,c,r,s*yaw,pitch,out||.97);g.rotateZ(s*g.userData.tilt);R.eyes.push(g);}}
 // … set into a part by a ray (from → to for the left eye, the right one mirrors x); sink = how deep it sits (× its radius); returns where they are
-function mEyeG(h,R,geo,from,to,er,iris,pup,lid,sink,face){const P=[];for(const s of[1,-1]){const g=mEyeObj(er,iris,pup,lid);mStick(h,geo,g,[from[0]*s,from[1],from[2]],[to[0]*s,to[1],to[2]],-er*(sink==null?.35:sink),face);R.eyes.push(g);P.push(g.position.toArray());}return P;}
+function mEyeG(h,R,geo,from,to,er,iris,pup,lid,sink,face){const P=[];for(const s of[1,-1]){const g=mEyeObj(er,iris,pup,lid);mStick(h,geo,g,[from[0]*s,from[1],from[2]],[to[0]*s,to[1],to[2]],-er*(sink==null?.35:sink),face);g.rotateZ(s*g.userData.tilt);R.eyes.push(g);P.push(g.position.toArray());}return P;}
 // skin detail painted at run time (multiplied with the vertex colours): narwhal mottling, harbour-seal spots, walrus folds, sardine scales, skin grain
 const MS_TX={
   mottle:pkTex(256,(x,N)=>{x.fillStyle='#fff';x.fillRect(0,0,N,N);mRs=11;for(let i=0;i<900;i++){const a=mRnd()*N,b=mRnd()*N,w=(Math.cos(a/N*TAU)+1)/2;if(mRnd()>Math.pow(w,1.6))continue;const r=1.5+mRnd()*4.5,al=.25+.45*w;
@@ -214,11 +236,11 @@ function mLimb(y0,y1,rf,col,seg,vs){const S=pkLo()?.6:1,U=Math.max(8,(seg||16)*S
 // --- joints: every animated part is registered so each frame starts again from its rest placement ---
 function mJ(R,n,o){R.j[n]=o;return o;}
 function mRest(R){for(const k in R.j){const o=R.j[k],r=o.userData.r0;o.position.copy(r[0]);o.rotation.copy(r[1]);o.scale.copy(r[2]);}
-  R.off={x:0,y:0,z:0,rx:0,ry:0,rz:0,s:1,px:0,py:0,pz:0};for(const e of R.eyes){e.scale.set(1,1,1);const u=e.userData;if(u.pu)u.pu.position.copy(u.pu0);}R.ex.mouth.scale.set(1,1,1);if(R.ex.mat){R.ex.mat.emissiveIntensity=0;R.ex.mat.color.setScalar(1);}}
-function mBlink(R,t,s){const q=(t*.37+(s||0))%3.1,b=q<.12?Math.max(.1,1-Math.sin(q/.12*mPI)):1;for(const e of R.eyes)e.scale.y*=b;}
+  R.off={x:0,y:0,z:0,rx:0,ry:0,rz:0,s:1,px:0,py:0,pz:0};for(const e of R.eyes){e.scale.set(1,1,1);const u=e.userData;if(u.pu)u.pu.position.copy(u.pu0);u.op=1;mLid(e);if(u.ball)u.ball.rotation.set(0,0,0);}R.ex.mouth.scale.set(1,1,1);if(R.ex.mat){R.ex.mat.emissiveIntensity=0;R.ex.mat.color.setScalar(1);}}
+function mBlink(R,t,s){const q=(t*.37+(s||0))%3.1,b=q<.12?Math.max(0,1-Math.sin(q/.12*mPI)):1;for(const e of R.eyes){e.userData.op*=b;mLid(e);}}
 // lids: k < 1 narrows the eyes (real eyes do not wink or pop out, so a wink or k > 1 does nothing)
-function mEyeK(R,k,wink){if(wink)return;k=Math.max(.2,Math.min(1,k));for(const e of R.eyes)e.scale.y*=k;}
-function mLook(R,x,y){for(const e of R.eyes){const u=e.userData;if(u.pu)u.pu.position.set(u.pu0.x+x*u.w*.35,u.pu0.y+y*u.w*.35,u.pu0.z);}}
+function mEyeK(R,k,wink){if(wink)return;k=Math.max(.2,Math.min(1,k));for(const e of R.eyes){e.userData.op*=k;mLid(e);}}
+function mLook(R,x,y){for(const e of R.eyes){const u=e.userData;if(u.ball)u.ball.rotation.set(-y*.3,x*.4,0);}}
 const mR=(R,n,x,y,z)=>{const o=R.j[n];if(!o)return;o.rotation.x+=x||0;o.rotation.y+=y||0;o.rotation.z+=z||0;};
 function mWalk4(R,t,f,k,A){const p=t*f*TAU;A=A||.5;for(const [n,ph] of[['fL',0],['fR',mPI],['hL',mPI*.5],['hR',mPI*1.5]]){
     const sw=Math.sin(p+ph),lift=Math.max(0,Math.cos(p+ph));mR(R,n,-sw*A*k);mR(R,n+'2',lift*(n[0]==='f'?.9:.6)*k);}
@@ -245,7 +267,7 @@ var MS_SP={
       const hd=mJ(R,'head',mG(0,.9,.02));bd.add(hd);const c=[0,.11,.03],r=[.155,.145,.17];
       hd.add(mMesh([[mEll(c,r,d=>{if(Math.abs(d[0])>.5&&d[1]<.15&&d[1]>-.75&&d[2]<.45)return mMix(Yo,Yp,mSm(-d[1]-.1));if(d[2]>.25&&d[1]<-.45)return Yp;return B;},28),null]],PK_MAT.body));
       const bk=mHorn(.25,.04,(u,v)=>Math.cos(u*TAU)>.2&&v<.72?[1,.52,.36]:[.05,.05,.06],0,12),bp=bk.attributes.position;for(let i=0;i<bp.count;i++){const y=bp.getY(i);bp.setZ(i,bp.getZ(i)*.85+Math.pow(y/.25,2)*.035);}bk.computeVertexNormals();bk.rotateX(Math.PI/2);
-      const bm=new mT.Mesh(bk,PK_MAT.beak);mOn(hd,bm,c,r,0,-.1,.88);R.ex.beak=bm;mEyeR(hd,R,c,r,.62,.2,.017,[.3,.18,.1],.45);
+      const bm=new mT.Mesh(bk,PK_MAT.beak);mOn(hd,bm,c,r,0,-.1,.88);R.ex.beak=bm;mEyeR(hd,R,c,r,.62,.2,.016,[.32,.17,.09],.36,{r:[.03,.03,.04],c:B,i:.8,o:[.48,.4]},1.0);
       for(const s of[1,-1]){const w=mJ(R,s>0?'wL':'wR',mG(s*.27,.72,-.02));bd.add(w);w.rotation.z=s*.2;
         const f=mFin([[0,.02],[.055,-.04],[.066,-.3],[.036,-.46],[-.01,-.49],[-.05,-.3],[-.045,-.03]],.016,B,1);f.rotateY(Math.PI/2);const fp=f.attributes.position,fc=f.attributes.color;for(let i=0;i<fp.count;i++)if(fp.getX(i)*s<-.004)fc.setXYZ(i,.92,.92,.9);
         w.add(mMesh([[f,null]],PK_MAT.body));const tp=mG(0,-.47,0);w.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[bd,w];
@@ -286,7 +308,7 @@ var MS_SP={
       for(const s of[1,-1]){const p=mJ(R,s>0?'pfL':'pfR',mG(s*.32,-.22,.7));bd.add(p);p.rotation.set(-.5,0,s*.85);
         const g=mFin([[0,.04],[.11,-.02],[.17,-.18],[.17,-.34],[.11,-.45],[.02,-.46],[-.05,-.34],[-.06,-.08]],.035,B,1);g.rotateY(Math.PI/2);p.add(mMesh([[g,null]],MS_M.skin));
         const tp=mG(0,-.45,0);p.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[p];}
-      mEyeG(bd,R,bg,[.7,.03,.9],[0,.03,.9],.02,[.14,.09,.07],.5,null,.3,.2);
+      mEyeG(bd,R,bg,[.7,.03,.9],[0,.03,.9],.018,[.2,.12,.08],.4,{r:[.02,.02,.03],c:B,o:[.42,.36]},.45,.2);
       R.head=mJ(R,'head',mG(0,.12,.95));bd.add(R.head);const bh=mG(0,.43,.72);bd.add(bh);R.ex.spout=bh;R.sph=[[bd,[0,0,.45],.45],[bd,[0,.05,1.0],.34]];},
     idle(R,t){R.off.y=.035*Math.sin(t*1.6);MS_SP.orca.sw(R,t,.6);mBlink(R,t,.7);},
     sw(R,t,k){mSwim(R,t,.7,k);},
@@ -327,7 +349,7 @@ var MS_SP={
       const nk=mJ(R,'neck',mG(0,.12,.72));bd.add(nk);mFur(nk,mLoft(-.25,.42,(v,f)=>{f[0]=mKf([[0,-.02],[1,.07]],v);f[1]=mKf([[0,.05],[.1,.29],[.5,.25],[.9,.2],[1,.05]],v);f[2]=mKf([[0,.05],[.1,.32],[.5,.27],[.9,.21],[1,.05]],v);},fc,24,14),1.7,.67,.04);
       const hd=mJ(R,'head',mG(0,.08,.36));nk.add(hd);
       const hg=mLoft(-.18,.44,(v,f)=>{f[0]=mKf([[0,0],[.35,.03],[.7,0],[1,-.02]],v);f[1]=mKf([[0,.05],[.12,.18],[.4,.17],[.7,.11],[.92,.075],[1,.02]],v);f[2]=mKf([[0,.05],[.12,.17],[.4,.16],[.7,.1],[.92,.07],[1,.02]],v);},(u,v)=>v>.93?D:F,26,22);
-      const eP=mEyeG(hd,R,hg,[.3,.22,.2],[0,0,.02],.019,[.16,.1,.07],.5,null,.4,.5);
+      const eP=mEyeG(hd,R,hg,[.3,.22,.2],[0,0,.02],.018,[.24,.14,.07],.38,{r:[.03,.025,.025],c:F,i:.9,o:[.54,.4],t:.1},.45,.5);
       mFur(hd,hg,1.0,.62,.022,mKeep(eP,.025,.07,(x,y,z)=>mL(1,.3,mSm((z-.16)/.2))));
       for(const s of[1,-1])mFur(hd,mEll([s*.13,.14,-.05],[.05,.045,.028],F,10),.3,.15,.02);
       hd.add(mMesh([[mEll([0,-.005,.43],[.055,.04,.035],D,12),null],[mEll([0,-.05,.33],[.075,.01,.09],D,10),null]],MS_M.skin));
@@ -390,9 +412,9 @@ var MS_SP={
       hd.add(new mT.Mesh(mMergeUV(L),MAT));const S=[];
       for(const s of[1,-1]){const ns=new mT.Mesh(mEll([0,0,0],[sl?.015:.02,sl?.007:.01,.006],[.06,.05,.05],8),MS_M.skin);ns.rotation.z=s*(sl?.5:.2);mStick(hd,mz,ns,[s*(sl?.022:.045),.15,.4],[s*(sl?.022:.045),-.05,.15],-.002,0);}
       if(sl){for(const s of[1,-1])for(let i=0;i<7;i++){const w=new mT.CylinderGeometry(.0022,.0008,.2,4);w.translate(0,.1,0);w.rotateZ(-s*(Math.PI/2-.15)+(i-3)*.07*s);w.rotateY(s*(.55-.06*Math.abs(i-3)));w.translate(s*.07,-.06+(i-3)*.011,.25);S.push([w,[.9,.88,.84]]);}
-        mEyeR(hd,R,c,hr,.55,.15,.045,[.07,.05,.04],.62);}
+        mEyeR(hd,R,c,hr,.55,.15,.034,[.13,.08,.05],.6,{r:[.04,.04,.05],c:base,i:.95,o:[.72,.62],t:.1},.9);}
       else{for(const s of[1,-1])for(let i=0;i<20;i++){const w=new mT.CylinderGeometry(.006,.004,.07,5);w.rotateX(Math.PI/2+.5);w.translate(s*(.03+(i%5)*.038),-.07-(i/5|0)*.035,.325-(i%5)*.017);S.push([w,[.86,.78,.62]]);}
-        mEyeR(hd,R,c,hr,.72,.32,.022,[.35,.12,.08],.5,[.45,.25,.2]);const tk=mJ(R,'tusks',mG(0,-.17,.27));hd.add(tk);R.ex.tusks=[];
+        mEyeR(hd,R,c,hr,.72,.32,.02,[.36,.14,.08],.38,{r:[.42,.22,.18],c:base,i:.85,o:[.4,.34]},1.0);const tk=mJ(R,'tusks',mG(0,-.17,.27));hd.add(tk);R.ex.tusks=[];
         for(const s of[1,-1]){const m=new mT.Mesh(mHorn(.55,.05,(u,v)=>[.96-.1*v,.93-.12*v,.84-.15*v],0,14),MS_M.ivory);m.rotation.set(mPI-.18,0,-s*.06);m.position.x=s*.075;tk.add(m);R.ex.tusks.push(m);}}
       hd.add(mMesh(S,MS_M.skin,false));
       for(const s of[1,-1]){const a=mJ(R,s>0?'ffL':'ffR',mG(s*r*.84,-r*.55,P.fl*.62));ch.add(a);a.rotation.set(.9,0,s*.45);const tl=sl?.1:.13;a.add(mMesh([[mTube(-tl-.02,.03,v=>r*mL(.17,.24,v),base,1,12),null]],MS_M.skin));
@@ -429,7 +451,7 @@ var MS_SP={
       const nk=mJ(R,'neck',mG(0,.1,.34));nk.rotation.x=-.35;bd.add(nk);mFur(nk,mEll([0,.04,.02],[.14,.14,.14],F,14),.9,.45,.06);
       const hd=mJ(R,'head',mG(0,.11,.05));hd.rotation.x=.35;nk.add(hd);
       const hg=mLoft(-.14,.25,(v,f)=>{f[0]=mKf([[0,.01],[.45,.01],[.75,-.025],[1,-.035]],v);f[1]=mKf([[0,.04],[.15,.15],[.45,.15],[.7,.08],[.92,.04],[1,.012]],v);f[2]=mKf([[0,.04],[.15,.14],[.45,.13],[.7,.065],[.92,.035],[1,.012]],v);},()=>F,22,20);
-      const eP=mEyeG(hd,R,hg,[.24,.12,.22],[0,.02,.02],.019,[.74,.52,.2],'slit',null,.35,.5);
+      const eP=mEyeG(hd,R,hg,[.24,.12,.22],[0,.02,.02],.018,[.8,.56,.2],'slit',{r:[.03,.025,.025],c:F,i:.92,o:[.55,.38],t:.22},.42,.5);
       mFur(hd,hg,.9,.4,.035,mKeep(eP,.022,.06,(x,y,z)=>mL(1,.3,mSm((z-.07)/.12))));
       hd.add(mMesh([[mEll([0,-.03,.25],[.024,.019,.019],D,10),null],[mEll([0,-.06,.16],[.04,.006,.06],D,8),null]],MS_M.skin));
       for(const s of[1,-1]){const e=mJ(R,s>0?'eL':'eR',mG(s*.085,.1,-.04));e.rotation.z=-s*.35;hd.add(e);const g=mHorn(.072,.05,F,0,10),gp=g.attributes.position;for(let i=0;i<gp.count;i++)gp.setZ(i,gp.getZ(i)*.6);g.computeVertexNormals();mFur(e,g,.3,.12,.02);
@@ -467,7 +489,7 @@ var MS_SP={
       const fan=[];for(let i=-2;i<=2;i++){const g=mFin([[0,0],[.03,-.03],[.026,-.24],[0,-.27],[-.026,-.24],[-.03,-.03]],.008,W);const p=g.attributes.position,cc=g.attributes.color;for(let k=0;k<p.count;k++)if(Math.sin(p.getY(k)*42)>.6)cc.setXYZ(k,D[0],D[1],D[2]);g.rotateZ(i*.18);g.rotateX(1.2);g.translate(0,.15,-.24);fan.push([g,null]);}
       bd.add(mMesh(fan,MS_M.feather));
       const hd=mJ(R,'head',mG(0,.69,.02));bd.add(hd);const hg=mEll([0,.15,0],[.27,.24,.2],d=>d[2]>.35&&d[1]>-.5?W:bar(d,30,1),26),fd=mEll([0,.13,.1],[.21,.18,.12],W,20);
-      const eP=mEyeG(hd,R,fd,[.085,.175,.6],[.085,.175,0],.048,[1,.82,.12],.5,[.08,.07,.06],.5,.3);
+      const eP=mEyeG(hd,R,fd,[.085,.175,.6],[.085,.175,0],.046,[1,.8,.1],.5,{r:[.06,.05,.05],c:W,i:.96,o:[.78,.7]},.55,.15);
       mFur(hd,hg,1.6,.75,.025,mKeep(eP,.06,.1));mFur(hd,fd,1.2,.5,.02,mKeep(eP,.055,.09));
       const bk=mHorn(.07,.03,[.12,.11,.11],0,8);bk.rotateX(Math.PI/2+.75);bk.translate(0,.1,.215);hd.add(mMesh([[bk,null]],MS_M.skin));
       for(const s of[1,-1]){const n=s>0?'wL':'wR',a=mJ(R,n,mG(s*.27,.6,-.04));a.rotation.set(.12,0,s*.05);bd.add(a);
@@ -555,7 +577,7 @@ var MS_SP={
         const tp=mG(0,-.3,0);p.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[p];}
       const hn=mJ(R,'horn',mG(.07,.06,.97));hn.rotation.x=Math.PI/2-.16;bd.add(hn);hn.add(mMesh([[mHorn(1.55,.055,(u,v)=>{const q=.8+.12*v+.05*Math.sin(u*TAU*2+v*60);return [q,q*.96,q*.84-.08*(1-v)];},60,24),null]],MS_M.ivory));
       const ht=mG(0,1.55,0);hn.add(ht);R.ex.horn=hn;R.ex.hornTip=ht;
-      mEyeG(bd,R,bg,[.6,0,.7],[0,0,.7],.018,[.12,.09,.07],.5,null,.3,.2);
+      mEyeG(bd,R,bg,[.6,0,.7],[0,0,.7],.016,[.2,.13,.09],.4,{r:[.05,.05,.06],c:base,o:[.42,.36]},.45,.2);
       R.head=mJ(R,'head',mG(0,.1,.75));bd.add(R.head);const bh=mG(0,.36,.55);bd.add(bh);R.ex.spout=bh;R.sph=[[bd,[0,0,.35],.4],[bd,[0,.05,.8],.3]];},
     idle(R,t){R.off.y=.035*Math.sin(t*1.5);mSwim(R,t,.75,.6);mBlink(R,t,.8);},
     spy(R,k,h){mR(R,'body',-1.3*k);R.off.y+=(h==null?.5:h)*k;mR(R,'tail',.25*k);},

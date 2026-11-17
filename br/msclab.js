@@ -7,7 +7,7 @@ const MK='/* ================= INIT ================= */';
 function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.html'),'utf8');const i=s.indexOf(MK);if(i<0)throw new Error('INIT');
   let js=fs.readFileSync(path.join(ROOT,'v47_mascot.js'),'utf8');
   const j=s.indexOf('/*MSC:js*/'),k=s.indexOf('/*MSC:jsend*/');if(j>=0&&k>j)s=s.slice(0,j)+s.slice(k+13);   // the built copy (if any) is replaced
-  const i2=s.indexOf(MK);return s.slice(0,i2)+js+"\nwindow.__M={mBody,MS_SP,MSC,MS_M,mPose,mPlace,mTouchTo,mascSpots,mascPool,mascYaw,mascGap,mascHideWorld};\n"+s.slice(i2);}
+  const i2=s.indexOf(MK);return s.slice(0,i2)+js+"\nwindow.__M={mBody,MS_SP,MSC,MS_M,mPose,mPlace,mTouchTo,mascSpots,mascPool,mascYaw,mascGap,mascHideWorld,mEyeK,mLook,mLid};\n"+s.slice(i2);}
 (async()=>{const b=await puppeteer.launch({args:[...chromium.args,'--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'],executablePath:await chromium.executablePath(),headless:'shell'});
   const p=await b.newPage();const logs=[];p.on('pageerror',e=>logs.push(e.message));p.on('console',m=>{if(m.type()==='error')logs.push(m.text().slice(0,200));});
   const URL='file://'+path.join(ROOT,'penguin-hockey-improved.html');
@@ -17,7 +17,7 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
   if(logs.length)console.log('LOGS',logs.join('\n'));
   await p.evaluate(()=>{window.requestAnimationFrame=()=>0;document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));for(const pg of window.__PH.G.pengs||[])pg.pg&&(pg.pg.root.visible=false);if(window.__PH.G.puck&&window.__PH.G.puck.mesh)window.__PH.G.puck.mesh.visible=false;});
   const stage=(list,cam)=>p.evaluate((list,cam)=>{const P=window.__PH,M=window.__M;M.mascHideWorld(true);if(window.__ab)for(const o of window.__ab)P.scene.remove(o);window.__ab=[];const out=[];
-    for(const it of list){const t0=performance.now();const R=M.mBody(it.team||'blue',null,it.sp);R.root.position.set(it.x,0,it.z||0);R.root.rotation.y=it.ry||0;
+    for(const it of list){const t0=performance.now();const R=M.mBody(it.team||'blue',null,it.sp);window.__lastR=R;R.root.position.set(it.x,0,it.z||0);R.root.rotation.y=it.ry||0;
       if(it.anim){M.mPose(R,it.anim,it.t||0,Object.assign({u:it.t/2},it.o||{}));M.mPlace(R,{x:it.x,z:it.z||0,yaw:it.ry||0});}P.scene.add(R.root);window.__ab.push(R.root);if(R.med==='water'){const Q=M.mascPool(R);Q.visible=true;Q.position.set(it.x,0,it.z||0);Q.scale.set(.62,1,.62);Q.userData.open=1;window.__ab.push(Q);}out.push(it.sp+' '+(performance.now()-t0).toFixed(0)+'ms');}
     for(const g of P.G.pengs||[])if(g.pg)g.pg.root.visible=false;
     const c=P.camera;c.position.set(cam[0],cam[1],cam[2]);c.lookAt(cam[3],cam[4],cam[5]);c.fov=cam[6]||40;c.aspect=innerWidth/innerHeight;c.updateProjectionMatrix();
@@ -27,6 +27,10 @@ function html(){let s=fs.readFileSync(path.join(ROOT,'penguin-hockey-improved.ht
   for(const v of VIEWS){
     if(v==='all'){await p.setViewport({width:1800,height:760});console.log(await stage(ALL.map((sp,i)=>({sp,x:(i%6-2.5)*1.55,z:i<6?0:-2.6,ry:.3,team:i%2?'red':'blue'})),[0,3.2,9.6,0,1.3,-1.3,44]));await shot(v);}
     else if(v==='row1'||v==='row2'){await p.setViewport({width:1800,height:700});const L=v==='row1'?ALL.slice(0,6):ALL.slice(6);console.log(await stage(L.map((sp,i)=>({sp,x:(i-2.5)*1.5,ry:.25,team:i%2?'red':'blue'})),[0,1.6,7.4,0,1.2,0,40]));await shot(v);}
+    else if(v.startsWith('eye:')){const [,sp,cy,anim,t,dk,op]=v.split(':');await p.setViewport({width:800,height:600});await stage([{sp,x:0,ry:0,anim,t:+t||0}],[0,1,4,0,1,0,40]);   // eye:<mascot>:<camera yaw°>[:anim:t[:distance×]]
+      await p.evaluate((cy,dk,op)=>{const P=window.__PH,R=window.__lastR;if(op!=null&&op!=='')for(const e of R.eyes){e.userData.op=+op;window.__M.mLid(e);}R.root.updateMatrixWorld(true);const V=P.camera.position.constructor,a=R.eyes[0].getWorldPosition(new V()),b=R.eyes[1].getWorldPosition(new V()),m=a.clone().add(b).multiplyScalar(.5),
+          th=cy*Math.PI/180,c=P.camera,f=new V();for(const e of R.eyes)f.add(new V(0,0,1).applyQuaternion(e.getWorldQuaternion(e.quaternion.clone())));f.y=0;if(f.lengthSq()<1e-6)f.set(0,0,1);f.normalize();
+          const fx=f.x*Math.cos(th)+f.z*Math.sin(th),fz=-f.x*Math.sin(th)+f.z*Math.cos(th),d=Math.max(.5,a.distanceTo(b)*3.4)*(dk||1);c.near=.02;c.position.set(m.x+fx*d,m.y+.12*d,m.z+fz*d);c.lookAt(m);c.fov=30;c.aspect=innerWidth/innerHeight;c.updateProjectionMatrix();P.renderer.render(P.scene,c);},+cy||0,+dk||1,op);await shot(v);}
     else if(v.startsWith('sp:')){const [,sp,anim,t]=v.split(':');await p.setViewport({width:900,height:900});console.log(await stage([{sp,x:0,ry:.5,anim,t:+t||0}],[0,1.4,4.2,0,1.15,0,40]));await shot(v);}
     else if(v.startsWith('anim:')){const [,sp,anim,ts]=v.split(':');const T=ts.split(',').map(Number);await p.setViewport({width:Math.min(1900,360*T.length),height:520});
       console.log(await stage(T.map((t,i)=>({sp,x:(i-(T.length-1)/2)*1.9,ry:.35,anim,t})),[0,1.6,3.2+T.length*1.15,0,1.1,0,40]));await shot(v);}

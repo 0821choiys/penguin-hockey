@@ -59,7 +59,10 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
   Soft bodies (owner, 2026-11-17 afternoon: "stiff and split into blocks — make it flexible and smooth"; v1.6.3): `mSkin` merges the flesh per material into
   SkinnedMeshes whose bones are the rig joints (bands around each pivot; only `MS_THICK` joints pull the parent's flesh; never the root; fur shells borrow their twin's weights);
   skinned meshes need their own material copy (`mSkMat`, `skinning:true` — this three.js keeps one shader per material); limbs are one tube (`mLimb`); tails are chains
-  (`from`/`share`/`own`); `mSmooth` springs every joint + `R.off` toward the pose (ω per joint in `S.om`). Videos: `node mscvid.js`. Entrance = each one's own entrance → both reach out and really touch (paw / flipper / fin /
+  (`from`/`share`/`own`); `mSmooth` springs every joint + `R.off` toward the pose (ω per joint in `S.om`). Videos: `node mscvid.js`.
+  Eyes (owner, 2026-11-17 evening: "the eyes look unnatural"; v1.6.4): smooth eyeball with a painted iris texture (`mEyeMat`: fibres, limbal ring, round / slit pupil, catch-lights)
+  + real upper / lower lid shells (`mEyeObj`, almond opening per species `o`, slant `t`); blinking / narrowing moves the lids (`mLid`, never scale the eye), looking turns the eyeball.
+  Close-ups: `node msclab.js <tag> "eye:<mascot>:<cam°>[:anim:t:dist:open]"`. Entrance = each one's own entrance → both reach out and really touch (paw / flipper / fin /
   wing / crystal arm, `mTouchTo` IK; spots from `mascSpots`, bodies kept apart by `mascGap`) → own bow → signature; end = victory / defeat act per mascot
   (narwhal shows off when it wins, thrashes its horn when it loses). Visual only: the match waits (`G.masc` freezes `step`), skip by tap / back (not online
   entrances), setting `save.set.masc`. Automated browsers (`navigator.webdriver`) and the Node harness skip the scenes unless `window.PH_MASC=1`.

@@ -30,7 +30,7 @@ R("  {k:'cine',label:'기술 연출',opts:[['full','시네마틱'],['short','짧
   "  {k:'cine',label:'기술 연출',opts:[['full','시네마틱'],['short','짧게'],['off','끄기']]},\n  {k:'masc',label:'마스코트 연출',opts:[['full','전체'],['short','짧게'],['off','끄기']]},")
 R("const DEF_SET={cine:'full',", "const DEF_SET={masc:'full',cine:'full',")
 R("if(['full','short','off'].includes(ss.cine))save.set.cine=ss.cine;", "if(['full','short','off'].includes(ss.cine))save.set.cine=ss.cine;if(['full','short','off'].includes(ss.masc))save.set.masc=ss.masc;")
-R("window.__PH={doPull,pullOnce,", "window.__PH={doPull,pullOnce,MSC,MS_SP,MS_M,MS_RIG,mSmooth,mSkin,MS_THICK,mTouchTo,mascSpots,mascGap,mBody,mPose,mPlace,mascCan,mascPair,mascStart,mascEnd,mascClear,mascIntro,mascOutro,mascStep,mascShot,mascMode,mascPreview,")
+R("window.__PH={doPull,pullOnce,", "window.__PH={doPull,pullOnce,MSC,MS_SP,MS_M,MS_RIG,mSmooth,mSkin,MS_THICK,mEyeK,mLid,mLook,mTouchTo,mascSpots,mascGap,mBody,mPose,mPlace,mascCan,mascPair,mascStart,mascEnd,mascClear,mascIntro,mascOutro,mascStep,mascShot,mascMode,mascPreview,")
 # the mascots' voices and the sea / sky sounds (splash, thunder, ice cracking, roar, hoot…) — built from the same tone / noise helpers
 R("    bray(){tone(640,.2,'sawtooth',.1,900);",
   "    msc(k){const f={splash(){noise(.5,900,.5,.32,'lowpass');noise(.35,2400,.8,.16,'bandpass',.04);noise(.22,5200,1,.08,'highpass',.1);},"

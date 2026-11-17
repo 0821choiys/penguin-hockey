@@ -94,6 +94,14 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(sea.pool&&sea.bolts&&sea.pv,'범고래 comes out of a hole that cracks open in the ice; 번개 has struck and stands there; the hole goes away with the scene '+JSON.stringify(sea));
   const fur=await E(()=>{const P=window.__PH,R=P.mBody('blue',null,'bear');let sh=0,mx=0;R.root.traverse(m=>{const a=m.geometry&&m.geometry.attributes&&m.geometry.attributes.fsh;if(a){sh++;for(let i=0;i<a.count;i+=97)mx=Math.max(mx,a.getX(i));}});return {sh,mx};});
   ok(fur.sh>=10&&fur.mx===1,'the polar bear’s fur is drawn in shells ('+fur.sh+' furred parts)');
+  // ---------- eyes (owner, 2026-11-17 evening: "the eyes look unnatural"): a painted iris on a smooth eyeball, real lids that blink ----------
+  const eye=await E(()=>{const P=window.__PH,out={};for(const m of['peng','bear','fox','owl','seal','walrus','orca','narwhal']){const R=P.mBody('blue',null,m),e=R.eyes[0],u=e.userData;
+      const open=[u.lu.rotation.x,u.ll.rotation.x];u.op=0;P.mLid(e);const shut=[u.lu.rotation.x,u.ll.rotation.x];u.op=1;P.mLid(e);P.mEyeK(R,.4);const half=u.lu.rotation.x,sc=e.scale.y;u.op=1;P.mLid(e);
+      P.mLook(R,1,0);const look=u.ball.rotation.y;P.mLook(R,0,0);
+      out[m]={n:R.eyes.length,tex:!!(u.ball.material.map&&u.ball.material.map.image),seg:u.ball.geometry.attributes.position.count,open:open[0]<0&&open[1]>0,shut:shut[0]>shut[1]-.01&&shut[0]>0,half:half>open[0]&&half<shut[0],sc,look:+look.toFixed(2)};}
+    return out;});
+  ok(Object.values(eye).every(v=>v.n===2&&v.tex&&v.seg>=200),'eyes: a smooth eyeball with a painted iris (texture, round or slit pupil) on every animal '+JSON.stringify(Object.fromEntries(Object.entries(eye).map(([k,v])=>[k,v.seg]))));
+  ok(Object.values(eye).every(v=>v.open&&v.shut&&v.half&&v.sc===1&&v.look>0),'eyes: lids open into an almond, close over the eye (upper over lower), narrow half-way — the eye is never squashed; looking turns the eyeball '+JSON.stringify(eye.owl));
   // ---------- soft bodies: one skin per animal, and no joint snaps from one frame to the next ----------
   const soft=await E(()=>{const P=window.__PH,out={};for(const m of['peng','bear','fox','owl','seal','walrus','orca','narwhal']){const R=P.mBody('blue',null,m);let sk=0,loose=0;
       R.root.traverse(o=>{if(o.isSkinnedMesh)sk++;else if(o.isMesh&&o.material&&(o.material===P.MS_M.sealM||o.material===P.MS_M.walM||o.material===P.MS_M.narw||/fur/.test(o.material.customProgramCacheKey?o.material.customProgramCacheKey():'')))loose++;});
