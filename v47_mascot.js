@@ -120,8 +120,23 @@ function mEyeObj(er,iris,pup,lid){const L=Array.isArray(lid)||!lid?{r:lid}:lid,r
     const h=Math.hypot(x,y)||1e-6,k=z>0?1:1/h*er;uv.setXY(i,.5+x/(2*er)*(z>0?1:k),.5+y/(2*er)*(z>0?1:k));}
   sg.computeVertexNormals();const ball=new mT.Mesh(sg,mEyeMat(iris,pup,ir));g.add(ball);
   const lidG=up=>{const rr=er*(up?1.12:1.09),q=new mT.SphereGeometry(rr,pkLo()?16:24,8,0,TAU,up?0:mPI/2,mPI/2),A=q.attributes.position,n=A.count,c=new Float32Array(n*3);
-    for(let i=0;i<n;i++){const t=Math.abs(A.getY(i))/rr,k=mSm((t-.06)/.2);c.set([mL(rim[0],lc[0],k),mL(rim[1],lc[1],k),mL(rim[2],lc[2],k)],i*3);}q.setAttribute('color',new mT.BufferAttribute(c,3));return new mT.Mesh(q,MS_M.skin);};
-  const lu=lidG(1),ll=lidG(0);g.add(lu);g.add(ll);const o=L.o||[.5,.42];Object.assign(g.userData,{ball,lu,ll,au:o[0],al:o[1],op:1,tilt:L.t||0});mLid(g);return g;}
+    for(let i=0;i<n;i++){const t=Math.abs(A.getY(i))/rr,k=mSm((t-.06)/.2);c.set([mL(rim[0],lc[0],k),mL(rim[1],lc[1],k),mL(rim[2],lc[2],k)],i*3);}q.setAttribute('color',new mT.BufferAttribute(c,3));return new mT.Mesh(q,mSockMat(L.m||MS_M.sock));};
+  const lu=lidG(1),ll=lidG(0);g.add(lu);g.add(ll);if(L.p)g.add(mSocket(er,L.p,rim,lc,L.m));const o=L.o||[.5,.42];Object.assign(g.userData,{ball,lu,ll,au:o[0],al:o[1],op:1,tilt:L.t||0});mLid(g);return g;}
+// the skin around the eye (owner, 2026-11-17 night: "the eyes are still unnatural" — at match distance an eye on its own read as a bead stuck
+// on the head or a speck lost in the fur): a ring that hugs the eyeball's edge and slopes out into the head, so the eye sits IN a socket.
+// p = {a: inner edge radius (over the lids, default .92), h: lip height at the eye's edge, e: height of the outer edge (below the head surface, so it melts in), s: outer radius, all × eye radius;
+// t / u: lip height above / below the eye (a walrus's heavy upper fold), st: outer radius above; d: how much of the ring is the dark rim colour
+// (an arctic fox's black eyeliner ≈ .7; −1 = all skin, a walrus's wrinkled fold); w: almond (wider than tall); m (in lid): the head's own material}.
+// Never touches the lids: every point stays > 1.12 × radius from the eye's centre, so blinking never cuts into it.
+function mSocket(er,P,rim,lc,mat){const lo=pkLo(),nu=lo?20:36,nv=lo?5:9,pos=[],col=[],uv=[],idx=[],w=P.w||0,d=P.d==null?.3:P.d,ht=P.t==null?P.h:P.t,hb=P.u==null?P.h:P.u,st=P.st||P.s,a0=P.a||.92,z0=Math.sqrt(1.13*1.13-a0*a0);   // the inner edge lies just outside the lids' sphere (r 1.12), over their outer part: no gap between lid and socket
+  for(let i=0;i<=nu;i++){const a=i/nu*TAU,ca=Math.cos(a),sa=Math.sin(a),up=Math.max(0,sa),dn=Math.max(0,-sa),S=mL(P.s,st,up)*(1+w*ca*ca),H=sa>0?mL(P.h,ht,Math.pow(up,1.3)):mL(P.h,hb,Math.pow(dn,1.3));
+    for(let j=0;j<=nv;j++){const t=j/nv,r=j?mL(1.08,S,t):a0,z=j?mL(H,P.e,mSm(Math.min(1,t*1.1))):z0,k=mSm((t-d)/Math.max(.08,1-d)*1.4);
+      pos.push(r*er*ca*(1+w*.5),r*er*sa,z*er);col.push(mL(rim[0],lc[0],k),mL(rim[1],lc[1],k),mL(rim[2],lc[2],k));uv.push(i/nu*3,t*.5);}}
+  for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const a=i*(nv+1)+j,c=a+nv+1;idx.push(a,a+1,c,a+1,c+1,c);}
+  const q=new mT.BufferGeometry();q.setAttribute('position',new mT.Float32BufferAttribute(pos,3));q.setAttribute('color',new mT.Float32BufferAttribute(col,3));q.setAttribute('uv',new mT.Float32BufferAttribute(uv,2));q.setIndex(idx);q.computeVertexNormals();
+  const m=new mT.Mesh(q,mSockMat(mat||MS_M.sock));m.userData.socket=1;return m;}
+// the socket is seen from both sides (its inner wall faces the eye: from an angle the near side shows its back, and culling it opened a gap to the head)
+const MS_SOCKM=new Map();function mSockMat(m){let c=MS_SOCKM.get(m);if(!c){c=m.clone();c.side=mT.DoubleSide;if(m.onBeforeCompile)c.onBeforeCompile=m.onBeforeCompile;if(m.customProgramCacheKey)c.customProgramCacheKey=m.customProgramCacheKey;MS_SOCKM.set(m,c);}return c;}
 // lids from the eye's openness (1 = open, 0 = shut)
 function mLid(e){const u=e.userData;if(!u.lu)return;const k=Math.max(0,Math.min(1,u.op));u.lu.rotation.x=mL(.26,-u.au,k);u.ll.rotation.x=mL(.06,u.al,k);}   // shut: the upper lid comes down over the lower one
 function mEyeR(h,R,c,r,yaw,pitch,er,iris,pup,lid,out){for(const s of[1,-1]){const g=mEyeObj(er,iris,pup,lid);mOn(h,g,c,r,s*yaw,pitch,out||.97);g.rotateZ(s*g.userData.tilt);R.eyes.push(g);}}
@@ -141,6 +156,7 @@ Object.assign(MS_M,{eyeR:new mT.MeshStandardMaterial({vertexColors:true,roughnes
   narw:rimify(new mT.MeshStandardMaterial({vertexColors:true,map:MS_TX.mottle,roughness:.3,metalness:.03,bumpMap:MS_TX.grain,bumpScale:.003}),.9),
   sealM:rimify(new mT.MeshStandardMaterial({vertexColors:true,map:MS_TX.spots,roughness:.3,metalness:.04,bumpMap:MS_TX.grain,bumpScale:.003}),1),
   walM:rimify(new mT.MeshStandardMaterial({vertexColors:true,roughness:.55,metalness:0,bumpMap:MS_TX.folds,bumpScale:.014}),.8),
+  sock:new mT.MeshStandardMaterial({vertexColors:true,roughness:.6,metalness:0,bumpMap:MS_TX.grain,bumpScale:.002}),   // lids + the skin around an eye: matte and no rim light, so their edges never shine like a ring
   fishM:rimify(new mT.MeshStandardMaterial({vertexColors:true,map:MS_TX.scales,bumpMap:MS_TX.scales,bumpScale:.003,roughness:.28,metalness:.22}),1.2),
   crystal:new mT.MeshStandardMaterial({vertexColors:true,roughness:.05,metalness:.25,transparent:true,opacity:.86,emissive:0x5e9ccc,emissiveIntensity:.28,envMapIntensity:2}),
   cloudD:new mT.MeshStandardMaterial({vertexColors:true,roughness:1,emissive:0xbfd8ff,emissiveIntensity:0}),shade:new mT.MeshBasicMaterial({colorWrite:false,depthWrite:false})});
@@ -349,8 +365,8 @@ var MS_SP={
       const nk=mJ(R,'neck',mG(0,.12,.72));bd.add(nk);mFur(nk,mLoft(-.25,.42,(v,f)=>{f[0]=mKf([[0,-.02],[1,.07]],v);f[1]=mKf([[0,.05],[.1,.29],[.5,.25],[.9,.2],[1,.05]],v);f[2]=mKf([[0,.05],[.1,.32],[.5,.27],[.9,.21],[1,.05]],v);},fc,24,14),1.7,.67,.04);
       const hd=mJ(R,'head',mG(0,.08,.36));nk.add(hd);
       const hg=mLoft(-.18,.44,(v,f)=>{f[0]=mKf([[0,0],[.35,.03],[.7,0],[1,-.02]],v);f[1]=mKf([[0,.05],[.12,.18],[.4,.17],[.7,.11],[.92,.075],[1,.02]],v);f[2]=mKf([[0,.05],[.12,.17],[.4,.16],[.7,.1],[.92,.07],[1,.02]],v);},(u,v)=>v>.93?D:F,26,22);
-      const eP=mEyeG(hd,R,hg,[.3,.22,.2],[0,0,.02],.018,[.24,.14,.07],.38,{r:[.03,.025,.025],c:F,i:.9,o:[.54,.4],t:.1},.45,.5);
-      mFur(hd,hg,1.0,.62,.022,mKeep(eP,.025,.07,(x,y,z)=>mL(1,.3,mSm((z-.16)/.2))));
+      const eP=mEyeG(hd,R,hg,[.3,.22,.2],[0,0,.02],.018,[.24,.14,.07],.38,{r:[.03,.025,.025],c:[.08,.07,.07],i:.9,o:[.56,.42],t:.1,p:{h:.6,e:.2,s:1.6,d:.6,w:.2}},.45,.5);
+      mFur(hd,hg,1.0,.62,.022,mKeep(eP,.034,.075,(x,y,z)=>mL(1,.3,mSm((z-.16)/.2))));
       for(const s of[1,-1])mFur(hd,mEll([s*.13,.14,-.05],[.05,.045,.028],F,10),.3,.15,.02);
       hd.add(mMesh([[mEll([0,-.005,.43],[.055,.04,.035],D,12),null],[mEll([0,-.05,.33],[.075,.01,.09],D,10),null]],MS_M.skin));
       const jw=mJ(R,'jaw',mG(0,-.07,.14));hd.add(jw);jw.add(mMesh([[mEll([0,-.012,.13],[.085,.035,.15],F,14),null],[mEll([0,.012,.13],[.07,.015,.13],[.3,.12,.14],10),null]],MS_M.skin));
@@ -414,7 +430,7 @@ var MS_SP={
       if(sl){for(const s of[1,-1])for(let i=0;i<7;i++){const w=new mT.CylinderGeometry(.0022,.0008,.2,4);w.translate(0,.1,0);w.rotateZ(-s*(Math.PI/2-.15)+(i-3)*.07*s);w.rotateY(s*(.55-.06*Math.abs(i-3)));w.translate(s*.07,-.06+(i-3)*.011,.25);S.push([w,[.9,.88,.84]]);}
         mEyeR(hd,R,c,hr,.55,.15,.034,[.13,.08,.05],.6,{r:[.04,.04,.05],c:base,i:.95,o:[.72,.62],t:.1},.9);}
       else{for(const s of[1,-1])for(let i=0;i<20;i++){const w=new mT.CylinderGeometry(.006,.004,.07,5);w.rotateX(Math.PI/2+.5);w.translate(s*(.03+(i%5)*.038),-.07-(i/5|0)*.035,.325-(i%5)*.017);S.push([w,[.86,.78,.62]]);}
-        mEyeR(hd,R,c,hr,.72,.32,.02,[.36,.14,.08],.38,{r:[.42,.22,.18],c:base,i:.85,o:[.4,.34]},1.0);const tk=mJ(R,'tusks',mG(0,-.17,.27));hd.add(tk);R.ex.tusks=[];
+        mEyeR(hd,R,c,hr,.72,.32,.02,[.36,.14,.08],.38,{r:[.42,.22,.18],c:base,i:.85,o:[.26,.22],m:MS_M.walM,p:{h:.42,t:1.1,u:.36,e:.05,s:2.3,st:3.1,d:-1,w:.25}},.965);const tk=mJ(R,'tusks',mG(0,-.17,.27));hd.add(tk);R.ex.tusks=[];
         for(const s of[1,-1]){const m=new mT.Mesh(mHorn(.55,.05,(u,v)=>[.96-.1*v,.93-.12*v,.84-.15*v],0,14),MS_M.ivory);m.rotation.set(mPI-.18,0,-s*.06);m.position.x=s*.075;tk.add(m);R.ex.tusks.push(m);}}
       hd.add(mMesh(S,MS_M.skin,false));
       for(const s of[1,-1]){const a=mJ(R,s>0?'ffL':'ffR',mG(s*r*.84,-r*.55,P.fl*.62));ch.add(a);a.rotation.set(.9,0,s*.45);const tl=sl?.1:.13;a.add(mMesh([[mTube(-tl-.02,.03,v=>r*mL(.17,.24,v),base,1,12),null]],MS_M.skin));
@@ -451,8 +467,8 @@ var MS_SP={
       const nk=mJ(R,'neck',mG(0,.1,.34));nk.rotation.x=-.35;bd.add(nk);mFur(nk,mEll([0,.04,.02],[.14,.14,.14],F,14),.9,.45,.06);
       const hd=mJ(R,'head',mG(0,.11,.05));hd.rotation.x=.35;nk.add(hd);
       const hg=mLoft(-.14,.25,(v,f)=>{f[0]=mKf([[0,.01],[.45,.01],[.75,-.025],[1,-.035]],v);f[1]=mKf([[0,.04],[.15,.15],[.45,.15],[.7,.08],[.92,.04],[1,.012]],v);f[2]=mKf([[0,.04],[.15,.14],[.45,.13],[.7,.065],[.92,.035],[1,.012]],v);},()=>F,22,20);
-      const eP=mEyeG(hd,R,hg,[.24,.12,.22],[0,.02,.02],.018,[.8,.56,.2],'slit',{r:[.03,.025,.025],c:F,i:.92,o:[.55,.38],t:.22},.42,.5);
-      mFur(hd,hg,.9,.4,.035,mKeep(eP,.022,.06,(x,y,z)=>mL(1,.3,mSm((z-.07)/.12))));
+      const eP=mEyeG(hd,R,hg,[.24,.12,.22],[0,.02,.02],.021,[.62,.4,.14],'slit',{r:[.03,.025,.025],c:[.09,.08,.08],i:.92,o:[.6,.42],t:.22,p:{h:.62,e:.2,s:1.75,d:.68,w:.25}},.42,.5);
+      mFur(hd,hg,.9,.4,.035,mKeep(eP,.04,.08,(x,y,z)=>mL(1,.3,mSm((z-.07)/.12))));
       hd.add(mMesh([[mEll([0,-.03,.25],[.024,.019,.019],D,10),null],[mEll([0,-.06,.16],[.04,.006,.06],D,8),null]],MS_M.skin));
       for(const s of[1,-1]){const e=mJ(R,s>0?'eL':'eR',mG(s*.085,.1,-.04));e.rotation.z=-s*.35;hd.add(e);const g=mHorn(.072,.05,F,0,10),gp=g.attributes.position;for(let i=0;i<gp.count;i++)gp.setZ(i,gp.getZ(i)*.6);g.computeVertexNormals();mFur(e,g,.3,.12,.02);
         e.add(mMesh([[mEll([0,.03,.012],[.026,.026,.006],[.5,.42,.42],8),null]],MS_M.skin));}
@@ -489,8 +505,8 @@ var MS_SP={
       const fan=[];for(let i=-2;i<=2;i++){const g=mFin([[0,0],[.03,-.03],[.026,-.24],[0,-.27],[-.026,-.24],[-.03,-.03]],.008,W);const p=g.attributes.position,cc=g.attributes.color;for(let k=0;k<p.count;k++)if(Math.sin(p.getY(k)*42)>.6)cc.setXYZ(k,D[0],D[1],D[2]);g.rotateZ(i*.18);g.rotateX(1.2);g.translate(0,.15,-.24);fan.push([g,null]);}
       bd.add(mMesh(fan,MS_M.feather));
       const hd=mJ(R,'head',mG(0,.69,.02));bd.add(hd);const hg=mEll([0,.15,0],[.27,.24,.2],d=>d[2]>.35&&d[1]>-.5?W:bar(d,30,1),26),fd=mEll([0,.13,.1],[.21,.18,.12],W,20);
-      const eP=mEyeG(hd,R,fd,[.085,.175,.6],[.085,.175,0],.046,[1,.8,.1],.5,{r:[.06,.05,.05],c:W,i:.96,o:[.78,.7]},.55,.15);
-      mFur(hd,hg,1.6,.75,.025,mKeep(eP,.06,.1));mFur(hd,fd,1.2,.5,.02,mKeep(eP,.055,.09));
+      const eP=mEyeG(hd,R,fd,[.085,.175,.6],[.085,.175,0],.046,[1,.8,.1],.5,{r:[.06,.05,.05],c:W,i:.96,o:[.78,.7],p:{h:.5,e:.15,s:1.3,d:.5,w:.06}},.55,.15);
+      mFur(hd,hg,1.6,.75,.025,mKeep(eP,.064,.1));mFur(hd,fd,1.2,.5,.02,mKeep(eP,.062,.095));
       const bk=mHorn(.07,.03,[.12,.11,.11],0,8);bk.rotateX(Math.PI/2+.75);bk.translate(0,.1,.215);hd.add(mMesh([[bk,null]],MS_M.skin));
       for(const s of[1,-1]){const n=s>0?'wL':'wR',a=mJ(R,n,mG(s*.27,.6,-.04));a.rotation.set(.12,0,s*.05);bd.add(a);
         const f1=mFin([[0,.03],[.1,-.02],[.14,-.24],[.02,-.31],[-.07,-.15],[-.06,0]],.025,W),p1=f1.attributes.position,c1=f1.attributes.color;for(let k=0;k<p1.count;k++)if(Math.sin(p1.getY(k)*38+p1.getX(k)*20)>.75)c1.setXYZ(k,D[0],D[1],D[2]);f1.rotateY(Math.PI/2);a.add(mMesh([[f1,null]],MS_M.feather));

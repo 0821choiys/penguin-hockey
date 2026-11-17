@@ -12,6 +12,10 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 - Every probability / number shown on screen must equal the code that decides it (tests check this).
 - Controls (v36, `controls-v36.md`): shots / passes aim where the stick points; easy handling applies to human-controlled
   skaters only (never AI), always on for both players online; layout per orientation in `save.set.ctl`.
+- Ice (owner, 2026-11-17 night; v48, `controls-v36.md`): "too slippery — lower it a little, just enough to feel, and make it a setting" → `save.set.ice` 1–5
+  (default 3) in 설정 right under 조작 설정. `ICE.lv` multiplies sideways grip (+ the easy-handling carve), stopping after letting go and braking against the motion for
+  EVERY skater (it is the rink — the AI too; goalies, the puck, top speed and acceleration untouched); 3 = standard (×1.25 / 1.25 / 1.15 vs before: stopping ≈17 % shorter),
+  4 = the old ice exactly; rink conditions stack on top; online friend matches always skate on 3 (`iceLv`). Tests: `v48test.js`, `br/v48ice.js`.
 - Switching (owner, 2026-11-09; v38, `hockey-v38.md`): the human's penguin changes ONLY on a pass (→ receiver) or the Switch button
   (→ team-mate nearest the puck = the white ring). The only forced change is the penalty box. Auto switching is a setting
   (`save.set.ctl.auto`, off by default, never online). Without the puck the buttons follow the play: Shoot = 뺏기 (poke) when an
@@ -62,6 +66,10 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
   (`from`/`share`/`own`); `mSmooth` springs every joint + `R.off` toward the pose (ω per joint in `S.om`). Videos: `node mscvid.js`.
   Eyes (owner, 2026-11-17 evening: "the eyes look unnatural"; v1.6.4): smooth eyeball with a painted iris texture (`mEyeMat`: fibres, limbal ring, round / slit pupil, catch-lights)
   + real upper / lower lid shells (`mEyeObj`, almond opening per species `o`, slant `t`); blinking / narrowing moves the lids (`mLid`, never scale the eye), looking turns the eyeball.
+  Sockets (owner, 2026-11-17 night: "still unnatural" — at match distance the eyes read as beads stuck on the head / specks lost in the fur): `mSocket` (lid param `p`) puts a ring of skin
+  around each eye that hugs the eyeball and slopes into the head; every point stays outside the lids' sphere (1.12 × radius) so blinking never cuts it; lids + socket are matte, no rim light,
+  double-sided (`mSockMat`) — a shiny or culled edge reads as a ring. Arctic fox / polar bear / snowy owl = dark rims (+ dark fox lids), walrus = a heavy upper skin fold in the head's own
+  material (`m`). Judge eyes at the real cut-scene distance (`node msccut.js <tag> intro 3.4 fox @walrus tall`), not only in close-ups.
   Close-ups: `node msclab.js <tag> "eye:<mascot>:<cam°>[:anim:t:dist:open]"`. Entrance = each one's own entrance → both reach out and really touch (paw / flipper / fin /
   wing / crystal arm, `mTouchTo` IK; spots from `mascSpots`, bodies kept apart by `mascGap`) → own bow → signature; end = victory / defeat act per mascot
   (narwhal shows off when it wins, thrashes its horn when it loses). Visual only: the match waits (`G.masc` freezes `step`), skip by tap / back (not online
@@ -80,7 +88,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, `v48_ice.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -136,6 +144,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node p3lab.js <sheet|big|cards> <tag>` (portrait / card sheets with the CURRENT `v41_card.js/.css` swapped into the built game — no rebuild while iterating) and `node cardshot.js <mode> <lang> <tag>`,
   `node v42legal.js <pc|tall|wide|wideS> <lang>` (privacy / deletion links in 설정 and the account window), `node v42gauge.js tall <lang>` (the skill name fits the round gauge for every species; it shrinks to fit since 2026-11-13), `node storeshot.js <ko|en> [scene,…]` (Play Store screenshots + feature graphic → shots/store; convert to RGB before upload),
   `node v43model.js <mode> <lang>` (model on real three.js + close-up), `node mlab.js <tag> close,all,hats,match` (model shots with the CURRENT `v43_model.js`), `node v44fun.js <pc|tall|wide|wideS> <lang>` (coach bar, result rows, level-up moment), `node v45gear.js <pc|tall|wide|wideS> <lang>` (stick workshop + kit designer: odds on screen = code, reveal + back button, craft / upgrade, 3D stick, kit portrait, kit in a match),
+  `node v48ice.js <pc|tall|wide|wideS> <lang>` (ice row in 설정: five steps on one line, tap / save / reload, the match skates with the chosen step, online = 3),
   `node v47masc.js <pc|tall|wide|wideS> <lang>` (mascot cut-scenes: entrance freezes the match, the greeting tips really touch, hole in the ice / strike, skip, short / off, end scene before the result, every mascot × animation, online lock, kit preview),
   `node msclab.js <tag> <all|row1|row2|sp:…|anim:…|hs:A:B:u|col>` and `node msccut.js <tag> <intro|end:win|end:lose|end:draw|pv:mas:res> <t,…> [mascot] [opp name | @mascot] [tall|pc|wide]` (CURRENT `v47_mascot.js`, no rebuild),
   `node v29gfx.js pc|tall|padp|wide` (shadow map / fitted shadow camera / smoother models), `node gfxshot.js <mode> <quality> <tag>` and

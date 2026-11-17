@@ -101,6 +101,11 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
       out[m]={n:R.eyes.length,tex:!!(u.ball.material.map&&u.ball.material.map.image),seg:u.ball.geometry.attributes.position.count,open:open[0]<0&&open[1]>0,shut:shut[0]>shut[1]-.01&&shut[0]>0,half:half>open[0]&&half<shut[0],sc,look:+look.toFixed(2)};}
     return out;});
   ok(Object.values(eye).every(v=>v.n===2&&v.tex&&v.seg>=200),'eyes: a smooth eyeball with a painted iris (texture, round or slit pupil) on every animal '+JSON.stringify(Object.fromEntries(Object.entries(eye).map(([k,v])=>[k,v.seg]))));
+  // eye sockets (owner, 2026-11-17 night: "still unnatural" — at match distance the eyes read as beads / specks): the eye sits IN a ring of skin
+  const sock=await E(()=>{const P=window.__PH,out={};for(const m of['fox','walrus','bear','owl']){const R=P.mBody('blue',null,m),e=R.eyes[0],u=e.userData,er=u.ball.geometry.parameters.radius;
+      const s=e.children.find(c=>c.userData.socket);if(!s){out[m]=null;continue;}const A=s.geometry.attributes.position;let mn=1e9;for(let i=0;i<A.count;i++)mn=Math.min(mn,Math.hypot(A.getX(i),A.getY(i),A.getZ(i))/er);
+      out[m]={n:R.eyes.filter(x=>x.children.some(c=>c.userData.socket)).length,min:+mn.toFixed(3),both:s.material.side===2&&u.lu.material.side===2,mat:m==='walrus'?s.material.bumpMap===P.MS_M.walM.bumpMap:true};}return out;});
+  ok(Object.values(sock).every(v=>v&&v.n===2&&v.min>1.12&&v.both&&v.mat),'eyes sit in a socket (fox / walrus / bear / owl): a ring of skin round each eye, never inside the lids (closest × radius > 1.12), drawn from both sides, the walrus fold in its own wrinkled skin '+JSON.stringify(sock));
   ok(Object.values(eye).every(v=>v.open&&v.shut&&v.half&&v.sc===1&&v.look>0),'eyes: lids open into an almond, close over the eye (upper over lower), narrow half-way — the eye is never squashed; looking turns the eyeball '+JSON.stringify(eye.owl));
   // ---------- soft bodies: one skin per animal, and no joint snaps from one frame to the next ----------
   const soft=await E(()=>{const P=window.__PH,out={};for(const m of['peng','bear','fox','owl','seal','walrus','orca','narwhal']){const R=P.mBody('blue',null,m);let sk=0,loose=0;

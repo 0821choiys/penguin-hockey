@@ -1,0 +1,12 @@
+/* v48 ice slipperiness row in 설정: five steps on one line, the two ends named, the chosen step spelled out */
+.setrow.ice-set .ice-box{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:320px}
+.setrow.ice-set .ice-seg{flex-wrap:nowrap;gap:5px}
+.setrow.ice-set .ice-seg button{flex:1 1 0;min-width:0;padding:7px 0;font-weight:800;position:relative;overflow:hidden}
+/* a skate mark under each number: short and rough on grippy ice, long and glassy on slippery ice */
+.setrow.ice-set .ice-seg button::after{content:'';position:absolute;left:50%;bottom:4px;height:2px;border-radius:2px;transform:translateX(-50%);background:rgba(205,238,255,.55)}
+.setrow.ice-set .ice-b1::after{width:14%}.setrow.ice-set .ice-b2::after{width:26%}.setrow.ice-set .ice-b3::after{width:40%}
+.setrow.ice-set .ice-b4::after{width:56%}.setrow.ice-set .ice-b5::after{width:74%}
+.setrow.ice-set .ice-seg button.on::after{background:#e9f9ff}
+.setrow.ice-set .ice-ends{display:flex;justify-content:space-between;gap:8px;font-size:12px;opacity:.72;line-height:1.2}
+.setrow.ice-set .ice-cap{display:flex;flex-direction:column;gap:1px;font-size:13px;line-height:1.3}
+.setrow.ice-set .ice-cap span{font-size:12px;opacity:.72}
