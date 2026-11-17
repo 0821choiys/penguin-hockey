@@ -94,6 +94,17 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   ok(sea.pool&&sea.bolts&&sea.pv,'범고래 comes out of a hole that cracks open in the ice; 번개 has struck and stands there; the hole goes away with the scene '+JSON.stringify(sea));
   const fur=await E(()=>{const P=window.__PH,R=P.mBody('blue',null,'bear');let sh=0,mx=0;R.root.traverse(m=>{const a=m.geometry&&m.geometry.attributes&&m.geometry.attributes.fsh;if(a){sh++;for(let i=0;i<a.count;i+=97)mx=Math.max(mx,a.getX(i));}});return {sh,mx};});
   ok(fur.sh>=10&&fur.mx===1,'the polar bear’s fur is drawn in shells ('+fur.sh+' furred parts)');
+  // ---------- soft bodies: one skin per animal, and no joint snaps from one frame to the next ----------
+  const soft=await E(()=>{const P=window.__PH,out={};for(const m of['peng','bear','fox','owl','seal','walrus','orca','narwhal']){const R=P.mBody('blue',null,m);let sk=0,loose=0;
+      R.root.traverse(o=>{if(o.isSkinnedMesh)sk++;else if(o.isMesh&&o.material&&(o.material===P.MS_M.sealM||o.material===P.MS_M.walM||o.material===P.MS_M.narw||/fur/.test(o.material.customProgramCacheKey?o.material.customProgramCacheKey():'')))loose++;});
+      out[m]={sk,loose,bones:R.skin?R.skin.bones.length:0};}
+    // a real scene, frame by frame: the biggest turn of any joint between two frames (the touching limb's IK is left out)
+    P.mascClear();P.mascStart('intro',P.G.cfg,{pair:{mine:'blue',oth:'red',my:'seal',op:'bear'}});const M=P.G.masc;M.quick=false;M.dur=P.MSC.intro;let big=0,at=0,prev=null;
+    for(let i=0;i<215&&P.G.masc;i++){P.step(1/30);const now=[];for(const R of[M.A,M.B]){const ik=new Set(R.ik||[]);for(const k in R.j){const o=R.j[k];if(ik.has(o))continue;now.push(o.rotation.x,o.rotation.y,o.rotation.z);}now.push(R.off.rx,R.off.ry,R.off.rz);}
+      if(prev&&prev.length===now.length)for(let k=0;k<now.length;k++){let d=Math.abs(now[k]-prev[k]);d=Math.min(d,Math.abs(d-Math.PI*2));if(d>big){big=d;at=M.t;}}prev=now;}
+    P.mascClear();return {out,big:+big.toFixed(3),at:+at.toFixed(2)};});
+  ok(Object.values(soft.out).every(v=>v.sk>=1&&v.bones>=5&&v.loose===0),'every animal is one skin over its joints (no loose rigid pieces) '+JSON.stringify(soft.out));
+  ok(soft.big<.32,'soft motion: no joint turns more than 0.32 rad between two frames in a whole entrance (biggest '+soft.big+' rad at '+soft.at+' s)');
   // ---------- online: the entrance cannot be skipped ----------
   const lk=await E(()=>{const P=window.__PH,G=P.G;P.mascStart('intro',{mode:'friend',net:'host'});const M=G.masc;M.t=1;document.getElementById('mascFx').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));
     const r={lock:M.lock,skip:M.skip,btn:getComputedStyle(document.getElementById('mascSkip')).visibility};P.mascEnd(false);return r;});

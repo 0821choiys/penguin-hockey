@@ -17,6 +17,14 @@ const med=m=>PH.MS_SP[m].med;ok(['orca','narwhal','fish','berg'].every(m=>med(m)
  ok(['bear','fox','owl'].every(m=>/mFur\(/.test(src(m)))&&['peng','bear','fox','owl','seal','walrus','orca','narwhal'].every(m=>/mEye[RG]\(/.test(src(m))),'fur drawn strand by strand on the polar bear, the arctic fox and the snowy owl; real eyes (iris + pupil, no white) on every animal');
  ok(/InstancedMesh/.test(src('fish'))&&PH.MS_SP.fish.ty>0&&PH.MS_SP.fish.ty<.3,'정어리 = a school of sardines that greets at the water line ('+PH.MS_SP.fish.ty+' m)');
  ok(['flake','berg','bolt'].every(m=>!/mEye/.test(src(m))),'the snowflake, the iceberg and the storm cloud have no face');}
+// ---------- soft bodies and soft motion (owner, 2026-11-17: "stiff and split into blocks — make it flexible and smooth") ----------
+{const bs=PH.mBody.toString();ok(/mSkin\(/.test(bs)&&typeof PH.mSkin==='function'&&PH.MS_THICK.has('head')&&PH.MS_THICK.has('tail')&&!PH.MS_THICK.has('pfL')&&!PH.MS_THICK.has('wL'),'every rig gets one skin over its joints (mSkin); thick joints (neck, head, legs, tail) bend the flesh around them, thin flippers / wings never pull the body');
+ const src=m=>PH.MS_SP[m].build.toString();ok(['orca','narwhal','fox'].every(m=>/'t2'/.test(src(m))&&/'t3'/.test(src(m))),'tails curl along their length: orca, narwhal and fox tails have three joints sharing the pose');
+ // the spring: a joint told to jump moves part of the way in one frame, eases in, and arrives
+ const j={rotation:{x:0,y:0,z:0,set(a,b,c){this.x=a;this.y=b;this.z=c;}},userData:{r0:[0,{x:0,y:0,z:0},0]},scale:{x:1,y:1,z:1}},R={sp:'flake',j:{a:j},off:{x:0,y:0,z:0,rx:0,ry:0,rz:0},med:'air',k0:1};
+ PH.mSmooth(R,1/30);j.rotation.x=1;PH.mSmooth(R,1/30);const f1=j.rotation.x;let f=[];for(let i=0;i<30;i++){j.rotation.x=1;PH.mSmooth(R,1/30);f.push(j.rotation.x);}
+ j.rotation.x=1+Math.PI*2;PH.mSmooth(R,1/30);const wrap=j.rotation.x;
+ ok(f1>0&&f1<.35&&f[3]>f1&&Math.abs(f[29]-1)<.02&&f.every((v,i)=>!i||v>=f[i-1]-1e-9)&&Math.abs(wrap-1)<.05,'soft motion: a 1-rad jump becomes '+f1.toFixed(2)+' → '+f[3].toFixed(2)+' → '+f[29].toFixed(2)+' rad (eases in, no overshoot, arrives in ≈ 1 s); a full turn is not spun back ('+wrap.toFixed(2)+')');}
 ok(PH.MSC.intro>PH.MSC.introQ&&PH.MSC.introQ>=3&&PH.MSC.end>=5&&PH.MSC.end<=7,'timing: entrance '+PH.MSC.intro+' s (short '+PH.MSC.introQ+' s), end scene '+PH.MSC.end+' s');
 // ---------- the setting ----------
 const s0=save.set.masc;ok(PH.mascMode()==='full','the setting starts at 전체 (full)');

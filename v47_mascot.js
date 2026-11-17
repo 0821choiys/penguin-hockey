@@ -87,7 +87,7 @@ function mFurGeo(g,su,sv,kf){const n=pkLo()?5:pkHi()?12:8,P=g.attributes.positio
   const o=new mT.BufferGeometry();o.setAttribute('position',new mT.BufferAttribute(pos,3));o.setAttribute('normal',new mT.BufferAttribute(nor,3));o.setAttribute('color',new mT.BufferAttribute(col,3));
   o.setAttribute('fuv',new mT.BufferAttribute(fuv,2));o.setAttribute('fsh',new mT.BufferAttribute(fsh,1));o.setAttribute('fln',new mT.BufferAttribute(fln,1));o.setIndex(new mT.BufferAttribute(idx,1));return o;}
 // the shells draw the fur; an invisible copy of the bare part casts the shadow (one shadow, not one per shell)
-function mFur(par,g,su,sv,len,kf){const m=new mT.Mesh(mFurGeo(g,su,sv,kf),mFurMat(len));m.userData.ns=1;m.receiveShadow=true;par.add(m);const s=new mT.Mesh(g,MS_M.shade);s.castShadow=true;par.add(s);return m;}
+function mFur(par,g,su,sv,len,kf,ch){const m=new mT.Mesh(mFurGeo(g,su,sv,kf),mFurMat(len));m.userData.ns=1;m.receiveShadow=true;par.add(m);const s=new mT.Mesh(g,MS_M.shade);s.castShadow=true;par.add(s);m.userData.twin=s;if(ch)m.userData.ch=s.userData.ch=ch;return m;}
 // stick obj onto the surface of geo (in par's space): a ray from → to; out = how far it stands off (negative = sunk in); +z of obj faces out
 const MS_RC=new mT.Raycaster(),MS_RCM=new mT.MeshBasicMaterial({side:mT.DoubleSide});
 function mStick(par,geo,obj,from,to,out,face){const o=mV(from[0],from[1],from[2]),d=mV(to[0],to[1],to[2]).sub(o).normalize();MS_RC.set(o,d);const h=MS_RC.intersectObject(new mT.Mesh(geo,MS_RCM),false)[0];
@@ -132,14 +132,85 @@ function mLoftY(y0,y1,F,col,seg,vs){const S=pkLo()?.6:1,U=Math.max(10,(seg||30)*
     col?(u,v,p,o)=>{const q=col(u,v,Math.cos(u*TAU),Math.sin(u*TAU));o[0]=q[0];o[1]=q[1];o[2]=q[2];}:null,1,1,[1,1]);}
 const mKf=(t,v)=>pkLook(t,v),mMix=(a,b,k)=>[mL(a[0],b[0],k),mL(a[1],b[1],k),mL(a[2],b[2],k)];
 // a furred leg of the four-legged: thigh → lower leg → paw (paw(p) adds the paw); tip = where it touches
-function mLeg4F(R,par,n,pos,l1,r1,l2,r2,col,paw,tz,fl){const a=mJ(R,n,mG(pos[0],pos[1],pos[2]));par.add(a);
-  mFur(a,mTube(-l1,r1*1.1,v=>mL(r1*.72,r1*1.28,mSm(v)),col,1,16),TAU*r1,l1,fl);
-  const b=mJ(R,n+'2',mG(0,-l1,0));a.add(b);mFur(b,mTube(-l2,r2*.7,v=>mL(r2*.8,r2,v),col,1,14),TAU*r2,l2,fl*.8);
+function mLeg4F(R,par,n,pos,l1,r1,l2,r2,col,paw,tz,fl){const a=mJ(R,n,mG(pos[0],pos[1],pos[2]));par.add(a);const b=mJ(R,n+'2',mG(0,-l1,0));a.add(b);
+  // one furred tube from inside the body down to the paw, skinned to both joints: the knee bends smoothly (no step between pieces)
+  const top=r1*1.2,L=l1+l2;mFur(a,mLimb(-L,top,y=>y>0?mL(r1*1.08,r1*.4,mSm(y/top)):y>-l1?mL(r1*.72,r1*1.08,mSm((y+l1)/l1)):mL(r2*.82,r1*.72,mSm((y+L)/l2)),col,16,30),TAU*r1,L,fl,null,[n,n+'2']);   // the top tapers away inside the body (no shelf at the shoulder)
   const p=mG(0,-l2,0);b.add(p);paw(p);const tip=mG(0,.02,tz||.1);p.add(tip);return tip;}
 // claws: n small dark hooks across the front of a paw / flipper
 function mClaws(n,w,len,z,y,col){const L=[];for(let i=0;i<n;i++){const c=mHorn(len,len*.25,col||[.1,.09,.08],0,6);c.rotateX(Math.PI/2+.55);c.translate((i-(n-1)/2)*w,y,z-Math.abs(i-(n-1)/2)*.012);L.push([c,null]);}return L;}
 // the team's colour: a soft pool of light on the ice under each mascot (no costumes on real animals)
 const MS_GLOW=pkTex(128,(x,N)=>{const g=x.createRadialGradient(N/2,N/2,N*.2,N/2,N/2,N/2);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.6,'rgba(255,255,255,.85)');g.addColorStop(.78,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,N,N);});
+// ---------------- soft bodies: one skin over the joints (owner, 2026-11-17: "stiff, split into blocks — make it flexible and smooth") ----------------
+// Everything that is flesh (fur, skin, feathers, the penguin's body) is merged per material into one skinned mesh whose bones are the rig's own
+// joints. A vertex follows the joint it was built on; around each joint's pivot it is shared with the neighbour across a smooth band, so bodies
+// bend like flesh instead of breaking into separate pieces. userData.ch on a mesh = joints along it (each vertex goes to the last pivot it has passed).
+const MS_SOFT=new Set(),MS_THICK=new Set(['neck','head','tail','t2','t3','fluke','fL','fR','hL','hR','fL2','fR2','hL2','hR2','ffL2','ffR2','lead']);   // joints whose parent's flesh bends with them (thin flippers / wings / ears / jaws never pull the body)
+function mSoftMat(m){return MS_SOFT.has(m)||m.customProgramCacheKey&&String(m.customProgramCacheKey()).indexOf('fur')>0;}
+// skinned meshes get their own copy of a material (this three.js keeps one compiled shader per material: a shared one would stay unskinned)
+const MS_SKM=new Map();function mSkMat(m){let c=MS_SKM.get(m);if(!c){c=m.clone();c.skinning=true;if(m.onBeforeCompile)c.onBeforeCompile=m.onBeforeCompile;if(m.customProgramCacheKey)c.customProgramCacheKey=m.customProgramCacheKey;MS_SKM.set(m,c);}return c;}
+function mSkin(R,pairs){R.root.updateMatrixWorld(true);const inv=R.root.matrixWorld.clone().invert(),bones=[R.root],bi=new Map([[R.root,0]]);
+  for(const k in R.j){const o=R.j[k];if(bi.has(o))continue;let p=o.parent;while(p&&p!==R.root)p=p.parent;if(p){bi.set(o,bones.length);bones.push(o);}}
+  const piv=bones.map(b=>b.getWorldPosition(mV()).applyMatrix4(inv)),skip=new Set();for(const e of R.eyes)e.traverse(o=>skip.add(o));
+  for(const k in R.ex){const v=R.ex[k];for(const o of(Array.isArray(v)?v:[v]))if(o&&o.isObject3D&&!bi.has(o))o.traverse(q=>skip.add(q));}
+  // fur shells are not merged: each keeps its own mesh and borrows the weights of its bare twin (the shadow copy), block by block
+  const ms=[],fur=[];R.root.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh&&!skip.has(o)&&!o.userData.rigid&&mSoftMat(o.material))(o.geometry.attributes.fsh?fur:ms).push(o);});if(!ms.length)return;
+  const up=b=>{let p=b.parent;while(p&&!bi.has(p))p=p.parent;return p?bi.get(p):-1;},par=bones.map(up),v=mV(),nm=new mT.Matrix3();
+  const parts=ms.map(m=>{const g=m.geometry,M=inv.clone().multiply(m.matrixWorld),P=g.attributes.position,N=g.attributes.normal,n=P.count,pos=new Float32Array(n*3),nor=new Float32Array(n*3),ob=new Uint16Array(n),b0=Math.max(0,up(m)),
+      ch=m.userData.ch?m.userData.ch.map(x=>bi.get(R.j[x])):null,e=nm.getNormalMatrix(M).elements;
+    for(let i=0;i<n;i++){v.fromBufferAttribute(P,i).applyMatrix4(M);pos[i*3]=v.x;pos[i*3+1]=v.y;pos[i*3+2]=v.z;let b=b0;
+      if(ch)for(let k=1;k<ch.length;k++){const a=piv[ch[k-1]],c=piv[ch[k]];if((v.x-c.x)*(c.x-a.x)+(v.y-c.y)*(c.y-a.y)+(v.z-c.z)*(c.z-a.z)>=0)b=ch[k];}ob[i]=b;
+      if(N){const x=N.getX(i),y=N.getY(i),z=N.getZ(i),X=e[0]*x+e[3]*y+e[6]*z,Y=e[1]*x+e[4]*y+e[7]*z,Z=e[2]*x+e[5]*y+e[8]*z,l=Math.hypot(X,Y,Z)||1;nor[i*3]=X/l;nor[i*3+1]=Y/l;nor[i*3+2]=Z/l;}}
+    return {m,pos,nor,ob,n,si:new Uint16Array(n*4),sw:new Float32Array(n*4)};});
+  // where each joint's flesh is (its centre), and the bands between neighbours: parent ↔ child, plus pairs that share a pivot (seal chest ↔ rear)
+  const cen=bones.map(()=>[0,0,0,0]);for(const q of parts)for(let i=0;i<q.n;i++){const c=cen[q.ob[i]];c[0]+=q.pos[i*3];c[1]+=q.pos[i*3+1];c[2]+=q.pos[i*3+2];c[3]++;}
+  const sub=b=>{const s=[0,0,0,0];for(let i=0;i<bones.length;i++){let p=i;while(p>=0&&p!==b)p=par[p];if(p===b)for(let k=0;k<4;k++)s[k]+=cen[i][k];}return s[3]?mV(s[0]/s[3],s[1]/s[3],s[2]/s[3]):null;},J=[];
+  const bn=bones.map(o=>{for(const k in R.j)if(R.j[k]===o)return k;return "";}),add=(a,b,p,u,r,pb)=>{let rad=r;for(const q of parts)for(let i=0;i<q.n;i++)if(q.ob[i]===b){const dx=q.pos[i*3]-p.x,dy=q.pos[i*3+1]-p.y,dz=q.pos[i*3+2]-p.z;if(dx*u.x+dy*u.y+dz*u.z<2*r)rad=Math.max(rad,Math.hypot(dx,dy,dz));}
+    J.push({a,b,p,u,r,rad,pb:pb!=null?pb:MS_THICK.has(bn[b])});};
+  for(let b=1;b<bones.length;b++){const a=par[b];if(a<=0)continue;const c=sub(b);if(!c)continue;const p=piv[b],L=c.distanceTo(p);if(L<1e-4)continue;
+    add(a,b,p,c.clone().sub(p).normalize(),bones[b].userData.br||Math.max(.025,Math.min(.2,L*.5)));}
+  for(const [x,y,r] of pairs||[]){const a=bi.get(R.j[x]),b=bi.get(R.j[y]),ca=sub(a),cb=sub(b);if(ca&&cb)add(a,b,piv[b],cb.clone().sub(ca).normalize(),r,true);}
+  // weights: the owner, minus what it shares across each band it is near; the 4 biggest are kept
+  const ids=[0,0,0,0,0,0,0,0],ws=[0,0,0,0,0,0,0,0];
+  for(const q of parts)for(let i=0;i<q.n;i++){const b=q.ob[i],x=q.pos[i*3],y=q.pos[i*3+1],z=q.pos[i*3+2];let n=1;ids[0]=b;ws[0]=1;
+    for(const j of J){if(j.a!==b&&j.b!==b||j.a===b&&!j.pb)continue;const dx=x-j.p.x,dy=y-j.p.y,dz=z-j.p.z,f=1-mSm((Math.hypot(dx,dy,dz)-j.rad)/(j.rad*.5+j.r));if(f<=0)continue;
+      const t=mSm((dx*j.u.x+dy*j.u.y+dz*j.u.z+j.r)/(2*j.r)),gv=(b===j.b?1-t:t*.6)*f*ws[0];if(gv<=1e-4)continue;const to=b===j.b?j.a:j.b;ws[0]-=gv;
+      let k=1;while(k<n&&ids[k]!==to)k++;if(k===n){if(n>=8)continue;ids[n]=to;ws[n]=0;n++;}ws[k]+=gv;}
+    let s=0;for(let a=0;a<4;a++){let m=-1,mv=0;for(let c=0;c<n;c++)if(ws[c]>mv){mv=ws[c];m=c;}if(m<0)break;q.si[i*4+a]=ids[m];q.sw[i*4+a]=mv;s+=mv;ws[m]=-1;}
+    if(s>0)for(let a=0;a<4;a++)q.sw[i*4+a]/=s;else q.sw[i*4]=1;}
+  const sk=new mT.Skeleton(bones),put=(geo,mat,ns,rs)=>{const S2=new mT.SkinnedMesh(geo,mSkMat(mat));S2.frustumCulled=false;S2.userData.ns=ns;S2.receiveShadow=rs;R.root.add(S2);S2.updateMatrixWorld(true);S2.bind(sk,S2.matrixWorld);};
+  // one skinned mesh per material for the bare parts
+  const groups=new Map();for(const q of parts){const k=q.m.material;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(q);}
+  for(const [mat,L] of groups){let nv=0,ni=0;const names=new Set();for(const q of L){nv+=q.n;const g=q.m.geometry;ni+=g.index?g.index.count:q.n;for(const a in g.attributes)if(a!=='position'&&a!=='normal')names.add(a);}
+    const G2=new mT.BufferGeometry(),pos=new Float32Array(nv*3),nor=new Float32Array(nv*3),idx=new (nv>65000?Uint32Array:Uint16Array)(ni),si=new Uint16Array(nv*4),sw=new Float32Array(nv*4),ex={};
+    for(const a of names){const s=L.find(q=>q.m.geometry.attributes[a]).m.geometry.attributes[a].itemSize;ex[a]=new Float32Array(nv*s).fill(a==='color'?1:0);ex[a].s=s;}
+    let o=0,oi=0;for(const q of L){const g=q.m.geometry;pos.set(q.pos,o*3);nor.set(q.nor,o*3);si.set(q.si,o*4);sw.set(q.sw,o*4);
+      for(const a of names){const A=g.attributes[a];if(!A)continue;const s=ex[a].s;if(A.itemSize===s&&A.array.length===q.n*s)ex[a].set(A.array,o*s);else for(let i=0;i<q.n;i++)for(let c=0;c<s;c++)ex[a][(o+i)*s+c]=A.getComponent(i,c);}
+      if(g.index){const I=g.index.array;for(let k=0;k<I.length;k++)idx[oi+k]=I[k]+o;oi+=I.length;}else{for(let k=0;k<q.n;k++)idx[oi+k]=o+k;oi+=q.n;}o+=q.n;}
+    G2.setAttribute('position',new mT.BufferAttribute(pos,3));G2.setAttribute('normal',new mT.BufferAttribute(nor,3));for(const a of names)G2.setAttribute(a,new mT.BufferAttribute(ex[a],ex[a].s));
+    G2.setAttribute('skinIndex',new mT.Uint16BufferAttribute(si,4));G2.setAttribute('skinWeight',new mT.Float32BufferAttribute(sw,4));G2.setIndex(new mT.BufferAttribute(idx,1));
+    put(G2,mat,L.every(q=>q.m.userData.ns),L.some(q=>q.m.receiveShadow));}
+  // fur: the shells' own geometry, moved into the rig's space, with the twin's weights repeated for every shell
+  for(const m of fur){const q=parts.find(p=>p.m===m.userData.twin);if(!q){m.parent.remove(m);continue;}const g=m.geometry,n=g.attributes.position.count;if(n%q.n){m.parent.remove(m);continue;}
+    const pos=g.attributes.position.array,nor=g.attributes.normal.array,si=new Uint16Array(n*4),sw=new Float32Array(n*4);
+    for(let k=0;k<n;k+=q.n){pos.set(q.pos,k*3);nor.set(q.nor,k*3);si.set(q.si,k*4);sw.set(q.sw,k*4);}g.attributes.position.needsUpdate=g.attributes.normal.needsUpdate=true;
+    g.setAttribute('skinIndex',new mT.Uint16BufferAttribute(si,4));g.setAttribute('skinWeight',new mT.Float32BufferAttribute(sw,4));m.parent.remove(m);put(g,m.material,true,true);}
+  for(const q of parts)q.m.parent.remove(q.m);R.skin=sk;}
+// ---------------- soft motion ----------------
+// each frame the pose only gives targets: the joints follow them on critically damped springs (ω per joint — heads, tails, ears and flippers are
+// a little slower than the body, so the motion eases in and out and the ends follow through); chain joints (from / share) take their share of
+// the joint they hang from (a tail curls along its length instead of turning at one hinge); ice animals breathe
+function mSpr(Z,i,g,w,dt){const x=Z[i],vv=Z[i+3],f=1+2*dt*w,ho=dt*w*w,hh=dt*ho,di=1/(f+hh);g+=TAU*Math.round((x-g)/TAU);Z[i]=(f*x+dt*vv+hh*g)*di;Z[i+3]=(vv+ho*(g-x))*di;return Z[i];}
+function mSmooth(R,dt){const S=MS_SP[R.sp],om=S.om||{},snap=!R.sm||!(dt>0)||dt>.25;if(snap)R.sm={};const Z=R.sm,j=R.j;R.lt=(R.lt||0)+(dt>0&&dt<.25?dt:0);
+  for(const n in j){const u=j[n].userData;if(!u.from)continue;const f=j[u.from],a=f.rotation,r=f.userData.r0[1],o=j[n].rotation;o.set(o.x+(a.x-r.x)*u.share,o.y+(a.y-r.y)*u.share,o.z+(a.z-r.z)*u.share);}
+  for(const n in j){const u=j[n].userData;if(u.own==null)continue;const o=j[n].rotation,r=u.r0[1];o.set(r.x+(o.x-r.x)*u.own,r.y+(o.y-r.y)*u.own,r.z+(o.z-r.z)*u.own);}
+  for(const n in j){const o=j[n].rotation,w=om[n]||j[n].userData.om||20;let z=Z[n];if(!z||snap){Z[n]=[o.x,o.y,o.z,0,0,0];continue;}
+    o.set(mSpr(z,0,o.x,w,dt),mSpr(z,1,o.y,w,dt),mSpr(z,2,o.z,w,dt));}
+  const f=R.off;let z=Z.off;if(!z||snap)Z.off=[f.x,f.y,f.z,0,0,0,f.rx,f.ry,f.rz,0,0,0];else{f.x=mSpr(z,0,f.x,26,dt);f.y=mSpr(z,1,f.y,26,dt);f.z=mSpr(z,2,f.z,26,dt);const q=z.slice(6);f.rx=mSpr(q,0,f.rx,22,dt);f.ry=mSpr(q,1,f.ry,22,dt);f.rz=mSpr(q,2,f.rz,22,dt);for(let i=0;i<6;i++)z[6+i]=q[i];}
+  if(R.med==='ice'&&j.body&&S.breath!==0){const b=Math.sin(R.lt*2.2+R.k0*7)*.011;j.body.scale.y*=1+b;j.body.scale.x*=1+b*.6;j.body.scale.z*=1+b*.4;}}
+// a smooth limb: a tube along +y with many rings (so it can bend), radius by height rf(y), closed at both ends
+function mLimb(y0,y1,rf,col,seg,vs){const S=pkLo()?.6:1,U=Math.max(8,(seg||16)*S|0),V=Math.max(10,(vs||26)*S|0);
+  return pkSurf(U,V,(u,v,p)=>{const a=u*TAU,e=v<.05?v/.05:v>.95?(1-v)/.05:1,y=mL(y0,y1,v<.05?.05*mSm(v/.05):v>.95?1-.05*mSm((1-v)/.05):v),r=rf(y)*Math.sqrt(Math.max(0,Math.min(1,e*1.4)));p[0]=Math.sin(a)*r;p[1]=y;p[2]=Math.cos(a)*r;},
+    col?(u,v,p,o)=>{const q=typeof col==='function'?col(u,v):col;o[0]=q[0];o[1]=q[1];o[2]=q[2];}:null,1,1,[1,1]);}
 // --- joints: every animated part is registered so each frame starts again from its rest placement ---
 function mJ(R,n,o){R.j[n]=o;return o;}
 function mRest(R){for(const k in R.j){const o=R.j[k],r=o.userData.r0;o.position.copy(r[0]);o.rotation.copy(r[1]);o.scale.copy(r[2]);}
@@ -165,7 +236,7 @@ function mSwim(R,t,f,k,fish){const p=t*f*TAU;if(fish){mR(R,'body',0,Math.sin(p)*
 // build(R); idle / enter / touch / bow / wave / win / lose (R, t, o); g = where its signature starts inside the victory act
 var MS_SP={
   // 펭귄 — belly-slides in, waddles; flipper touch; ecstatic display call when it wins, face-flop tantrum when it loses
-  peng:{med:'ice',k0:1.05,cw:2.0,g:0,build(R){const B=[.06,.07,.1],Bs=[.17,.21,.27],W=[.96,.96,.95],Yp=[1,.93,.72],Yo=[1,.7,.24],bd=mJ(R,'body',mG(0,.04,0));R.root.add(bd);
+  peng:{med:'ice',k0:1.05,cw:2.0,g:0,om:{head:13,wL:15,wR:15},build(R){const B=[.06,.07,.1],Bs=[.17,.21,.27],W=[.96,.96,.95],Yp=[1,.93,.72],Yo=[1,.7,.24],bd=mJ(R,'body',mG(0,.04,0));R.root.add(bd);
       // emperor penguin: tall and widest low, the white front narrows to a pale-yellow upper breast, blue-grey sheen on the black back,
       // a small black head with the yellow-orange ear patches, a long down-curved bill with an orange-pink plate, small dark eyes
       const body=mLoftY(0,.98,(v,f)=>{f[0]=mKf([[0,0],[.35,.035],[.7,.01],[1,0]],v);f[1]=mKf([[0,.02],[.04,.2],[.18,.3],[.4,.325],[.62,.29],[.82,.22],[.95,.165],[1,.02]],v);f[2]=mKf([[0,.02],[.04,.19],[.18,.29],[.4,.31],[.62,.27],[.82,.2],[.95,.15],[1,.02]],v);},
@@ -204,12 +275,13 @@ var MS_SP={
           for(const s of[1,-1]){const f=R.j[s>0?'fL':'fR'];f.position.y+=Math.max(0,Math.sin(t*14+(s>0?0:mPI)))*.12;}if(o.n%5==0)o.fx('snow',R.root,[0,0,.3]);}mEyeK(R,.25);}
       else{const u=mWin(t,3.6,4);mR(R,'head',.5*u);mR(R,'wL',.2*u,0,-.1*u);mR(R,'wR',.2*u,0,.1*u);mR(R,'body',.1*u,0,.06*Math.sin(t*2));S.waddle(R,t*.5,.3*u);mEyeK(R,.55);if(mAt(o,t,4.3))o.sfx('sob');}}},
   // 범고래 — breaches out of its hole; spy-hops to touch with a pectoral fin; vertical breach + fin slaps + spout when it wins; sulks and slaps its tail when it loses
-  orca:{med:'water',k0:.82,pool:1.35,cw:2.9,g:.5,gt:1.25,build(R){const B=[.035,.04,.055],W=[.96,.96,.97],Gy=[.56,.58,.62],bd=mJ(R,'body',mG(0,-.06,0));R.root.add(bd);
+  orca:{med:'water',k0:.82,pool:1.35,cw:2.9,g:.5,gt:1.25,om:{tail:14,t2:10,t3:8,fluke:7,pfL:12,pfR:12},build(R){const B=[.035,.04,.055],W=[.96,.96,.97],Gy=[.56,.58,.62],bd=mJ(R,'body',mG(0,-.06,0));R.root.add(bd);
       // orca: glossy black, the white eye patch, white chin and belly, the grey saddle behind the tall dorsal fin, rounded paddle flippers; a small dark eye
-      const bg=mRev(-.35,1.25,v=>pkLook([[0,.4],[.3,.45],[.6,.43],[.78,.38],[.88,.31],[.94,.23],[.98,.13],[1,.02]],v),(u,v,up,sd)=>{const ev=(v-.735)/.075,eu=(up-.38)/.17;
-        return Math.abs(sd)>.4&&ev*ev+eu*eu<1?W:up<mKf([[0,-.5],[.3,-.6],[.55,-.8],[.72,-.74],[.86,-.5],[1,-.35]],v)?W:v<.22&&up>.6?Gy:B;},1,.92,56,64);bd.add(mMesh([[bg,null]],MS_M.skin));
-      const tl=mJ(R,'tail',mG(0,0,-.35));bd.add(tl);tl.add(mMesh([[mRev(-1.25,.02,v=>pkLook([[0,.07],[.12,.1],[.45,.24],[.8,.37],[1,.4]],v),(u,v,up,sd)=>{const fv=(v-.68)/.16,fu=(up+.15)/.3;return (up<-.5&&v>.75)||(fv*fv+fu*fu<1&&Math.abs(sd)>.55)?W:B;},1,.92,56,48),null]],MS_M.skin));
-      const fl=mJ(R,'fluke',mG(0,0,-1.22));tl.add(fl);for(const s of[1,-1]){const g=mFin([[0,.05],[s*.16,.02],[s*.5,-.22],[s*.62,-.13],[s*.44,.02],[s*.12,.1]],.035,B);g.rotateX(Math.PI/2);fl.add(mMesh([[g,null]],MS_M.skin));}
+      const bg=mRev(-.35,1.25,v=>pkLook([[0,.32],[.06,.4],[.3,.45],[.6,.43],[.78,.38],[.88,.31],[.94,.23],[.98,.13],[1,.02]],v),(u,v,up,sd)=>{const ev=(v-.735)/.085,eu=(up-.38)/.2;
+        return Math.abs(sd)>.4&&ev*ev+eu*eu<1?W:up<mKf([[0,-.5],[.3,-.6],[.55,-.8],[.72,-.74],[.86,-.5],[1,-.35]],v)?W:v<.22&&up>.6?Gy:B;},1,.92,96,80);bd.add(mMesh([[bg,null]],MS_M.skin));
+      const tl=mJ(R,'tail',mG(0,0,-.35));bd.add(tl);tl.add(mMesh([[mRev(-1.25,.25,v=>pkLook([[0,.07],[.1,.1],[.38,.24],[.68,.37],[.85,.4],[1,.34]],v),(u,v,up,sd)=>{const fv=(v-.57)/.135,fu=(up+.15)/.3;return (up<-.5&&v>.63)||(fv*fv+fu*fu<1&&Math.abs(sd)>.55)?W:B;},1,.92,56,56),null]],MS_M.skin));
+      // the tail curls along its length (three joints share the tail's pose and lag behind it)
+      tl.children[0].userData.ch=['tail','t2','t3','fluke'];const t2=mJ(R,'t2',mG(0,0,-.42));tl.add(t2);const t3=mJ(R,'t3',mG(0,0,-.4));t2.add(t3);tl.userData.own=.5;t2.userData.from=t3.userData.from='tail';t2.userData.share=.3;t3.userData.share=.25;const fl=mJ(R,'fluke',mG(0,0,-.4));t3.add(fl);for(const s of[1,-1]){const g=mFin([[0,.05],[s*.16,.02],[s*.5,-.22],[s*.62,-.13],[s*.44,.02],[s*.12,.1]],.035,B);g.rotateX(Math.PI/2);fl.add(mMesh([[g,null]],MS_M.skin));}
       const df=mFin([[-.26,0],[.14,0],[.04,.22],[-.1,.52],[-.17,.58],[-.15,.36]],.05,B);df.rotateY(-Math.PI/2);df.translate(0,.36,-.02);bd.add(mMesh([[df,null]],MS_M.skin));
       for(const s of[1,-1]){const p=mJ(R,s>0?'pfL':'pfR',mG(s*.32,-.22,.7));bd.add(p);p.rotation.set(-.5,0,s*.85);
         const g=mFin([[0,.04],[.11,-.02],[.17,-.18],[.17,-.34],[.11,-.45],[.02,-.46],[-.05,-.34],[-.06,-.08]],.035,B,1);g.rotateY(Math.PI/2);p.add(mMesh([[g,null]],MS_M.skin));
@@ -243,14 +315,14 @@ var MS_SP={
         if(t>1.4&&Math.sin((t-o.dt-1.4)*6.5)>=0&&sl<0){o.splash(R,0,-1.6,1);o.sfx('splash');o.shake(.2);}}
       else{const u=mWin(t,3.6,4.1);R.off.y=mL(-.3,-.08,u);R.off.rz=.45*u;S.sw(R,t*.5,.3);mEyeK(R,.45);if(mAt(o,t,4.3)){o.fx('spout',R.ex.spout,[0,0,0],.3);o.sfx('sob');}}}},
   // 북극곰 — lumbers in on all fours; sits and gives a paw; rears up and roars, rolls on its back when it wins; plops down and hides its face when it loses
-  bear:{med:'ice',k0:.86,cw:2.8,g:0,build(R){const F=[.93,.9,.8],Fb=[.83,.79,.67],Fl=[.97,.95,.88],D=[.05,.045,.045],fc=(u,v,up)=>up<-.45?Fb:mMix(F,Fl,Math.max(0,up)*.7);
+  bear:{med:'ice',k0:.86,cw:2.8,g:0,om:{neck:15,head:12,jaw:14},build(R){const F=[.93,.9,.8],Fb=[.83,.79,.67],Fl=[.97,.95,.88],D=[.05,.045,.045],fc=(u,v,up)=>up<-.45?Fb:mMix(F,Fl,Math.max(0,up)*.7);
       const bd=mJ(R,'body',mG(0,.98,0));R.root.add(bd);
       // polar bear: a long body with the rump a little higher than the shoulders, a long neck, a small long head with a Roman nose,
       // small round ears, black nose and lips, small dark eyes; dense cream fur (shells), black pads and claws
       mFur(bd,mLoft(-.98,.86,(v,f)=>{f[0]=mKf([[0,.06],[.15,.05],[.5,-.03],[.82,0],[1,.05]],v);f[1]=mKf([[0,.04],[.06,.27],[.2,.41],[.5,.46],[.78,.42],[.93,.31],[1,.06]],v);f[2]=mKf([[0,.04],[.06,.3],[.2,.44],[.5,.5],[.78,.45],[.93,.35],[1,.08]],v);},fc,32,30),2.8,1.9,.045);
       mFur(bd,mEll([0,.15,-.95],[.07,.06,.07],F,10),.45,.2,.03);
       const paw=p=>{mFur(p,mEll([0,.045,.05],[.16,.085,.2],F,16),1.1,.5,.03);p.add(mMesh([...mClaws(5,.055,.05,.24,.02),[mEll([0,-.03,.07],[.1,.014,.11],[.08,.07,.07],10),null]],MS_M.skin));};
-      for(const s of[1,-1]){R.tips[s>0?'L':'R']=mLeg4F(R,bd,s>0?'fL':'fR',[s*.23,-.12,.52],.42,.19,.38,.15,F,paw,.2,.04);mLeg4F(R,bd,s>0?'hL':'hR',[s*.22,-.1,-.58],.45,.22,.38,.16,F,paw,.2,.04);}
+      for(const s of[1,-1]){R.tips[s>0?'L':'R']=mLeg4F(R,bd,s>0?'fL':'fR',[s*.21,-.12,.52],.42,.19,.38,.15,F,paw,.2,.04);mLeg4F(R,bd,s>0?'hL':'hR',[s*.2,-.1,-.58],.45,.22,.38,.16,F,paw,.2,.04);}
       R.iks={L:[R.j.fL,R.j.fL2],R:[R.j.fR,R.j.fR2]};
       const nk=mJ(R,'neck',mG(0,.12,.72));bd.add(nk);mFur(nk,mLoft(-.25,.42,(v,f)=>{f[0]=mKf([[0,-.02],[1,.07]],v);f[1]=mKf([[0,.05],[.1,.29],[.5,.25],[.9,.2],[1,.05]],v);f[2]=mKf([[0,.05],[.1,.32],[.5,.27],[.9,.21],[1,.05]],v);},fc,24,14),1.7,.67,.04);
       const hd=mJ(R,'head',mG(0,.08,.36));nk.add(hd);
@@ -285,7 +357,7 @@ var MS_SP={
           R.j.body.scale.y=1+.04*Math.sin(t*1.8)*u;if(mAt(o,t,4.5))o.sfx('sob');if(t>4.2){mR(R,'fR',-.5*mWin(t,4.2,4.6),0,.4*mWin(t,4.2,4.6));}}
         mEyeK(R,.3);}}},
   // 물범 — galumphs in; raises its chest and touches with a flipper; claps, arches into a banana and rolls when it wins; tantrum on its back when it loses
-  seal:{med:'ice',k0:.92,cw:2.3,g:0,build(R){MS_SP.walrus.pinn(R,{base:[.56,.57,.59],dk:[.38,.4,.43],lt:[.83,.82,.79],r:.31,fl:.78,rl:.85,head:[.22,.2,.23],fin:.25,seal:1});},
+  seal:{med:'ice',k0:.92,cw:2.3,g:0,om:{head:12,rf:9,ffL2:13,ffR2:13},pair:[['chest','rear',.14]],build(R){MS_SP.walrus.pinn(R,{base:[.56,.57,.59],dk:[.38,.4,.43],lt:[.83,.82,.79],r:.31,fl:.78,rl:.85,head:[.22,.2,.23],fin:.25,seal:1});},
     idle(R,t){mR(R,'chest',-.12-.03*Math.sin(t*1.4));mR(R,'head',.1*Math.sin(t*.9),.3*Math.sin(t*.5));mR(R,'rf',.15*Math.sin(t*2));mBlink(R,t,.2);},
     enter(R,t,o){R.off.z=-o.d;mGalumph(R,t,1.9,1-mWin(o.u,.9,1));mR(R,'chest',-.1);if(o.n%7==0&&o.u<.95)o.fx('snow',R.root,[0,0,0]);mBlink(R,t);},
     touch(R,t,o){mR(R,'chest',-.68*o.u);mR(R,'head',.45*o.u);mR(R,o.L?'ffL':'ffR',-1.4*o.u,0,o.s*.2*o.u);mBlink(R,t);},
@@ -305,7 +377,7 @@ var MS_SP={
         if(mAt(o,t,1.0)||mAt(o,t,1.8)||mAt(o,t,2.6))o.sfx('honk');if(o.n%4==0&&k>.5)o.fx('snow',R.root,[0,.2,0]);mEyeK(R,.3);}
       else{const u=mWin(t,3.4,3.8);mR(R,'head',.25*u);mR(R,'chest',.06*u);mR(R,'ffR',-1.5*u,0,.9*u);mLook(R,0,.6*u);mEyeK(R,1.1);if(mAt(o,t,4.2))o.sfx('sob');}}},
   // 바다코끼리 — heavy galumph; flipper touch; bellows and drums its chest when it wins; slaps the ice and flops on its side when it loses
-  walrus:{med:'ice',k0:.82,cw:2.6,g:0,
+  walrus:{med:'ice',k0:.82,cw:2.6,g:0,om:{head:12,rf:9,ffL2:13,ffR2:13},pair:[['chest','rear',.17]],
     pinn(R,P){const sl=!!P.seal,base=P.base,dk=P.dk,lt=P.lt,col=(u,v,up)=>up<-.45?lt:up<-.1?mMix(base,lt,mSm((-.1-up)/.35)):mMix(base,dk,mSm(up)*.8),MAT=sl?MS_M.sealM:MS_M.walM;
       // harbour seal: spotted grey coat, a round dog-like head, big dark eyes, V nostrils, pale beaded whiskers;
       // walrus: wrinkled pinkish-brown skin, small red-brown eyes, the broad whisker pad with stiff bristles, ivory tusks
@@ -347,7 +419,7 @@ var MS_SP={
       else{const u=mWin(t,2.7,3.3);R.off.rz=-1.0*u;R.off.py=.44;mR(R,'head',.3,0,.3*u);mR(R,'ffL',-.6*u,0,.8*u);if(mAt(o,t,3.2)){o.shake(.45);o.sfx('bump');o.fx('snow',R.root,[0,0,0]);}
         R.j.chest.scale.y=1+.05*Math.sin(t*1.6)*u;mEyeK(R,.4);if(mAt(o,t,4.4))o.sfx('sob');}}},
   // 북극여우 — trots in; sits and gives a paw; play-bow; the famous mousing dive + tail chase when it wins; curls up under its tail when it loses
-  fox:{med:'ice',k0:1.25,cw:2.2,g:0,build(R){const F=[.96,.96,.95],Fs=[.86,.86,.84],D=[.05,.04,.04],fc=(u,v,up)=>up<-.4?Fs:F;
+  fox:{med:'ice',k0:1.25,cw:2.2,g:0,om:{neck:15,head:12,eL:8,eR:8,tail:11,t2:8,t3:6},build(R){const F=[.96,.96,.95],Fs=[.86,.86,.84],D=[.05,.04,.04],fc=(u,v,up)=>up<-.4?Fs:F;
       const bd=mJ(R,'body',mG(0,.45,0));R.root.add(bd);
       // arctic fox in its winter coat: compact and round, short legs, a short muzzle, small rounded ears, golden eyes with slit pupils, a huge brush of a tail
       mFur(bd,mLoft(-.44,.42,(v,f)=>{f[0]=mKf([[0,.03],[.5,-.01],[1,.03]],v);f[1]=mKf([[0,.04],[.08,.16],[.3,.21],[.6,.2],[.85,.18],[1,.05]],v);f[2]=mKf([[0,.04],[.08,.17],[.3,.23],[.6,.23],[.85,.21],[1,.06]],v);},fc,28,24),1.35,.86,.065);
@@ -363,7 +435,8 @@ var MS_SP={
       for(const s of[1,-1]){const e=mJ(R,s>0?'eL':'eR',mG(s*.085,.1,-.04));e.rotation.z=-s*.35;hd.add(e);const g=mHorn(.072,.05,F,0,10),gp=g.attributes.position;for(let i=0;i<gp.count;i++)gp.setZ(i,gp.getZ(i)*.6);g.computeVertexNormals();mFur(e,g,.3,.12,.02);
         e.add(mMesh([[mEll([0,.03,.012],[.026,.026,.006],[.5,.42,.42],8),null]],MS_M.skin));}
       const jw=mJ(R,'jaw',mG(0,-.07,.08));hd.add(jw);jw.add(mMesh([[mEll([0,-.008,.07],[.045,.02,.08],F,10),null]],MS_M.skin));
-      const tl=mJ(R,'tail',mG(0,.05,-.42));tl.rotation.x=-.35;bd.add(tl);mFur(tl,mLoft(-.85,0,(v,f)=>{f[0]=0;f[1]=f[2]=mKf([[0,.02],[.12,.1],[.5,.14],[.85,.11],[1,.06]],v);},()=>F,20,20),.8,.85,.09);
+      const tl=mJ(R,'tail',mG(0,.05,-.42));tl.rotation.x=-.35;bd.add(tl);mFur(tl,mLoft(-.85,0,(v,f)=>{f[0]=0;f[1]=f[2]=mKf([[0,.02],[.12,.1],[.5,.14],[.85,.11],[1,.06]],v);},()=>F,20,32),.8,.85,.09,null,['tail','t2','t3']);
+      const t2=mJ(R,'t2',mG(0,0,-.28));tl.add(t2);const t3=mJ(R,'t3',mG(0,0,-.28));t2.add(t3);tl.userData.own=.5;t2.userData.from=t3.userData.from='tail';t2.userData.share=.3;t3.userData.share=.25;
       R.head=hd;R.sph=[[bd,[0,0,0],.3],[hd,[0,0,.05],.16]];},
     idle(R,t){mR(R,'tail',0,.35*Math.sin(t*2.5));mR(R,'head',0,.25*Math.sin(t*.8),.15*Math.sin(t*.6));mR(R,'eL',0,0,.15*Math.max(0,Math.sin(t*3.1)));mBlink(R,t,.1);},
     sit(R,k){mSit4(R,k,[0,.38,.3],.62,1.25,2.0);mR(R,'neck',-.3*k);mR(R,'tail',.4*k);},
@@ -387,7 +460,7 @@ var MS_SP={
         R.off.y-=.24*c;mR(R,'fL',-1.3*c);mR(R,'fR',-1.3*c);mR(R,'fL2',.4*c);mR(R,'fR2',.4*c);mR(R,'hL',-1.1*c);mR(R,'hR',-1.1*c);mR(R,'hL2',2.0*c);mR(R,'hR2',2.0*c);mR(R,'tail',.2*c,1.6*c);mR(R,'neck',.4*c,.5*c);
         mEyeK(R,mL(1,.25,c));if(t>4.4){mEyeK(R,1.8,1);mR(R,'tail',0,.15*Math.sin(t*9));}if(mAt(o,t,4.6))o.sfx('sob');}}},
   // 흰올빼미 — flies in and lands; touches with a wing tip; wings-wide display and a flight circle when it wins; puffs up and turns its head away when it loses
-  owl:{med:'ice',k0:1,cw:2.6,g:0,build(R){const W=[.97,.97,.96],D=[.24,.21,.18],bar=(d,k,ph)=>Math.sin(d[1]*k+Math.sin(d[0]*7+ph)*1.3)>.8&&d[2]<.55?D:W;
+  owl:{med:'ice',k0:1,cw:2.6,g:0,om:{head:11,wL2:12,wR2:12},build(R){const W=[.97,.97,.96],D=[.24,.21,.18],bar=(d,k,ph)=>Math.sin(d[1]*k+Math.sin(d[0]*7+ph)*1.3)>.8&&d[2]<.55?D:W;
       const bd=mJ(R,'body',mG(0,.1,0));R.root.add(bd);
       // snowy owl: thick white plumage with dark bars, a round head with a facial disc, big yellow eyes, the beak half hidden in bristles, feathered feet, wings of real flight feathers
       mFur(bd,mEll([0,.36,0],[.3,.37,.29],d=>bar(d,24,0),28,d=>1+.06*Math.max(0,-d[1])),1.9,1.15,.03);
@@ -424,7 +497,7 @@ var MS_SP={
       else{R.off.s=1.16;R.j.body.scale.set(1.08,.94,1.08);const a=mWin(t,.8,1.2),pk=mBmp(t,2.5,3.6);mR(R,'head',0,mPI*.95*a-1.2*pk);mEyeK(R,pk>.3?.9:.45);
         if(mAt(o,t,.9))o.sfx('growl');if(t>3.6){mR(R,'wL',0,0,-.2);mR(R,'wR',0,0,.2);R.j.body.scale.y*=.95;mEyeK(R,.5);if(mAt(o,t,4.5))o.sfx('sob');}}}},
   // 정어리 떼 — a sardine school boils up in its hole; the leader pokes its snout out to touch; the whole school leaps when it wins; it scatters and dives away under the ice when it loses
-  fish:{med:'water',k0:1.15,pool:1.1,cw:2.4,g:0,gt:1.2,ty:.12,
+  fish:{med:'water',k0:1.15,pool:1.1,cw:2.4,g:0,gt:1.2,ty:.12,om:{tail:12},
     geo(){const k='g'+pkLo();if(this[k])return this[k];
       const col=(u,v,up,sd)=>{if(up>.42)return mMix([.16,.34,.42],[.36,.55,.6],mSm((.8-up)/.38));if(up>.2&&v>.3&&v<.82&&Math.abs(((v-.3)/.065)%1-.5)<.2&&Math.abs(sd)>.5)return [.12,.16,.2];
         if(v>.79&&v<.82&&up<.35)return [.55,.6,.64];return up>-.45?[.86,.89,.92]:[.97,.97,.98];};
@@ -471,13 +544,13 @@ var MS_SP={
         if(mAt(o,t,.75)){o.splash(R,0,0,.9);o.sfx('splash');o.shake(.15);}if(o.n%6==0&&u<.6)o.splash(R,mL(-.5,.5,mRnd()),mL(-.4,.4,mRnd()),.25);}
       else{S.sch(R,t,o,{k:0,sp:.35,f:(i,p)=>{if(i<5){p[0]*=.75;p[2]*=.75;p[4]=-.08;}else p[1]=-.8;}});const u=mWin(t,2.6,3.4);S.lead(R,t*.4,.3-.15*u,0,.12,mPI/2+.5*Math.sin(t*.6)*u,-.12*u,4);if(o.n%12==0)o.fx('bubble',R.j.mouth);if(mAt(o,t,4.2))o.sfx('sob');}}},
   // 일각고래 — leaps in; spy-hops (horn to the sky) to touch with a fin; shows itself off when it wins; thrashes its horn wildly when it loses
-  narwhal:{med:'water',k0:.85,pool:1.3,cw:2.8,g:0,gt:1.25,build(R){const dk=[.36,.39,.45],base=[.6,.63,.68],lt=[.9,.9,.89],col=(u,v,up)=>up<-.35?lt:up<-.05?mMix(base,lt,mSm((-.05-up)/.3)):mMix(base,dk,mSm(up));
+  narwhal:{med:'water',k0:.85,pool:1.3,cw:2.8,g:0,gt:1.25,om:{tail:14,t2:10,t3:8,fluke:7,pfL:12,pfR:12,horn:16},build(R){const dk=[.36,.39,.45],base=[.6,.63,.68],lt=[.9,.9,.89],col=(u,v,up)=>up<-.35?lt:up<-.05?mMix(base,lt,mSm((-.05-up)/.3)):mMix(base,dk,mSm(up));
       const bd=mJ(R,'body',mG(0,-.05,0));R.root.add(bd);
       // narwhal: mottled grey back fading to a pale belly, a blunt rounded head, no dorsal fin (a low ridge), a long left-hand spiral tusk, tiny eyes
-      const bg=mRev(-.3,1.02,v=>pkLook([[0,.38],[.3,.43],[.6,.42],[.8,.38],[.9,.33],[.95,.27],[.985,.17],[1,.02]],v),col,1,.95),bm=new mT.Mesh(bg,MS_M.narw);bd.add(bm);
+      const bg=mRev(-.3,1.02,v=>pkLook([[0,.3],[.06,.38],[.3,.43],[.6,.42],[.8,.38],[.9,.33],[.95,.27],[.985,.17],[1,.02]],v),col,1,.95),bm=new mT.Mesh(bg,MS_M.narw);bd.add(bm);
       bd.add(mMesh([0,1,2,3].map(i=>[mEll([0,.38-.01*i,-.05-i*.12],[.03,.025,.05],dk,8),null]),MS_M.skin));
-      const tl=mJ(R,'tail',mG(0,0,-.3));bd.add(tl);tl.add(new mT.Mesh(mRev(-1.1,.02,v=>pkLook([[0,.06],[.15,.09],[.5,.22],[.85,.36],[1,.38]],v),col,1,.95),MS_M.narw));
-      const fl=mJ(R,'fluke',mG(0,0,-1.08));tl.add(fl);for(const s of[1,-1]){const g=mFin([[0,.03],[s*.15,0],[s*.4,-.06],[s*.55,.05],[s*.5,-.2],[s*.1,-.09]],.03,dk);g.rotateX(Math.PI/2);fl.add(mMesh([[g,null]],MS_M.skin));}
+      const tl=mJ(R,'tail',mG(0,0,-.3));bd.add(tl);tl.add(new mT.Mesh(mRev(-1.1,.22,v=>pkLook([[0,.06],[.13,.09],[.42,.22],[.72,.36],[.86,.38],[1,.32]],v),col,1,.95,28,40),MS_M.narw));
+      tl.children[0].userData.ch=['tail','t2','t3','fluke'];const t2=mJ(R,'t2',mG(0,0,-.36));tl.add(t2);const t3=mJ(R,'t3',mG(0,0,-.36));t2.add(t3);tl.userData.own=.5;t2.userData.from=t3.userData.from='tail';t2.userData.share=.3;t3.userData.share=.25;const fl=mJ(R,'fluke',mG(0,0,-.36));t3.add(fl);for(const s of[1,-1]){const g=mFin([[0,.03],[s*.15,0],[s*.4,-.06],[s*.55,.05],[s*.5,-.2],[s*.1,-.09]],.03,dk);g.rotateX(Math.PI/2);fl.add(mMesh([[g,null]],MS_M.skin));}
       for(const s of[1,-1]){const p=mJ(R,s>0?'pfL':'pfR',mG(s*.3,-.2,.55));p.rotation.set(-.5,0,s*.85);bd.add(p);const g=mFin([[0,.03],[.08,-.03],[.1,-.2],[.12,-.28],[.04,-.3],[-.04,-.2],[-.05,-.07]],.03,dk,1);g.rotateY(Math.PI/2);p.add(mMesh([[g,null]],MS_M.skin));
         const tp=mG(0,-.3,0);p.add(tp);R.tips[s>0?'L':'R']=tp;R.iks[s>0?'L':'R']=[p];}
       const hn=mJ(R,'horn',mG(.07,.06,.97));hn.rotation.x=Math.PI/2-.16;bd.add(hn);hn.add(mMesh([[mHorn(1.55,.055,(u,v)=>{const q=.8+.12*v+.05*Math.sin(u*TAU*2+v*60);return [q,q*.96,q*.84-.08*(1-v)];},60,24),null]],MS_M.ivory));
@@ -608,6 +681,8 @@ function mBody(teamKey,_,mas){const S=MS_SP[mas],k=mKitOf(teamKey,mas),R={root:m
   mRs=7+KIT.mas.indexOf(mas)*13;S.build(R,k);if(!R.iks.L)R.iks=null;if(!R.ex.mouth)R.ex.mouth=mG();
   for(const n in R.j){const o=R.j[n];o.userData.r0=[o.position.clone(),o.rotation.clone(),o.scale.clone()];}
   for(const e of R.eyes)if(e.userData.pu)e.userData.pu0=e.userData.pu.position.clone();
+  if(!MS_SOFT.size)for(const m of[PK_MAT.body,MS_M.skin,MS_M.sealM,MS_M.walM,MS_M.narw,MS_M.feather,MS_M.shade,MS_M.fishM])MS_SOFT.add(m);
+  try{mSkin(R,S.pair);}catch(e){console.warn('mascot skin',e);}
   R.root.traverse(o=>{if(o.isMesh)o.castShadow=!o.userData.ns;});mRest(R);R.root.scale.setScalar(R.k0);return R;}
 // one call per frame: the named animation at time t (o: side, u, d, n, dt and the effect hooks)
 const mNop=()=>{};
@@ -715,7 +790,7 @@ function mascStart(kind,cfg,o){o=o||{};if(G.masc)mascEnd(false);
   const dur=kind==='intro'?(quick?MSC.introQ:MSC.intro):kind==='preview'?(o.dur||MSC.end+.6):MSC.end,res=o.res||'win';
   const sp=mascSpots(A,B),gr=kind==='intro'||res==='draw';
   // stage: greeting spots in the middle, or side by side towards the camera for the end
-  for(const [R,side] of[[A,-1],[B,1]]){const S=MS_SP[R.sp];R.side=side;
+  for(const [R,side] of[[A,-1],[B,1]]){const S=MS_SP[R.sp];R.side=side;R.sm=null;
     if(gr){R.at={x:R.gs.x,z:R.gs.z,yaw:mascYaw(R,side)};}else R.at={x:side*(R.med==='water'?1.45:1.3),z:0,yaw:-side*.12};
     if(R.pool){const r=S.pool*(gr?1:Math.min(1,1.1/S.pool));R.pool.userData.r=r;const off=gr?side*r*.45:0;R.pool.position.set(R.at.x+off,0,R.at.z);R.pool.scale.set(1,1,1);R.pool.userData.open=kind==='intro'&&!quick?0:1;R.pool.visible=true;
       R.pool.userData.base=r/S.pool;R.lim=Q=>{const P=R.pool,dx=Q.root.position.x-P.position.x,dz=Q.root.position.z-P.position.z,d=Math.hypot(dx,dz),m=P.userData.r*.75;if(d>m){Q.root.position.x=P.position.x+dx/d*m;Q.root.position.z=P.position.z+dz/d*m;}};}}
@@ -743,7 +818,7 @@ function mascStep(dt){const M=G.masc;if(!M||G.paused)return;M.t+=dt;M.n++;const 
   if(M.t>=M.dur-.4&&!M.f1){M.f1=1;mascFade(1,.35);}
   if(M.t>=M.dur){mascEnd(true);return;}
   const H=mascHooks(M,dt),turn=(a,b,u)=>a+(b-a)*mSm(u),zk=M.kind==='intro'||M.res==='draw'?1:.35;
-  const P=(R,name,tt,x)=>{const o=Object.assign({},H,{side:R.side},x||{});mPose(R,name,tt,o);mPlace(R,{x:R.at.x,z:R.at.z,yaw:x&&x.yaw!=null?x.yaw:R.at.yaw,zk});};
+  const P=(R,name,tt,x)=>{const o=Object.assign({},H,{side:R.side},x||{});mPose(R,name,tt,o);mSmooth(R,dt);mPlace(R,{x:R.at.x,z:R.at.z,yaw:x&&x.yaw!=null?x.yaw:R.at.yaw,zk});};
   const both=(name,tt,x)=>{P(A,name,tt,x);P(B,name,tt,x);};
   let touchK=0,My=M.my;
   if(M.kind==='intro'){
