@@ -133,14 +133,18 @@ function topSpeed(type,setup){const {me}=scene(type,[]);for(const p of G.pengs)i
 /* ========== 4. AI uses every new skill ========== */
 // (this loop drives simulate() directly, without the referee's whistle / faceoff states — the v22 referee is off here; v22test covers skills with it on)
 {const rules0=save.set.rules;save.set.rules='off';const uses={};const lineups=[[['king','macaroni','royal'],['fiordland','yelloweye','little']],[['african','humboldt','magellanic'],['galapagos','king','macaroni']],[['royal','little','galapagos'],['african','fiordland','yelloweye']]];
- let bad=false,maxOut=0;
- for(let r=0;r<2;r++)for(const [a,b] of lineups){save.type=a[0];save.squad=[a[1],a[2],null];startMatch({mode:'quick',size:3,time:0,diff:'normal',oppTypes:b});G.state='play';
+ let bad=false,maxOut=0,extra=0;
+ const play=(a,b)=>{save.type=a[0];save.squad=[a[1],a[2],null];startMatch({mode:'quick',size:3,time:0,diff:'normal',oppTypes:b});G.state='play';
    for(const p of G.pengs)p.human=false;G.player=null;G.mine.human=null;
    for(let i=0;i<120*120;i++){for(const p of G.pengs){p.ox=p.x;p.oz=p.z;}PH.simulate(H);G.t+=H;
      for(const p of G.pengs){if(p.goalie)continue;if(p.cd.special>0&&!p.__c){p.__c=1;uses[p.type]=(uses[p.type]||0)+1;}if(p.cd.special<=0)p.__c=0;
        if(!isFinite(p.x)||!isFinite(p.z)||!isFinite(p.vx))bad=true;maxOut=Math.max(maxOut,Math.abs(p.x)-24,Math.abs(p.z)-13);}
-     if(!isFinite(G.puck.x)||!isFinite(G.puck.vx))bad=true;if(G.state==='goal'){PH.resetPositions();G.state='play';}}}
- ok(NEW18.every(k=>uses[k]>0),'AI uses every new skill in 2-minute AI matches ('+NEW18.map(k=>k+' '+(uses[k]||0)).join(', ')+')');save.set.rules=rules0;
+     if(!isFinite(G.puck.x)||!isFinite(G.puck.vx))bad=true;if(G.state==='goal'){PH.resetPositions();G.state='play';}}};
+ for(let r=0;r<2;r++)for(const [a,b] of lineups)play(a,b);
+ // the Yellow-eyed skill fires only when that AI decides to shoot: ≈0.7 uses per match (2026-11-18, 7 seeds × 2 ice steps), so 0 in its 4 matches
+ // happens ≈5–9 % of the time by chance. A skill still at 0 gets up to 4 more matches (lineups that have it) before the check fails.
+ for(let r=0;r<2&&NEW18.some(k=>!uses[k]);r++)for(const [a,b] of lineups)if(a.concat(b).some(k=>!uses[k])){play(a,b);extra++;}
+ ok(NEW18.every(k=>uses[k]>0),'AI uses every new skill in 2-minute AI matches ('+NEW18.map(k=>k+' '+(uses[k]||0)).join(', ')+(extra?'; '+extra+' extra match(es) for a skill still at 0':'')+')');save.set.rules=rules0;
  ok(!bad&&maxOut<.6,'no NaN, nobody leaves the rink (max '+maxOut.toFixed(2)+'m past the boards)');}
 
 /* ========== 5. personalities ========== */
