@@ -68,7 +68,7 @@ function runPick(k){const c=runCur();if(!c||!c.pend||!c.pend.includes(k)||!RUN_U
   c.ups[k]=Math.min(RUN_UP[k].max,(c.ups[k]||0)+1);if(k==='life')c.lives=Math.min(RUN.maxLives,c.lives+RUN_UP.life.v);
   c.pend=null;runPrep(c);persist();return true;}
 // the rolled twist of a stage survives a reload: null = no twist (stage 1, bosses), a key = that twist
-function runFix(){const c=runCur();if(!c)return;if(c.pend&&!c.pend.every(k=>RUN_UP[k]))c.pend=c.pend.filter(k=>RUN_UP[k]);if(c.pend&&!c.pend.length)c.pend=null;runPrep(c);}
+function runFix(){const c=runCur();if(!c)return;for(const k in c.ups){if(!RUN_UP[k])delete c.ups[k];else c.ups[k]=Math.min(RUN_UP[k].max,c.ups[k]);}c.lives=Math.min(RUN.maxLives,c.lives);if(c.pend&&!c.pend.every(k=>RUN_UP[k]))c.pend=c.pend.filter(k=>RUN_UP[k]);if(c.pend&&!c.pend.length)c.pend=null;runPrep(c);}
 function runQuit(){const c=runCur();if(!c)return;save.run.last={st:c.st,cleared:c.st-1,earned:c.earned,ups:Object.assign({},c.ups)};save.run.runs++;save.run.cur=null;persist();}
 function runCfg(c){const s=c.st,boss=runBoss(s),m=c.mod,first=m==='first3',d=runDiff(s),hearts='♥'.repeat(c.lives),
     tw=boss?'👑 '+__L('보스'):m?runModIco(m)+' '+runModName(m):'';
@@ -133,7 +133,7 @@ function runResult(R,win,draw){const o=runAfter(R,win,draw),s=o.st,boss=runBoss(
 // ---------- the 🧊 run screen ----------
 let runQuitArm=0;
 function runRoute(s){const a=Math.max(1,s-2),b=a+6;let h='<div class="run-route" aria-hidden="true">';
-  for(let i=a;i<=b;i++){const cls=(i<s?'done':i===s?'cur':'lock')+(runBoss(i)?' boss':'');h+='<div class="rr-n '+cls+'"><i>'+(i<s?'✓':runBoss(i)?'👑':i)+'</i>'+(i===s?'<small>'+runStop(i)+'</small>':'')+'</div>';if(i<b)h+='<span class="rr-l'+(i<s?' done':'')+'"></span>';}
+  for(let i=a;i<=b;i++){const cls=(i<s?'done':i===s?'cur':'lock')+(runBoss(i)?' boss':'');h+='<div class="rr-n '+cls+'"><i>'+(i<s?'✓':runBoss(i)?'👑':i)+'</i></div>';if(i<b)h+='<span class="rr-l'+(i<s?' done':'')+'"></span>';}
   return h+'</div>';}
 function runUpsHtml(ups){const ks=Object.keys(ups||{}).filter(k=>ups[k]>0&&RUN_UP[k]);if(!ks.length)return '';
   return '<div class="run-ups">'+ks.map(k=>'<span class="ru r-'+RUN_UP[k].r+'" title="'+RUN_UP[k].name+'">'+RUN_UP[k].ico+(ups[k]>1?'<b>×'+ups[k]+'</b>':'')+'</span>').join('')+'</div>';}
