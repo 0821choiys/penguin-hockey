@@ -1,5 +1,5 @@
 # v26: signature props & effects per species (modelled sceptre / crown / trumpet, a real wave, ice crystals, …) + cinematic framing
-R("/* ================= INIT ================= */", rd('v26_sig.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v26_sig.js') + "\n/* ================= INIT ================= */")
 RIN('castProps', "  P.cx=cx;return cx;", "  sigProps(p,cx);P.cx=cx;return cx;")
 RIN('castPost', "  if(c.t>=c.dur){p.cast=null;", "  sigFrame(p,c,dt,t);\n  if(c.t>=c.dur){sigEnd(p,c);p.cast=null;")
 RIN('castPost', "const s=cx.sun;s.visible=u<.98;", "const s=cx.sun;s.visible=u<.98&&!cx.sun3;")

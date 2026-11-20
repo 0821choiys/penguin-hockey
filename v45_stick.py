@@ -1,5 +1,5 @@
 # v45: 🏒 stick workshop (v45_stick.js / .css) — materials drawn with points (odds on screen), crafting, abilities, upgrades
-R("/* ================= INIT ================= */", rd('v45_stick.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v45_stick.js') + "\n/* ================= INIT ================= */")
 _st_end45 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end45] + rd('v45_stick.css') + "\n" + s[_st_end45:]
 # the stick's numbers sit on top of the penguin's personality (TT): ttOf reads the merged table when the skater carries a stick

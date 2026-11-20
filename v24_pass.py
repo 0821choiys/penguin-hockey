@@ -1,5 +1,5 @@
 # v24: fish pass (정어리 → 청어 → 광어 → 넙치 → 도다리 → 꽁치 → …) — 30 tiers, free + gold track (in-game points only), a new fish name and trail every season
-R("/* ================= INIT ================= */", rd('v24_pass.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v24_pass.js') + "\n/* ================= INIT ================= */")
 _st_end24 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end24] + rd('v24_pass.css') + "\n" + s[_st_end24:]
 

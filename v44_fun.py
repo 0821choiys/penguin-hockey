@@ -1,5 +1,5 @@
 # v44: coach level, win streaks, first win of the day (v44_fun.js), points only, nothing random
-R("/* ================= INIT ================= */", rd('v44_fun.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v44_fun.js') + "\n/* ================= INIT ================= */")
 _st_end44 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end44] + rd('v44_fun.css') + "\n" + s[_st_end44:]
 RIN('showResultScreen', "    R.pass=passMatch(win,draw,ms);", "    R.pass=passMatch(win,draw,ms);\n    R.co=coachMatch(R,cfg,win,draw,ms);")

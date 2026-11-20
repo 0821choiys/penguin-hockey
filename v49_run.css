@@ -1,0 +1,98 @@
+/* ===== v49: 🧊 펭귄 원정 — run screen, upgrade cards, home card (original palette: navy boards, ice-blue, team colours; craft, no gold) ===== */
+.run-panel{width:min(560px,94vw)}
+.run-panel .run-head{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.run-panel .run-head h2{margin:0}
+#runBest{font-size:14px;color:var(--frost2);padding:2px 10px;border-radius:999px;border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06))}
+#runBest:empty{display:none}
+#runBest b{color:var(--ice)}
+#runBody{display:flex;flex-direction:column;gap:10px;padding:4px 2px 2px}
+#runFoot{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:8px}
+#runFoot:empty{display:none}
+#runFoot .btn.primary{font-size:22px;padding:11px 34px}
+#runFoot .run-quit{opacity:.8}
+#runFoot .run-quit.arm{opacity:1;border-color:var(--puck);color:var(--puck)}
+/* the route: pucks joined by skate marks */
+.run-route{display:flex;align-items:flex-start;justify-content:center;padding:6px 0 2px}
+.rr-n{position:relative;display:flex;flex-direction:column;align-items:center;flex:0 0 auto;width:34px}
+.rr-n i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-style:normal;font-size:13px;font-weight:700;color:var(--frost2);
+  background:radial-gradient(circle at 50% 35%,#1d4572,#0b2240 72%);box-shadow:inset 0 0 0 1px rgba(160,212,255,.35),inset 0 -3px 0 rgba(0,0,0,.35),0 2px 0 var(--edge)}
+.rr-n.done i{color:#06223f;background:radial-gradient(circle at 50% 35%,#d9f5ff,#7fd0ff 75%);box-shadow:inset 0 0 0 1px #fff,0 2px 0 var(--edge)}
+.rr-n.cur i{width:36px;height:36px;margin-top:-3px;font-size:16px;color:#fff;background:radial-gradient(circle at 50% 35%,#3aa6ff,#135a9e 75%);
+  box-shadow:0 0 0 3px rgba(98,212,255,.35),inset 0 0 0 1px #bfe9ff,0 3px 0 var(--edge)}
+.rr-n.boss i{box-shadow:inset 0 0 0 2px #ff6a7a,inset 0 -3px 0 rgba(0,0,0,.35),0 2px 0 var(--edge)}
+.rr-n.cur.boss i{box-shadow:0 0 0 3px rgba(255,106,122,.35),inset 0 0 0 2px #ffb3bb,0 3px 0 var(--edge)}
+.rr-n small{position:absolute;top:38px;white-space:nowrap;font-size:12px;color:var(--ice)}
+.rr-l{flex:1 1 10px;max-width:30px;height:0;margin-top:15px;border-top:2px dashed rgba(160,212,255,.35)}
+.rr-l.done{border-top-style:solid;border-color:#7fd0ff}
+.run-route+.run-st{margin-top:14px}
+/* status line: hearts + earned */
+.run-st{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--frost2);padding:0 4px}
+.run-h{font-size:20px;letter-spacing:2px;color:#ff6a7a;text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.run-h s{text-decoration:none;color:rgba(160,212,255,.22)}
+.run-ups{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.run-ups .ru{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:9px;font-size:16px;background:rgba(9,29,52,.8);box-shadow:inset 0 0 0 1px var(--rc)}
+.run-ups .ru b{font-size:11px;color:var(--frost2)}
+.r-c{--rc:#9fd8ff}.r-r{--rc:#4aa8ff}.r-e{--rc:#b46bff}
+/* the stage card: a board with a double hairline, the twist rows like rink signage */
+.run-stage{position:relative;border-radius:16px;padding:12px 14px;background:var(--lx-scratch,none),linear-gradient(180deg,rgba(18,48,82,.96),rgba(9,29,52,.96));
+  border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06)),inset 0 1px 0 rgba(255,255,255,.14),0 4px 0 var(--edge);
+  display:flex;flex-direction:column;gap:8px;text-align:left}
+.run-stage::before{content:'';position:absolute;left:12px;right:12px;bottom:6px;height:3px;border-radius:2px;background:#ffd24a;opacity:.85}   /* the yellow kick plate */
+.run-stage.boss{border-color:rgba(255,106,122,.55)}
+.rs-k{font-size:18px;color:var(--frost)}
+.rs-k b{color:var(--ice);margin-right:4px}
+.rs-boss{font-style:normal;font-size:13px;padding:1px 8px;border-radius:999px;color:#ffd7db;background:rgba(255,90,110,.18);box-shadow:inset 0 0 0 1px rgba(255,106,122,.55)}
+.rs-opp{display:flex;flex-wrap:wrap;gap:6px}
+.rs-opp .ro{font-size:13.5px;padding:2px 9px 2px 7px;border-radius:999px;background:rgba(6,20,38,.7);box-shadow:inset 0 0 0 1px rgba(160,212,255,.2)}
+.rs-opp .ro::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--gc);vertical-align:1px}
+.rs-mod{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;padding:7px 10px;border-radius:12px;background:rgba(98,212,255,.08);box-shadow:inset 0 0 0 1px rgba(98,212,255,.22)}
+.rs-mod i{font-style:normal;font-size:24px;text-align:center}
+.rs-mod span{display:flex;flex-direction:column;gap:1px;font-size:13px;color:var(--frost2);line-height:1.3}
+.rs-mod b{font-size:15.5px;color:var(--frost);font-weight:700}
+.rs-meta{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13.5px;color:var(--frost2);padding-bottom:6px}
+.rs-meta b{color:var(--frost)}
+.rs-pay{margin-left:auto;font-size:15px;color:var(--puck);font-weight:700}
+/* the upgrade pick: three cards */
+.run-pick-h{text-align:center;font-size:18px;color:var(--frost)}
+.run-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.run-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:22px 7px 10px;border-radius:16px;cursor:pointer;text-align:center;color:var(--frost);font:inherit;
+  background:var(--lx-scratch,none),linear-gradient(180deg,color-mix(in srgb,var(--rc) 22%,#123a62),#0b2240 78%);
+  border:1px solid color-mix(in srgb,var(--rc) 70%,transparent);box-shadow:inset 0 0 0 3px rgba(8,24,46,.55),inset 0 0 0 4px color-mix(in srgb,var(--rc) 35%,transparent),0 4px 0 var(--edge),0 10px 20px rgba(2,10,24,.35);
+  transition:transform .18s,opacity .25s,filter .25s}
+.run-card .rc-r{position:absolute;top:6px;left:50%;transform:translateX(-50%);font-style:normal;font-size:11px;letter-spacing:1px;padding:1px 8px;border-radius:999px;color:#06223f;background:var(--rc)}
+.run-card .rc-i{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;font-style:normal;font-size:28px;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.18),rgba(6,20,38,.6) 70%);
+  box-shadow:inset 0 0 0 1px var(--rc),inset 0 0 0 4px rgba(8,24,46,.5)}
+.run-card b{font-size:16px;line-height:1.2}
+.run-card span{font-size:12.5px;line-height:1.3;color:var(--frost2);min-height:3.9em}
+.run-card small{font-size:11px;color:var(--frost2);opacity:.8}
+.run-card:hover{filter:brightness(1.1)}
+.run-card:active{transform:translateY(2px)}
+#runBody.picking .run-card:not(.picked){opacity:.35;filter:grayscale(.6)}
+#runBody.picking .run-card.picked{transform:translateY(-6px) scale(1.04);box-shadow:inset 0 0 0 3px rgba(8,24,46,.55),0 0 0 3px var(--rc),0 14px 28px rgba(2,10,24,.45)}
+@media (prefers-reduced-motion:reduce){.run-card{transition:none}}
+/* intro + last run */
+.run-intro{display:flex;flex-direction:column;align-items:center;gap:6px}
+.run-intro .ri-hero{font-size:46px;line-height:1}
+.run-intro ul{margin:0;padding:0 0 0 18px;text-align:left;font-size:15px;line-height:1.5;color:var(--frost)}
+.run-last{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px;padding:8px 10px;border-radius:12px;font-size:14px;color:var(--frost2);background:rgba(6,20,38,.55);box-shadow:inset 0 0 0 1px rgba(160,212,255,.18)}
+.run-last b{color:var(--frost)}
+/* narrow phones: the three cards stay side by side, text a little smaller */
+@media (max-width:400px){.run-card{padding:20px 4px 8px}.run-card b{font-size:14.5px}.run-card span{font-size:11.5px}.run-card .rc-i{width:44px;height:44px;font-size:24px}.rr-n{width:30px}.rr-l{max-width:22px}}
+/* landscape: the route and the stage card side by side would not fit the height — keep one column, smaller paddings */
+@media (max-height:520px){#runBody{gap:7px}.run-route{padding:2px 0 0}.run-stage{padding:8px 12px;gap:6px}.run-card{padding:18px 6px 6px;gap:3px}.run-card span{min-height:0}.run-card .rc-i{width:40px;height:40px;font-size:22px}.run-intro .ri-hero{display:none}}
+/* home: one card under the tiles, like 오늘의 목표 (landscape: hidden like it, reached through 모든 경기 모드) */
+#menuRun{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:2px;width:min(460px,92vw);min-height:56px;margin:0 0 8px;padding:8px 10px 8px 14px;
+  border-radius:16px;cursor:pointer;text-align:left;font:inherit;color:var(--frost);background:var(--lx-scratch,none),linear-gradient(180deg,rgba(18,62,104,.96),rgba(9,33,60,.96));
+  border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 3px 0 0 var(--ice),inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06)),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(2,10,24,.3)}
+#menuRun:empty{display:none}
+#menuRun>.ic{grid-row:1/3;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;font-style:normal;font-size:20px;background:rgba(98,212,255,.13);box-shadow:inset 0 0 0 1px var(--ice),inset 0 0 0 3.5px rgba(8,24,46,.5)}
+#menuRun .mr-t{display:flex;align-items:center;gap:8px;min-width:0;font-size:15px}
+#menuRun .mr-t b{font-weight:inherit;white-space:nowrap}
+#menuRun .mr-t em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;color:#06223f;background:var(--ice)}
+#menuRun .mr-s{grid-column:2;font-size:12.5px;color:var(--frost2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#menuRun .chev{grid-column:3;grid-row:1/3;width:20px;height:20px;opacity:.7}
+#menuRun .chev svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#menuRun.live{box-shadow:inset 3px 0 0 var(--ice),inset 0 0 0 1px rgba(98,212,255,.35),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(2,10,24,.3)}
+#menuRun:hover{filter:brightness(1.08)}
+#menuRun:focus-visible{outline:3px solid var(--puck);outline-offset:2px}
+@media (max-height:520px){#menuRun{display:none!important}}

@@ -2,7 +2,7 @@
 #  - game code: v22_rules.js (inserted before INIT), styles: v22_rules.css
 #  - runs after v21 and before v16 (raw Korean strings; v16 wraps them for translation)
 
-R("/* ================= INIT ================= */", rd('v22_rules.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v22_rules.js') + "\n/* ================= INIT ================= */")
 _st_end22 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end22] + rd('v22_rules.css') + "\n" + s[_st_end22:]
 

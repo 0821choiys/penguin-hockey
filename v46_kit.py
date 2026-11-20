@@ -1,5 +1,5 @@
 # v46: 👕 team kit designer (v46_kit.js / .css) — colours, pattern, mascot crest, crest shape; free, applied wherever the team colour shows
-R("/* ================= INIT ================= */", rd('v46_kit.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v46_kit.js') + "\n/* ================= INIT ================= */")
 _st_end46 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end46] + rd('v46_kit.css') + "\n" + s[_st_end46:]
 # the jersey of a side that wears a custom kit

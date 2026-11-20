@@ -47,7 +47,7 @@ R("우리 팀이 퍽을 잡으면 그 펭귄을 자동으로 조작해요.", "�
 R("대시로 상대를 들이받으면 <b>BIG HIT!</b>",
   "대시로 상대를 들이받으면 <b>BIG HIT!</b><br>🛡️ <b>퍽이 없을 때</b>: 상대가 퍽을 가지면 슛 버튼이 <b>뺏기</b>가 되고, 동료가 가지면 패스 버튼이 <b>패스 요청</b>이 돼요. 패스가 오는 동안 슛을 톡 눌러 두면 받자마자 원타이머!")
 # the module + its styles
-R("/* ================= INIT ================= */", rd('v38_hockey.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v38_hockey.js') + "\n/* ================= INIT ================= */")
 _st_end38 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end38] + rd('v38_hockey.css') + "\n" + s[_st_end38:]
 R("window.__PH={doPull,pullOnce,", "window.__PH={doPull,pullOnce,HK,HKR,hkAuto,hkSwapTarget,hkSwap,hkAutoSwitch,hkNetAutoSwitch,hkEarly,hkIncoming,hkRecvAssist,hkBuf,hkOtCharge,hkCallPress,hkCallPass,hkPokePress,hkCtx,hkLabels,hkCamW,hkFrame,hkSwapNote,netSetRemote,")

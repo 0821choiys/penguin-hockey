@@ -3,7 +3,7 @@
 #  - code: v19_gfx.js (inserted before INIT, after v18); runs before v16 (raw Korean, no __L yet)
 #  - save: set.quality accepts 'ultra'; old saves on 'high' (the previous top tier) move up to 'ultra' once (save.gfx19 flag, additive)
 
-R("/* ================= INIT ================= */", rd('v19_gfx.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v19_gfx.js') + "\n/* ================= INIT ================= */")
 
 # every frame goes through the tiered renderer
 R("if(!ctxLost){try{step(dt);renderer.render(scene,camera);}catch(e){dbgErr('frame',e);}}",

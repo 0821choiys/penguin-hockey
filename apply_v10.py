@@ -8,6 +8,20 @@ def R(old,new,cnt=1):
         print('ANCHOR MISMATCH (%d != %d): %r'%(c,cnt,old[:120]));sys.exit(1)
     s=s.replace(old,new)
 def rd(f):return open(f,encoding='utf-8').read()
+# rdm: a feature module minified by terser (tools/minjs.js: comments / whitespace out, local names shortened; top-level names, string quotes and
+# Korean literals kept for the i18n pass) so the game stays under 2 MB. Only for modules whose insides no later patch edits (a later anchor would
+# miss and the strict build stops). Install once: cd tools && npm ci.
+def rdm(f):
+    import subprocess as _sp
+    src=rd(f)
+    try:
+        js=_sp.run(['node','tools/minjs.js'],input=src.encode('utf-8'),capture_output=True,check=True).stdout.decode('utf-8')
+        assert len(js)>200
+        import re as _re
+        js=_re.sub(r'\\u(200[bcd]|fe0f|2060)',lambda m:chr(int(m.group(1),16)),js)   # terser escapes joiners (🧑\u200d⚖️); the i18n keys hold the real characters
+    except Exception as e:
+        raise SystemExit('could not minify %s (cd tools && npm ci): %s' % (f,getattr(e,'stderr',e)))
+    return js
 
 # ===== B1: the game clock (G.t) kept running while paused -> passes in flight were counted as lost, combo/shot timers expired =====
 R("""function step(dt){
@@ -323,6 +337,7 @@ exec(open('v45_stick.py',encoding='utf-8').read())
 exec(open('v46_kit.py',encoding='utf-8').read())
 exec(open('v47_mascot.py',encoding='utf-8').read())
 exec(open('v48_ice.py',encoding='utf-8').read())
+exec(open('v49_run.py',encoding='utf-8').read())
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 
