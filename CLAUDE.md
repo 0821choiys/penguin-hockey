@@ -75,10 +75,19 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
   (narwhal shows off when it wins, thrashes its horn when it loses). Visual only: the match waits (`G.masc` freezes `step`), skip by tap / back (not online
   entrances), setting `save.set.masc`. Automated browsers (`navigator.webdriver`) and the Node harness skip the scenes unless `window.PH_MASC=1`.
   `v47_mascot.js` is minified by terser at build time (`tools/minjs.js`; install once: `cd tools && npm ci`). Check `node msclab.js t col` (no overlaps, tips meet) after pose changes; every mesh needs a real material; bodies of revolution (`mRev`) must face outwards.
+- Run mode (owner, 2026-11-18; v49, `run-v49.md`): "make it something I want to keep playing — it's not fun"; asked what is not fun, the owner picked
+  "the match itself is flat" + "after one match there is no reason to play another". The game already had goal banners / replays / fever / combos / daily goals,
+  so the answer is 🧊 펭귄 원정 (`v49_run.js`): a run of short matches; after every win pick 1 of 3 upgrade cards (`RUN_UP`, applied through `p.tt` on our skaters,
+  `p.gkd` on our goalie), a twist per stage (`RUN_MOD`: blizzard / thin ice / night = rink conditions, golden-puck rush, comeback 0:1, first to 3, fast / sniper /
+  brick-wall opponents), a boss every 5th stage, endless scaling after 10, 2 lives (max 4), best record, reward (20 + 10 × stage, boss × 2, 🪙 +25 %) paid as the
+  result's extra row. Points only, free, offline. Home card `#menuRun` under the tiles (portrait; hidden at max-height 520 like 오늘의 목표), entry in 모든 경기 모드.
+  `save.run` (additive, sanitised in loadSave with literals). Tests: `v49test.js`, `br/v49run.js`.
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
 - The game file must stay ≤ 2 MB with three.js bundled (fonts stay on Google Fonts). `v20_bundle.py` prints the size.
+  Room is made with `rdm('vNN_x.js')` (terser via `tools/minjs.js`, `evaluate:false`) for modules whose insides no later patch edits:
+  v19, v22, v24, v26, v38, v44, v45, v46, v47, v49 (2026-11-18). A module a later anchor reaches must stay `rd()` — the strict build stops on a missed anchor.
 
 ## Build
 ```
@@ -88,7 +97,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, `v48_ice.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, `v48_ice.py`, `v49_run.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -144,6 +153,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node p3lab.js <sheet|big|cards> <tag>` (portrait / card sheets with the CURRENT `v41_card.js/.css` swapped into the built game — no rebuild while iterating) and `node cardshot.js <mode> <lang> <tag>`,
   `node v42legal.js <pc|tall|wide|wideS> <lang>` (privacy / deletion links in 설정 and the account window), `node v42gauge.js tall <lang>` (the skill name fits the round gauge for every species; it shrinks to fit since 2026-11-13), `node storeshot.js <ko|en> [scene,…]` (Play Store screenshots + feature graphic → shots/store; convert to RGB before upload),
   `node v43model.js <mode> <lang>` (model on real three.js + close-up), `node mlab.js <tag> close,all,hats,match` (model shots with the CURRENT `v43_model.js`), `node v44fun.js <pc|tall|wide|wideS> <lang>` (coach bar, result rows, level-up moment), `node v45gear.js <pc|tall|wide|wideS> <lang>` (stick workshop + kit designer: odds on screen = code, reveal + back button, craft / upgrade, 3D stick, kit portrait, kit in a match),
+  `node v49run.js <pc|tall|wide|wideS> <lang>` (🧊 run: home card, intro, stage / boss cards, a run match, win → reward row = paid → pick 1 of 3 → next stage, loss / run over, reload, layout, translation; drives the game clock by hand),
   `node v48ice.js <pc|tall|wide|wideS> <lang>` (ice row in 설정: five steps on one line, tap / save / reload, the match skates with the chosen step, online = 3),
   `node v47masc.js <pc|tall|wide|wideS> <lang>` (mascot cut-scenes: entrance freezes the match, the greeting tips really touch, hole in the ice / strike, skip, short / off, end scene before the result, every mascot × animation, online lock, kit preview),
   `node msclab.js <tag> <all|row1|row2|sp:…|anim:…|hs:A:B:u|col>` and `node msccut.js <tag> <intro|end:win|end:lose|end:draw|pv:mas:res> <t,…> [mascot] [opp name | @mascot] [tall|pc|wide]` (CURRENT `v47_mascot.js`, no rebuild),
@@ -167,4 +177,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
 `rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md`, `landscape-v30.md`, `online-account.md`,
-`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md`, `stick-kit-v46.md`, `mascot-v47.md` (also kept in the claude.ai project).
+`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md`, `stick-kit-v46.md`, `mascot-v47.md`, `run-v49.md` (also kept in the claude.ai project).
