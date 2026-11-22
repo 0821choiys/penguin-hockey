@@ -96,6 +96,8 @@
 #menuRun:hover{filter:brightness(1.08)}
 #menuRun:focus-visible{outline:3px solid var(--puck);outline-offset:2px}
 @media (max-height:520px){#menuRun,.hm-duo{display:none!important}}
+/* 모든 경기 모드 in landscape: 9 cards with 🧊 — five per row keeps them in two rows so 티어 게임 and 뒤로 stay on screen (v30 had four per row for eight) */
+@media (orientation:landscape) and (max-height:520px){#sMode .modes:has(>#modeRun){grid-template-columns:repeat(5,minmax(0,1fr))!important}}
 /* landscape phones: like the other panels (v30) — title | the run's buttons | 뒤로 in one top row, the route and cards scroll below */
 @media (orientation:landscape) and (max-height:520px){
   .screen .panel.pfix.run-panel>#runFoot{grid-column:2;grid-row:1;flex-direction:row;justify-self:center;margin:0;gap:6px}

@@ -1,7 +1,7 @@
 X={
 "펭귄 원정":("Penguin Expedition","企鹅远征","ペンギン遠征"),
 "🧊 펭귄 원정":("🧊 Penguin Expedition","🧊 企鹅远征","🧊 ペンギン遠征"),
-"이길수록 강해지는 연속 도전":("A run of matches — every win makes you stronger","连胜挑战，越赢越强","勝つほど強くなる連続チャレンジ"),
+"이길수록 강해지는 연속 도전":("Every win makes your team stronger","连胜挑战，越赢越强","勝つほど強くなる連続チャレンジ"),
 "이길수록 강해지는 연속 도전 · 최고 {b}단계":("Every win makes you stronger · best: stage {b}","越赢越强的连续挑战 · 最高第{b}关","勝つほど強くなる連続チャレンジ · 最高 {b} ステージ"),
 "{s}단계 {stop} · {h} · 이어하기":("Stage {s} {stop} · {h} · continue","第{s}关 {stop} · {h} · 继续","ステージ {s} {stop} · {h} · 続ける"),
 "{s}단계 · 강화를 골라 주세요":("Stage {s} cleared · pick an upgrade","第{s}关通过 · 请选择强化","ステージ {s} クリア · 強化を選んでね"),

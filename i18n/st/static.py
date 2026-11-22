@@ -2,7 +2,7 @@
 S={"스틱 공방":("Stick Workshop","球杆工坊","スティック工房"),
 "펭귄 원정":("Penguin Expedition","企鹅远征","ペンギン遠征"),
 "🧊 펭귄 원정":("🧊 Penguin Expedition","🧊 企鹅远征","🧊 ペンギン遠征"),
-"이길수록 강해지는 연속 도전":("A run of matches — every win makes you stronger","连胜挑战，越赢越强","勝つほど強くなる連続チャレンジ"),
+"이길수록 강해지는 연속 도전":("Every win makes your team stronger","连胜挑战，越赢越强","勝つほど強くなる連続チャレンジ"),
 "뽑기 · 제작 · 강화":("Draw · craft · upgrade","抽取 · 制作 · 强化","ガチャ · 制作 · 強化"),
 "유니폼":("Uniform","队服","ユニフォーム"),
 "색 · 무늬 · 마스코트":("Colours · pattern · mascot","颜色 · 图案 · 吉祥物","カラー · 柄 · マスコット"),
