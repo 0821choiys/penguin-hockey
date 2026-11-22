@@ -4,10 +4,10 @@ R("/* ================= INIT ================= */", rdm('v49_run.js') + "\n/* ==
 _st_end49 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end49] + rd('v49_run.css') + "\n" + s[_st_end49:]
 # screens: the run screen, an entry in 모든 경기 모드, a card on the home under the tiles
-R('<div class="screen" id="sSet">', '<div class="screen" id="sRun">\n  <div class="panel pfix run-panel"><div class="run-head"><h2>🧊 펭귄 원정</h2><span id="runBest"></span></div><div class="pbody" id="runBody"></div><div id="runFoot"></div><div class="row" style="margin-top:8px"><button class="btn small" data-go="sMenu">뒤로</button></div></div>\n</div>\n\n<div class="screen" id="sSet">')
+R('<div class="screen" id="sSet">', '<div class="screen" id="sRun">\n  <div class="panel pfix run-panel"><h2>🧊 펭귄 원정<span id="runBest"></span></h2><div class="pbody" id="runBody"></div><div id="runFoot"></div><div class="row" style="margin-top:8px"><button class="btn small" data-go="sMenu">뒤로</button></div></div>\n</div>\n\n<div class="screen" id="sSet">')
 R('<div class="mode" data-mode="tour"><i>🏆</i><b>토너먼트</b><span>3개 팀을 차례로 격파</span></div>',
   '<div class="mode" data-mode="tour"><i>🏆</i><b>토너먼트</b><span>3개 팀을 차례로 격파</span></div>\n      <div class="mode" data-go="sRun" id="modeRun"><i>🧊</i><b>펭귄 원정</b><span>이길수록 강해지는 연속 도전</span></div>')
-R('<button id="menuGoals" data-go="sGoals" aria-label="오늘의 목표"></button>', '<button id="menuRun" data-go="sRun" aria-label="펭귄 원정"></button><button id="menuGoals" data-go="sGoals" aria-label="오늘의 목표"></button>')
+R('<button id="menuGoals" data-go="sGoals" aria-label="오늘의 목표"></button>', '<div class="hm-duo"><button id="menuRun" data-go="sRun" aria-label="펭귄 원정"></button><button id="menuGoals" data-go="sGoals" aria-label="오늘의 목표"></button></div>')
 R("'sPass','sFriend','sStick','sKit'];", "'sPass','sFriend','sStick','sKit','sRun'];")
 R("  if(id==='sKit')kitRender();", "  if(id==='sKit')kitRender();\n  if(id==='sRun')renderRun();")
 RIN('leagueMenuRefresh', "try{coachRow();}catch(e){}", "try{coachRow();}catch(e){}try{runMenu();}catch(e){}")

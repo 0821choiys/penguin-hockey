@@ -1,8 +1,6 @@
 /* ===== v49: 🧊 펭귄 원정 — run screen, upgrade cards, home card (original palette: navy boards, ice-blue, team colours; craft, no gold) ===== */
 .run-panel{width:min(560px,94vw)}
-.run-panel .run-head{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-.run-panel .run-head h2{margin:0}
-#runBest{font-size:14px;color:var(--frost2);padding:2px 10px;border-radius:999px;border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06))}
+#runBest{display:inline-block;margin-left:10px;vertical-align:4px;font-size:14px;line-height:1.5;color:var(--frost2);padding:2px 10px;border-radius:999px;border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06))}
 #runBest:empty{display:none}
 #runBest b{color:var(--ice)}
 #runBody{display:flex;flex-direction:column;gap:10px;padding:4px 2px 2px}
@@ -80,7 +78,10 @@
 /* landscape: the route and the stage card side by side would not fit the height — keep one column, smaller paddings */
 @media (max-height:520px){#runBody{gap:7px}.run-route{padding:2px 0 0}.run-stage{padding:8px 12px;gap:6px}.run-card{padding:18px 6px 6px;gap:3px}.run-card span{min-height:0}.run-card .rc-i{width:40px;height:40px;font-size:22px}.run-intro .ri-hero{display:none}}
 /* home: one card under the tiles, like 오늘의 목표 (landscape: hidden like it, reached through 모든 경기 모드) */
-#menuRun{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:2px;width:min(460px,92vw);min-height:56px;margin:0 0 8px;padding:8px 10px 8px 14px;
+/* the card and 오늘의 목표 share one wrapper: stacked on phones, side by side on short wide windows (a PC browser) so the home never grows under the dock */
+.hm-duo{display:flex;flex-direction:column;align-items:center;gap:8px}
+@media (min-width:700px) and (max-height:760px){.hm-duo{flex-direction:row;align-items:stretch;width:min(460px,92vw)}.hm-duo>#menuRun,.hm-duo>#menuGoals{width:auto;flex:1 1 0;min-width:0;column-gap:9px}.hm-duo>#menuGoals .mg-seg{display:none}}
+#menuRun{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:2px;width:min(460px,92vw);min-height:56px;margin:0;padding:8px 10px 8px 14px;
   border-radius:16px;cursor:pointer;text-align:left;font:inherit;color:var(--frost);background:var(--lx-scratch,none),linear-gradient(180deg,rgba(18,62,104,.96),rgba(9,33,60,.96));
   border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 3px 0 0 var(--ice),inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06)),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(2,10,24,.3)}
 #menuRun:empty{display:none}
@@ -94,4 +95,12 @@
 #menuRun.live{box-shadow:inset 3px 0 0 var(--ice),inset 0 0 0 1px rgba(98,212,255,.35),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(2,10,24,.3)}
 #menuRun:hover{filter:brightness(1.08)}
 #menuRun:focus-visible{outline:3px solid var(--puck);outline-offset:2px}
-@media (max-height:520px){#menuRun{display:none!important}}
+@media (max-height:520px){#menuRun,.hm-duo{display:none!important}}
+/* landscape phones: like the other panels (v30) — title | the run's buttons | 뒤로 in one top row, the route and cards scroll below */
+@media (orientation:landscape) and (max-height:520px){
+  .screen .panel.pfix.run-panel>#runFoot{grid-column:2;grid-row:1;flex-direction:row;justify-self:center;margin:0;gap:6px}
+  .screen .panel.pfix.run-panel>#runFoot{min-width:0;max-width:100%}
+  .screen .panel.pfix.run-panel>#runFoot .btn{min-height:38px!important;height:38px;min-width:0!important;width:auto!important;padding:0 14px!important;font-size:16px!important}
+  .screen .panel.pfix.run-panel>#runFoot .btn.primary{padding:0 20px!important}
+  .screen .panel.pfix.run-panel>#runFoot .btn{white-space:nowrap}
+  .screen .panel.pfix.run-panel>h2 #runBest{display:none}}

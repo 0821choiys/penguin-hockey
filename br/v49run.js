@@ -40,16 +40,18 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
       if(r.left<P.left-1.5||r.right>P.right+1.5)bad.push('out:'+(e.id||e.className||e.tagName)+' '+Math.round(r.left)+'..'+Math.round(r.right));
       if(e.children.length===0&&e.textContent.trim()&&e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflow!=='visible'&&!/mr-s/.test(e.className))bad.push('cut:'+e.textContent.slice(0,24));}
     const ft=[...document.querySelectorAll('#runFoot .btn,#sRun [data-go="sMenu"]')].map(b=>b.getBoundingClientRect()),body=document.getElementById('runBody');
-    return {bad:bad.slice(0,6),panel:[Math.round(P.left),Math.round(P.top),Math.round(P.right),Math.round(P.bottom)],inView:P.left>=-1&&P.right<=vw+1&&P.top>=-1&&P.bottom<=vh+1,
+    const B=body.getBoundingClientRect();   // landscape panels (all of them, v30) end a few px past the bottom edge — what must fit is the content
+    return {bad:bad.slice(0,6),panel:[Math.round(P.left),Math.round(P.top),Math.round(P.right),Math.round(P.bottom)],inView:P.left>=-1&&P.right<=vw+1&&P.top>=-1&&P.bottom<=vh+6&&B.bottom<=vh+1,
       footIn:ft.every(r=>r.bottom<=vh+1&&r.top>=0),scroll:body.scrollHeight>body.clientHeight+2};});
   const hangul=sel=>E(s=>{const t=(document.querySelector(s)||{}).innerText||'';return (t.match(/[가-힣]+/g)||[]).join(' ');},sel);
   // 1) home card (portrait) / hidden in landscape like 오늘의 목표
   await E(()=>window.__PH.goScreen('sMenu'));await wait(500);
-  const home=await E(()=>{const m=document.getElementById('menuRun'),g=document.getElementById('menuGoals'),r=m.getBoundingClientRect(),q=g.getBoundingClientRect(),d=document.querySelector('.dock,#dock,.hm-dock');const dr=d?d.getBoundingClientRect():null;
-    return {vis:getComputedStyle(m).display!=='none'&&r.height>0,txt:m.innerText,h:Math.round(r.height),above:r.bottom<=q.top+1,dockGap:dr?Math.round(dr.top-Math.max(r.bottom,q.bottom)):null};});
+  const home=await E(()=>{const m=document.getElementById('menuRun'),g=document.getElementById('menuGoals'),r=m.getBoundingClientRect(),q=g.getBoundingClientRect(),d=document.querySelector('.dock'),sm=document.getElementById('sMenu');const dr=d?d.getBoundingClientRect():null;
+    const scroll=Math.max(0,sm.scrollHeight-sm.clientHeight);   // the home scrolls on short windows: what counts is that the card can be scrolled clear of the dock
+    return {vis:getComputedStyle(m).display!=='none'&&r.height>0,txt:m.innerText,h:Math.round(r.height),above:r.bottom<=q.top+1||Math.abs(r.top-q.top)<2,row:Math.abs(r.top-q.top)<2,dockGap:dr?Math.round(dr.top-(Math.max(r.bottom,q.bottom)-scroll)):null,scroll};});
   if(land)ok(!home.vis,'landscape: the home card is hidden like 오늘의 목표 (reached through 모든 경기 모드)');
-  else{ok(home.vis&&home.above&&home.h>=44,'home: 🧊 card under the tiles, above 오늘의 목표, tall enough to tap ('+home.h+' px) “'+home.txt.replace(/\s+/g,' ')+'”');
-    ok(home.dockGap===null||home.dockGap>=0,'home: the card and 오늘의 목표 stay clear of the dock (gap '+home.dockGap+' px)');}
+  else{ok(home.vis&&home.above&&home.h>=44,'home: 🧊 card under the tiles, '+(home.row?'beside':'above')+' 오늘의 목표, tall enough to tap ('+home.h+' px) “'+home.txt.replace(/\s+/g,' ')+'”');
+    ok(home.dockGap===null||home.dockGap>=0,'home: the card and 오늘의 목표 can be seen clear of the dock (gap '+home.dockGap+' px'+(home.scroll?' after scrolling '+home.scroll+' px':'')+')');}
   await shot('home');
   // 2) 모든 경기 모드 → 펭귄 원정
   await E(()=>window.__PH.goScreen('sMode'));await wait(300);
