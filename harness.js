@@ -22,6 +22,8 @@ function mk(){
   return p;
 }
 const store={};
+// PH_NOW=<date>: the game's clock starts at that moment (Date.now and new Date() move on from there) — for tests written for one pass season
+if(process.env.PH_NOW){const RD=Date,off=new RD(process.env.PH_NOW).getTime()-RD.now();class FD extends RD{constructor(...a){if(a.length)super(...a);else super(RD.now()+off);}static now(){return RD.now()+off;}}global.Date=FD;}
 global.window=global;global.__NOFX=true;
 global.localStorage={getItem:k=>store[k]===undefined?null:store[k],setItem:(k,v)=>{store[k]=String(v)},removeItem:k=>{delete store[k];}};
 if(process.env.SAVE)store['penguinHockey.v1']=process.env.SAVE;

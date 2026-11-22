@@ -1,5 +1,7 @@
 // v24: Sardine Pass — season names, earning, tiers, free / gold claims, season roll-over, save
 const {execFileSync}=require('child_process');
+// written for season 1 (26 Oct – 22 Nov 2026): run on a day inside it so the checks never depend on today's date (child processes inherit it)
+process.env.PH_NOW=process.env.PH_NOW||'2026-11-18T12:00:00';
 const errs=[];console.error=(...a)=>errs.push(String(a[0]&&a[0].stack||a[0]).slice(0,300));
 const PH=require('./harness.js');const {save,G,PASS,GRADES,RAR,TYPES}=PH;
 let fails=0,passes=0;const ok=(c,m)=>{if(c)passes++;else fails++;console.log((c?'PASS ':'FAIL ')+m);};
