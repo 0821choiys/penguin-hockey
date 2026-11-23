@@ -131,6 +131,8 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Tests
 - Unit suites (Node, mocked THREE): `bash runsuites.sh` (≈ 15 min). Single suite: `node v22test.js`. `v35test.js` reports its online
   checks as SKIPPED unless the Firebase emulators run.
+- Fish-pass seasons follow the real calendar (28 days from 2026-10-26; season 2 began 2026-11-23). Node pass suites pin the clock with `PH_NOW` (harness.js;
+  v24test / v27test use a day in season 1, child processes inherit it); browser tests seed progress for today's season with `require('./season.js')()`.
 - `tools/refsim.js`: how much the referee turns (°/s, direction reversals) in AI-vs-AI matches.
 - `tools/hksim.js`: a scripted human against the AI, auto switching vs buttons only — goals, carry %, why the penguin changed, who shoots / scores on your team (you or an AI mate) and how calls for the pass go (`N=4 node tools/hksim.js`; `PHDIR=<folder with another build's harness.js, main.js, loader.js, i18n.js>` compares builds; ≈ 35 s per match). `v40test.js` has chance-based checks written as n-of-N.
 - AI-vs-AI numbers from before 2026-11-09 (`rulesim`, `refsim`, the referee part of `v29test`) are not comparable: the old auto switching ran
