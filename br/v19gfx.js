@@ -61,16 +61,17 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   const rowIdx=await E(()=>{const lbl=window.__PH.SETDEF.find(d=>d.k==='quality').label;return [...document.querySelectorAll('#setList .setrow')].findIndex(r=>r.firstChild.textContent===lbl);});
   const seg=await E(i=>{const r=document.querySelectorAll('#setList .setrow')[i];if(!r)return null;const bs=[...r.querySelectorAll('.seg button')];const R=r.getBoundingClientRect();
     return {n:bs.length,txt:bs.map(b=>b.textContent),fit:bs.every(b=>{const q=b.getBoundingClientRect();return q.right<=R.right+1&&q.left>=R.left-1&&b.scrollWidth<=b.clientWidth+1;}),h:Math.min(...bs.map(b=>b.getBoundingClientRect().height))};},rowIdx);
-  ok(seg&&seg.n===3&&seg.fit&&seg.h>=30,'graphics row: '+(seg&&seg.txt.join(' · '))+' — all inside the row, '+(seg&&Math.round(seg.h))+' px tall');
+  ok(seg&&seg.n===5&&seg.fit&&seg.h>=30,'graphics row: '+(seg&&seg.txt.join(' · '))+' — all inside the row, '+(seg&&Math.round(seg.h))+' px tall');
+  // v50: five steps since 2026-11-23 — 0 초고사양 · 1 최고 · 2 높음 · 3 절약 · 4 초저사양
   const press=async(i)=>{const sel='#setList .setrow:nth-child('+(rowIdx+1)+') .seg button:nth-child('+(i+1)+')';const el=await page.$(sel);await el.evaluate(e=>e.scrollIntoView({block:'center'}));await wait(150);
     const b=await el.boundingBox();const x=b.x+b.width/2,y=b.y+b.height/2;const top=await E((x,y)=>{const e=document.elementFromPoint(x,y);return e?e.textContent:'';},x,y);
     if(touch)await page.touchscreen.tap(x,y);else await page.mouse.click(x,y);await wait(300);return top;};
   const frame=()=>E(()=>{const P=window.__PH;for(let i=0;i<4;i++)P.gfxRender();return {q:P.save.set.quality,tier:P.gfxTier(),def:'ICE_RFL' in P.iceMat.defines,rt:P.RFL.rt?P.RFL.rt.width:0,pp:!!P.PP.rt,csh:P.CSH.m.visible,
     stored:JSON.parse(localStorage.getItem('penguinHockey.v1')||'{}').set.quality};});
-  let top=await press(2);let f=await frame();console.log('   tap → '+JSON.stringify(top)+' '+JSON.stringify(f));ok(f.q==='low'&&f.stored==='low'&&f.tier===0&&!f.def&&!f.rt&&!f.pp&&!f.csh,'tap 절약: saved, no mirror / post / contact shadows (the v18 image)');
-  top=await press(1);f=await frame();console.log('   tap → '+JSON.stringify(top)+' '+JSON.stringify(f));ok(f.q==='high'&&f.stored==='high'&&f.tier===1&&f.def&&f.rt>0&&!f.pp&&f.csh,'tap 높음: mirror at ⅓ resolution ('+f.rt+' px wide), no post buffer');
+  let top=await press(3);let f=await frame();console.log('   tap → '+JSON.stringify(top)+' '+JSON.stringify(f));ok(f.q==='low'&&f.stored==='low'&&f.tier===0&&!f.def&&!f.rt&&!f.pp&&!f.csh,'tap 절약: saved, no mirror / post / contact shadows (the v18 image)');
+  top=await press(2);f=await frame();console.log('   tap → '+JSON.stringify(top)+' '+JSON.stringify(f));ok(f.q==='high'&&f.stored==='high'&&f.tier===1&&f.def&&f.rt>0&&!f.pp&&f.csh,'tap 높음: mirror at ⅓ resolution ('+f.rt+' px wide), no post buffer');
   await E(()=>{window.__PH.GFX.drop=1;});
-  top=await press(0);f=await frame();console.log('   tap → '+JSON.stringify(top)+' '+JSON.stringify(f));ok(f.q==='ultra'&&f.stored==='ultra'&&f.tier===2&&f.pp,'tap 최고: everything on again, and an earlier automatic step-down is cleared');
+  top=await press(1);f=await frame();console.log('   tap → '+JSON.stringify(top)+' '+JSON.stringify(f));ok(f.q==='ultra'&&f.stored==='ultra'&&f.tier===2&&f.pp,'tap 최고: everything on again, and an earlier automatic step-down is cleared');
   await E(()=>{document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));});
   // automatic step-down while playing
   const sd=await E(()=>{const P=window.__PH,out=[];P.perf.low=0;P.perf.ema=1/20;for(let k=0;k<2;k++){for(let i=0;i<125;i++)P.perfSample(1/20);for(let i=0;i<3;i++)P.gfxRender();out.push([P.gfxTier(),!!P.PP.rt,P.RFL.rt?P.RFL.rt.width:0,'ICE_RFL' in P.iceMat.defines]);}
