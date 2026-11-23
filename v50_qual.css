@@ -1,0 +1,27 @@
+/* v50: the 그래픽 row with five steps (label on top, the steps on one full-width line, the chosen step spelled out) */
+.setrow.set-gq{grid-template-columns:1fr;gap:5px}
+.setrow.set-gq .gq-box{display:flex;flex-direction:column;gap:5px;min-width:0}
+.setrow.set-gq .gq-seg{flex-wrap:nowrap;gap:5px}
+.setrow.set-gq .gq-seg button{flex:1 1 0;min-width:0;padding:7px 2px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.setrow.set-gq .gq-cap{display:flex;flex-direction:column;gap:1px;font-size:13px;line-height:1.3}
+.setrow.set-gq .gq-cap span{font-size:12px;opacity:.75}
+.setrow.set-gq .gq-cap .gq-next{color:var(--puck);opacity:.9}
+/* a mark of how heavy each step is: one to five bars under the label */
+.setrow.set-gq .gq-seg button{position:relative}
+.setrow.set-gq .gq-seg button::after{content:'';position:absolute;left:50%;bottom:3px;height:2px;border-radius:2px;transform:translateX(-50%);background:rgba(205,238,255,.5)}
+.setrow.set-gq .gq-xlow::after{width:10%}.setrow.set-gq .gq-low::after{width:24%}.setrow.set-gq .gq-high::after{width:40%}.setrow.set-gq .gq-ultra::after{width:56%}.setrow.set-gq .gq-max::after{width:74%}
+.setrow.set-gq .gq-seg button.on::after{background:#e9f9ff}
+@media (max-width:370px){.setrow.set-gq .gq-seg button{font-size:12.5px;padding:7px 1px}}
+/* 초저사양: no backdrop blur anywhere (an expensive full-screen pass on weak phones) */
+body.gq-xlow *,body.gq-xlow *::before,body.gq-xlow *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* the one-time hint in a match */
+#gqTip{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 64px);transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;max-width:min(92vw,520px);
+  padding:8px 8px 8px 14px;border-radius:14px;background:rgba(9,29,52,.96);border:1px solid var(--lx-ink,rgba(160,212,255,.3));box-shadow:inset 0 0 0 1px var(--lx-hair,rgba(255,255,255,.06)),0 8px 20px rgba(2,10,24,.45);
+  color:var(--frost);font-size:13.5px;line-height:1.3}
+#gqTip{flex-wrap:wrap;justify-content:flex-end;width:max-content;box-sizing:border-box}
+#gqTip span{flex:1 1 220px;min-width:0}
+#gqTip .gq-tb{display:flex;gap:6px;flex:0 0 auto;margin-left:auto}
+/* portrait: below the round skill gauge on the left (the scoreboard + gauge take the top ≈ 116 px) */
+@media (orientation:portrait){#gqTip{top:calc(env(safe-area-inset-top,0px) + 124px)}}
+#gqTip .btn{min-height:36px;padding:0 12px;white-space:nowrap;flex:0 0 auto}
+#gqTip .ghost{background:transparent;padding:0 10px}

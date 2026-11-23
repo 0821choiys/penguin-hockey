@@ -219,7 +219,7 @@ function gfxRender(){
   const t=gfxTier();if(t!==GFX.tier)gfxApply();
   GFX.n++;
   if(t>=1&&(scene.children.length!==GFX.sceneN||GFX.n-GFX.tagT>90)){GFX.sceneN=scene.children.length;GFX.tagT=GFX.n;rflHideList();gfxTag();}
-  cshFrame(t>=1);
+  cshFrame(t>=1||gqX()<0);   // v50 초저사양 has no shadow map: the contact pools keep the skaters on the ice
   // night: the floodlit ice no longer washes out (a little less exposure; the bloom and mirror carry the lights instead)
   const ex=renderer.toneMappingExposure;if(t>=1)renderer.toneMappingExposure=ex*(1-.08*smooth(.6,.95,G.tod));
   camera.updateMatrixWorld();

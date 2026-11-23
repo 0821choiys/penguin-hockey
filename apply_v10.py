@@ -338,6 +338,7 @@ exec(open('v46_kit.py',encoding='utf-8').read())
 exec(open('v47_mascot.py',encoding='utf-8').read())
 exec(open('v48_ice.py',encoding='utf-8').read())
 exec(open('v49_run.py',encoding='utf-8').read())
+exec(open('v50_qual.py',encoding='utf-8').read())
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 

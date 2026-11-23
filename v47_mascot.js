@@ -80,7 +80,7 @@ function mFurMat(len){const key=len.toFixed(3);if(MS_FURM[key])return MS_FURM[ke
   m.customProgramCacheKey=()=>'pkRim1.30fur'+key;return MS_FURM[key]=m;}
 // the shells for one part: su / sv = its size around / along in metres (strands stay the same size everywhere); kf(x,y,z) → 0..1 = how long
 // the fur is there (short round the eyes, the nose, the lips; 0 = bare skin)
-function mFurGeo(g,su,sv,kf){const n=pkLo()?5:pkHi()?12:8,P=g.attributes.position,Nn=g.attributes.normal,UV=g.attributes.uv,C=g.attributes.color,I=g.index,v=P.count,ru=Math.max(1,Math.round(su*1.3)),rv=Math.max(1,Math.round(sv*1.3));
+function mFurGeo(g,su,sv,kf){const n=pkLo()?(gqX()<0?3:5):pkHi()?(gqX()>0?GQ.max.fur:12):8,P=g.attributes.position,Nn=g.attributes.normal,UV=g.attributes.uv,C=g.attributes.color,I=g.index,v=P.count,ru=Math.max(1,Math.round(su*1.3)),rv=Math.max(1,Math.round(sv*1.3));
   const pos=new Float32Array(v*n*3),nor=new Float32Array(v*n*3),col=new Float32Array(v*n*3),fuv=new Float32Array(v*n*2),fsh=new Float32Array(v*n),fln=new Float32Array(v*n),idx=new (v*n>65000?Uint32Array:Uint16Array)(I.count*n),kl=new Float32Array(v);
   for(let i=0;i<v;i++)kl[i]=kf?Math.max(0,Math.min(1,kf(P.getX(i),P.getY(i),P.getZ(i)))):1;
   for(let k=0;k<n;k++){pos.set(P.array,k*v*3);nor.set(Nn.array,k*v*3);if(C)col.set(C.array,k*v*3);else col.fill(1,k*v*3,(k+1)*v*3);fln.set(kl,k*v);

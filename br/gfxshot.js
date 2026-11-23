@@ -27,7 +27,7 @@ let pass=0,fail=0;const ok=(c,m)=>{if(c)pass++;else fail++;console.log((c?'PASS 
   await page.goto('file://'+path.resolve(__dirname,'../penguin-hockey-improved.html')+'?lang='+lang,{waitUntil:'load'});await wait(2600);
   const E=(f,...a)=>page.evaluate(f,...a);
   await E(()=>{window.requestAnimationFrame=()=>0;const st=document.createElement('style');st.textContent='#combo,#fever,#evTag,#hud,#touch{display:none!important}';document.head.appendChild(st);});
-  const info=await E(Q=>{const P=window.__PH,G=P.G;P.save.set.quality=Q;P.save.set.motion=false;P.applyQuality&&P.applyQuality();
+  const info=await E(Q=>{const P=window.__PH,G=P.G;if(P.gqSet)P.gqSet(Q);else P.save.set.quality=Q;P.save.set.motion=false;P.applyQuality&&P.applyQuality();
     P.startMatch({mode:'quick',size:3,time:180,diff:'normal',tag:'T',oppTypes:['basic','fast','strong']});document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));
     G.state='play';G.stateT=0;document.getElementById('count').textContent='';
     for(let i=0;i<60*4;i++){if(G.player)P.setHuman&&P.setHuman(null);P.step(1/60);}
