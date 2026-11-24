@@ -1,5 +1,5 @@
 # v42: privacy policy / account deletion links in 설정 and in the account window
-R("/* ================= INIT ================= */", rd('v42_store.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v42_store.js') + "\n/* ================= INIT ================= */")
 _st_end42 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end42] + rd('v42_store.css') + "\n" + s[_st_end42:]
 RIN('renderSettings', "safe(ctlRow);safe(accRow);", "safe(ctlRow);safe(accRow);safe(legalRow);")

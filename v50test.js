@@ -19,7 +19,8 @@ global.devicePixelRatio=1.5;ok(ratio('max')===1.5&&ratio('ultra')===1.5,'never a
  ok(d('xlow').includes(String(Math.round(GQ.xlow.scale*100)))&&d('xlow').includes(String(GQ.xlow.fps)),'초저사양 text: “'+d('xlow')+'”');
  ok(d('max').includes(String(GQ.max.dpr))&&d('max').includes(String(GQ.max.fur))&&d('max').includes('4096'),'초고사양 text: “'+d('max')+'”');
  ok(d('ultra').includes('4096')&&d('high').includes('3072')&&d('low').includes('1024'),'shadow-map sizes in the text = shMapSize (최고 4096 · 높음 3072 · 절약 1024)');
- const sm=PH.shMapSize.toString();ok(/q==='low'\?1024:q==='ultra'\?4096:3072/.test(sm.replace(/\s/g,'')),'… and shMapSize really uses those sizes');}
+ {const q0=save.set.quality,R=PH.renderer,c0=R.capabilities,s0=PH.perf.scale;R.capabilities={maxTextureSize:8192};PH.perf.scale=1;const sz=['low','high','ultra'].map(q=>{save.set.quality=q;return PH.shMapSize();});save.set.quality=q0;R.capabilities=c0;PH.perf.scale=s0;   // (v29 is minified since 2026-11-24: ask the function, not its text)
+  ok(sz.join()==='1024,3072,4096','… and shMapSize really uses those sizes ('+sz.join(' · ')+')');}}
 ok(/gqRatio\(\)\*perf\.scale/.test(PH.applyQuality.toString())&&/gqScene\(\)/.test(PH.applyQuality.toString()),'applyQuality sets the resolution from the step (× the automatic step-down) and switches the scene');
 // 30 fps: a refresh is skipped when the last frame is younger than 1/30 s
 {PH.gqSet('xlow');const t=PH.gqLastT();const a=PH.gqSkip(t+.01),b=PH.gqSkip(t+.031),c=PH.gqSkip(t+.04);PH.gqSet('low');const d=PH.gqSkip(t+.01);

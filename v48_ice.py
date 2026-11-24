@@ -1,6 +1,6 @@
 # v48: 🧊 how slippery the ice is (owner, 2026-11-17: "too slippery — lower it a little, just enough to feel, and make it a setting")
 # v48_ice.js / .css: ICE steps (3 = standard, a bit grippier than before; 4 = the old ice), iceK() read by the skating physics, the 설정 row
-R("/* ================= INIT ================= */", rd('v48_ice.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v48_ice.js') + "\n/* ================= INIT ================= */")
 _st_end48 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end48] + rd('v48_ice.css') + "\n" + s[_st_end48:]
 # skating: sideways grip, stopping after letting go, braking against the motion (top speed / acceleration untouched); online = step 3

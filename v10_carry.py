@@ -1,5 +1,5 @@
 # ===== stick-handling (carry) + faster restarts + big hits =====
-R("/* ---- input wiring ---- */",rd('v10_carry.js')+"\n/* ---- input wiring ---- */")
+R("/* ---- input wiring ---- */",rdk('v10_carry.js')+"\n/* ---- input wiring ---- */")
 R("function puckStep(h){\n  const pk=G.puck;\n","function puckStep(h){\n  const pk=G.puck;carryStep(h);\n")
 R("    if(p.shotGrace>0||p.frozen)continue;let rad=p.r;","    if(p.shotGrace>0||p.frozen||p===G.carry)continue;let rad=p.r;")
 R("    if(p.goalie||p.shotGrace>0||p.frozen)continue;","    if(p.goalie||p.shotGrace>0||p.frozen||p===G.carry)continue;")

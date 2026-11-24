@@ -1,6 +1,6 @@
 # v25: skill cinematics — your own special skill plays a real cut-scene (freeze · letterbox · hero camera · portrait band · impact frame)
 #  - game code: v25_cine.js (inserted before INIT), styles: v25_cine.css
-R("/* ================= INIT ================= */", rd('v25_cine.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v25_cine.js') + "\n/* ================= INIT ================= */")
 _st_end25 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end25] + rd('v25_cine.css') + "\n" + s[_st_end25:]
 R('  <button class="tb" id="tbSwap">교체</button>\n</div>', '  <button class="tb" id="tbSwap">교체</button>\n</div>\n<div id="cine" aria-hidden="true"></div>')

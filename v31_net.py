@@ -4,7 +4,7 @@ _cfg31 = 'null'
 if _os31.path.exists('firebase-config.json'):
     _c = _json31.load(open('firebase-config.json', encoding='utf-8'))
     _cfg31 = _json31.dumps({k: _c[k] for k in ('apiKey', 'dbUrl', 'webClientId', 'ice') if k in _c}, ensure_ascii=False)
-R("/* ================= INIT ================= */", rd('v31_net.js').replace('/*NETCFG*/null', _cfg31) + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v31_net.js').replace('/*NETCFG*/null', _cfg31) + "\n/* ================= INIT ================= */")
 _st_end31 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end31] + rd('v31_net.css') + "\n" + s[_st_end31:]
 

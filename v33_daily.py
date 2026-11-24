@@ -1,5 +1,5 @@
 # v33: 📅 7-day attendance — one reward per calendar day (days need not be consecutive), day 7 = attendance trail
-R("/* ================= INIT ================= */", rd('v33_daily.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v33_daily.js') + "\n/* ================= INIT ================= */")
 _st_end33 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end33] + rd('v33_daily.css') + "\n" + s[_st_end33:]
 # the attendance-only trail (in the shop list only once owned, like the pass trails)

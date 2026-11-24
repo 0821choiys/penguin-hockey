@@ -1,5 +1,5 @@
 # v35: ☁️ Google sign-in + cloud save (Firebase Auth signInWithIdp, RTDB saves/{uid}), account deletion
-R("/* ================= INIT ================= */", rd('v35_acct.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v35_acct.js') + "\n/* ================= INIT ================= */")
 _st_end35 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end35] + rd('v35_acct.css') + "\n" + s[_st_end35:]
 # every save marks the cloud copy dirty (persist runs early: only a window hook)

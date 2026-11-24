@@ -1,5 +1,5 @@
 # ===== fun pack: items, fever, shootout =====
-R("/* ---- input wiring ---- */",rd('v10_fun.js')+"\n/* ---- input wiring ---- */")
+R("/* ---- input wiring ---- */",rdk('v10_fun.js')+"\n/* ---- input wiring ---- */")
 R("arena:'auto',vol:'mid',vib:true,shake:RM0?'low':'on',flash:true,motion:RM0};","arena:'auto',vol:'mid',vib:true,shake:RM0?'low':'on',flash:true,motion:RM0,items:true};")
 R("  for(const k of['vib','flash','motion'])if(typeof ss[k]==='boolean')save.set[k]=ss[k];","  for(const k of['vib','flash','motion','items'])if(typeof ss[k]==='boolean')save.set[k]=ss[k];")
 R("  {k:'arena',label:'경기장',","  {k:'items',label:'빙판 아이템',opts:[[true,'켜기'],[false,'끄기']]},\n  {k:'arena',label:'경기장',")

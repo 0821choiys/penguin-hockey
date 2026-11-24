@@ -3,7 +3,7 @@
 #  - every anchor must match exactly once (R() aborts the build otherwise); runs before v16 (raw Korean, no __L yet)
 
 # ---- module + styles ----
-R("/* ================= INIT ================= */", rd('v18_species.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v18_species.js') + "\n/* ================= INIT ================= */")
 _st_end18 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end18] + rd('v18_species.css') + "\n" + s[_st_end18:]
 

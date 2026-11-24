@@ -1,6 +1,6 @@
 # v29: graphics spec up — sun shadow fitted to the rink + spectators with a bigger map, smoother penguin models on 최고
 import re as _re29
-R("/* ================= INIT ================= */", rd('v29_gfx.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v29_gfx.js') + "\n/* ================= INIT ================= */")
 
 # the sun follows the rink, not the camera, and its shadow camera is fitted to what can cast / receive shadows
 R("sun.position.set(G.cam.x+sunDir.x*100,sunDir.y*100,G.cam.z+sunDir.z*100);sun.target.position.set(G.cam.x,0,G.cam.z);", "shFit();")

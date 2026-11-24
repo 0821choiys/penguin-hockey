@@ -96,7 +96,7 @@ function runTheirs(r){const s=r.st,m={},E=runEndless(s),mul=(k,v)=>{m[k]=(m[k]||
   if(r.mod==='sniper'){mul('pow',1+RUN.mod.sniper/100);mul('tap',1+RUN.mod.sniper/100);mul('spread',1-RUN.mod.sniperAim/100);}
   if(E.spd)mul('spd',1+E.spd/100);if(E.pow){mul('pow',1+E.pow/100);mul('tap',1+E.pow/100);}
   return m;}
-function runGk(p,react){p.gkd=Object.assign({},G.diff.gk,{react:G.diff.gk.react*react});}
+function runGk(p,react){const b=p.gkd||G.diff.gk;p.gkd=Object.assign({},b,{react:b.react*react});}   // v51: on top of the goalie card
 function runMatchStart(cfg){
   G.runGT=0;if(!cfg||cfg.mode!=='run'||!cfg.run||!G.mine)return;const c=runCur(),ups=(c&&c.ups)||{},r=cfg.run;
   const mine=G.pengs.filter(p=>p.team===G.mine&&!p.goalie),theirs=G.pengs.filter(p=>p.team===G.mine.opp&&!p.goalie),cap=mine[0];

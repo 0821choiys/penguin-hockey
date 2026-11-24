@@ -1,5 +1,5 @@
 # v23: skill cast animations — one per species, built from the species' name (황제 → sceptre + "I'M KING!", 임금 → trumpet, …)
-R("/* ================= INIT ================= */", rd('v23_cast.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v23_cast.js') + "\n/* ================= INIT ================= */")
 _st_end23 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end23] + rd('v23_cast.css') + "\n" + s[_st_end23:]
 R('<div id="rlCall" role="status"></div>', '<div id="rlCall" role="status"></div><div id="castBan"></div>')

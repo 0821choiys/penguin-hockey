@@ -16,8 +16,8 @@ android {
         applicationId = (project.findProperty("APP_ID") as String?) ?: "com.ysgames.penguingame"
         minSdk = 24
         targetSdk = 36
-        versionCode = 16   // every AAB given to the owner gets a higher code (Play rejects a code it has seen)
-        versionName = "1.7.1"
+        versionCode = 17   // every AAB given to the owner gets a higher code (Play rejects a code it has seen)
+        versionName = "1.8.0"
     }
 
     signingConfigs {

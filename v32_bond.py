@@ -1,5 +1,5 @@
 # v32: 💙 penguin growth stories — bond per species, 4 chapters (3/10/25/50 matches) with points, a nickname at the 4th
-R("/* ================= INIT ================= */", rd('v32_bond.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v32_bond.js') + "\n/* ================= INIT ================= */")
 _st_end32 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end32] + rd('v32_bond.css') + "\n" + s[_st_end32:]
 # save (additive) + sanitised load (literals only: loadSave runs before the feature modules)

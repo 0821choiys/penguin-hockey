@@ -1,6 +1,6 @@
 # v40: 🤝 AI team-mates of a human player are playmakers — a call for the pass is always answered, they look for the player first
 # and shoot only as a last resort (v40_mate.js). Opponents, the demo match and auto-switching teams are unchanged.
-R("/* ================= INIT ================= */", rd('v40_mate.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v40_mate.js') + "\n/* ================= INIT ================= */")
 RF('hkCallPress', "function hkCallPress(p,inp){return mtCallPress(p,inp);}")
 RF('hkCallPass', "function hkCallPass(p){mtCallPass(p);}")
 RIN('aiCarrier', "  if(noShoot){ai.cool=rnd(.4,.9);return;}\n", "  if(noShoot){ai.cool=rnd(.4,.9);return;}\n  if(mtMate(p)){mtCarrier(p);return;}   // v40: a mate of a human player is a playmaker\n")

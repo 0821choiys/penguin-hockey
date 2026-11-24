@@ -61,10 +61,12 @@ function p3Dome(P){
 }
 function p3Pose(k){const r=PREF[k]||'mid';return P3V.pose[r]||P3V.pose.mid;}
 // build the species' game model, pose it, light it, render it → a data URL (transparent background)
-function p3Shot(k){
+// gk (v51): the same species in goalie gear for the goalie cards; gk.g = that goalie's grade (rim light)
+function p3Shot(k,gk){
   p3Init();
-  const ty=TYPES[k],team=save.team||'blue',po=p3Pose(k),g=rarCls(k);
+  const ty=TYPES[k],team=save.team||'blue',po=gk?P3V.pose.defender:p3Pose(k),g=gk?(gk.g|0):rarCls(k);
   const p=makePeng({key:team,dir:1},'attacker',k,0,false,'none');scene.remove(p.pg.root);
+  if(gk&&typeof p3GkGear==='function')p3GkGear(p.pg,team);   // the face stays visible: no helmet / cage on the card, the pads + glove + blocker + goalie stick on
   const P=p.pg,S=P3.scn;S.add(P.root);
   let out='',made=[];
   const ct=renderer.getRenderTarget(),cc=renderer.getClearColor(new T.Color()),ca=renderer.getClearAlpha(),ex=renderer.toneMappingExposure,

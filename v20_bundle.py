@@ -1,6 +1,11 @@
 # v20: three.js r128 (MIT, vendor/three.r128.min.js = npm three@0.128.0 build/three.min.js) goes inside the file, so the game
 # no longer downloads it from a CDN. The loader already returns at once when window.THREE exists; its CDN fallbacks stay
 # as dead code for a build without the inline copy. Runs after v16 (the i18n pass expects exactly the loader + game scripts).
+# 2026-11-24: the <style> blocks are minified here, after every anchor patch (tools/cssmin.py: comments / whitespace only, strings untouched)
+import sys as _sys
+_sys.path.insert(0,'tools')
+from cssmin import minify_styles as _minify_styles
+s=_minify_styles(s)
 _three=rd('vendor/three.r128.min.js')
 assert '</script' not in _three and 'const e="128"' in _three and 'Three.js Authors' in _three
 R("<script>\nwindow.__loadThree=function(cb){", "<script>/* three.js r128 — bundled (MIT license, Copyright 2010-2021 Three.js Authors) */\n"+_three+"</script>\n<script>\nwindow.__loadThree=function(cb){")

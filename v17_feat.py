@@ -3,7 +3,7 @@
 #  - hooks below; every anchor must match exactly once (R() aborts the build otherwise)
 
 # ---- module + styles ----
-R("/* ================= INIT ================= */", rd('v17_feat.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v17_feat.js') + "\n/* ================= INIT ================= */")
 _st_end17 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end17] + rd('v17_feat.css') + "\n" + s[_st_end17:]
 

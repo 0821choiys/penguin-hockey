@@ -88,12 +88,25 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
   floodlight point lights off, 75 % resolution, 30 fps (physics keeps 1/120 s), half the particles, 3 fur layers, no backdrop blur, no MSAA from the next start.
   초고사양: up to 3× resolution, 16 fur layers, 16× ice anisotropy. The caption under the row = `gqDesc` (numbers from `GQ`). Never switches by itself: a one-time hint
   (`#gqTip`, `save.gqHint`) after 4 s of play still slow after the automatic step-down. Tests: `v50test.js`, `br/v50gfx.js`; same frame at every step: `node gqcmp.js tall`.
+- Goalies + positions (owner, 2026-11-24; v51, `goalie-v51.md`): "add a goalie draw to the penguin draw and let me pick my position (2 or more a side); I can play goalie
+  too, but only with characters from the goalie draw". 뽑기 tab has 🐧 펭귄 / 🥅 골키퍼 (`gkKind`): 10 goalies (`GKC`: species model, 5 stats, skill `GKS`; grades 3·3·2·1·1), points only
+  (`GKD`: 40 / 360P, odds 50·30·14·5·1, pity 30, 10-draw 레어+, free daily); duplicate = level +1 (max 5) then refund; card portrait = `p3Shot(sp,{g})` in goalie gear with the mask
+  pushed up (`p3GkGear`, `GKD.mask`). The equipped goalie (`save.gk.eq`) is our goalie in offline matches (`gkCardOK`): stats tune the goalie AI from the difficulty baseline
+  (`gkParams`, stat 3 = unchanged), no card = the old default exactly; online / missions untouched. 팀 편성 → 내 포지션 (`save.set.pos`, 2+ a side, `gkPosOK`): 공격 / 중앙 / 수비 swap
+  the captain's role + spot (`gkPerm`); 골키퍼 (needs an equipped goalie) = you control the goalie all match (`G.gkMode`, `setHuman` wrapper keeps you in net; shootout / penalty
+  shot: shoot on your turn, guard on theirs), skaters all AI. In net (`gkHuman`): hands off = holds the angle, Shoot = dive (toward the shot's crossing, max `GKD.reach`; wide /
+  nothing = butterfly) or clear, Pass = pass out, Special = skill; a shot at your net slows the game (`G.slow`) and rings the goal line (`GKM`); Dash / Switch hidden (`body.gk-mode`).
+  Save sanitised in loadSave. Tests: `v51test.js`, `br/v51gk.js`; portraits `br/gklab.js`.
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
 - The game file must stay ≤ 2 MB with three.js bundled (fonts stay on Google Fonts). `v20_bundle.py` prints the size.
   Room is made with `rdm('vNN_x.js')` (terser via `tools/minjs.js`, `evaluate:false`) for modules whose insides no later patch edits:
-  v19, v22, v24, v26, v38, v44, v45, v46, v47, v49, v50 (2026-11-23). A module a later anchor reaches must stay `rd()` — the strict build stops on a missed anchor.
+  v19, v22, v24, v26, v38, v44, v45, v46, v47, v49, v50, v51 + v29, v32, v33, v34, v40, v41, v42, v43, v48 (2026-11-24). A module a later anchor reaches must not be `rdm`:
+  insert it with `rdk('vNN_x.js')` instead (readable between `/*RK:*/` markers; `minify_marked()` minifies it in place after every feature patch, before v16 — v10_core,
+  v10_fun, v10_carry, v12, v17, v18, v23, v25, v31, v35, v36, v39; NOT v11 / v13, which v16 anchors into). The strict build stops on a missed anchor. The `<style>` blocks are
+  minified in `v20_bundle.py` (`tools/cssmin.py`, comments / whitespace only). `i18n/wrap.js` puts a space before `__L(` after an identifier (minified `return'…'`).
+  Since minified modules no longer read as source, tests must call functions, not regex their `toString()`.
 
 ## Build
 ```
@@ -103,7 +116,7 @@ I18N_LAX=1 python3 apply_v10.py   # dev only: untranslated strings fall back to 
 `apply_v10.py` starts from `v9.html`, applies exact-anchor patches `R(old,new,cnt)` (aborts on mismatch), then runs the
 feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`, `patchlib.py`, `v21_rarity.py`, `v22_rules.py`,
 `v23_cast.py`, `v24_pass.py`, `v25_cine.py`, `v26_sig.py`, `v27_pro.py`, `v28_app.py`, `v29_gfx.py`, `v30_land.py`, `v31_net.py`,
-`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, `v48_ice.py`, `v49_run.py`, `v50_qual.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
+`v32_bond.py`, `v33_daily.py`, `v34_clutch.py`, `v35_acct.py`, `v36_ctl.py`, `v37_weekly.py` (weekly fixes 2026-11-09), `v38_hockey.py`, `v39_luxe.py`, `v40_mate.py`, `v41_card.py`, `v42_store.py`, `v43_model.py`, `v44_fun.py`, `v45_stick.py`, `v46_kit.py`, `v47_mascot.py`, `v48_ice.py`, `v49_run.py`, `v50_qual.py`, `v51_gk.py`, then `v16_i18n.py` (must stay after every patch that adds Korean text) and `v20_bundle.py`.
 - Feature code lives in `vNN_*.js` / `.css`, inserted before `/* ================= INIT ================= */`.
 - `patchlib.py`: `RF(name,new)` replaces a whole function, `FN(name)` returns it, `RIN(fn,old,new)` edits inside one function.
 - `loadSave()` runs early (before the feature modules): helpers it calls must use literals only.
@@ -161,6 +174,7 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
   `node p3lab.js <sheet|big|cards> <tag>` (portrait / card sheets with the CURRENT `v41_card.js/.css` swapped into the built game — no rebuild while iterating) and `node cardshot.js <mode> <lang> <tag>`,
   `node v42legal.js <pc|tall|wide|wideS> <lang>` (privacy / deletion links in 설정 and the account window), `node v42gauge.js tall <lang>` (the skill name fits the round gauge for every species; it shrinks to fit since 2026-11-13), `node storeshot.js <ko|en> [scene,…]` (Play Store screenshots + feature graphic → shots/store; convert to RGB before upload),
   `node v43model.js <mode> <lang>` (model on real three.js + close-up), `node mlab.js <tag> close,all,hats,match` (model shots with the CURRENT `v43_model.js`), `node v44fun.js <pc|tall|wide|wideS> <lang>` (coach bar, result rows, level-up moment), `node v45gear.js <pc|tall|wide|wideS> <lang>` (stick workshop + kit designer: odds on screen = code, reveal + back button, craft / upgrade, 3D stick, kit portrait, kit in a match),
+  `node v51gk.js <pc|tall|wide|wideS> <lang>` (🥅 draw on the 뽑기 tab: odds on screen = code, reveal, equip; 팀 편성 goalie card + 내 포지션 + picker; a match in net: buttons, camera, tip, slow-down + goal-line ring),
   `node v50gfx.js <pc|tall|wide|wideS> <lang>` (graphics steps: five on one line, caption = code, what each step does to the renderer, triangles, MSAA after a reload, fur layers, the hint),
   `node v49run.js <pc|tall|wide|wideS> <lang>` (🧊 run: home card, intro, stage / boss cards, a run match, win → reward row = paid → pick 1 of 3 → next stage, loss / run over, reload, layout, translation; drives the game clock by hand),
   `node v48ice.js <pc|tall|wide|wideS> <lang>` (ice row in 설정: five steps on one line, tap / save / reload, the match skates with the chosen step, online = 3),
@@ -186,4 +200,4 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Docs
 `build-size.md`, `graphics-v19.md`, `new-species-10.md`, `season-conditions-combo.md`, `language-support.md`, `rules-referee.md`,
 `rarity-v21.md`, `sardine-pass.md`, `skill-cast.md`, `android-app.md`, `graphics-v29.md`, `landscape-v30.md`, `online-account.md`,
-`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md`, `stick-kit-v46.md`, `mascot-v47.md`, `run-v49.md`, `graphics-v50.md` (also kept in the claude.ai project).
+`growth-daily-comeback.md`, `controls-v36.md`, `hockey-v38.md`, `premium-look-v39.md`, `mates-cards-v41.md`, `store-ready-v42.md`, `final-v44.md`, `stick-kit-v46.md`, `mascot-v47.md`, `run-v49.md`, `graphics-v50.md`, `goalie-v51.md` (also kept in the claude.ai project).

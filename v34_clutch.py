@@ -1,5 +1,5 @@
 # v34: 🔥 comeback drama — chase in the last 30 s while trailing, gold EQUALIZER! / COMEBACK! goals, COMEBACK WIN!
-R("/* ================= INIT ================= */", rd('v34_clutch.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdm('v34_clutch.js') + "\n/* ================= INIT ================= */")
 _st_end34 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end34] + rd('v34_clutch.css') + "\n" + s[_st_end34:]
 R('<div id="gflash"></div>', '<div id="gflash"></div><div id="chaseFx"></div>')

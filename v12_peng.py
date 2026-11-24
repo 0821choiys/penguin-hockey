@@ -9,4 +9,4 @@ R("mk(sp,blk,0,.66,0,.52,.78,.46);mk(sp,wht,0,.64,.17,.42,.64,.34);mk(sp,blk,0,1
 R("items:true,events:true,fastFx:false};","items:true,events:true,fastFx:false,stick:true};")
 R("for(const k of['vib','flash','motion','items','events','fastFx'])","for(const k of['vib','flash','motion','items','events','fastFx','stick'])")
 R("  {k:'events',label:'깜짝 이벤트',opts:[[true,'켜기'],[false,'끄기']]},","  {k:'events',label:'깜짝 이벤트',opts:[[true,'켜기'],[false,'끄기']]},\n  {k:'stick',label:'하키 스틱',opts:[[true,'표시'],[false,'숨김']]},")
-R("/* ---- input wiring ---- */",rd('v12_peng.js')+"\n/* ---- input wiring ---- */")
+R("/* ---- input wiring ---- */",rdk('v12_peng.js')+"\n/* ---- input wiring ---- */")

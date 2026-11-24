@@ -28,7 +28,8 @@ walk.fullAncestor(ast, (node, st, anc) => {
 });
 reps.sort((a, b) => b[0] - a[0]);
 let s = src;
-for (const [a, b, c] of reps) s = s.slice(0, a) + '__L(' + s.slice(a, b) + (c ? ',"' + c + '"' : '') + ')' + s.slice(b);
+// minified code has return'…' / case'…': a keyword right before the literal must stay a keyword (return__L would be a call)
+for (const [a, b, c] of reps) s = s.slice(0, a) + (/[A-Za-z0-9_$]/.test(s[a - 1] || '') ? ' ' : '') + '__L(' + s.slice(a, b) + (c ? ',"' + c + '"' : '') + ')' + s.slice(b);
 // the result must still parse
 acorn.parse(s, { ecmaVersion: 'latest', sourceType: 'script', allowHashBang: true });
 fs.writeFileSync(out, s);

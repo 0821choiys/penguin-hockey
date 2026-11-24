@@ -22,6 +22,16 @@ def rdm(f):
     except Exception as e:
         raise SystemExit('could not minify %s (cd tools && npm ci): %s' % (f,getattr(e,'stderr',e)))
     return js
+# rdk: a module that later patches still reach (RIN / R anchors): inserted readable between markers, and minified in place by
+# minify_marked() once every feature patch has run (just before the i18n pass, whose anchors never look inside these modules)
+def rdk(f):return '/*RK:'+f+'*/'+rd(f)+'/*RK:end*/'
+def minify_marked(t):
+    import subprocess as _sp,re as _re
+    def one(m):
+        js=_sp.run(['node','tools/minjs.js'],input=m.group(2).encode('utf-8'),capture_output=True,check=True).stdout.decode('utf-8')
+        assert len(js)>200,m.group(1)
+        return _re.sub(r'\\u(200[bcd]|fe0f|2060)',lambda q:chr(int(q.group(1),16)),js)
+    return _re.sub(r'/\*RK:([\w.]+)\*/(.*?)/\*RK:end\*/',one,t,flags=_re.S)
 
 # ===== B1: the game clock (G.t) kept running while paused -> passes in flight were counted as lost, combo/shot timers expired =====
 R("""function step(dt){
@@ -31,7 +41,7 @@ R("""function step(dt){
 
 
 # ===== v10 core module (personalities, arenas, aim preview, comfort settings) =====
-R("/* ---- input wiring ---- */",rd('v10_core.js')+"\n/* ---- input wiring ---- */")
+R("/* ---- input wiring ---- */",rdk('v10_core.js')+"\n/* ---- input wiring ---- */")
 
 # ----- save / settings -----
 R("const DEF_SET={size:3,time:180,diff:'normal',tod:'auto',aurora:true,sound:true,quality:'high',assist:true};",
@@ -339,6 +349,8 @@ exec(open('v47_mascot.py',encoding='utf-8').read())
 exec(open('v48_ice.py',encoding='utf-8').read())
 exec(open('v49_run.py',encoding='utf-8').read())
 exec(open('v50_qual.py',encoding='utf-8').read())
+exec(open('v51_gk.py',encoding='utf-8').read())
+s=minify_marked(s)
 exec(open('v16_i18n.py',encoding='utf-8').read())
 exec(open('v20_bundle.py',encoding='utf-8').read())
 

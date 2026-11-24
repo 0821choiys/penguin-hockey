@@ -1,5 +1,5 @@
 # v36: 🎮 controls — joystick feel, aim where you push, input buffer, easy handling, cooldown rings, custom button layout
-R("/* ================= INIT ================= */", rd('v36_ctl.js') + "\n/* ================= INIT ================= */")
+R("/* ================= INIT ================= */", rdk('v36_ctl.js') + "\n/* ================= INIT ================= */")
 _st_end36 = s.rfind("</style>", 0, s.find("</head>"))
 s = s[:_st_end36] + rd('v36_ctl.css') + "\n" + s[_st_end36:]
 # joystick handlers → v36 (follow / fixed ring, response curve, resting ring)
