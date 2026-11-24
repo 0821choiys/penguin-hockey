@@ -10,5 +10,5 @@ _three=rd('vendor/three.r128.min.js')
 assert '</script' not in _three and 'const e="128"' in _three and 'Three.js Authors' in _three
 R("<script>\nwindow.__loadThree=function(cb){", "<script>/* three.js r128 — bundled (MIT license, Copyright 2010-2021 Three.js Authors) */\n"+_three+"</script>\n<script>\nwindow.__loadThree=function(cb){")
 _size=len(s.encode('utf-8'))
-assert _size<=2*1024*1024, 'over the 2 MB budget: %d bytes'%_size
-print('size: %d bytes (%.2f MB of the 2 MB budget)'%(_size,_size/1048576))
+assert _size<=5*1024*1024, 'over the 5 MB budget: %d bytes'%_size   # owner, 2026-11-24: up to 5 MB is fine (was 2 MB)
+print('size: %d bytes (%.2f MB of the 5 MB budget)'%(_size,_size/1048576))

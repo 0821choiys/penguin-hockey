@@ -100,8 +100,9 @@ The shipped file is `penguin-hockey-improved.html` (deliver it as `penguin-hocke
 - Landscape must stay comfortable (owner, 2026-11-05): the app is not locked to portrait; check `node v30land.js wide` after UI changes.
 - Keep all features, sound, PC + mobile controls and saves. Save key `penguinHockey.v1`; only add fields, never rename/remove (old saves must load).
 - Report to the owner in Korean.
-- The game file must stay ≤ 2 MB with three.js bundled (fonts stay on Google Fonts). `v20_bundle.py` prints the size.
-  Room is made with `rdm('vNN_x.js')` (terser via `tools/minjs.js`, `evaluate:false`) for modules whose insides no later patch edits:
+- The game file must stay ≤ 5 MB with three.js bundled (owner, 2026-11-24: "up to 5 MB is fine"; it was 2 MB before — the build stops above 5 MB).
+  Fonts stay on Google Fonts in the web file (the Android build bundles them). `v20_bundle.py` prints the size (2026-11-24: ≈ 2.05 MB).
+  The minification below stays (a smaller file loads faster on phones), but a feature no longer has to squeeze into 2 MB. Room is made with `rdm('vNN_x.js')` (terser via `tools/minjs.js`, `evaluate:false`) for modules whose insides no later patch edits:
   v19, v22, v24, v26, v38, v44, v45, v46, v47, v49, v50, v51 + v29, v32, v33, v34, v40, v41, v42, v43, v48 (2026-11-24). A module a later anchor reaches must not be `rdm`:
   insert it with `rdk('vNN_x.js')` instead (readable between `/*RK:*/` markers; `minify_marked()` minifies it in place after every feature patch, before v16 — v10_core,
   v10_fun, v10_carry, v12, v17, v18, v23, v25, v31, v35, v36, v39; NOT v11 / v13, which v16 anchors into). The strict build stops on a missed anchor. The `<style>` blocks are
