@@ -100,18 +100,20 @@ const HANGUL=/[가-힣]/;
     const vis=id=>{const e=document.querySelector(id);return !!e&&getComputedStyle(e).display!=='none'&&e.offsetParent!==null;};
     const g=G.mine.goalie,pk=G.puck;pk.x=-G.mine.dir*9;pk.z=2;pk.vx=pk.vz=0;for(let i=0;i<90;i++){P.step(1/60);pk.x=-G.mine.dir*9;pk.z=2;pk.vx=pk.vz=0;}P.gfxRender();
     const v=new THREE.Vector3(g.rx,1,g.rz);v.project(P.camera);
-    return {gk:G.player===g,cls:document.body.classList.contains('gk-mode'),dash:vis('#tbDash'),swap:vis('#tbSwap'),shoot:(document.querySelector('#tbShoot')||{}).textContent||'',
+    const hn=document.querySelector('#hint');
+    return {hint:hn&&hn.classList.contains('on')?hn.textContent:'',gk:G.player===g,cls:document.body.classList.contains('gk-mode'),dash:vis('#tbDash'),swap:vis('#tbSwap'),shoot:(document.querySelector('#tbShoot')||{}).textContent||'',
       gauge:(document.querySelector('#gaugeT')||{}).textContent||'',want:P.gkSpName(g),onScr:v.x>-1&&v.x<1&&v.y>-1&&v.y<1,tip:!!document.querySelector('#gkTip'),touch:document.body.classList.contains('touch')};});
   ok(m.gk&&m.cls,'quick match with 골키퍼: you control our goalie');
   if(m.touch)ok(!m.dash&&!m.swap&&m.shoot.trim().length>0,'touch buttons: Dash and Switch hidden, Shoot reads “'+m.shoot.trim()+'”');
   ok(m.onScr,'puck in our half: the camera keeps the goalie on screen');
   ok(m.tip,'first match in net: the how-to tip shows');
+  ok(!/WASD|길게 누르면 강슛|Shift/.test(m.hint),'no skater control hint over it'+(m.hint?' (“'+m.hint.slice(0,40)+'”)':''));
   await shot('match');
   // a shot at our net: slow-down + the ring on the goal line
   const sh=await E(()=>{const P=window.__PH,G=P.G,pk=G.puck,d=G.mine.dir;const t=document.querySelector('#gkTip');if(t)t.remove();
-    G.slow=null;pk.x=-d*11;pk.z=-.5;pk.vx=-d*22;pk.vz=1.2;pk.lastTeam=G.mine.opp;pk.last=G.mine.opp.skaters[0];pk.lastT=G.t+1;P.step(1/60);
-    return {slow:!!(G.slow&&G.slow.t>0),s:G.slow?G.slow.s:0,ring:!!(P.GKM.m&&P.GKM.m.visible)};});
-  ok(sh.slow&&sh.ring,'a shot at your net: the game slows (×'+sh.s.toFixed(2)+') and a ring marks where it is going');
+    G.state='play';G.gkShot=-1;G.carry=null;G.slow=null;pk.x=-d*11;pk.z=-.5;pk.vx=-d*22;pk.vz=1.2;pk.lastTeam=G.mine.opp;pk.last=G.mine.opp.skaters[0];pk.lastT=G.t+1;P.step(1/60);P.gfxRender();
+    return {slow:!!(G.slow&&G.slow.t>0),s:G.slow?G.slow.s:0,ring:!!(P.GKM.m&&P.GKM.m.visible),st:G.state,pk:[pk.x.toFixed(1),pk.vx.toFixed(1),pk.lastTeam===G.mine.opp]};});
+  ok(sh.slow&&sh.ring,'a shot at your net: the game slows (×'+sh.s.toFixed(2)+') and a ring marks where it is going'+(sh.slow&&sh.ring?'':' '+JSON.stringify(sh)));
   await shot('shot');
   const lb=await E(()=>{const P=window.__PH,G=P.G,g=G.mine.goalie,pk=G.puck;pk.vx=pk.vz=0;pk.x=g.x+G.mine.dir*1;pk.z=g.z;G.carry=null;P.step(1/60);P.step(1/60);return (document.querySelector('#tbShoot')||{}).textContent||'';});
   if(m.touch)ok(lb.trim()!==m.shoot.trim(),'puck at the goalie’s stick: Shoot now reads “'+lb.trim()+'”');

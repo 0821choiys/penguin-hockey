@@ -184,8 +184,11 @@ function gkFrame(){const p=G.player,on=!!(G.view==='game'&&p&&p.goalie);
     m=GKM.m=new T.Group();m.add(mk(.46,.58,0x14304d,.6));m.add(mk(.3,.46,0xffffff,.95));scene.add(m);}
   m.visible=show;if(!show)return;
   m.position.set(-p.team.dir*(W-.3),.05,clamp(inc.zp,-GW-.8,GW+.8));m.children[1].material.opacity=Math.abs(inc.zp)<GW?.95:.35;m.scale.setScalar(1+.12*Math.sin(G.t*14));}
+function gkCtlTxt(){return IS_TOUCH?__L('손을 떼면 각도를 알아서 잡아요 · 슛 = 다이브 · 퍽이 앞에 있으면 슛 = 걷어내기, 패스 = 패스 · 특수 = 골키퍼 기술'):__L('키를 떼면 각도를 알아서 잡아요 · Space = 다이브 · 퍽이 앞에 있으면 Space = 걷어내기, E = 패스 · Q = 골키퍼 기술');}
+// the match-start control hint speaks for the goalie in net (the first match has the bigger tip instead)
+{const o=hint;hint=function(on){if(on&&G.gkMode){if(!save.gkTip)return;const h=$('#hint');h.innerHTML='🥅 '+gkCtlTxt();h.classList.add('on');clearTimeout(hint.t);hint.t=setTimeout(()=>h.classList.remove('on'),4500);return;}return o.apply(this,arguments);};}
 function gkTip(){try{const el=document.createElement('div');el.id='gkTip';
-  el.innerHTML='<b>🥅 '+__L('골키퍼로 뛰어요')+'</b><span>'+(IS_TOUCH?__L('손을 떼면 각도를 알아서 잡아요 · 슛 = 다이브 · 퍽이 앞에 있으면 슛 = 걷어내기, 패스 = 패스 · 특수 = 골키퍼 기술'):__L('키를 떼면 각도를 알아서 잡아요 · Space = 다이브 · 퍽이 앞에 있으면 Space = 걷어내기, E = 패스 · Q = 골키퍼 기술'))+'</span>';
+  el.innerHTML='<b>🥅 '+__L('골키퍼로 뛰어요')+'</b><span>'+gkCtlTxt()+'</span>';
   document.body.appendChild(el);el.onclick=()=>el.remove();setTimeout(()=>{try{el.remove();}catch(e){}},7500);}catch(e){}}
 // ---- cards + portraits (the species' real model in goalie gear; the drawing is the no-WebGL fallback) ----
 function gkUrl(sp){if(!TYPES[sp]||typeof p3Can!=='function'||!p3Can())return '';const tm=save.team||'blue';if(P3.gkt!==tm){P3.gkt=tm;P3.gk={};}
