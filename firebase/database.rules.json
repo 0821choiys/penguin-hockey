@@ -7,8 +7,12 @@
         ".read": "auth != null",
         ".write": "auth != null && (!data.exists() || data.child('host').val() === auth.uid || data.child('guest').val() === auth.uid || (data.child('t').val() < now - 3600000))",
         ".validate": "$code.matches(/^[A-Z2-9]{6}$/)",
-        "guest": { ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || data.val() === auth.uid || root.child('rooms').child($code).child('host').val() === auth.uid)" },
-        "guestInfo": { ".write": "auth != null && (root.child('rooms').child($code).child('guest').val() === auth.uid || newData.parent().child('guest').val() === auth.uid)" }
+        "guest": {
+          ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || data.val() === auth.uid || root.child('rooms').child($code).child('host').val() === auth.uid)"
+        },
+        "guestInfo": {
+          ".write": "auth != null && (root.child('rooms').child($code).child('guest').val() === auth.uid || newData.parent().child('guest').val() === auth.uid)"
+        }
       }
     },
     "saves": {
@@ -16,6 +20,49 @@
         ".read": "auth != null && auth.uid === $uid",
         ".write": "auth != null && auth.uid === $uid",
         ".validate": "newData.hasChildren(['data', 't']) && newData.child('data').isString() && newData.child('data').val().length < 600000"
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider === 'google.com'",
+        ".validate": "!newData.exists() || (newData.child('n').isString() && newData.child('n').val().length <= 40)"
+      }
+    },
+    "codes": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.firebase.sign_in_provider === 'google.com' && ((!data.exists() && newData.val() === auth.uid) || (data.val() === auth.uid && !newData.exists()))",
+        ".validate": "$code.matches(/^[A-Z2-9]{8}$/)"
+      }
+    },
+    "inbox": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && !newData.exists()",
+        "fr": {
+          "$f": {
+            ".write": "auth != null && ((!newData.exists() && (auth.uid === $uid || auth.uid === $f)) || (auth.uid === $uid && root.child('inbox').child($uid).child('req').child($f).exists()) || (auth.uid === $f && root.child('inbox').child($f).child('fr').child($uid).exists()))",
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "req": {
+          "$f": {
+            ".write": "auth != null && ((auth.uid === $f && $f !== $uid && auth.token.firebase.sign_in_provider === 'google.com') || (auth.uid === $uid && !newData.exists()))",
+            ".validate": "newData.child('n').isString() && newData.child('n').val().length <= 40"
+          }
+        },
+        "inv": {
+          "$f": {
+            ".write": "auth != null && ((auth.uid === $f && root.child('inbox').child($uid).child('fr').child($f).exists()) || ((auth.uid === $uid || auth.uid === $f) && !newData.exists()))",
+            ".validate": "newData.child('c').isString() && newData.child('c').val().matches(/^[A-Z2-9]{6}$/)"
+          }
+        },
+        "gift": {
+          "$f": {
+            ".write": "auth != null && ((auth.uid === $f && root.child('inbox').child($uid).child('fr').child($f).exists() && (!data.exists() || data.child('t').val() < now - 72000000) && newData.child('t').val() === now) || (auth.uid === $uid && !newData.exists()))"
+          }
+        }
       }
     }
   }

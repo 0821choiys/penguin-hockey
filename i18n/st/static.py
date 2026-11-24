@@ -1,5 +1,7 @@
 # static markup: Korean text node / attribute value -> (en, zh, ja)
-S={"스틱 공방":("Stick Workshop","球杆工坊","スティック工房"),
+S={"친구":("Friends","好友","フレンド"),
+"친구 추가 · 대전 · 협동":("Add friends · Match · Co-op","加好友 · 对战 · 合作","フレンド追加 · 対戦 · 協力"),
+"스틱 공방":("Stick Workshop","球杆工坊","スティック工房"),
 "펭귄 원정":("Penguin Expedition","企鹅远征","ペンギン遠征"),
 "🧊 펭귄 원정":("🧊 Penguin Expedition","🧊 企鹅远征","🧊 ペンギン遠征"),
 "이길수록 강해지는 연속 도전":("Every win makes your team stronger","连胜挑战，越赢越强","勝つほど強くなる連続チャレンジ"),

@@ -1,0 +1,42 @@
+/* v52: 👫 friends · 🤝 co-op */
+#sFriend .pbody{justify-content:flex-start}
+.soc-tabs{display:flex!important;flex-wrap:nowrap!important;gap:5px;width:100%;max-width:460px;margin:0 0 4px!important}
+.soc-tabs button{flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:clip;font-size:13.5px;padding:8px 3px;letter-spacing:-.2px;position:relative}
+.soc-dotn{font-style:normal;font-size:10.5px;font-weight:900;margin-left:4px;padding:1px 6px;border-radius:8px;background:#ff5a6e;color:#fff;vertical-align:1px}
+.soc-mode,.soc-diff,.soc-rkm{display:flex!important;flex-wrap:nowrap!important;gap:5px;width:100%;max-width:420px;margin:0!important}
+.soc-mode button,.soc-diff button,.soc-rkm button{flex:1 1 0;min-width:0;white-space:nowrap;font-size:14px;padding:7px 4px}
+.soc-rkm{flex-wrap:wrap!important}
+.soc-rkm button{flex:1 1 calc(50% - 5px);font-size:13px}
+.soc-login{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:400px;padding:16px 10px}
+.soc-login b{font-size:16px}.soc-login span{font-size:13px;opacity:.8}
+.soc-me{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:420px;padding:9px 12px;border-radius:14px;
+  background:rgba(6,22,44,.55);box-shadow:inset 0 0 0 1px rgba(160,212,255,.25),inset 0 0 0 2px rgba(255,255,255,.03)}
+.soc-me div{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.soc-me small{font-size:12px;opacity:.75}
+.soc-me b{font:800 24px/1.1 'Fredoka','Jua',system-ui,sans-serif;letter-spacing:3px;user-select:all}
+.fr-join.soc-add{width:100%;max-width:420px;gap:6px}
+.soc-add input{flex:1 1 auto;min-width:0;width:auto!important;font-size:18px;letter-spacing:2px;padding-left:10px;padding-right:10px}
+.soc-add .btn{flex:0 0 auto;white-space:nowrap;font-size:15px;padding:10px 14px}
+.soc-ok{background:rgba(98,212,255,.14);border:1px solid rgba(98,212,255,.45);border-radius:10px;padding:7px 12px;font-size:13px;max-width:420px}
+.soc-gifts{width:100%;max-width:420px}
+#sFriend .lbl{align-self:stretch;max-width:420px;width:100%;margin:6px auto 0;text-align:left}
+.soc-row{display:flex;align-items:center;gap:6px;width:100%;max-width:420px;padding:6px 8px;border-radius:12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(160,212,255,.14)}
+.soc-row .soc-n{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-weight:700;font-size:14.5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.soc-row .soc-n small{font-weight:500;font-size:11.5px;opacity:.7}
+.soc-st{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(160,190,220,.4)}
+.soc-row.on .soc-st{background:#5fe08a;box-shadow:0 0 6px rgba(95,224,138,.8)}
+.soc-row.on .soc-n small{color:#7fe8a2;opacity:1}
+.soc-ic{flex:0 0 auto;min-width:38px;padding:0 8px;font-size:16px}
+.soc-ic:disabled{opacity:.35}
+.soc-rk{display:flex;flex-direction:column;gap:5px;width:100%;max-width:420px}
+.soc-rkr{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(160,212,255,.14);text-align:left}
+.soc-rkr.me{background:rgba(47,123,255,.2);box-shadow:inset 0 0 0 1px rgba(127,208,255,.5)}
+.soc-rkn{width:28px;text-align:center;font-size:16px}
+.soc-rkr .soc-n{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:700}
+.soc-rkr .soc-n small{font-weight:500;opacity:.7}
+#socInv{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+  width:min(94vw,520px);box-sizing:border-box;padding:9px 10px 9px 14px;border-radius:14px;background:rgba(9,29,52,.97);box-shadow:inset 0 0 0 1px rgba(160,212,255,.35),0 10px 26px rgba(2,10,24,.5);color:var(--frost,#eaf6ff);font-size:14px}
+#socInv span{flex:1 1 200px;min-width:0}
+#socInv .ghost{background:transparent}
+body.coop-mode #tbSwap{display:none!important}
+#sFriend .pbody{overflow-x:hidden}
