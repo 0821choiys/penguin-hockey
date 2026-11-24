@@ -45,7 +45,8 @@ PH.startMatch(PH.runCfg(c));
  const gm=G.pengs.find(p=>p.goalie&&p.team===G.mine),go=G.pengs.find(p=>p.goalie&&p.team===G.mine.opp);
  ok(gm.gkd&&near(gm.gkd.react,G.diff.gk.react*.8,1e-9)&&!go.gkd,'🧤 our goalie reacts 20 % faster, theirs unchanged');
  ok(G.mine.score===1&&G.mine.opp.score===1,'🥅 opening goal + ⏱️ comeback twist → the match starts 1:1');}
-ok(/p\.gkd\|\|G\.diff\.gk/.test(PH.movePeng.toString())&&/p\.gkd\|\|G\.diff\.gk/.test(PH.aiGoalie.toString())&&/g\.gkd\|\|G\.diff\.gk/.test(PH.gkRead.toString()),'goalies read their own reflexes (moving, AI, reading the shot)');
+ok([PH.movePeng,PH.aiGoalie,PH.gkRead].every(f=>/\b\w+\.gkd\|\|G\.diff\.gk/.test(f.toString())),   // (any parameter name: gkRead's module is minified since 2026-11-24)
+  'goalies read their own reflexes (moving, AI, reading the shot)');
 // their side: boss / fast / sniper / wall / endless
 {const theirs=()=>G.pengs.filter(p=>p.team===G.mine.opp&&!p.goalie);
  c.ups={};c.st=5;c.mod=null;c.opp=null;PH.runPrep(c);PH.startMatch(PH.runCfg(c));const t=theirs()[0],b=PH.TT[t.type]||{},B=k=>b[k]===undefined?1:b[k],go=G.pengs.find(p=>p.goalie&&p.team===G.mine.opp);
