@@ -27,7 +27,8 @@ function accErr(e){
   if(/cancel/i.test(m)||e&&e.name==='Cancel')return __L('로그인을 취소했어요');
   if(/CREDENTIAL_TOO_OLD|TOKEN_EXPIRED|requires-recent-login/i.test(m))return __L('보안을 위해 한 번 더 로그인해 주세요');
   if(/gis|script/i.test(m))return __L('Google 로그인을 불러오지 못했어요. 인터넷 연결을 확인해 주세요');
-  return __L('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요');
+  const d=m.replace(/[^\w :.,\[\]()\/-]/g,'').trim().slice(0,90);   // the real reason, small, so a screenshot tells what went wrong (2026-11-27)
+  return __L('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요')+(d?' ['+d+']':'');
 }
 function accSet(st,msg){ACC.st=st;ACC.msg=msg||'';accRender();}
 
