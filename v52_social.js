@@ -216,3 +216,10 @@ function socWire(el){
 {const o=accSignOut;accSignOut=function(){socStop();return o.apply(this,arguments);};}
 function socInit(){if(socOn())setTimeout(()=>{socStart();},window.__NOFX?0:4000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&SOC.code)socPush(false).catch(()=>{});});}
+
+/* moving to another Firebase project (owner, 2026-11-26): a sign-in kept from the old project cannot refresh there (400) and fbToken
+   falls back to an anonymous account — then cloud sync must stop and ask for a new sign-in instead of saving under the anonymous id */
+{const o=accSync;accSync=async function(login){
+  if(accSigned()){try{await fbToken();}catch(e){}
+    if(!accSigned()){accSet('err',__L('계정 연결이 끊겼어요. 다시 로그인해 주세요'));try{socStop();}catch(e){}return 'off';}}
+  return o.apply(this,arguments);};}

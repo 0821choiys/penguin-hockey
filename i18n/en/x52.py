@@ -52,4 +52,5 @@ X={
 "선물은 친구마다 하루 1번 · 받으면 {p}P (하루 {n}개까지) · 포인트만 오가요":("One gift per friend a day · each is {p}P (up to {n} a day) · points only","每位好友每天1次 · 每个{p}P（每天最多{n}个）· 仅限积分","ギフトはフレンドごとに1日1回 · 1個{p}P（1日{n}個まで）· ポイントのみ"),
 "친구와 같은 팀 · 각자 펭귄 1마리 · AI 팀과 {m}분 경기 · 협동 승리는 랭킹에 기록돼요":("Same team as your friend · one penguin each · {m} min vs an AI team · co-op wins count in the ranking","与好友同队 · 每人1只企鹅 · 与AI队比赛{m}分钟 · 合作胜场计入排行","フレンドと同じチーム · 各自ペンギン1匹 · AIチームと{m}分の試合 · 協力勝利はランキングに記録されます"),
 "저장하는 것: 게임 진행(포인트·펭귄·기록), Google 계정의 이메일 주소, 친구 기능을 쓰면 친구 코드·이름·랭킹 기록·친구 목록. 광고나 다른 용도로 쓰지 않아요.":("What is stored: your game progress (points, penguins, records), your Google account’s email address and, if you use friends, your friend code, name, ranking records and friend list. It is not used for ads or anything else.","保存的内容：游戏进度（积分、企鹅、记录）、谷歌账号的邮箱地址，使用好友功能时还有好友代码、名字、排行记录和好友列表。不会用于广告或其他用途。","保存するもの：ゲームの進行（ポイント・ペンギン・記録）、Googleアカウントのメールアドレス、フレンド機能を使う場合はフレンドコード・名前・ランキング記録・フレンドリスト。広告や他の目的には使いません。"),
+"계정 연결이 끊겼어요. 다시 로그인해 주세요":("Your account was disconnected. Please sign in again","账号连接已断开，请重新登录","アカウントの接続が切れました。もう一度ログインしてください"),
 }

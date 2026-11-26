@@ -135,6 +135,9 @@ feature patch files in order: … `v17_feat.py`, `v18_species.py`, `v19_gfx.py`,
 ## Online (Firebase) — see `online-account.md`
 - v31 friend match (6-letter code, WebRTC + database relay fallback, host-authoritative) and v35 Google sign-in + cloud save
   (`saves/{uid}`, never overwrites silently: the player picks this device / cloud; account deletion in the app).
+- Firebase project moved (owner, 2026-11-26: the old project's Google account could not be signed in to) → new project `penguin-hockey-cace5`
+  (Realtime Database in asia-southeast1, Google + anonymous sign-in, Android app `com.ysgames.penguingame` with upload / debug / Play signing SHA-1, a web app for the API key).
+  From 1.9.1 (19) the app uses it; cloud saves in the old project are not reachable from the new app (local saves stay). Rules were pasted in the console.
 - Config comes from `firebase-config.json` in the build folder at build time (`apiKey`, `dbUrl`, `webClientId`, optional `ice`;
   example in `firebase-config.example.json`). Without it both features say the server is not connected. Rules: `firebase/database.rules.json`.
 - Emulators for tests: `cd firebase && firebase emulators:start --project demo-ph --only auth,database` (auth :9099, db :9000).
