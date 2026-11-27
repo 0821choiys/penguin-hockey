@@ -41,6 +41,6 @@ online = seen within 180 s · invite valid 10 min · code 8 letters from `NET_AB
 ## Save (additive)
 `save.social = {fw, fl, cw, cl, cn, cday, claim:{uid:t}, sent:{uid:t}}` — sanitised in loadSave (numbers clamped, keys `^[A-Za-z0-9_-]{6,40}$`, ≤ 200).
 
-## Not verified
-- Real two-phone play over mobile networks (only two / three browser profiles on one machine through the emulators).
-- The real Firebase project needs the new rules deployed (`firebase deploy --only database`) — without them friend requests fail with 401.
+## Verified on real phones (owner, 2026-11-27, 1.9.2, new project `penguin-hockey-cace5`)
+- Google sign-in in the app, friends and playing together on two phones: "완전성공 같이 플레이까지 성공".
+- Rules were pasted in the console of the new project; `appassets.androidplatform.net` had to be added as an authorized domain for sign-in.
